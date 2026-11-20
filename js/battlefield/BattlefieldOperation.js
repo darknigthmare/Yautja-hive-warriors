@@ -1,14 +1,18 @@
 /* Playable, explicitly original three-front preset. Coordinates and routes are
  * bound to the built level; no quoted figure/statue establishes a metric map. */
+import { calibrateDefeatWindow } from './BattleStrategy.js';
+import { stageOriginalMusouGroups } from './OriginalMusouStaging.js';
+
 const copy = value => JSON.parse(JSON.stringify(value));
 const routeLength = waypoints => waypoints.slice(1).reduce((sum, point, index) => sum + Math.hypot(point[0] - waypoints[index][0], point[1] - waypoints[index][1]), 0);
-function physicalWaypoints(layout, from, to) {
+function physicalWaypoints(layout, from, to, gateIds = []) {
   const direction = from <= to ? 1 : -1, points = [[...layout.sectors[from].center]];
   for (let index = from; index !== to; index += direction) {
     const a = layout.sectors[index], b = layout.sectors[index + direction];
     const corridor = layout.corridors.find(item => item.from === a.id && item.to === b.id || item.from === b.id && item.to === a.id);
     if (!corridor) throw new Error('BattlefieldOperation: operation route has no physical corridor');
     points.push([...corridor.center], [...b.center]);
+    for (const gate of layout.gates ?? []) if (gate.corridorId === corridor.id && !gateIds.includes(gate.id)) gateIds.push(gate.id);
   }
   return points;
 }
@@ -17,7 +21,7 @@ function physicalWaypoints(layout, from, to) {
  * The original map proposal is retained as provenance; this adaptation does
  * not pretend that reusing a level constructs its proposed geographic layout.
  */
-export function bindBattleOperationToLayout(configuration, layout) {
+export function bindBattleOperationToLayout(configuration, layout, { legacyRouteGates = false } = {}) {
   if (!configuration?.fronts?.length || configuration.fronts.length > layout?.sectors?.length) throw new Error('BattlefieldOperation: the built scene cannot represent all operation fronts');
   const result = copy(configuration), sectorToFront = new Map(), oldFronts = new Map();
   const indices = layout.frontAnchorIds?.length === result.fronts.length ? layout.frontAnchorIds.map(id => layout.sectors.findIndex(sector => sector.id === id)) : result.fronts.map((_, index) => Math.round(index * (layout.sectors.length - 1) / Math.max(1, result.fronts.length - 1)));
@@ -32,17 +36,25 @@ export function bindBattleOperationToLayout(configuration, layout) {
   for (let index = 0; index < result.fronts.length - 1; index++) {
     const fromSector = layout.sectors[indices[index]], toSector = layout.sectors[indices[index + 1]];
     const physical = (layout.strategicRoutes ?? []).find(route => (route.from === fromSector.id && route.to === toSector.id || route.from === toSector.id && route.to === fromSector.id) && !/flank|outer/.test(route.id));
-    const waypoints = physical?.waypoints ? (physical.from === fromSector.id ? copy(physical.waypoints) : copy(physical.waypoints).reverse()) : physicalWaypoints(layout, indices[index], indices[index + 1]);
+    // A corridor route still crosses the doors of the corridors it follows (REC-012); legacyRouteGates
+    // rebuilds the pre-fix binding so checkpoints signed before it still resume.
+    const corridorGateIds = [];
+    const waypoints = physical?.waypoints ? (physical.from === fromSector.id ? copy(physical.waypoints) : copy(physical.waypoints).reverse()) : physicalWaypoints(layout, indices[index], indices[index + 1], corridorGateIds);
     const source = originalRoutes.find(route => route.from === result.fronts[index].id && route.to === result.fronts[index + 1].id || route.to === result.fronts[index].id && route.from === result.fronts[index + 1].id);
     routes.push({ id: source?.id ?? `bound-route-${index}`, from: result.fronts[index].id, to: result.fronts[index + 1].id, waypoints,
-      travelSeconds: Math.max(1, routeLength(waypoints) / 6), open: true, physicalRouteId: physical?.id ?? null, physicalGateIds: [...(physical?.physicalGateIds ?? [])] });
+      travelSeconds: Math.max(1, routeLength(waypoints) / 6), open: true, physicalRouteId: physical?.id ?? null, physicalGateIds: physical ? [...(physical.physicalGateIds ?? [])] : legacyRouteGates ? [] : corridorGateIds });
   }
   for (const route of layout.strategicRoutes ?? []) if (sectorToFront.has(route.from) && sectorToFront.has(route.to)) {
     if (routes.some(item => item.physicalRouteId === route.id)) continue;
     routes.push({ ...copy(route), id: `bound-${route.id}`, physicalRouteId: route.id, from: sectorToFront.get(route.from), to: sectorToFront.get(route.to), open: true });
   }
   result.routes = routes;
-  for (let index = 0; index < result.groups.length; index++) {
+  // Source-audited ORIGINAL Musou battles get finite staged squads inside
+  // their actual loaded sector bounds. Old saves and all other operations
+  // retain the exact historical ring positions and signed config digest.
+  const musouStaging = stageOriginalMusouGroups(result, layout,
+    indices.map(index => layout.sectors[index].id));
+  if (!musouStaging) for (let index = 0; index < result.groups.length; index++) {
     const group = result.groups[index], front = result.fronts.find(item => item.id === group.frontId);
     if (!front) throw new Error('BattlefieldOperation: group has no bound front');
     const angle = index * 2.399963229728653;
@@ -53,8 +65,9 @@ export function bindBattleOperationToLayout(configuration, layout) {
   result.label = configuration.label ?? configuration.name ?? configuration.id;
   result.context = { ...result.context, requiresSceneBinding: false, sceneBinding: 'adapted-built-level', visualFidelity1to1Verified: false };
   result.sceneBinding = { layoutId: layout.id, originalMapId: configuration.mapId ?? null, originalRoutes,
-    originalGeographicProposalConstructed: false, frontSectorIds: indices.map(index => layout.sectors[index].id), usesPhysicalStrategicRoutes: Boolean(layout.strategicRoutes?.length) };
-  return result;
+    originalGeographicProposalConstructed: false, frontSectorIds: indices.map(index => layout.sectors[index].id), usesPhysicalStrategicRoutes: Boolean(layout.strategicRoutes?.length),
+    ...(musouStaging ? { musouStaging } : {}) };
+  return calibrateDefeatWindow(result);
 }
 
 /** Returns a serializable configuration, not a running simulation. */
@@ -113,7 +126,7 @@ export function createBattlefieldOperation(layout, { levelId = 'unknown', mode =
   for (let index = 0; index < 5; index++) group('player_clan', index, 0, index === 4);
   for (let index = 0; index < 16; index++) group('hive', index, index < 4 ? 1 : 2, index >= 12);
   for (let index = 0; index < 12; index++) group('human_force', index, index < 4 || index >= 8 ? 1 : 2, index >= 8);
-  return {
+  return calibrateDefeatWindow({
     id: `three-fronts:${levelId}`, label: 'Bataille alternative à trois camps', mode, levelId,
     context: { era: 'alternative', works: ['Alien / Predator — scénario original'], continuities: ['original-game-scenario'],
       allowAdaptations: true, sourceLevelId: levelId, players, visualFidelity1to1Verified: false },
@@ -131,5 +144,5 @@ export function createBattlefieldOperation(layout, { levelId = 'unknown', mode =
       strategies: [{ id: 'control', conditions: [{ type: 'capture', frontId: fronts[1].id }, { type: 'capture', frontId: fronts[2].id }] },
         { id: 'isolate', conditions: [{ type: 'source_disabled', frontId: fronts[1].id }, { type: 'source_disabled', frontId: fronts[2].id }, { type: 'capture', frontId: fronts[2].id }] }] },
     designLimits: { originalScenario: true, legacySingleRouteFallback: !layout.strategicRoutes?.length, physicalUnitsCertified: false }
-  };
+  });
 }

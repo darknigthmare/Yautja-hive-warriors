@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_before_publication",
+  "reviewedAt": "2026-11-01T02:04:36.435117+00:00",
+  "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "criteriaCounts": {
+    "Terminé": 77,
+    "À valider": 37,
+    "En cours": 12
+  },
+  "criteriaNewlyClosed": [
+    "AUD-021",
+    "AUD-027",
+    "AUD-053",
+    "AUD-076",
+    "AUD-080",
+    "AUD-088",
+    "AUD-094",
+    "AUD-099",
+    "AUD-115",
+    "AUD-118"
+  ],
+  "acceptancesUnchanged": 126,
+  "excelOnlyFollowupCellsChanged": true,
+  "catalogCheck": "passed",
+  "evidence": [
+    {
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "path": "docs/audits/2026-10-26/implementation-verification.json",
+      "sha256": "f917fc831af231de8bffc15570e8f53c7edbd6764097899f9e73cc4501706ab0"
+    },
+    {
+      "path": "docs/qa/continuation-final-publication-pins.json",
+      "sha256": "36223150cfa541a3b0605fb2aeaab247ca92cf65623eacfd0bf8520fd20f78d3"
+    },
+    {
+      "path": "docs/qa/continuation-final-validation.json",
+      "sha256": "c471e19ce8626d6b8a79d5b7fae343576ecb12a4de1cf04a5e4b568a8c1936b6"
+    }
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "newMeshyCreditsSpent": 0,
+  "publication": "not_submitted",
+  "formatCheck": {
+    "editedAuditAndHandoffDocuments": "passed",
+    "rawCapturedLogs": "preserved byte-for-byte including terminal trailing spaces; excluded from prose whitespace normalization"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "scope": "Final read-only acceptance review combining actual keyboard/mouse browser flows, real managers/resources, strict scene checkpoints, CPU833 and explicitly adapted texts. No human or film1:1 certification.",
+  "accepted": {
+    "AUD-039": "APC/Cheyenne ont HP/munitions/sorties finis, disparaissent et cessent leur action à la destruction/épuisement, sans recharge par rappel/checkpoint. Le vrai tablier d’héliport bloque une frappe sans consommer de sortie/roquette/napalm ; détruire le vrai APC2500PV enlève son collider. CPU vérifie épuisement, fermeture du toit entre demande/impact et filtres de cibles. Les trois frappes héritées reçoivent le même contrôle physique de scénario/époque/ciel ; le barrage refuse avant honneur et borne son boss. Les pouvoirs conservent leurs coûts/cooldowns existants, sans inventaire ou fidélité canonique ajoutés.",
+    "AUD-126": "Les dix prompts et le chaudron correspondent aux contrats revus ; vraie toucheE, roue et clics accordent6flèches/4frappes puis consomment5/3 après usage, plasma100 inchangé. La flèche physique n’endommage que le premier vrai ennemi existant, avec un seul décès/score. Les autres effets sont vérifiés sur vrais Player/Environment/gestionnaires : Taabe×1,3 borné, acide×0,6 et signature temporaire, pistolet visé/portée/obstacle, boue une fois par entrée et checkpoint, souffle16 distinct du feu8,5/18s. Les pickups de scène ne rejouent ni gains ni souffle ; Sarii garde owner/blessures et ses ordres sont explicitement adaptés. Sariska/0°C non certifiés ne sont plus promis. Matériaux/équipements restent des interprétations de jeu."
+  },
+  "actualPrompts": {
+    "bone-mask-prompt": "MASQUE D'OS DU FERAL (PREY) // GUIDAGE DU PIÈGE PENDANT 16 S — AUCUN DÉGÂT INSTANTANÉ",
+    "orange-flower-prompt": "FLEURS ORANGE (PREY) // RÉDUIRE LA SIGNATURE THERMIQUE PENDANT 35 S",
+    "adolini-pistol-prompt": "PISTOLET ADOLINI 1715 (PREY) // UN TIR VISÉ — PORTÉE 28 M, 1200 DÉGÂTS MAXIMUM, ARRÊTÉ PAR LES OBSTACLES",
+    "taabe-bow-prompt": "ARC DE TAABE (PREY) // +6 FLÈCHES (MAX. 12) · MOBILITÉ +30% PENDANT 25 S — MODE ADAPTÉ",
+    "grizzly-trophy-prompt": "GRIZZLY TERRASSÉ (PREY) // RÉCUPÉRATION : +150 PV",
+    "naru-tomahawk-prompt": "HACHETTE DE NARU (PREY) // QUATRE FRAPPES DE MÊLÉE (MAX. 4) — MODE ADAPTÉ",
+    "trapper-med-prompt": "CAMP MÉDICAL DES TRAPPEURS (PREY) // +85 PV · +3 MEDICOMPS (MAX. 6), SI VOTRE ARSENAL LES AUTORISE",
+    "feral-arsenal-prompt": "ARSENAL DU FERAL (PREY) // +6 FLÉCHETTES (MAX. 12) · +100 PV",
+    "sarii-companion-prompt": "SARII (PREY) // RECRUTER, PUIS [E] : SUIVRE, ATTENDRE, PROTÉGER OU SE REPLIER — ORDRES ADAPTÉS POUR LE JEU · AUCUN BUTIN",
+    "trapper-bait-prompt": "POUDRE DES TRAPPEURS (PREY) // SOUFFLE : 750 DÉGÂTS SUR 16 M · FEU : 110 PV/S SUR 8,5 M PENDANT 18 S",
+    "trapper-spit-prompt": "CHAUDRON DES TRAPPEURS (PREY) // 500 DÉGÂTS SUR 7,5 M · +75 PV"
+  },
+  "sourceIndexHtmlSha256": "c99f31fa9c18b17552df157e521196f7e4d1b3daf7a7f5e8fccb025d948040c7",
+  "proofs": [
+    {
+      "path": "docs/qa/pr3-next-20261028/integrated-features/manifest.json",
+      "sha256": "c0e8cbcb102df24d2420d81a3bf0144fac214ab144d89781f42c330cca2a9da5"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json",
+      "sha256": "959d6122e1edeb1376e626e3e709d69e36df4a3fffb4d7d43d3dbc79495f8ed3"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+      "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13"
+    }
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "historicalDefectsPreserved": [
+    "truthy refused SentryGun reload absorbed E before Prey pickups",
+    "unused Player.shield did not absorb damage; replaced by bounded real HP recovery",
+    "legacy orbital/infiltration/barrage did not consult sky access"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "status": "read_only_review_complete",
+  "checkedAt": "2026-11-02T04:00:30.883679+00:00",
+  "readonly": true,
+  "remoteMutationsExecuted": false,
+  "credentialsReadOrPrinted": false,
+  "currentPublic": {
+    "checkedAt": "2026-11-02T03:56:51.883Z",
+    "origin": "https://yautja-hive-warriors.vercel.app",
+    "tlsVerificationEnabled": true,
+    "files": [
+      {
+        "path": "/",
+        "http": 200,
+        "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+        "headers": {
+          "contentType": "text/html; charset=utf-8",
+          "cacheControl": "public, max-age=0, must-revalidate"
+        }
+      },
+      {
+        "path": "/build-info.json",
+        "http": 200,
+        "sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+        "headers": {
+          "contentType": "application/json; charset=utf-8",
+          "cacheControl": "public, max-age=0, must-revalidate"
+        },
+        "buildInfo": {
+          "schemaVersion": 1,
+          "contentVersion": "v67-pr3-integration",
+          "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+          "sourceBranch": "codex/complete-pr3-20261026",
+          "sourceFingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+          "sourceFiles": 139,
+          "sourceTreeDirty": false,
+          "buildEpoch": 1793022277,
+          "reproducibleBuildDate": "2026-10-26T13:44:37.000Z",
+          "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/complete-pr3-20261026/docs/qa/pr3-validation.json"
+        }
+      }
+    ]
+  },
+  "canonicalDeployment": {
+    "id": "dpl_9SeDzvFvnrj9KuwGY3KYBqV6Li7N",
+    "name": "yautja-hive-warriors",
+    "contextName": "darknigthmares-projects",
+    "url": "yautja-hive-warriors-5f5m1cwo7-darknigthmares-projects.vercel.app",
+    "readyState": "READY",
+    "target": "production",
+    "createdAt": 1793173066956,
+    "created": null,
+    "alias": null,
+    "checkedAt": "2026-11-02T03:57:49.474313+00:00",
+    "rawEvidenceSha256": "59a251d2d21419f3e7a940d77d0c9d3bec7474c8debdb0170a86260549c6c075",
+    "git": {
+      "githubCommitSha": null,
+      "githubCommitRef": null
+    }
+  },
+  "latestPreviewDeployment": {
+    "id": "dpl_H9CmzXJbhb9JwVmrBfSQmWQhaBTn",
+    "name": "yautja-hive-warriors",
+    "contextName": "darknigthmares-projects",
+    "url": "yautja-hive-warriors-506mw4ka4-darknigthmares-projects.vercel.app",
+    "readyState": "READY",
+    "target": "preview",
+    "createdAt": 1793484353820,
+    "created": null,
+    "alias": null,
+    "checkedAt": "2026-11-02T03:57:49.473873+00:00",
+    "rawEvidenceSha256": "253f2dfa8cb616e4e2b89a2091c5e49fcfd88a33a8ea7ce30f7ac707067a14c8",
+    "git": {
+      "githubCommitSha": null,
+      "githubCommitRef": null
+    }
+  },
+  "listedDeployments": 15,
+  "pagination": {
+    "count": 15,
+    "next": null,
+    "prev": 1793484353820
+  },
+  "currentRevisionCandidateObserved": false,
+  "quota": {
+    "currentAvailability": "unverified",
+    "lastActualRejectionAt": "2026-11-01T02:05:21.364Z",
+    "lastActualRejection": "Resource is limited - try again in 1 day (more than 100, code: \"api-deployments-free-per-day\").",
+    "readOnlyProbe": {
+      "endpoint": "/v1/limits",
+      "http": 404,
+      "establishesQuotaReset": false
+    },
+    "listInspectSuccessEstablishesDeployQuota": false
+  },
+  "preservedPreviousRelease": {
+    "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+    "registryPath": "/workspace/qa/continuation-final-20261101/vercel-delivery-status.json",
+    "registrySha256": "ebac7bcdf1ef10383cd80c32bcb261e0eebfd247b445dbbaf229a69e55094e95",
+    "submissionAttempted": true,
+    "deploymentId": null,
+    "promotionExecuted": false,
+    "stagePath": "/workspace/qa/continuation-final-20261101/vercel-static-prebuilt",
+    "stageExists": true,
+    "manifestSha256MatchesPins": true,
+    "allStaticBytesRehashedInThisReview": false
+  },
+  "newReleaseRequirements": [
+    "Use a distinct allowlisted release profile only for the newly implemented/tested source; preserve all four old profiles, stages, registries and actual submitted QA/pins.",
+    "Keep read-only source ancestry and fingerprint guards, strict stage-byte and GLB manifest checks, one candidate, READY production target, all candidate bytes, then promotion and public bytes.",
+    "Pin the actually observed public index before promotion; as of this review it remains124d7735 and source48b5.",
+    "Use current actual CPU/browser counts and runtime evidence; no relabelling the Nov1 1185tests as executions of a new revision.",
+    "Set current build contentVersion and deploymentProof; latest040c config still identifies the Nov1 release.",
+    "Adapt the public verifier root/helper imports from the old absolute worktree to the new worktree; its current hardcoded root would compare against the old dist.",
+    "Run the new-release public browser smoke only after canonical bytes match the newly frozen source.",
+    "A read-only list or25hours elapsed does not prove deploy quota availability; inspect the actual single submission result."
+  ],
+  "evidence": [
+    "/workspace/qa/continuation-20261102/public-initial.json",
+    "/workspace/qa/continuation-20261102/vercel-list-initial-summary.json",
+    "/workspace/qa/continuation-20261102/latest-preview-inspect-summary.json",
+    "/workspace/qa/continuation-20261102/canonical-inspect-summary.json"
+  ],
+  "currentRemoteHeads": [
+    "040c28941d246d5f41555401cde367651e252cf7",
+    "aeb0a64cd5320985c4d27d4692b6fecdae842637",
+    "a3193fe396a358c01f5f6deaf771128f5ab5efc6",
+    "466bbc2b2119c3383cc7570bf6ce921cce38b8ab"
+  ]
+}

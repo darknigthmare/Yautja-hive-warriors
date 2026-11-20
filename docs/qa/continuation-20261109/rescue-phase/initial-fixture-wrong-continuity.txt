@@ -1,0 +1,97 @@
+✖ real signed Ravager phase and empty medical state compose across checkpoint restoration (68.991088ms)
+✖ medical materialization never changes a real cataleptic Ravager HP, pose or owner timer (2773.704013ms)
+✖ a medical record cannot steal a legal one-HP Ravager phase or its spent upgrade (17.712219ms)
+✔ genuine allied Yautja orphan incapacity is still refused without its medical timer (13.468356ms)
+✖ unphased, unsigned, wrong-continuity and malformed Ravager incapacity remain orphan errors (42.873315ms)
+✖ malformed phase plus forged medical record cannot bypass either owner validation (31.027166ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3126.29665
+
+✖ failing tests:
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:35:1
+✖ real signed Ravager phase and empty medical state compose across checkpoint restoration (68.991088ms)
+  TypeError: Incapacitated unit has no saved rescue timer
+      at AllyRescueSystem.restore (file:///workspace/Yautja-continue-20261109/js/battlefield/AllyRescueSystem.js:261:111)
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:43:26)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:54:1
+✖ medical materialization never changes a real cataleptic Ravager HP, pose or owner timer (2773.704013ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:64:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:78:1
+✖ a medical record cannot steal a legal one-HP Ravager phase or its spent upgrade (17.712219ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:84:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Invalid persistent rescue casualty/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:100:1
+✖ unphased, unsigned, wrong-continuity and malformed Ravager incapacity remain orphan errors (42.873315ms)
+  Error: BattleSimulation: optional source Carrier could not load six allocated Facehuggers
+      at fail (file:///workspace/Yautja-continue-20261109/js/battlefield/BattleSimulation.js:30:33)
+      at new BattleSimulation (file:///workspace/Yautja-continue-20261109/js/battlefield/BattleSimulation.js:111:9)
+      at fixture (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:15:15)
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:114:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:123:1
+✖ malformed phase plus forged medical record cannot bypass either owner validation (31.027166ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:130:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Invalid persistent rescue casualty/,
+    operator: 'throws',
+    diff: 'simple'
+  }

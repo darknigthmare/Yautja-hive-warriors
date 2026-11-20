@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "date": "2026-10-30",
+  "project": "Yautja Hive Warriors",
+  "baseCommit": "f903758a025f50a9053b56a81577c518fe53e38d",
+  "operation": "AFF-27",
+  "group": "GRP-60",
+  "provenance": "Aliens versus Predator: Extinction (2003); exact Hive Warriors stats are design adaptations",
+  "source": {
+    "gameSpot": "https://www.gamespot.com/reviews/aliens-versus-predator-extinction-review/1900-6072952/",
+    "gameFaqs": "https://gamefaqs.gamespot.com/ps2/589665-aliens-versus-predator-extinction/faqs/34175"
+  },
+  "parameters": [
+    {
+      "role": "medic",
+      "action": "heal and compact pistol",
+      "supply": "medicalSupply",
+      "starting": 2,
+      "maxTreatment": 90,
+      "range": 10,
+      "shotRange": 13,
+      "damage": 12,
+      "status": "implemented_as_adaptation",
+      "notes": "Medic M4A3 compact pistol model and 13-unit defensive range; same two finite treatments from prior commit."
+    },
+    {
+      "role": "commtech",
+      "action": "repair synthetic/exosuit and MP9 SMG",
+      "supply": "repairParts",
+      "starting": 3,
+      "maxTreatment": 100,
+      "range": 8,
+      "shotRange": 18,
+      "damage": 16,
+      "status": "implemented_as_adaptation",
+      "missing": [
+        "atmo repairs",
+        "sentry repairs",
+        "dropship orders",
+        "AURORA upgrade"
+      ],
+      "notes": "CommTech MP9 visual geometry and 18-unit defensive range; mechanical repair is a finite-kit gameplay adaptation."
+    },
+    {
+      "role": "sniper",
+      "action": "long-range single target",
+      "supply": "sniperRounds",
+      "starting": 6,
+      "shotRange": 36,
+      "damage": 75,
+      "status": "implemented_as_adaptation",
+      "missing": [
+        "penetrating upgraded rounds"
+      ],
+      "offscreenConsumption": true
+    },
+    {
+      "role": "sadar",
+      "action": "moving homing missile and hostile-only blast",
+      "supply": "sadarMissiles",
+      "starting": 4,
+      "shotRange": 28,
+      "velocity": 26,
+      "damage": 72,
+      "splashDamage": 30,
+      "splashRadius": 3.6,
+      "status": "implemented_as_adaptation",
+      "missing": [
+        "AMAG multiple warheads",
+        "real prop ballistic verification"
+      ],
+      "offscreenConsumption": true
+    },
+    {
+      "role": "exosuit",
+      "action": "single pilot heavy frame and finite plating",
+      "supply": "exosuitArmor",
+      "starting": 100,
+      "damageReductionFraction": 0.5,
+      "shotRange": 22,
+      "damage": 42,
+      "status": "implemented_as_adaptation",
+      "missing": [
+        "Twin M103 Torrent upgrade",
+        "motorized armature and vehicle physics"
+      ],
+      "offscreenArmor": true
+    }
+  ],
+  "evidence": {
+    "isolatedResourceChecks": {
+      "passed": 28,
+      "failed": 0
+    },
+    "isolatedBlastChecks": {
+      "passed": 1,
+      "failed": 0
+    },
+    "isolatedMissileChecks": {
+      "passed": 2,
+      "failed": 0,
+      "visualExhaustVerifiedInMock": true,
+      "impactDelayed": true,
+      "blockedBeforeImpact": true
+    },
+    "jsParserChecks": {
+      "passed": 7,
+      "failed": 0,
+      "method": "V8 new Function after removing ES module declarations; does not load game dependencies"
+    },
+    "integrationTestCasesAuthored": 9,
+    "integrationTestsExecuted": 0,
+    "webglVerified": false,
+    "visualFidelity1to1Verified": false,
+    "historicalSaveDigestUnchangedByDesign": true,
+    "dependencyInstallCompleted": false,
+    "buildCompleted": false,
+    "integratedSourceTestsRun": false,
+    "htmlRun": false,
+    "isolatedOffscreenCombatChecks": {
+      "passed": 2,
+      "failed": 0,
+      "description": "Real _remoteCombat: six offscreen sniper rounds and no seventh hit; distant Exosuit plating absorbs damage.",
+      "note": "SADAR offscreen consumption shares the code branch and has an authored Node regression case; its full integration test is not yet executed."
+    },
+    "remoteSpecialistBudgetPersistence": true
+  },
+  "caution": "Evidence on isolated source methods uses mocked environment and vector implementations; it does not certify full simulation, browser rendering, physical colliders or performance."
+}

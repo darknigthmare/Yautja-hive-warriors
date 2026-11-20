@@ -1,0 +1,28 @@
+{
+  "status": "reproduced_display_gap",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "criterion": "AUD-047",
+  "scope": "Controlled actual simulation expiry; groups held in reserve with matching fixture budget and AI disabled to isolate the real strategic deadline and existing final debrief formatter.",
+  "fixtureSetup": "First fixture failed reserve budget preflight before gameplay; corrected fixture removes original per-faction deployment counts to match its explicitly all-reserve state. No runtime change.",
+  "lostFront": {
+    "id": "insertion",
+    "label": "Zone d’insertion"
+  },
+  "criticalDeadline": 153.25,
+  "simulationResult": {
+    "fronts": [
+      "insertion"
+    ],
+    "outcome": "defeat",
+    "reason": "critical_front_lost",
+    "time": 153.25
+  },
+  "displayedReason": "Les conditions de poursuite de l’opération ne sont plus réunies.",
+  "causeNamesLostFront": false,
+  "causeDescribesLostFront": false,
+  "notes": "Grace is calibrated, but critical_front_lost has no French reason mapping in captureBattleDebrief at this source. The specific pre-defeat alert remains implemented; this does not invalidate controlled players_defeated paths.",
+  "inputHashes": {
+    "js/battlefield/BattleSimulation.js": "4251a90f791f03be5fdae956b659a7d7a7344760db6347eefa9a32d715a3007b",
+    "js/ui/OperationPanel.js": "bc8acdd4c38a4d6b532a84ccdc98fc3e69deaeb66e1e90126fa73b3ed942b627"
+  }
+}

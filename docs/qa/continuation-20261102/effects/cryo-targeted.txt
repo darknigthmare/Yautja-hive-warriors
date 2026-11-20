@@ -1,0 +1,22 @@
+✔ one persistent death identity survives duplicate sources, reentrant callbacks and pool reuse (2.938964ms)
+✔ materialization preserves identity and HP without scoring culls; death scores and disposes once (4028.756312ms)
+✔ damage delivered by scenery is harvested once even after the last player dies (4.079708ms)
+✔ three species use explicit relationships, not hardcoded human-versus-xenomorph targeting (3357.466516ms)
+✔ an allocated synthetic has one terminal death; tactical despawn never manufactures another (51.564705ms)
+✔ a raw lethal hit is recorded before culling, including an already observed death (322.128598ms)
+✔ retreat beats an adjacent hostile target instead of permitting a free attack (72.67573ms)
+✔ synthetic hit queries respect faction truces and the shared physical cover (46.88204ms)
+✔ raw lethal scenery damage preserves a boiler detonation exactly once (66.774679ms)
+✔ zero-delta cleanup records a boiler death but defers its blast until simulation resumes (2.04538ms)
+✔ the real cryo console removes only nearby Horde-owned acid pools and disposes each private resource once (12.420434ms)
+✔ cryo does not recolor shared real creature materials for a mesh-root representation or dispose a distant peer (4458.941152ms)
+✔ cryo damage uses the real death ledger once and preserves allied identities (2.317729ms)
+✔ a six-second cryo stun holds a marching actor and expires even after camouflage removes its target (1.976087ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12904.142803

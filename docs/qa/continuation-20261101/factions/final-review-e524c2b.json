@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_component_browser_and_visual_review",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "sourceFingerprint": "5b78bf5edd21f837e6832a53cc345c4c268093e4b04264a10ce25c7505b69d6b",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "report": "docs/qa/continuation-20261101/factions/final-e524c2b/report.json",
+  "reportSha256": "2cee5c57ac043c53c3e4a0d939ab44cb2f9d21be505a720c60c0a3c4cd5ada73",
+  "manifest": "docs/qa/continuation-20261101/factions/final-e524c2b/manifest.json",
+  "manifestSha256": "ca46d05602b124d56a414daf83e9cbc09e3916cdccaa086c4ac9f86b0d985e14",
+  "casesPassed": 2,
+  "casesFailed": 0,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "visualReview": {
+    "reviewer": "AI agent factions_roles_nov01",
+    "humanReviewer": false,
+    "imagesViewed": [
+      "reciprocal-fire.png",
+      "industrial-warning.png"
+    ],
+    "observed": [
+      "Both humanoids, one thin ballistic tracer and its target contact are visibly rendered. Their actual HP lost is22 for the Marine and20 for security; the distant player takes no damage.",
+      "The industrial Working Joe has a clearly visible triangular warning above its head during its timed intrusion warning."
+    ],
+    "limits": [
+      "These are isolated component scenes using fixture IDs, simple relation callbacks and an unobstructed LOS stub. They do not exercise a source-allocated complete operation or real terrain.",
+      "No visual validation of every squad formation, all source species, faction-wide camouflage, silhouette recognition or all map boundaries is claimed.",
+      "Procedural models remain visibly procedural; no reference comparison, fidelity1:1 or modern-model quality certification follows from these captures."
+    ]
+  },
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "browserClosed": true,
+  "exclusiveSlotReleasedToRoot": true,
+  "distUnchanged": true,
+  "runtimeEdited": false,
+  "harnessRepairedDuringFinalRun": false
+}

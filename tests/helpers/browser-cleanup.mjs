@@ -7,9 +7,20 @@ export function createBrowserCleanup(signal) {
     return closing.get(resource);
   };
   const close = async () => {
-    // Start every close even if a context close rejects or waits for its browser.
-    const results = await Promise.allSettled([...resources].map(closeOnce));
-    const failures = results.filter(result => result.status === 'rejected').map(result => result.reason);
+    // Contexts must close before their parent browser. Closing both in
+    // parallel races browser.close against browserContext.close, producing
+    // spurious failures even when the gameplay scenario completed normally.
+    const failures = [];
+    for (const resource of [...resources].reverse()) {
+      try { await closeOnce(resource); }
+      catch (error) {
+        const message = String(error?.message ?? error);
+        // Playwright reports this only when another test-abort/Chromium crash
+        // has already closed the handle. Other cleanup failures still fail CI.
+        if (!/Target page, context or browser has been closed|Browser has been closed|Context has been closed/i.test(message))
+          failures.push(error);
+      }
+    }
     if (failures.length) throw new AggregateError(failures, 'Browser test resource cleanup failed');
   };
   const onAbort = () => { void close().catch(() => {}); };

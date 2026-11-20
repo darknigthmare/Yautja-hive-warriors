@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-29T22:25:08.037848+00:00",
+  "baseCommit": "59179bbac0a44a9e6b30ae1f7ce8fc1b3f9da27a",
+  "baseTree": "5281127ae3b2151bf94fdea2b8666cb79fd3372a",
+  "repository": "darknigthmare/Yautja-hive-warriors",
+  "pullRequest": 5,
+  "node": {
+    "version": "22.16.0",
+    "tests": 36,
+    "pass": 36,
+    "fail": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "version": "144.0.7559.96",
+    "driver": "Playwright 1.57.0 preinstalled, not project lock 1.64.1",
+    "tests": 20,
+    "pass": 20,
+    "fail": 0,
+    "transport": "in-memory Blob module imports; no network policy modification",
+    "scope": "Loadout component only; real DOM, event listeners, MutationObserver, focus and callback handoff"
+  },
+  "baseline": {
+    "exactSourceBlobsVerified": true,
+    "node": {
+      "pass": 15,
+      "fail": 21
+    },
+    "browser": {
+      "pass": 0,
+      "fail": 20
+    },
+    "failureCountIsNotBugCount": true
+  },
+  "syntaxChecks": 6,
+  "inventoryCheck": true,
+  "preservationCheck": true,
+  "fullBuild": {
+    "attempted": true,
+    "passed": false,
+    "exitCode": 127,
+    "reason": "vite: not found; partial local snapshot without complete locked install"
+  },
+  "vercelSandbox": {
+    "created": false,
+    "reason": "Hobby quota exceeded (402)",
+    "reportedResetUtc": "2026-11-01T00:00:00.000Z",
+    "billingChanged": false
+  },
+  "humanTesters": 0,
+  "independentReview": false,
+  "fidelity1to1Verified": false,
+  "fullGameBrowserTest": false,
+  "changedProductionFiles": [
+    "js/data/charactersData.js",
+    "js/data/hunterArsenal.js",
+    "js/ui/LoadoutScreen.js"
+  ],
+  "files": [
+    {
+      "path": "js/data/charactersData.js",
+      "gitBlobSha": "2fb468e55851bc19f5c65d9537e93f03c0751a60",
+      "sha256": "adb9b663d61de6cf361eaf16d66321af450fd74c7019dd97f56e732b1a0a6ac5",
+      "baseGitBlobSha": "79fc332a11233612d911e8499f7d2ea7bc8ccab6"
+    },
+    {
+      "path": "js/data/hunterArsenal.js",
+      "gitBlobSha": "5492f535e73dc695a0e508829ea2c7555abb868b",
+      "sha256": "5c14f160d707d0091551f624ab197e0500f6a5d471f554f20d8510be173fe290",
+      "baseGitBlobSha": "e49ce7865f54810192c94f49d7ab538b706b33bd"
+    },
+    {
+      "path": "js/ui/LoadoutScreen.js",
+      "gitBlobSha": "b69240fe7c47f2c754bcc3e1745f2a3b91d10e2e",
+      "sha256": "ecad1495a78f36ad7dcf5a0773a8cab31586f1daa6343e5fa5a602756143e031",
+      "baseGitBlobSha": "86920cdbc5e199ff5648cd33bac089618944d61e"
+    },
+    {
+      "path": "scripts/audit-hunter-reference-kits.mjs",
+      "gitBlobSha": "9957592800411cbdc6960915d153b9039d99640c",
+      "sha256": "59499c4ebb74dd2a0d0904ee28a2c666805aa7bd6d6f1e4738cc793980cc34ab",
+      "baseGitBlobSha": null
+    },
+    {
+      "path": "scripts/qa-hunter-loadout.mjs",
+      "gitBlobSha": "3650341c6b3a28c0684741fc06039e935b91f86c",
+      "sha256": "e0c77aa9c27bdfe5de2b5fa5473127cace98ab913b1606fcc4d4f5aee7010530",
+      "baseGitBlobSha": null
+    },
+    {
+      "path": "tests/fixtures/hunter-loadout-screen.html",
+      "gitBlobSha": "f883c3552dcb9b02a8b7d8c0c7451bb22ad7d002",
+      "sha256": "4b8607ab47eaa1cab64c2a190057b4c0f17e235909ea387d1b3f60320e91f580",
+      "baseGitBlobSha": null
+    },
+    {
+      "path": "tests/fixtures/hunter-reference-expectations.json",
+      "gitBlobSha": "168fe3ebea864a0f340edc018927fd6bacc9dba2",
+      "sha256": "5b2ed14f8cf5d3331d69110172bb8cd19d210f823a5e9d774ed8ea8bba33da84",
+      "baseGitBlobSha": null
+    },
+    {
+      "path": "tests/hunter-reference-preparation.test.js",
+      "gitBlobSha": "19237c882694734fb1cf78576ca058128b3e3dea",
+      "sha256": "423280f9c8731f619ed64606101dc6931932d5bd7b28e7e3d38a3108f657eb3f",
+      "baseGitBlobSha": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "status": "one_pass_one_timeout",
+  "runtimeSourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "testsUnmodified": true,
+  "passed": [
+    "co-op has independent movement and combat and continues while one hunter survives"
+  ],
+  "failure": "20second deploy click wait; actual click completed and game already playing, HP1000, player still at initial cinematicposition, zeroJS/network errors.",
+  "scope": "Initial movement timeout not reproduced in the isolated rerun; no cause or hardware performance guarantee asserted.",
+  "next": "Only the deploy-click test wait budget will change; app assets remain frozen."
+}

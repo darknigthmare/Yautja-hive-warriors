@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_component_browser_and_visual_review",
+  "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "sourceFingerprint": "dbec2257cc5938b889d9cff31f31d7e8afa94753a5abb5e45fa58769cf3d4425",
+  "indexSha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad",
+  "report": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+  "reportSha256": "a63236aeb5f7bfa0c63c4a529b483ff2fb6dbc9426647269f900a3f56bed4bd4",
+  "manifest": "docs/qa/continuation-20261101/factions/final-a80070c/manifest.json",
+  "manifestSha256": "10c4e117929b831d6a6878380b34c5a36a0579bca27540c1299f6444d2281baf",
+  "casesPassed": 2,
+  "casesFailed": 0,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "visualReview": {
+    "reviewer": "AI agent factions_roles_nov01",
+    "humanReviewer": false,
+    "imagesViewed": [
+      "reciprocal-fire.png",
+      "industrial-warning.png"
+    ],
+    "observed": [
+      "Both humanoids, one thin ballistic tracer and its target contact are visibly rendered. Their actual HP lost is22 for the Marine and20 for security; the distant player takes no damage.",
+      "The industrial Working Joe has a clearly visible triangular warning above its head during its timed intrusion warning."
+    ],
+    "limits": [
+      "These are isolated component scenes using fixture IDs, simple relation callbacks and an unobstructed LOS stub. They do not exercise a source-allocated complete operation or real terrain.",
+      "No visual validation of every squad formation, all source species, faction-wide camouflage, silhouette recognition or all map boundaries is claimed.",
+      "Procedural models remain visibly procedural; no reference comparison, fidelity1:1 or modern-model quality certification follows from these captures."
+    ]
+  },
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "browserClosed": true,
+  "exclusiveSlotReleasedToRoot": true,
+  "distUnchanged": true,
+  "runtimeEdited": false,
+  "harnessRepairedDuringFinalRun": false,
+  "visualReviewPerformedForThisRun": true,
+  "priorEvidencePreserved": "docs/qa/continuation-20261101/factions/final-review-e524c2b.json",
+  "endedAt": "2026-11-01T01:54:39.147Z"
+}

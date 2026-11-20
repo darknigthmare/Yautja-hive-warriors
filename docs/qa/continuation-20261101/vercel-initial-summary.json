@@ -1,0 +1,238 @@
+{
+  "checkedAtUtc": "2026-11-01T00:43:39Z",
+  "project": "yautja-hive-warriors",
+  "scope": "darknigthmares-projects",
+  "readOnly": true,
+  "rawEvidenceSha256": "d0775c53b82b4cc84655280ecdbb7f9320d0e5cc63b9b14ea428124667dff99c",
+  "pagination": {
+    "count": 28,
+    "next": null,
+    "prev": 1793484353820
+  },
+  "deployments": [
+    {
+      "url": "yautja-hive-warriors-506mw4ka4-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793484353820,
+      "gitCommit": "3fc620685d33f057f748913edc8d12d7d3d1deb5",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-i1xvkbp0k-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "target": null,
+      "createdAt": 1793484322569,
+      "gitCommit": "e40eb8dcf92dca83a30674c3e1e53a591e617a4a",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-fio67gy6h-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "target": null,
+      "createdAt": 1793484119347,
+      "gitCommit": "90f305a89daabb353e30b0a7b4a23c17e2f9555c",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-d8r3agmwf-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "target": null,
+      "createdAt": 1793483958876,
+      "gitCommit": "347d87629b76a9475768beb5ac5e85cb5523b12a",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-j539qroeh-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793483828939,
+      "gitCommit": "c17e0679556e1f35e557885022167f8e2ff1682c",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-ortd45kl4-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793463596942,
+      "gitCommit": "2106d512eb7c750a55e82f86e50cc6e918c2df3b",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-fervbnmkq-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793454331042,
+      "gitCommit": "9be0c421690abdb6753dbfd7f596e960d9de91bf",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-4z8plmgni-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793453247343,
+      "gitCommit": "80beb790409c2683c99a4d995ab4dd690c42dbba",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-34i5srxzs-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793450089535,
+      "gitCommit": "d24407289bffce5f5e331a7ccd05f6e19446f05f",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-l5qdkxg9h-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793448162877,
+      "gitCommit": "93abbc3d651dc7cae7b10d0fadf84f8b2435df74",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-dj9f4i2mb-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793447702096,
+      "gitCommit": "95f3fe87673767db267ab40ab52e2bcb643a4d92",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-cbgsjqj08-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793445810927,
+      "gitCommit": "757aaca4171fcb8aee022b0c6c0b6d4cf86b3961",
+      "gitRef": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-95lx54put-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793313265739,
+      "gitCommit": "e00500bc7e9240e6bd16275327cbbc4430aa466f",
+      "gitRef": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-nf4y84n3h-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793281454154,
+      "gitCommit": "570e443109cde26f63a8d9024213f1b4ed997aa0",
+      "gitRef": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-a5zup9hx6-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793277780475,
+      "gitCommit": "23649bf92d2132ca0d1b59f0b10e83feb6c809f5",
+      "gitRef": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-4n7nbptlk-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "target": null,
+      "createdAt": 1793277711721,
+      "gitCommit": "6b244985c67458614974da4ddd6e45989c7a0387",
+      "gitRef": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-qd6rxocpz-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793182962748,
+      "gitCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "gitRef": "codex/depth-pr3-20261028"
+    },
+    {
+      "url": "yautja-hive-warriors-gjaj3ub14-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "target": null,
+      "createdAt": 1793181970790,
+      "gitCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+      "gitRef": "codex/depth-pr3-20261028"
+    },
+    {
+      "url": "yautja-hive-warriors-p1dy7xp79-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793180252040,
+      "gitCommit": "f9d87be75b0281ac7a150893a2b8a9fefe490f45",
+      "gitRef": "codex/complete-pr3-20261026"
+    },
+    {
+      "url": "yautja-hive-warriors-5f5m1cwo7-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": 1793173066956,
+      "gitCommit": null,
+      "gitRef": null
+    },
+    {
+      "url": "yautja-hive-warriors-ch6v2irsv-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793081680561,
+      "gitCommit": "b3048dc3425e5017e275361950fff372ebb6626c",
+      "gitRef": "codex/catalogue-completeness-20261027"
+    },
+    {
+      "url": "yautja-hive-warriors-inyjy460v-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": null,
+      "createdAt": 1793074205697,
+      "gitCommit": "527cd1164a4160df95d96963cd6efab263d9227e",
+      "gitRef": "codex/catalogue-completeness-20261027"
+    },
+    {
+      "url": "yautja-hive-warriors-egh1two9y-darknigthmares-projects.vercel.app",
+      "state": "ERROR",
+      "target": null,
+      "createdAt": 1793010105969,
+      "gitCommit": "0435827e41eae19472179e8116d9eb4105647664",
+      "gitRef": "codex/audit-musou-excel-20261026"
+    },
+    {
+      "url": "yautja-hive-warriors-ljafrh199-darknigthmares-projects.vercel.app",
+      "state": "ERROR",
+      "target": null,
+      "createdAt": 1793008142491,
+      "gitCommit": "ea727c2d81023023d587931eac9cf3d28a447693",
+      "gitRef": "codex/audit-musou-excel-20261026"
+    },
+    {
+      "url": "yautja-hive-warriors-fzta4631w-darknigthmares-projects.vercel.app",
+      "state": "ERROR",
+      "target": null,
+      "createdAt": 1793007730746,
+      "gitCommit": "9c18c196c794b77f6bcfa02045c960080d955cfa",
+      "gitRef": "main"
+    },
+    {
+      "url": "yautja-hive-warriors-k9wu2pq8z-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": 1792917846202,
+      "gitCommit": null,
+      "gitRef": null
+    },
+    {
+      "url": "yautja-hive-warriors-lpv2ajry5-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": 1792912610874,
+      "gitCommit": null,
+      "gitRef": null
+    },
+    {
+      "url": "yautja-hive-warriors-k7z5xeuuy-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": 1792909063207,
+      "gitCommit": null,
+      "gitRef": null
+    }
+  ]
+}

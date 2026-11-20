@@ -1,0 +1,11 @@
+✔ all Extinction source profiles are covered without claiming source visual parity (5.632705ms)
+✔ Carrier/Ravager materialize only as source-scoped partial runtimes, never 1:1 visual assets (10.028575ms)
+✔ real Medic/CommTech specialist mechanics exist but do not imply exact models (0.772941ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 224.07779

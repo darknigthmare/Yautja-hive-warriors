@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "basic-caste-briefing.png",
+      "sha256": "6272063c497e7564743ba857ca40a34cd3c04cc9a61e09f63cdbe7e38740f7cc"
+    },
+    {
+      "path": "character-briefing.png",
+      "sha256": "77a473189b80fa52ae85bf176b5101aa25544f4b8a3c5503f179eda3d0c6941e"
+    },
+    {
+      "path": "codex-engineers-source-detail.png",
+      "sha256": "8dc408e308c1726318955d08d7ceb895c6abb0996530de7cadbd42b31137f44e"
+    },
+    {
+      "path": "codex-engineers.png",
+      "sha256": "8dc408e308c1726318955d08d7ceb895c6abb0996530de7cadbd42b31137f44e"
+    },
+    {
+      "path": "codex-ranks-source-detail.png",
+      "sha256": "e4ac54fb0f93a55b31e281abd80c94a0ee3c12793ac8c17da16d21f6b5522c5b"
+    },
+    {
+      "path": "codex-ranks.png",
+      "sha256": "8408fc08c7db31169c7443fcab8032f1cb92718da3784ef00dce5a5ff4621871"
+    },
+    {
+      "path": "combat-readability-real-cloak.png",
+      "sha256": "10c51afc4cdfd8c5efa40fd0684b39ca1b4b7ced4f672d45f674b2d7248af1d9"
+    },
+    {
+      "path": "controlled-defeat-character-debrief.png",
+      "sha256": "79cece352ef2d62dc3f5c5e13ef79b83391e76f39e5212abc78b2ac6a2fbf628"
+    },
+    {
+      "path": "critical-front-expiry-restored-live-player-debrief.png",
+      "sha256": "a967d734d56c1ddd76511e7fb58e772de6cb1504124e5480b6cd619297215b99"
+    },
+    {
+      "path": "critical-front-restored-warning.png",
+      "sha256": "c46149cedd5bda9e5ee323a1923922a056cc5d28eed0ea900620be40b2ac8db6"
+    },
+    {
+      "path": "critical-front-warning.png",
+      "sha256": "fe4c3238e5a7305d5d3b9585c35a16ad0737227d9669d741e1a1c68660024693"
+    },
+    {
+      "path": "evolved-caste-briefing.png",
+      "sha256": "79dcb531692e6c61a6c319a8278a475111b07c40eebe8518c60a894be2084a83"
+    },
+    {
+      "path": "evolved-caste-menu-briefing-checkpoint-identity-failure.png",
+      "sha256": "5447e8c9b81ad1bfa43150359edc7a52dfa44c51f2e03f8be778dca7c7c5d9a1"
+    },
+    {
+      "path": "evolved-caste-selection.png",
+      "sha256": "97db248c9070060390099a380cbb2fc6e775a277ab0237f74f57947ed0d4ad43"
+    },
+    {
+      "path": "fronts-minimap-monochrome-detail.png",
+      "sha256": "cea3508ca6dbc321a084fcee749f54500ffba75ca1db3b4cc7253209771b1c58"
+    },
+    {
+      "path": "harness-source.mjs",
+      "sha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "path": "insertion-helper-source.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "map-captain-delegated.png",
+      "sha256": "09fd036365eea8821ade2661565ebdf1051a94de06a23531a964d004f8c59378"
+    },
+    {
+      "path": "map-compared-fronts.png",
+      "sha256": "1e53d5e591a668955309d78916b1d7535c034e19fa83916f1aaa05d26f73125b"
+    },
+    {
+      "path": "map-front-comparison-detail.png",
+      "sha256": "f499f9d80966600f3ef9e967d71960e04c74f67c2d4dd7320d12e5364d477263"
+    },
+    {
+      "path": "map-tactic-feedback.png",
+      "sha256": "549f1169476c431809d52f518156a7155cabe1fa521d9f5c2accc73a189b36f3"
+    },
+    {
+      "path": "mission-paused.png",
+      "sha256": "925913bdc4b6f2761573d256264287303f4d8ec1d60a6855d9c516171fcc388e"
+    },
+    {
+      "path": "pause-save-reload-command-identity.png",
+      "sha256": "9f6b89ce4c5065d6e830c661c6fad154cbd7f74210003aadd0ac80f07c22708e"
+    },
+    {
+      "path": "preferences-monochrome-reduced.png",
+      "sha256": "237d65bf78473d0809e8125d6a52ac6639e18c7f915945b7ec18e5c25dc43b01"
+    },
+    {
+      "path": "report.json",
+      "sha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d"
+    }
+  ]
+}

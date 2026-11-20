@@ -1,0 +1,10 @@
+{"stage":"case_start","id":"source-menu-coop-insertion-command-checkpoint","at":"2026-11-09T04:38:27.249Z"}
+{"stage":"ui-coop-smoke","message":"Actual co-op menus selected AFF-27 with one source terrain at both viewport sizes.","at":"2026-11-09T04:38:32.495Z"}
+{"stage":"ui-coop-smoke","message":"Both caste briefings and complete keyboard-scrolled front legends verified at both sizes.","at":"2026-11-09T04:38:34.712Z"}
+{"stage":"ui-coop-smoke","message":"Genuine split-screen insertion opening/exit cameras and populated finite pilot verified.","at":"2026-11-09T04:39:08.125Z"}
+{"stage":"ui-coop-smoke","message":"Actual co-op command, pause clock/HP freeze and real checkpoint save verified; reloading now.","at":"2026-11-09T04:39:25.128Z"}
+{"stage":"ui-coop-smoke","message":"Co-op checkpoint resumed through actual menus with finite identities, order, resources and clock preserved.","at":"2026-11-09T04:39:51.763Z"}
+{"stage":"case_complete","id":"source-menu-coop-insertion-command-checkpoint","status":"passed","at":"2026-11-09T04:39:56.576Z"}
+{"stage":"case_start","id":"carrier-autonomous-main-update-flight","at":"2026-11-09T04:39:56.579Z"}
+{"stage":"case_complete","id":"carrier-autonomous-main-update-flight","status":"failed","at":"2026-11-09T04:40:21.498Z"}
+{"status":"failed","cases":[{"id":"source-menu-coop-insertion-command-checkpoint","status":"passed"},{"id":"carrier-autonomous-main-update-flight","status":"failed"}],"errors":0,"failedRequests":0,"distUnchanged":true,"helperSourcesUnchanged":true,"browserClosed":true,"report":"/workspace/qa/continuation-20261109/runtime-94630d8-r3/report.json"}

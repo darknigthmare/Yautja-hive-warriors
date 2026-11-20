@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "human_visual_fidelity — AI coding agent, not a human tester",
+  "humanTesters": 0,
+  "method": "Independent read-only review of capture-fidelity.mjs, create-comparison.mjs and verify-regression-v70.mjs; no Chrome/build/Git/application write.",
+  "findings": [
+    {
+      "severity": "material QA provenance gap",
+      "file": "create-comparison.mjs",
+      "finding": "The first implementation displayed image hashes from reports without reading and hashing the referenced PNG copies. A missing or changed copy could receive a comparison_created result.",
+      "resolution": "Before HTML creation, read every before/after PNG and assert its actual SHA-256 matches the report. Paths remain relative; no external resources are introduced.",
+      "status": "fixed before final comparison generation"
+    }
+  ],
+  "otherChecks": [
+    "Capture helper pins exact clean production source/index/build-info/source fingerprint and verifies unchanged inputs.",
+    "Genuine gameplay cameras are preserved; collision traces, actual visible mesh rays and descriptive counters have explicit limits.",
+    "The copied regression driver retains all upstream scenario assertions; the co-op auxiliary helper is byte-identical to the historical source."
+  ],
+  "finalComparator": "comparison.html",
+  "finalComparisonResult": "15 original screenshot pairs created only after all 30 referenced PNG files were read and their actual hashes matched.",
+  "limitations": "This review is not a human player session, hardware performance measurement or film/prop fidelity certification."
+}

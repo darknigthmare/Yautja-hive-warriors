@@ -44,7 +44,7 @@ after(async () => {
   }
 });
 
-async function withGame(signal, run, { viewport = { width: 1366, height: 900 }, corruptStorage = false } = {}) {
+async function withGame(signal, run, { viewport = { width: 1366, height: 900 }, corruptStorage = false, path = '' } = {}) {
   const installedChromium = process.env.CHROMIUM_PATH || (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined);
   const cleanup = createBrowserCleanup(signal); activeSessions.add(cleanup);
   let page;
@@ -76,7 +76,7 @@ async function withGame(signal, run, { viewport = { width: 1366, height: 900 }, 
       localStorage.setItem('yautja_skulls', '-100');
       localStorage.setItem('yautja_max_combo', 'Infinity');
     });
-    const response = await page.goto(baseURL, { waitUntil: 'networkidle' });
+    const response = await page.goto(baseURL + path, { waitUntil: 'networkidle' });
     assert.equal(response.status(), 200);
     await page.waitForFunction(() => Boolean(window.game));
     await run(page);
@@ -115,7 +115,9 @@ async function launchHunt(page, { coop = false, level = 0, character = 0 } = {})
   await page.locator('.level-card').nth(level).click();
   await page.locator('#btn-launch-mission').click();
   await screen(page, 'loadout-prep-screen');
-  await page.locator('#btn-confirm-loadout').click();
+  // Cold co-op shaders can occupy SwiftShader after the real click. Keep
+  // actionability and the game/insertion assertions, with a bounded load wait.
+  await page.locator('#btn-confirm-loadout').click({ timeout: 120000 });
   await page.waitForFunction(() => window.game.isPlaying && Boolean(window.game.player));
   await screen(page, 'in-game-hud');
   await finishMissionInsertion(page);
@@ -253,7 +255,7 @@ test('campaign: a boss victory advances the chapter and loads its actual arena',
   });
 });
 
-test('coop: two players render at correct aspect and share pause/cleanup', { timeout: 90000 }, async t => {
+test('coop: two players render at correct aspect and share pause/cleanup', { timeout: 180000 }, async t => {
   await withGame(t.signal, async page => {
     if (await page.evaluate(() => window.game.renderer.softwareRenderer)) await page.setViewportSize({ width: 800, height: 600 });
     await launchHunt(page, { coop: true });
@@ -292,4 +294,54 @@ test('mobile: 390px menus have no horizontal overflow and remain navigable', { t
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     assert.ok(await page.locator('#btn-confirm-loadout').isVisible());
   }, { viewport: { width: 390, height: 844 } });
+});
+
+test('presentation: the intro skips on a key, the menu backdrop rotates and nothing of it runs during play', { timeout: 180000 }, async t => {
+  await withGame(t.signal, async page => {
+    const boot = () => page.evaluate(() => ({ hidden: document.getElementById('boot-sequence').hidden, stage: document.getElementById('boot-sequence').dataset.stage }));
+    const first = await boot();
+    assert.equal(first.hidden, false, 'the intro plays when asked for with ?intro=1');
+    assert.ok(['glyphs', 'credit', 'title'].includes(first.stage));
+    assert.match(await page.locator('#boot-sequence').innerText(), /fan game project by Darknigthmare/i);
+    await page.keyboard.press('Space');
+    await page.waitForFunction(() => document.getElementById('boot-sequence').dataset.stage === 'title');
+    await page.keyboard.press('Space');
+    await page.waitForFunction(() => document.getElementById('boot-sequence').hidden);
+    await screen(page, 'main-menu');
+    const menu = await page.evaluate(() => ({ cue: window.game.music.cue, audio: window.game.audio.ctx?.state, active: window.game.menuBackdrop.active, style: document.body.dataset.menuBackdrop }));
+    assert.equal(menu.cue, 'menu'); assert.equal(menu.audio, 'running'); assert.equal(menu.active, true);
+    await page.goto(page.url().replace('?intro=1', ''), { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => window.game?.menuBackdrop?.choice);
+    assert.equal(await page.evaluate(() => document.getElementById('boot-sequence').hidden), true, 'automation skips the intro without ?intro=1');
+    assert.notEqual(await page.evaluate(() => document.body.dataset.menuBackdrop), menu.style, 'each arrival shows another backdrop');
+    // The intel plays after loading and holding Space skips it (spec 003, US3).
+    await page.goto(`${page.url().split('?')[0]}?intro=1`, { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => window.game?.boot);
+    await page.keyboard.press('Space'); await page.waitForFunction(() => document.getElementById('boot-sequence').dataset.stage === 'title');
+    await page.keyboard.press('Space'); await page.waitForFunction(() => document.getElementById('boot-sequence').hidden);
+    await page.locator('#btn-start-game').click();
+    await screen(page, 'char-select-menu');
+    await page.locator('.char-btn-card').nth(0).click();
+    await page.locator('#btn-confirm-char').click();
+    await screen(page, 'level-select-menu');
+    await page.locator('.level-card').nth(0).click();
+    await page.locator('#btn-launch-mission').click();
+    await screen(page, 'loadout-prep-screen');
+    await page.locator('#btn-confirm-loadout').click({ timeout: 120000 });
+    await page.waitForFunction(() => window.game.cinematic.isActive && document.querySelector('.comms-speaker').textContent, null, { timeout: 60000 });
+    const intel = await page.evaluate(() => ({ speaker: document.querySelector('.comms-speaker').textContent, hold: window.game.loadingHold, cue: window.game.music.cue }));
+    assert.deepEqual(intel, { speaker: 'ANCIEN DU CLAN', hold: true, cue: 'briefing' }, 'mission time is held during the intel');
+    await page.keyboard.down('Space'); await page.waitForFunction(() => !window.game.cinematic.isActive, null, { timeout: 20000 }); await page.keyboard.up('Space');
+    await page.waitForFunction(() => !window.game.loadingHold && document.getElementById('loading-screen').hidden, null, { timeout: 30000 });
+    await finishMissionInsertion(page);
+    const play = await page.evaluate(() => ({ active: window.game.menuBackdrop.active, scene: Boolean(window.game.menuBackdrop.scene), layer: Boolean(document.querySelector('.menu-backdrop')), ambient: window.game.ambient.biome, cue: window.game.music.cue }));
+    assert.deepEqual({ active: play.active, scene: play.scene, layer: play.layer }, { active: false, scene: false, layer: false }, 'the menu scene is disposed during play');
+    assert.equal(play.cue === 'explore' || play.cue === 'combat' || play.cue === 'boss', true);
+    assert.ok(play.ambient, 'the biome ambience runs during play');
+    // The outro moves the camera over the last frame, then the results appear with the outcome already recorded.
+    await page.evaluate(() => window.game.endGame(true));
+    assert.equal(await page.evaluate(() => window.game.cinematic.isActive && !window.game.isPlaying), true);
+    await screen(page, 'game-over-screen');
+    assert.equal(await page.evaluate(() => document.getElementById('end-title').innerText), 'VICTOIRE GLORIEUSE !');
+  }, { path: '?intro=1' });
 });

@@ -6,6 +6,9 @@ import { readStored, readStoredNumber, writeStored } from './storage.js';
 import * as THREE from 'three';
 import { CHARACTERS_DATA } from '../data/charactersData.js';
 import { LEVELS_DATA } from '../data/levelsData.js';
+import { hiveCoordinationFeedback } from './OperationPanel.js';
+import { debriefConsequences, combatReadabilityState } from './TacticalPresentation.js';
+import { operationMapFrontEntries, renderOperationFrontLegend, drawOperationFrontLabel } from './OperationMapLabels.js';
 
 const bossDisplayNames = {
   xenomorph_queen:'REINE XÉNOMORPHE',queen:'REINE XÉNOMORPHE',praetorian:'PRÉTORIEN',predalien:'PRÉDALIEN',predalien_queen:'PRÉDALIEN — RENCONTRE ADAPTÉE',imperial_queen:'REINE IMPÉRIALE',empress_matriarch:'IMPÉRATRICE DE LA RUCHE',the_offspring:'THE OFFSPRING',predalien_abomination:'ABOMINATION PRÉDALIENNE',predalien_matriarch_titan:'MATRIARCHE TITAN — CRÉATION ORIGINALE',rogue_king_prime:'ROGUE KING',awakened_engineer:'INGÉNIEUR ÉVEILLÉ',trilobite_prime:'TRILOBITE PRIME',berserker_super_predator:'BERSERKER / MR. BLACK',ultimate_upgrade_predator:'UPGRADE PREDATOR',feral_predator_boss:'FERAL PREDATOR',jungle_hunter_boss:'JUNGLE HUNTER',city_hunter_boss:'CITY HUNTER'
@@ -49,6 +52,36 @@ export function battlefieldHUDState(progression, layout, player, combatDirector,
 }
 
 export class UIManager {
+  get selectedLevel() { return this._selectedLevel; }
+  set selectedLevel(level) {
+    this._selectedLevel = level;
+    for (const card of this.levelSelectMenu?.querySelectorAll('.level-card') ?? []) {
+      const selected = card.dataset.levelId === level?.id;
+      card.classList.toggle('selected', selected);
+      card.setAttribute('aria-pressed', String(selected));
+      card.disabled = Boolean(this._operationLevelBound);
+    }
+  }
+
+  setOperationLevel(level) {
+    // An authored operation owns its terrain. Only manual card clicks are
+    // constrained; checkpoint and mission restoration may still set the level.
+    this._operationLevelBound = Boolean(level);
+    this.selectedLevel = level ?? this.selectedLevel;
+    const grid = this.levelSelectMenu?.querySelector?.('#levels-grid-container');
+    if (!grid) return;
+    if (!this.operationLevelNotice) {
+      this.operationLevelNotice = document.createElement('p');
+      this.operationLevelNotice.className = 'operation-level-notice';
+      this.operationLevelNotice.setAttribute('data-operation-level-notice', '');
+      this.operationLevelNotice.setAttribute('role', 'status');
+      grid.before(this.operationLevelNotice);
+    }
+    this.operationLevelNotice.classList.toggle('hidden', !level);
+    this.operationLevelNotice.textContent = level
+      ? `Terrain de cette opération : ${level.name}. Pour choisir un autre terrain, sélectionnez « Trois fronts — terrain sélectionné » ou le mode Chasse.` : '';
+  }
+
   constructor() {
     // Screens
     this.mainMenu = document.getElementById('main-menu');
@@ -198,6 +231,17 @@ export class UIManager {
         window.game?.audio.setVolume(value);
       });
     }
+    const musicVolume = document.getElementById('setting-music-volume'), musicOutput = document.getElementById('setting-music-volume-value');
+    if (musicVolume) {
+      musicVolume.value = String(Math.round(Math.min(1, readStoredNumber('yautja_music_volume', .6)) * 100));
+      if (musicOutput) musicOutput.textContent = `${musicVolume.value} %`;
+      musicVolume.addEventListener('input', () => { if (musicOutput) musicOutput.textContent = `${musicVolume.value} %`; window.game?.music?.setVolume(Number(musicVolume.value) / 100) ?? writeStored('yautja_music_volume', Number(musicVolume.value) / 100); });
+    }
+    const cinematics = document.getElementById('setting-cinematics');
+    if (cinematics) {
+      const saved = readStored('yautja_cinematics', 'full'); cinematics.value = ['full', 'short', 'off'].includes(saved) ? saved : 'full';
+      cinematics.addEventListener('change', () => writeStored('yautja_cinematics', cinematics.value));
+    }
     const reducedMotion = document.getElementById('setting-reduced-motion');
     if (reducedMotion) {
       reducedMotion.checked = readStored('yautja_reduced_motion', String(matchMedia('(prefers-reduced-motion: reduce)').matches)) === 'true';
@@ -261,11 +305,14 @@ export class UIManager {
     if (!gridContainer) return;
 
     gridContainer.innerHTML = '';
-    LEVELS_DATA.forEach((lvl, index) => {
+    LEVELS_DATA.forEach(lvl => {
       const card = document.createElement('button');
       card.type = 'button';
-      card.setAttribute('aria-pressed', String(index === 0));
-      card.className = `level-card ${index === 0 ? 'selected' : ''}`;
+      card.dataset.levelId = lvl.id;
+      card.disabled = Boolean(this._operationLevelBound);
+      const selected = lvl.id === this.selectedLevel?.id;
+      card.setAttribute('aria-pressed', String(selected));
+      card.className = `level-card ${selected ? 'selected' : ''}`;
       if (lvl.accentColor) card.style.borderTopColor = lvl.accentColor;
       card.innerHTML = `
         <div class="level-card-icon">${lvl.icon || '🌲'}</div>
@@ -273,12 +320,11 @@ export class UIManager {
         <h3>${lvl.name}</h3>
         <p>${lvl.desc ?? lvl.description}</p>
         ${lvl.battlefield ? '<span class="level-layout-summary">6 zones reliées · Passages à débloquer</span>' : ''}
+        ${this.legendaryChronicles && lvl.sourceWork ? '<span class="level-layout-summary">Chronique légendaire — vous êtes Blooded</span>' : ''}
       `;
 
       card.addEventListener('click', () => {
-        document.querySelectorAll('.level-card').forEach(c => { c.classList.remove('selected'); c.setAttribute('aria-pressed', 'false'); });
-        card.classList.add('selected');
-        card.setAttribute('aria-pressed', 'true');
+        if (card.disabled) return;
         this.selectedLevel = lvl;
       });
 
@@ -298,10 +344,21 @@ export class UIManager {
     const plasmaPct = (player.plasmaEnergy / player.maxPlasmaEnergy) * 100;
     this.hudPlasmaFill.style.width = `${plasmaPct}%`;
     const combat = player.getCombatState?.(), weapon = player.getWeaponState?.();
-    this.hudPlasmaText.innerText = weapon?.rangedResource === 'bolts' ? `BOULONS : ${weapon?.boltAmmo ?? player.boltAmmo ?? 0}` : `ÉNERGIE PLASMA : ${Math.ceil(plasmaPct)}%`;
+    this.hudPlasmaText.innerText = weapon?.actionResource === 'arrows' ? `FLÈCHES DE TAABE : ${weapon.actionAmmo}/12` : weapon?.actionResource === 'axe_charges' ? `HACHE DE NARU : ${weapon.actionAmmo}/4 COUPS` : weapon?.rangedResource === 'bolts' ? `BOULONS : ${weapon?.boltAmmo ?? player.boltAmmo ?? 0}` : `ÉNERGIE PLASMA : ${Math.ceil(plasmaPct)}%`;
     if(combat){const staminaFill=document.getElementById('hud-stamina-fill'),staminaText=document.getElementById('hud-stamina-text');if(staminaFill)staminaFill.style.width=`${Math.max(0,combat.stamina/combat.maxStamina*100)}%`;if(staminaText)staminaText.textContent=`ENDURANCE ${Math.ceil(combat.stamina)}/${combat.maxStamina}`;}
+    const readability=combatReadabilityState(combat,weapon),costs=document.getElementById('hud-combat-costs'),status=document.getElementById('hud-combat-state');
+    if(costs&&costs.textContent!==readability.costs)costs.textContent=readability.costs;
+    if(status){if(status.textContent!==readability.status)status.textContent=readability.status;status.classList.toggle('is-impaired',readability.impaired);}
+    const secondary=document.getElementById('hud-secondary-combat-state'),second=factions.secondaryPlayer;
+    if(secondary){secondary.classList.toggle('hidden',!second);if(second){const state=combatReadabilityState(second.getCombatState?.(),second.getWeaponState?.()),text=`P2 · ${state.costs} · ${state.status}`;if(secondary.textContent!==text)secondary.textContent=text;secondary.classList.toggle('is-impaired',state.impaired);}else secondary.textContent='';}
     document.getElementById('wrist-ecg-holoscan')?.classList.toggle('is-critical',Boolean(player.isChestbursterImplanted||player.isFacehuggerLatched));
-    const activeWeapon=document.getElementById('hud-active-weapon');if(activeWeapon)activeWeapon.textContent=({wristblades:'LAMES DE POIGNET',combistick:'COMBISTICK',smart_disc:'SMART-DISC',crossbow:'LANCE-BOULONS',shuriken:'SHURIKEN',compound_bow:'ARC COMPOSÉ',katana:'KATANA',viking_axe:'HACHE',alpha_sickle:'FAUCILLE'})[weapon?.id]??'ARME PRINCIPALE';
+    const activeWeapon=document.getElementById('hud-active-weapon');if(activeWeapon)activeWeapon.textContent=({wristblades:'LAMES DE POIGNET',combistick:'COMBISTICK',smart_disc:'SMART-DISC',crossbow:'LANCE-BOULONS',shuriken:'SHURIKEN',compound_bow:'ARC COMPOSÉ',taabe_bow:'ARC DE TAABE',naru_axe:'HACHE DE NARU',katana:'KATANA',viking_axe:'HACHE',alpha_sickle:'FAUCILLE'})[weapon?.id]??'ARME PRINCIPALE';
+    const supportStatus=document.getElementById('hud-support-status');
+    supportStatus?.classList.toggle('hidden',!factions.supports);
+    if(supportStatus&&factions.supports){const {apc,cheyenne}=factions.supports;
+      const label=(state,name,ammunition)=>state.hp<=0?`${name} DÉTRUIT`:!state.allowed?`${name} INDISPONIBLE`:`${name} ${Math.ceil(state.hp)} PV · ${ammunition}${state.lastRefusal?' · Dernier refus : '+state.refusalMessage:''}`;
+      supportStatus.textContent=`${label(apc,'APC',`${apc.remaining.rounds}/48 OBUS`)} | ${label(cheyenne,'CHEYENNE',`${cheyenne.remaining.sorties}/2 SORTIES · ${cheyenne.remaining.rockets}/12 ROQUETTES · ${cheyenne.remaining.napalm}/6 INCENDIAIRES`)}`;
+    }
 
     // Musou Gauge
     const musouPct = (player.musouEnergy / player.maxMusouEnergy) * 100;
@@ -312,7 +369,9 @@ export class UIManager {
     this.hudKoCount.innerText = factions.sessionDefeats ?? horde.deadCount;
     this.hudHonorScore.innerText = `${score} PTS`;
     this.hudLevelName.innerText = this.selectedLevel.name;
-    this.hudWaveCounter.innerText = `VAGUE ${waveIndex}/${totalWaves}`;
+    this.hudWaveCounter.innerText = this._operationHUD
+      ? `${this._operationHUD.state.fronts.length} FRONTS · RÉSERVES FINIES`
+      : factions.waveLabel ?? `VAGUE ${waveIndex}/${totalWaves}`;
 
     // Chantier 1: Grand Musou Boss Health Gauge
     const bossContainer = document.getElementById('hud-boss-container');
@@ -462,6 +521,18 @@ export class UIManager {
 
   updateOperationHUD(state, layout, players = [], objectives = null) {
     this._operationHUD = state ? {state,layout,players,objectives} : null;
+    const entries=operationMapFrontEntries(state?.fronts);
+    const compact=entries.some(entry=>entry.compact);
+    if(compact&&this.minimapCanvas&&!this.operationFrontLegend){
+      this.operationFrontLegend=document.createElement('ol');
+      this.operationFrontLegend.id='operation-minimap-fronts';
+      this.operationFrontLegend.className='operation-front-index minimap-front-index';
+      this.operationFrontLegend.setAttribute('aria-label','Repères des fronts');
+      this.minimapCanvas.after(this.operationFrontLegend);
+    }
+    this.operationFrontLegend?.classList.toggle('hidden',!compact);
+    if(compact){renderOperationFrontLegend(this.operationFrontLegend,entries);this.minimapCanvas?.setAttribute('aria-describedby','operation-minimap-fronts');}
+    else this.minimapCanvas?.removeAttribute('aria-describedby');
     if (!state) return;
     this.hudWaveCounter.textContent = `${state.fronts.length} FRONTS · RÉSERVES FINIES`;
     const weapon = this._minimapActors?.player?.getCombatState?.();
@@ -475,15 +546,16 @@ export class UIManager {
     const {state,layout,players,objectives}=this._operationHUD,ctx=this.minimapCtx,{width,height}=this.minimapCanvas;
     const b=layout.bounds,pad=12,scale=Math.min((width-2*pad)/(b.maxX-b.minX),(height-2*pad)/(b.maxZ-b.minZ));
     const project=point=>[width/2+(point[0]-(b.minX+b.maxX)/2)*scale,height/2+(point[1]-(b.minZ+b.maxZ)/2)*scale];
-    const colors={player_clan:'#77e4c4',clan:'#77e4c4',hive:'#ef817d',human:'#76b6f0',human_force:'#76b6f0',rival_clan:'#d2a0dc',yautja:'#77e4c4'};
+    const preferences=this.presentationPreferences?.get();
     ctx.clearRect(0,0,width,height);
     for(const sector of layout.sectors){const[x,y]=project([sector.bounds.minX,sector.bounds.minZ]);ctx.fillStyle='#243e39';ctx.fillRect(x,y,(sector.bounds.maxX-sector.bounds.minX)*scale,(sector.bounds.maxZ-sector.bounds.minZ)*scale);}
-    for(const route of state.routes){ctx.strokeStyle=route.open?'#6d9e8f':'#9c685d';ctx.lineWidth=2;ctx.beginPath();for(const[index,point]of(route.waypoints??[]).entries()){const[x,y]=project(point);if(index)ctx.lineTo(x,y);else ctx.moveTo(x,y);}ctx.stroke();}
-    const dot=(point,color,radius)=>{const[x,y]=project(point);ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();};
-    for(const front of state.fronts){dot(front.position,colors[front.owner]??'#c7bb94',6);const[x,y]=project(front.position);ctx.fillStyle='#edf8f3';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(front.label,x,y-9);}
-    for(const group of state.groups)if(group.alive>0&&group.precisePositionKnown)dot(group.position,colors[group.factionId]??'#bea8e0',2.3);
-    for(const task of objectives?.tasks??[])if(task.available&&task.status!=='done')dot(task.position,'#ffe1a0',3);
-    for(const player of players)if(player.hp>0)dot(player.position,'#ddffb1',4);
+    for(const route of state.routes){ctx.save();ctx.setLineDash(route.open?[]:[4,3]);ctx.strokeStyle=route.open?'#a6c5b9':'#f8fafc';ctx.lineWidth=2;ctx.beginPath();for(const[index,point]of(route.waypoints??[]).entries()){const[x,y]=project(point);if(index)ctx.lineTo(x,y);else ctx.moveTo(x,y);}ctx.stroke();ctx.restore();}
+    const dot=(point,size,role,factionId='',label='',filled=true)=>{const[x,y]=project(point);drawAccessibleMarker(ctx,{x,y,size,role,factionId,label,filled},preferences);};
+    const frontEntries=operationMapFrontEntries(state.fronts);
+    for(const[index,front]of state.fronts.entries()){dot(front.position,6,front.owner===state.playerFaction?'ally':'objective',front.owner,front.label);const[x,y]=project(front.position);drawOperationFrontLabel(ctx,frontEntries[index],x,y,width,height,9);}
+    for(const group of state.groups)if(group.alive>0){const relation=state.relationships?.[group.factionId],role=group.factionId===state.playerFaction||relation==='allied'?'ally':relation==='hostile'?'hostile':'neutral';dot(group.position,3,role,group.factionId,group.label,group.precisePositionKnown);}
+    for(const task of objectives?.tasks??[])if(task.available&&task.status!=='done')dot(task.position,5,'objective','',task.label);
+    for(const player of players)if(player.hp>0)dot(player.position,5,'player',state.playerFaction,player.id??'Joueur');
   }
 
   updateBattlefieldHUD(progression, layout, player, combatDirector, players = []) {
@@ -846,13 +918,14 @@ export class UIManager {
   renderBattleDebrief(debrief) {
     const root=document.getElementById('battle-debrief');root.replaceChildren();root.classList.toggle('hidden',!debrief);if(!debrief)return;
     const title=document.createElement('h3');title.textContent=debrief.label;const reason=document.createElement('p');reason.textContent=debrief.reason;root.append(title,reason);
+    for(const text of debriefConsequences(debrief)){const p=document.createElement('p');p.textContent=text;root.append(p);}
     const scroll=document.createElement('div');scroll.className='debrief-table-scroll';const table=document.createElement('table');
     const headings=['Camp','Alloués','Détaillés','Distants','Réserves','Pertes','Évacués','Capturés'];const header=document.createElement('tr');for(const text of headings){const cell=document.createElement('th');cell.textContent=text;header.append(cell);}table.append(header);
     for(const row of debrief.rows){const tr=document.createElement('tr');for(const value of[row.label,row.allocated,row.active,row.distant,row.reserve,row.dead,row.evacuated,row.captured]){const cell=document.createElement('td');cell.textContent=value;tr.append(cell);}table.append(tr);}scroll.append(table);root.append(scroll);
     const note=document.createElement('p');note.textContent='Chaque combattant appartient à un seul état. Les changements de niveau de détail ne comptent pas comme des pertes.';root.append(note);
-    if(debrief.noncombatants){const n=debrief.noncombatants,p=document.createElement('p');p.textContent=`Non-combattants : ${n.allocated} personnes · ${n.captive} captives · ${n.rescued} secourues · ${n.evacuated} évacuées · ${n.dead} perdues.`;root.append(p);}
+    if(debrief.noncombatants){const n=debrief.noncombatants,p=document.createElement('p');p.textContent=`Non-combattants : ${n.allocated} personnes · ${n.captive} captives · ${n.rescued} secourues · ${n.evacuated} évacuées · ${n.dead} perdues.`;root.append(p);}if(debrief.civilians?.allocated){const c=debrief.civilians,p=document.createElement('p');p.textContent=`Civils comptés par l’audit (${c.label}) : ${c.allocated} · ${c.sheltering} à l’abri · ${c.fleeing} en fuite · ${c.trapped} bloqués · ${c.dead} perdus.`;root.append(p);}
     if(debrief.named.length){const p=document.createElement('p');p.textContent='Destins confirmés : '+debrief.named.map(item=>`${item.label} — ${({dead:'vaincu',evacuated:'évacué',captured:'capturé'})[item.state]}`).join(' · ');root.append(p);}
-    const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Journal des causes connues';details.append(summary);const list=document.createElement('ol');const names={unit_died:'Combattant perdu',base_captured:'Contrôle du front changé',morale_changed:'Cohésion modifiée',source_disabled:'Source de renfort neutralisée',reinforcements_inbound:'Renforts en route',reinforcements_arrived:'Renforts arrivés',route_changed:'Passage modifié',operation_finished:'Résultat confirmé',group_order:'Ordre transmis',tactic_ordered:'Tactique collective',companion_ability:'Action du compagnon'};for(const event of debrief.journal.filter(item=>item.priority>=1).slice(-24)){const li=document.createElement('li');li.textContent=`${Math.floor(event.time/60)}:${String(Math.floor(event.time%60)).padStart(2,'0')} · ${names[event.type]??'Rapport de mission'}${event.before!==undefined?' · '+Math.round(event.before)+' → '+Math.round(event.after):''}`;list.append(li);}details.append(list);root.append(details);
+    const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Journal des causes connues';details.append(summary);const list=document.createElement('ol');const names={unit_died:'Combattant perdu',base_captured:'Contrôle du front changé',morale_changed:'Cohésion modifiée',source_disabled:'Source de renfort neutralisée',reinforcements_inbound:'Renforts en route',reinforcements_arrived:'Renforts arrivés',route_changed:'Passage modifié',operation_finished:'Résultat confirmé',group_order:'Ordre transmis',tactic_ordered:'Tactique collective',companion_ability:'Action du compagnon'};for(const event of debrief.journal.filter(item=>item.priority>=1).slice(-24)){const li=document.createElement('li');li.textContent=`${Math.floor(event.time/60)}:${String(Math.floor(event.time%60)).padStart(2,'0')} · ${hiveCoordinationFeedback(event)??`${names[event.type]??'Rapport de mission'}${event.before!==undefined?' · '+Math.round(event.before)+' → '+Math.round(event.after):''}`}`;list.append(li);}details.append(list);root.append(details);
   }
 
   recordEndSession(kos, skulls, honor, sessionId) {

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v67-pr3-depth-20261028",
+  "sourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "sourceBranch": "codex/depth-pr3-20261028",
+  "sourceFingerprint": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+  "sourceFiles": 150,
+  "sourceTreeDirty": false,
+  "buildEpoch": 1793180507,
+  "reproducibleBuildDate": "2026-10-28T09:41:47.000Z",
+  "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+}

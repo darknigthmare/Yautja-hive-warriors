@@ -1,0 +1,281 @@
+{
+  "scope": "V8 snapshot summaries of two post-cleanup points of an isolated 48b5 runtime with only Horde cached-player release, corrected timer lifecycle and fixed-camera fixtures; not VRAM or hardware certification",
+  "before": {
+    "file": "/workspace/qa/pr3-20261028/memory-residency/cache-release-corrected/cycle-20.heapsnapshot",
+    "sha256": "075fa60eae2f0e9e255726cfeecedde9e43d4e83ba24de25624e46617f6d8359",
+    "types": {
+      "synthetic": 32,
+      "native": 47169,
+      "string": 77024,
+      "object shape": 13973,
+      "code": 71852,
+      "array": 12105,
+      "number": 51310,
+      "symbol": 63,
+      "object": 62569,
+      "closure": 10961,
+      "concatenated string": 729,
+      "regexp": 12
+    },
+    "bytesByType": {
+      "synthetic": 0,
+      "native": 539003202,
+      "string": 1878600,
+      "object shape": 800352,
+      "code": 8640244,
+      "array": 1544452,
+      "number": 392844,
+      "symbol": 128,
+      "object": 1750324,
+      "closure": 321344,
+      "concatenated string": 14580,
+      "regexp": 288
+    },
+    "playerLikeObjects": []
+  },
+  "after": {
+    "file": "/workspace/qa/pr3-20261028/memory-residency/cache-release-corrected/cycle-30.heapsnapshot",
+    "sha256": "a7dc048bb7ca73c5254f3b6d00d9d3233cd82157151b93e8e8214aae71541b07",
+    "types": {
+      "synthetic": 32,
+      "native": 50219,
+      "string": 77974,
+      "object shape": 14288,
+      "code": 73175,
+      "array": 12357,
+      "number": 52020,
+      "symbol": 63,
+      "object": 63983,
+      "closure": 11531,
+      "concatenated string": 729,
+      "regexp": 12
+    },
+    "bytesByType": {
+      "synthetic": 0,
+      "native": 539182861,
+      "string": 1898352,
+      "object shape": 824796,
+      "code": 8844532,
+      "array": 1620752,
+      "number": 400644,
+      "symbol": 128,
+      "object": 1783056,
+      "closure": 337520,
+      "concatenated string": 14580,
+      "regexp": 288
+    },
+    "playerLikeObjects": []
+  },
+  "countDeltaByType": {
+    "object": 1414,
+    "symbol": 0,
+    "native": 3050,
+    "concatenated string": 0,
+    "regexp": 0,
+    "number": 710,
+    "synthetic": 0,
+    "closure": 570,
+    "object shape": 315,
+    "code": 1323,
+    "array": 252,
+    "string": 950
+  },
+  "bytesDeltaByType": {
+    "object": 32732,
+    "symbol": 0,
+    "native": 179659,
+    "concatenated string": 0,
+    "regexp": 0,
+    "number": 7800,
+    "synthetic": 0,
+    "closure": 16176,
+    "object shape": 24444,
+    "code": 204288,
+    "array": 76300,
+    "string": 19752
+  },
+  "largestGrowingClasses": [
+    {
+      "type": "code",
+      "name": "system / InstructionStream",
+      "deltaCount": 45,
+      "deltaBytes": 106176
+    },
+    {
+      "type": "native",
+      "name": "system / FunctionTemplateInfo",
+      "deltaCount": 1349,
+      "deltaBytes": 86336
+    },
+    {
+      "type": "code",
+      "name": "(object elements)",
+      "deltaCount": 2299,
+      "deltaBytes": 50208
+    },
+    {
+      "type": "array",
+      "name": "(object elements)",
+      "deltaCount": 221,
+      "deltaBytes": 44036
+    },
+    {
+      "type": "array",
+      "name": "(object properties)",
+      "deltaCount": 25,
+      "deltaBytes": 27776
+    },
+    {
+      "type": "code",
+      "name": "system / TrustedByteArray",
+      "deltaCount": 120,
+      "deltaBytes": 27164
+    },
+    {
+      "type": "object",
+      "name": "Object",
+      "deltaCount": 824,
+      "deltaBytes": 23744
+    },
+    {
+      "type": "native",
+      "name": "system / WeakArrayList",
+      "deltaCount": 89,
+      "deltaBytes": 16840
+    },
+    {
+      "type": "native",
+      "name": "system / ArrayList",
+      "deltaCount": 41,
+      "deltaBytes": 15768
+    },
+    {
+      "type": "object shape",
+      "name": "system / DescriptorArray",
+      "deltaCount": 53,
+      "deltaBytes": 14144
+    },
+    {
+      "type": "string",
+      "name": "\n      (() => {\n        \n        const module = {};\n        \nvar __commonJS = obj => {\n  let require",
+      "deltaCount": 1,
+      "deltaBytes": 13012
+    },
+    {
+      "type": "code",
+      "name": "system / BytecodeArray",
+      "deltaCount": 29,
+      "deltaBytes": 12308
+    },
+    {
+      "type": "native",
+      "name": "system / AccessorPair",
+      "deltaCount": 918,
+      "deltaBytes": 11016
+    },
+    {
+      "type": "code",
+      "name": "system / ProtectedFixedArray",
+      "deltaCount": 33,
+      "deltaBytes": 9636
+    },
+    {
+      "type": "object shape",
+      "name": "system / Map",
+      "deltaCount": 189,
+      "deltaBytes": 8200
+    },
+    {
+      "type": "number",
+      "name": "heap number",
+      "deltaCount": 650,
+      "deltaBytes": 7800
+    },
+    {
+      "type": "native",
+      "name": "TaskAttributionTiming",
+      "deltaCount": 59,
+      "deltaBytes": 7080
+    },
+    {
+      "type": "native",
+      "name": "PerformanceLongAnimationFrameTiming",
+      "deltaCount": 40,
+      "deltaBytes": 7040
+    },
+    {
+      "type": "native",
+      "name": "PerformanceLongTaskTiming",
+      "deltaCount": 59,
+      "deltaBytes": 6136
+    },
+    {
+      "type": "native",
+      "name": "ArrayBuffer",
+      "deltaCount": 40,
+      "deltaBytes": 4640
+    }
+  ],
+  "largestShrinkingClasses": [
+    {
+      "type": "code",
+      "name": "(constant elements)",
+      "deltaCount": -2279,
+      "deltaBytes": -49868
+    },
+    {
+      "type": "object",
+      "name": "ArrayBuffer",
+      "deltaCount": -40,
+      "deltaBytes": -2080
+    },
+    {
+      "type": "object",
+      "name": "Float32Array",
+      "deltaCount": -30,
+      "deltaBytes": -1800
+    },
+    {
+      "type": "native",
+      "name": "blink::ComputedStyleBase::StyleSurroundData",
+      "deltaCount": -3,
+      "deltaBytes": -936
+    },
+    {
+      "type": "native",
+      "name": "blink::CSSTransitionData",
+      "deltaCount": -3,
+      "deltaBytes": -624
+    },
+    {
+      "type": "object",
+      "name": "Uint16Array",
+      "deltaCount": -10,
+      "deltaBytes": -600
+    },
+    {
+      "type": "native",
+      "name": "blink::ComputedStyleBase::StyleBoxData",
+      "deltaCount": -3,
+      "deltaBytes": -528
+    },
+    {
+      "type": "native",
+      "name": "blink::ShareableElementData",
+      "deltaCount": -6,
+      "deltaBytes": -512
+    },
+    {
+      "type": "native",
+      "name": "blink::Font",
+      "deltaCount": -3,
+      "deltaBytes": -504
+    },
+    {
+      "type": "native",
+      "name": "blink::ComputedStyleBase::StyleMisc1Data",
+      "deltaCount": -3,
+      "deltaBytes": -480
+    }
+  ]
+}

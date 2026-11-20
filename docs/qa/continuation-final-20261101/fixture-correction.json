@@ -1,0 +1,13 @@
+{
+  "runtimeSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "testCorrectionCommit": "b92dd0f",
+  "runtimeSourceChanged": false,
+  "initialFullPass": "interrupted_after_two_fixture_failures",
+  "cause": "Two anatomy-only owner fixtures lacked HP and could no longer invoke execution after the new living-player guard. They now initialise HP and protection/reveal timers like a real hunter.",
+  "targetedRerun": {
+    "passed": 11,
+    "failed": 0,
+    "path": "gadget-fixture-rerun.txt"
+  },
+  "finalFullPass": "running_in_separate_log"
+}

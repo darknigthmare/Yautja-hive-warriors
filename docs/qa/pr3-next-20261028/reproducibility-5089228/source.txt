@@ -1,0 +1,18 @@
+Updating a225277..5089228
+Fast-forward
+ index.html                                    |  4 +-
+ js/engine/BattlefieldNavigation.js            |  5 ++
+ js/engine/LegacyAirstrikePolicy.js            | 18 ++++++
+ js/engine/OrbitalStrike.js                    | 10 +++-
+ js/entities/Player.js                         | 21 ++++---
+ js/entities/ReferenceEnvironmentMechanisms.js |  2 +-
+ js/main.js                                    | 39 ++++++++-----
+ tests/helipad-navigation-regression.test.js   | 58 +++++++++++++++++++
+ tests/helpers/complete-battlefield.mjs        | 25 ++++++--
+ tests/legacy-airstrike-roof.test.js           | 83 +++++++++++++++++++++++++++
+ tests/runtime-final-wiring.test.js            | 54 ++++++++++++++++-
+ tests/systems.test.js                         |  1 +
+ 12 files changed, 284 insertions(+), 36 deletions(-)
+ create mode 100644 js/engine/LegacyAirstrikePolicy.js
+ create mode 100644 tests/helipad-navigation-regression.test.js
+ create mode 100644 tests/legacy-airstrike-roof.test.js

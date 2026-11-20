@@ -1,0 +1,22 @@
+[
+  {
+    "path": "dist-after.json",
+    "sha256": "2f5b59ec89c3dfdf1dbe6099fbd47f644b04fe0d2d98f212cdb71d5fa874e7af"
+  },
+  {
+    "path": "dist-before.json",
+    "sha256": "2f5b59ec89c3dfdf1dbe6099fbd47f644b04fe0d2d98f212cdb71d5fa874e7af"
+  },
+  {
+    "path": "industrial-warning.png",
+    "sha256": "26f0b0a8a6b508fdf7aeed981c9370df9ddc6b59591457c1ef43ca2fcd1e94c4"
+  },
+  {
+    "path": "reciprocal-fire.png",
+    "sha256": "914235431e44d3b9b35301b0216a2afc6d3385e2e43570b059a3ffc2e849254a"
+  },
+  {
+    "path": "report.json",
+    "sha256": "66abff3fbe116188887213700b63a1c611b76dbe9ab7e903d5d10eae6e825af8"
+  }
+]

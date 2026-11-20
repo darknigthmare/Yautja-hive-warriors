@@ -1,0 +1,5 @@
+# Fidélité Musou — registre Excel CSV (1er novembre 2026)
+
+27 opérations issues de `../2026-10-30/musou-crossmedia-gaps.json`. Ce fichier UTF-8-BOM, séparé par `;`, s'ouvre dans Excel en français. Les effectifs sont des **allocations totales par opération**, jamais des effectifs simultanément rendus. Les missions originales AFF-01..12 ne sont pas une reconstitution canonique. Les missions liées à des médias AFF-13..27 sont des **adaptations Musou** et non une copie des cartes/narrations de leurs sources. Les colonnes de certification restent « non validé » tant qu'une comparaison mesurée, la recette complète et des tests visuels existent. Certaines preuves URL manquent volontairement : ne jamais inventer un lien.
+
+Reproduire ou vérifier : `node scripts/export-musou-fidelity-gaps.mjs` / `node scripts/export-musou-fidelity-gaps.mjs --check`. Ce registre **ne modifie pas** le roster, les 27 configurations, les sauvegardes, ni le gameplay. Les liens éventuels proviennent du texte d'audit existant et ne sont pas des attestations officielles.

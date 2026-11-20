@@ -1,0 +1,39 @@
+{
+  "status": "passed_component_review",
+  "scope": "Actual codex rendering methods with DOM substitutes; exact metadata against preserved audit. No WebGL or native browser rendering in this component review.",
+  "cards": 23,
+  "sourceRecords": 20,
+  "tabs": [
+    {
+      "tab": "ranks",
+      "cards": 7,
+      "sourceLinks": 10
+    },
+    {
+      "tab": "code",
+      "cards": 5,
+      "sourceLinks": 5
+    },
+    {
+      "tab": "xenomorphs",
+      "cards": 8,
+      "sourceLinks": 10
+    },
+    {
+      "tab": "engineers",
+      "cards": 3,
+      "sourceLinks": 5
+    }
+  ],
+  "sourceMetadataMatch": true,
+  "allEntriesExposeContext": true,
+  "sourceLinksRenderedSafely": true,
+  "sourceClaims": "References copied from preserved 27 October source records; not individually live-reverified on 1 November.",
+  "browserInspection": "pending_root_integration",
+  "inputs": {
+    "codexSha256": "a22ca40af5c2f461f3c30155b50ebcb359c98edebd96aa241c2edb7424c055dc",
+    "audit27Sha256": "7426809f1379af94785cf1741471df40b2029999a4eac37e481264bc4ae0ad48"
+  },
+  "validatedRuntimeSource": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "codexInputMatchesValidatedCommit": true
+}

@@ -1,0 +1,350 @@
+{
+  "status": "passed_locally_waiting_publication",
+  "baseCommit": "03f37b406c2c7f9d1900c94975d912b9f3db009d",
+  "build": {
+    "success": true,
+    "source_commit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+    "source_fingerprint": "dbec2257cc5938b889d9cff31f31d7e8afa94753a5abb5e45fa58769cf3d4425",
+    "index_sha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad",
+    "build_info_sha256": "ef4f97ac9f04bc5a57d14a00286f2741938eb06984e05dc1a1b7fbc3501bfd58",
+    "source_files": 164,
+    "source_tree_dirty": false
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "publication": {
+    "status": "blocked_by_vercel_daily_deployment_quota",
+    "attemptedAt": "2026-11-01T02:05:21.364Z",
+    "deploymentId": null,
+    "promotionExecuted": false,
+    "submissionAttempts": 1,
+    "errorCode": "api-deployments-free-per-day",
+    "message": "Resource is limited - try again in 1 day (more than 100, code: \"api-deployments-free-per-day\").",
+    "report": "docs/qa/continuation-final-20261101/publication-blocked/delivery-registry.json",
+    "submittedQa": "docs/qa/continuation-final-20261101/publication-submitted/qa-submitted.json",
+    "submittedPins": "docs/qa/continuation-final-20261101/publication-submitted/pins-submitted.json",
+    "publicUnchangedProof": "docs/qa/continuation-final-20261101/publication-blocked/public-unchanged.json",
+    "automaticRetry": false
+  },
+  "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "testCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "hardwarePerformanceVerified": false,
+  "cpu": {
+    "status": "passed",
+    "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+    "log": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+    "previousFullRun": {
+      "tests": 1183,
+      "passed": 1180,
+      "failed": 3,
+      "resolution": "Two missing VM dependency fixtures are fixed; strict bridge walking exposed the real navigation arrival bug now fixed."
+    },
+    "passed": 1185,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 805367.843282,
+    "index_sha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad"
+  },
+  "reproducibility": {
+    "status": "passed",
+    "matched": 30,
+    "files": 30,
+    "report": "docs/qa/continuation-final-20261101/reproducibility-navigation.json"
+  },
+  "browser": {
+    "complete_contexts": {
+      "status": "passed",
+      "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+      "report": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+      "sha256": "1168cd620043c2f413dd6b437cec769161796366fded7ee544427a77bf3d4bb2",
+      "cases": 22,
+      "scope": "Assisted complete objective paths and controlled player defeats in the production build. UI selection, physical route helper, real manager damage/death callbacks, real boss and end-screen transitions. Not natural combat victories or human playtests."
+    },
+    "save_startup": {
+      "status": "passed",
+      "cases": 5,
+      "report": "docs/qa/continuation-final-20261101/save-startup-e524c2b/report.json",
+      "runtimeSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63"
+    },
+    "streaming": {
+      "status": "passed_functional_not_performance_certification",
+      "runtimeSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+      "report": "docs/qa/continuation-final-20261101/world-streaming-e524c2b/report.json",
+      "legs": 6,
+      "renderedFrames": 453,
+      "hardwarePerformanceVerified": false
+    },
+    "final_regression": {
+      "status": "passed",
+      "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+      "index_sha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad",
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 311758.005736,
+      "log": "docs/qa/continuation-final-20261101/gameplay-navigation-final.txt",
+      "sha256": "8c3828424b48cacd51998ff42fe2f40ac8b770bcad09a34432217c96aec99c01",
+      "scope": "All8 existing gameplay browser regressions: real insertion, finite battlefield, relay counterattack, five-map assisted campaign, pause/photo, sandbox, final melee execution and cooperation."
+    },
+    "final_runtime": {
+      "status": "passed",
+      "index_sha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad",
+      "errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "checks": [
+        {
+          "id": "complete_contexts:gunnison_forest:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 0
+        },
+        {
+          "id": "complete_contexts:gunnison_forest:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 1
+        },
+        {
+          "id": "complete_contexts:xenomorph_prime:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 2
+        },
+        {
+          "id": "complete_contexts:xenomorph_prime:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 3
+        },
+        {
+          "id": "complete_contexts:antarctic_pyramid:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 4
+        },
+        {
+          "id": "complete_contexts:antarctic_pyramid:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 5
+        },
+        {
+          "id": "complete_contexts:la_rooftops:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 6
+        },
+        {
+          "id": "complete_contexts:la_rooftops:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 7
+        },
+        {
+          "id": "complete_contexts:val_verde_jungle:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 8
+        },
+        {
+          "id": "complete_contexts:val_verde_jungle:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 9
+        },
+        {
+          "id": "complete_contexts:romulus_station:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 10
+        },
+        {
+          "id": "complete_contexts:romulus_station:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 11
+        },
+        {
+          "id": "complete_contexts:charon_rogue_base:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 12
+        },
+        {
+          "id": "complete_contexts:charon_rogue_base:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 13
+        },
+        {
+          "id": "complete_contexts:game_preserve_planet:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 14
+        },
+        {
+          "id": "complete_contexts:game_preserve_planet:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 15
+        },
+        {
+          "id": "complete_contexts:stargazer_facility:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 16
+        },
+        {
+          "id": "complete_contexts:stargazer_facility:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 17
+        },
+        {
+          "id": "complete_contexts:prey_comanche_territory:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 18
+        },
+        {
+          "id": "complete_contexts:prey_comanche_territory:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 19
+        },
+        {
+          "id": "complete_contexts:killer_of_killers_arena:victory",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 20
+        },
+        {
+          "id": "complete_contexts:killer_of_killers_arena:defeat",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "caseIndex": 21
+        },
+        {
+          "id": "command_ui:preferences-monochrome-reduced",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "caseIndex": 0
+        },
+        {
+          "id": "command_ui:codex-ranks-engineers",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "caseIndex": 1
+        },
+        {
+          "id": "command_ui:briefing-and-command-map",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "caseIndex": 2
+        },
+        {
+          "id": "command_ui:combat-readability-real-cloak",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "caseIndex": 3
+        },
+        {
+          "id": "command_ui:pause-save-reload-command-identity",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "caseIndex": 4
+        },
+        {
+          "id": "command_ui:controlled-defeat-character-debrief",
+          "status": "passed",
+          "proof": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "caseIndex": 5
+        },
+        {
+          "id": "npc_feedback:reciprocal-fire",
+          "status": "passed",
+          "proof": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+          "caseIndex": 0
+        },
+        {
+          "id": "npc_feedback:industrial-warning",
+          "status": "passed",
+          "proof": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+          "caseIndex": 1
+        }
+      ],
+      "humanTesters": 0,
+      "hardwarePerformanceVerified": false,
+      "fidelity1to1Verified": false
+    },
+    "command_ui": {
+      "status": "passed",
+      "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+      "report": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6",
+      "cases": 6,
+      "scope": "Actual desktop UI controls, finite command state, preserved checkpoint and controlled defeat debrief. No natural victory, human comprehension, hardware FPS or source-film fidelity claimed."
+    },
+    "npc_feedback": {
+      "status": "passed",
+      "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+      "report": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+      "sha256": "a63236aeb5f7bfa0c63c4a529b483ff2fb6dbc9426647269f900a3f56bed4bd4",
+      "cases": 2,
+      "scope": "Two rendered component fixtures using real bundled manager classes and damage paths; fixture identities only, not a full mission or source-allocated operation."
+    },
+    "baseline_regression": {
+      "status": "passed",
+      "runtimeSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "docs/qa/continuation-final-20261101/browser-regression-e524-baseline.txt",
+      "scope": "Three existing browser suites on e524 before navigation-only correction. These15 are not claimed as new a800 executions."
+    },
+    "public_release": {
+      "status": "not_run_new_build_not_published",
+      "reason": "Canonical remains on48b5; running the new-release smoke would certify the wrong build."
+    }
+  },
+  "revisionScope": "Only runtime difference from e524c2b: BattlefieldNavigation local destination completion, with continuous-floor, same-layer and capsule-clearance guards. Previous functional evidence stays explicitly attributed to e524c2b.",
+  "baselineRuntimeEvidenceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "baselineSourceReview": "docs/qa/continuation-final-20261101/navigation-only-source-review.json",
+  "validatedAt": "2026-11-01T02:00:34.956689+00:00",
+  "validationContinuity": {
+    "temporaryEnvironmentDisconnect": true,
+    "noRerunOrLogReplacement": true,
+    "finalGameplayLogCompletedCleanly": true,
+    "note": "The tool transport lost its live session during case8; the same unchanged runner wrote all8passes and its clean final summary. No candidate submission had started."
+  },
+  "remainingVisualReview": "docs/qa/continuation-final-20261101/remaining-visual-review.json",
+  "stagedArtifacts": {
+    "status": "immutable_local_stage",
+    "manifest": "docs/qa/continuation-final-20261101/frozen-artifacts.json",
+    "sha256": "a436d8e4c53b05e16ad15d057f105c03f2829bfdfeb87a875a024231971a5106",
+    "files": 30,
+    "bytes": 267785477,
+    "glbFiles": 12,
+    "bundles": 5,
+    "newModelFiles": 0
+  },
+  "proofArchiveIntegrity": {
+    "checkedAt": "2026-11-01T02:03:46.503840+00:00",
+    "manifestEntriesChecked": 141,
+    "errors": 0,
+    "scope": "SHA256 entries present in the two continuation proof trees before publication; publication evidence will be archived separately."
+  },
+  "audit": {
+    "criteria": 126,
+    "terminated": 77,
+    "toValidate": 37,
+    "inProgress": 12,
+    "newlyClosed": 10,
+    "excelVerification": "docs/audits/2026-10-26/implementation-verification.json",
+    "allNonFollowupContentPreserved": true
+  }
+}

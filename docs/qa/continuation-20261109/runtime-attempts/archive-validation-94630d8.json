@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "status": "archive_hashes_passed",
+  "runtimeSourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "attempts": [
+    {
+      "attempt": 1,
+      "filesVerified": 7,
+      "reportSha256": "88cc0925401ffe8366d4440899581391893bf1751e6e94075091e69d66898a18",
+      "statusPreserved": "failed",
+      "executed": 1,
+      "passedCases": 0,
+      "failedCases": 1
+    },
+    {
+      "attempt": 2,
+      "filesVerified": 15,
+      "reportSha256": "58dfe4d0e38784897f99b4498c3a09aefdf535fb31ec8031e29479ed6b4f4ab0",
+      "statusPreserved": "failed",
+      "executed": 1,
+      "passedCases": 0,
+      "failedCases": 1
+    },
+    {
+      "attempt": 3,
+      "filesVerified": 19,
+      "reportSha256": "faa6dbf60c5f8a587497f4438ddbda8bb1605b8aba208c23011538ecb0a72282",
+      "statusPreserved": "failed",
+      "executed": 2,
+      "passedCases": 1,
+      "failedCases": 1
+    },
+    {
+      "attempt": 4,
+      "filesVerified": 11,
+      "reportSha256": "826502ad8a9bdf64a0f0957e8ac982babb80106fda17504e597f0da3aab7aef7",
+      "statusPreserved": "failed",
+      "executed": 2,
+      "passedCases": 1,
+      "failedCases": 1
+    }
+  ],
+  "completePositiveThreeCaseRun": false,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false
+}

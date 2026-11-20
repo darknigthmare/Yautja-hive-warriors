@@ -1,0 +1,15 @@
+✔ source template resolver never invents or mutates a finite squad (0.774025ms)
+✔ all 27 source rosters conserve every ID, squad, allocation and reserve from the legacy factory (150.272186ms)
+✔ Sevastopol has two independent xenos and Seegson synthetic forces, not Marine clones (0.648625ms)
+✔ LV-895 mixes seven real Runner roles with one Spitter and distinct WY synthetics (3.677921ms)
+✔ Lethe and LV-742 preserve their canonical squad allocations and queen replacement (2.641058ms)
+✔ named commanders target their biological camp instead of a roster-array index (3.129736ms)
+✔ a saved source or legacy configuration cannot be mistaken for the other (9.416132ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 315.936311

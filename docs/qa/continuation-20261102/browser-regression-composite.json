@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_distinct_case_coverage",
+  "runtimeSourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "indexSha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+  "distinctCasesPassed": 15,
+  "fullFifteenInOneCleanRun": false,
+  "caseExecutions": 18,
+  "successfulExecutions": 15,
+  "failedExecutionsPreserved": 3,
+  "attempts": [
+    {
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "sha256": "a5d0eac2dfce736fba938cac4fdf162b84efdf44362f4a735ae1f587fa95884d",
+      "tests": 15,
+      "passed": 13,
+      "failed": 2,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    {
+      "log": "docs/qa/continuation-20261102/browser-coop-retry2/results.txt",
+      "sha256": "086b1d209fe58e1df35fb91924e4e28e468d5d409852783b8a79a87ab1212617",
+      "tests": 2,
+      "passed": 1,
+      "failed": 1,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    {
+      "log": "docs/qa/continuation-20261102/browser-coop-retry3/results.txt",
+      "sha256": "33c93282691175f954eaf84babf3b574fa5aeef19e66140f6a4bfee97ed29994",
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  ],
+  "cases": [
+    {
+      "name": "production: self-hosted startup tolerates damaged saved data",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 8870.047812
+    },
+    {
+      "name": "menus: every modal closes cleanly, settings persist, keyboard focus is visible",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 16674.161817
+    },
+    {
+      "name": "solo: selected loadout, movement, pause, photo, defeat, replay and cleanup",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 66030.348178
+    },
+    {
+      "name": "campaign: a boss victory advances the chapter and loads its actual arena",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 57630.171839
+    },
+    {
+      "name": "coop: two players render at correct aspect and share pause/cleanup",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-coop-retry3/results.txt",
+      "duration_ms": 130249.842569
+    },
+    {
+      "name": "mobile: 390px menus have no horizontal overflow and remain navigable",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 10464.046866
+    },
+    {
+      "name": "insertion hides hunters until touchdown, opens occupied capsules and survives pause, co-op and replay",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 30408.673167
+    },
+    {
+      "name": "connected battlefield leaves time to act before reinforcements and keeps combat responsive",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 66476.058501
+    },
+    {
+      "name": "relay activation keeps its gate locked until the real counterattack is defeated",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 40123.892757
+    },
+    {
+      "name": "campaign advances through five real maps and finishes after the final boss",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 190749.872714
+    },
+    {
+      "name": "pause and photo mode freeze mission tasks; menu return cancels effects and timers",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 69930.931565
+    },
+    {
+      "name": "sandbox honors the enemy slider and can be completed without spawning another boss",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 47259.134914
+    },
+    {
+      "name": "melee damages bosses and a close-range trophy execution records a real final victory and releases its visual",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 63325.216097
+    },
+    {
+      "name": "co-op has independent movement and combat and continues while one hunter survives",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-coop-retry2/results.txt",
+      "duration_ms": 105756.833728
+    },
+    {
+      "name": "production rendering presets compile, export an image and preserve independent co-op viewports",
+      "status": "passed",
+      "log": "docs/qa/continuation-20261102/browser-regression-attempt1/first-full.txt",
+      "duration_ms": 42883.639111
+    }
+  ],
+  "appRuntimeEditedBetweenAttempts": false,
+  "testHarnessChange": "Final browser-only co-op rerun gives the real deploy click120s and test180s; no forced click, no gameplay/assertion removed. The unchanged isolated gameplay co-op test passes.",
+  "scope": "Counts below represent distinct verified scenarios, not an unbroken15case execution or hardware responsiveness certification.",
+  "humanTesters": 0,
+  "hardwarePerformanceVerified": false
+}

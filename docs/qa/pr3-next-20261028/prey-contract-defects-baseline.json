@@ -1,0 +1,30 @@
+{
+  "status": "confirmed_defects_not_acceptance_evidence",
+  "scope": "Read-only CPU reproduction using the actual EnvironmentManager methods and simple actor fixtures; not a full mission or human test.",
+  "pistol": {
+    "accepted": true,
+    "targetDistance": 1414.213562373095,
+    "bossHpBefore": 2400,
+    "bossHpAfter": 1200,
+    "managerDamageCalls": 0,
+    "losCalls": 0,
+    "configuredLineOfSight": false
+  },
+  "warBow": {
+    "accepted": true,
+    "smartDiscChargesBefore": 0,
+    "smartDiscChargesAfter": 6,
+    "agilityDuration": 25,
+    "playerScoreCallbackPresent": false
+  },
+  "announcements": [
+    "🏴‍☠️ PISTOLET À SILEX DE RAPHAEL ADOLINI 1715 RÉCUPÉRÉ (PREY 2022) : DÉCHARGE PERFORANTE (1200 DMG, +2500 SCORE) !",
+    "🏹 ARC DE GUERRE DE TAABE DÉPLOYÉ (PREY 2022) : AGILITÉ COMANCHE +30% & FLÈCHES SILENCIEUSES (+6 DISCS, +2000 SCORE) !"
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "methodSha256": {
+    "checkAdoliniPistolInteraction": "1ac8f3de9bb09a0e8c2ec3321782de9bd39b317643f00ef91bbb24512a9bcfdc",
+    "checkTaabeWarBowInteraction": "0eb6a0f241b3db2318ebb2bf1fd1cf1009408a83a3d7153adb5fc1ec7b78cf25"
+  }
+}

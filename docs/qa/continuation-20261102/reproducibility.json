@@ -1,0 +1,169 @@
+{
+  "status": "passed",
+  "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "independentNpmCi": true,
+  "installationAndBuild": [
+    {
+      "step": "npm-ci-final",
+      "exitCode": 0
+    },
+    {
+      "step": "repro-build-final",
+      "exitCode": 0
+    }
+  ],
+  "files": 30,
+  "matched": 30,
+  "allFiles": [
+    {
+      "path": "assets/confetti-CAXNRs-2.js",
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d",
+      "bytes": 10562
+    },
+    {
+      "path": "assets/engine-Ej7zsK31.js",
+      "sha256": "855a9c70aa4a63f0217279ffd398163a242ed2cfc186f2e6b1b5e8e86a579754",
+      "bytes": 562106
+    },
+    {
+      "path": "assets/index-EZIOWzjK.js",
+      "sha256": "997df3d4757a6d3a038c85668d1f6114c7ccb9f9207a85240d218a13a0e6eb42",
+      "bytes": 2989877
+    },
+    {
+      "path": "assets/index-Y-bmw2ji.css",
+      "sha256": "3ffd25494cf9b138ed151930bcec6da89c6d083e0df31cd0b4aca0a7c6a7f2a8",
+      "bytes": 89485
+    },
+    {
+      "path": "assets/orbitron-latin-600-normal-75H6acHo.woff",
+      "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937",
+      "bytes": 9036
+    },
+    {
+      "path": "assets/orbitron-latin-600-normal-mazHmDYu.woff2",
+      "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6",
+      "bytes": 6588
+    },
+    {
+      "path": "assets/orbitron-latin-800-normal-CQafOXEd.woff2",
+      "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc",
+      "bytes": 6740
+    },
+    {
+      "path": "assets/orbitron-latin-800-normal-P4cBi4I7.woff",
+      "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61",
+      "bytes": 9000
+    },
+    {
+      "path": "assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc",
+      "bytes": 15084
+    },
+    {
+      "path": "assets/rajdhani-latin-500-normal-DfvNI-Td.woff",
+      "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625",
+      "bytes": 11760
+    },
+    {
+      "path": "assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601",
+      "bytes": 15732
+    },
+    {
+      "path": "assets/rajdhani-latin-600-normal-Dx02qI2_.woff",
+      "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a",
+      "bytes": 12092
+    },
+    {
+      "path": "assets/rajdhani-latin-700-normal-BPDUZo87.woff2",
+      "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f",
+      "bytes": 15688
+    },
+    {
+      "path": "assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff",
+      "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31",
+      "bytes": 12060
+    },
+    {
+      "path": "assets/visual-effects-ZRMFH9Ew.js",
+      "sha256": "6f5e4325e97806d17644cd2150d946ff86298917d87106a5ce5400719734a6e6",
+      "bytes": 107717
+    },
+    {
+      "path": "build-info.json",
+      "sha256": "0e70fd73c5d5cefa8e3499834d70975b024834b2be83345edf4eecbdd351a5bc",
+      "bytes": 566
+    },
+    {
+      "path": "favicon.svg",
+      "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6",
+      "bytes": 283
+    },
+    {
+      "path": "index.html",
+      "sha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+      "bytes": 104452
+    },
+    {
+      "path": "models/big-chap-rigged.glb",
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+      "bytes": 56951716
+    },
+    {
+      "path": "models/big-chap-run.glb",
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d",
+      "bytes": 79336
+    },
+    {
+      "path": "models/big-chap-walk.glb",
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da",
+      "bytes": 89968
+    },
+    {
+      "path": "models/city-hunter-biomask.glb",
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0",
+      "bytes": 32727588
+    },
+    {
+      "path": "models/city-hunter-body-corrected.glb",
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+      "bytes": 42815452
+    },
+    {
+      "path": "models/city-hunter-rigged.glb",
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7",
+      "bytes": 43124896
+    },
+    {
+      "path": "models/city-hunter-run.glb",
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd",
+      "bytes": 78940
+    },
+    {
+      "path": "models/city-hunter-walk.glb",
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5",
+      "bytes": 89568
+    },
+    {
+      "path": "models/jungle-hunter-biomask.glb",
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77",
+      "bytes": 34211520
+    },
+    {
+      "path": "models/jungle-hunter-rigged.glb",
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d",
+      "bytes": 53768472
+    },
+    {
+      "path": "models/jungle-hunter-run.glb",
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be",
+      "bytes": 79764
+    },
+    {
+      "path": "models/jungle-hunter-walk.glb",
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424",
+      "bytes": 90416
+    }
+  ]
+}

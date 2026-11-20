@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "character-briefing.png",
+      "sha256": "77a473189b80fa52ae85bf176b5101aa25544f4b8a3c5503f179eda3d0c6941e"
+    },
+    {
+      "path": "codex-engineers-source-detail.png",
+      "sha256": "8dc408e308c1726318955d08d7ceb895c6abb0996530de7cadbd42b31137f44e"
+    },
+    {
+      "path": "codex-engineers.png",
+      "sha256": "8dc408e308c1726318955d08d7ceb895c6abb0996530de7cadbd42b31137f44e"
+    },
+    {
+      "path": "codex-ranks-source-detail.png",
+      "sha256": "e4ac54fb0f93a55b31e281abd80c94a0ee3c12793ac8c17da16d21f6b5522c5b"
+    },
+    {
+      "path": "codex-ranks.png",
+      "sha256": "8408fc08c7db31169c7443fcab8032f1cb92718da3784ef00dce5a5ff4621871"
+    },
+    {
+      "path": "combat-readability-real-cloak.png",
+      "sha256": "5b3d616c6ae2a03341a12bc138b674648b1a256ff9163b7a660ad7e24090a66f"
+    },
+    {
+      "path": "fronts-minimap-monochrome-detail.png",
+      "sha256": "8c1482dc68da2cb14ec2fec184d654da153627f46f1557f3fc809ff05e5194a6"
+    },
+    {
+      "path": "harness-source.mjs",
+      "sha256": "d67576e08064eed1a53e65bdd9a7f4b819596216c54a60b93122a6326df8f4d7"
+    },
+    {
+      "path": "insertion-helper-source.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "map-captain-delegated.png",
+      "sha256": "0e39961bd71379765342e877123f55e3ec828ae3ddd82a132ed671f866300627"
+    },
+    {
+      "path": "map-compared-fronts.png",
+      "sha256": "3d7aeb53202fc09086ebb452d6b17c7087462e42a50aa36aaa93c029919a92e6"
+    },
+    {
+      "path": "map-front-comparison-detail.png",
+      "sha256": "6b4b052186197275ff49f947e0f8c45682f5b74852faa18e5c75e0a3492d9edf"
+    },
+    {
+      "path": "map-tactic-feedback.png",
+      "sha256": "cbc8fb9f48a6a889c76954cc8c2912ff87103b1ca2417fc0a8f926d0154ebcac"
+    },
+    {
+      "path": "mission-paused.png",
+      "sha256": "bebdac73611ed64622c26d1bc789b4ea1163cea95609d78eaf1fa2c38ce261eb"
+    },
+    {
+      "path": "preferences-monochrome-reduced.png",
+      "sha256": "237d65bf78473d0809e8125d6a52ac6639e18c7f915945b7ec18e5c25dc43b01"
+    },
+    {
+      "path": "report.json",
+      "sha256": "6aa50e83e52f3cabd6e89e22eb6e7908836f4edf9e8980ebab2a14e7e36d132e"
+    }
+  ]
+}

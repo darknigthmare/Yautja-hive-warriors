@@ -1,0 +1,42 @@
+{
+  "status": "superseded_before_submission",
+  "baseCommit": "03f37b406c2c7f9d1900c94975d912b9f3db009d",
+  "build": {
+    "success": true,
+    "source_commit": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+    "source_fingerprint": "b442dd89bc3130ae8dbd6a2c099b43865b8fa15dc5bf18710bcbc58a3124ec44",
+    "index_sha256": "8af6bd243df62fa4b9113d711bee3e011264d8e450ef399c49ed326024f17e83",
+    "build_info_sha256": "6d2d67782779ac81ae9656dded3be1134490a4baf6d08fdd23cbb97dd398e7fb",
+    "source_tree_dirty": false
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "publication": {
+    "status": "not_submitted",
+    "deploymentId": null
+  },
+  "sourceCommit": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "reason": "Independent review found hunt-mode camouflage acquisition did not use the new finite perception policy; source revised before publication.",
+  "cpu": {
+    "status": "interrupted_before_source_revision",
+    "path": "/workspace/qa/continuation-20261101/cpu-final.txt",
+    "reason": "Coordinator terminated the first full CPU run before revising source; cancellation output is preserved, not a failed runtime assertion claim."
+  },
+  "immutableStagePreserved": true,
+  "browser": {
+    "intermediate_complete_contexts": {
+      "status": "passed",
+      "source_commit": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+      "paths": 22,
+      "contexts": 11,
+      "errors": 0,
+      "path": "/workspace/qa/continuation-20261101/complete-contexts-445108b/report.json"
+    }
+  },
+  "reproducibility": {
+    "status": "passed",
+    "matched": 30,
+    "files": 30,
+    "path": "/workspace/qa/continuation-20261101/reproducibility-445108b.json"
+  }
+}

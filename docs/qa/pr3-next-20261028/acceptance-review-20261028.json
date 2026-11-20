@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-28",
+  "scope": "Independent acceptance review checkpoint, not automatic audit closure or final build certification.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "criteria": {
+    "AUD-035": {
+      "assessment": "Accepted CPU behavior and present integration hooks reviewed",
+      "evidence": [
+        "strategy-rescue-integration/report.json"
+      ],
+      "observed": "Actual allied actor lethal HP0 becomes downed before Bridge death bookkeeping; contribution/capture/attacks stop, finite real rescue consumes one resource on completion, identity persists through cull/checkpoint, expiration/finisher records one death.",
+      "pending": "Final unpublished build regression and publication are separate release checks, not a claim from this CPU evidence.",
+      "reviewedAcceptance": "accepted-cpu-behaviors-20261028.json"
+    },
+    "AUD-016": {
+      "assessment": "Accepted CPU behavior and present integration hooks reviewed",
+      "evidence": [
+        "strategy-rescue-integration/report.json"
+      ],
+      "observed": "Cautious/aggressive preserve every group/profile/front/route and allocation, HP and detailed budget; actual officer decisions differ, selected difficulty persists in saved config.",
+      "pending": "Final unpublished build regression and publication are separate release checks, not a claim from this CPU evidence.",
+      "reviewedAcceptance": "accepted-cpu-behaviors-20261028.json"
+    },
+    "AUD-046": {
+      "assessment": "Accepted CPU behavior and present integration hooks reviewed",
+      "evidence": [
+        "strategy-rescue-integration/report.json"
+      ],
+      "observed": "Retreat uses actual route and maintains every casualty; regroup cannot return on morale alone; an existing finite support group must actually arrive and source remain usable; no soldiers or HP created.",
+      "pending": "Final unpublished build regression and publication are separate release checks, not a claim from this CPU evidence.",
+      "reviewedAcceptance": "accepted-cpu-behaviors-20261028.json"
+    },
+    "AUD-047": {
+      "assessment": "Partial; maintain validation status",
+      "evidence": [
+        "strategy-rescue-integration/report.json"
+      ],
+      "observed": "All34 built layouts receive route-distance-derived return deadlines; separate fronts, pause, checkpoint and detour extension are tested. Complete disconnection is explicitly reported.",
+      "pending": "No physically possible recovery exists while all return routes are closed; final displayed cause/deadline integration not yet reviewed."
+    },
+    "AUD-107": {
+      "assessment": "Accepted CPU behavior and present integration hooks reviewed",
+      "evidence": [
+        "strategy-rescue-integration/report.json",
+        "../strategic-depth-20261028/targeting-benchmark.json"
+      ],
+      "observed": "Real Horde and Marine update profiling at16/32 detailed actors isolates selectBattleTarget and stays below half of sampled CPU; deterministic target/state hashes repeat. Remote512/1024 candidate counts grow linearly.",
+      "pending": "Final unpublished build regression and publication are separate release checks, not a claim from this CPU evidence.",
+      "reviewedAcceptance": "accepted-cpu-behaviors-20261028.json"
+    },
+    "AUD-126": {
+      "assessment": "41 real Player/Environment CPU tests passed with15 source/test hashes stable; main/UI and scene pickup checkpoint pending",
+      "evidence": [
+        "prey-environment-contracts/report.json",
+        "prey-player-reviewed/report.json"
+      ],
+      "observed": "True Horde/Boss damage and death ledger, aimed finite pistol, bounded distinct resources, powder blast/fire radii, expiration/disposal, cauldron actual actor format, actual mud volume once-per-entry including co-op, original Sarii/mask tests preserved. Real Player stock consumption, mobility x1.3, thermal signature, acid resistance and expiration now exercised; fictitious shield pickups replaced by bounded HP recovery and checked through damage/checkpoint.",
+      "pending": "Actual main projectile/wheel, ten integrated prompts and adaptation labels, complete scene pickup checkpoint cannot duplicate gains."
+    }
+  }
+}

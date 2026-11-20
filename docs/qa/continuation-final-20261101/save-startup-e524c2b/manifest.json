@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "future-version-preserved.png",
+      "sha256": "fd55ee1bd763f93d30f8fa53675f3b611f1b4ea22831f30599d3c3c619d8643d"
+    },
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "fd34b9ffe0d4ac235e3eb5c0bd559d0eb369ca6cf36f415656738035a95e1d8f"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "invalid-balance-preserved.png",
+      "sha256": "0e7f1a3d7f4565d5044ee161e63aadea3986bd9c026c0d7a8e320cd1dbe18785"
+    },
+    {
+      "path": "legacy-counter-migration.png",
+      "sha256": "58d01e95e2910a13ae5b76f39f24e0b3f34381ad1d5869f7f72da166c8186828"
+    },
+    {
+      "path": "malformed-operation-checkpoint.png",
+      "sha256": "6dbc9344d0206d3261df417e4d49a3fa8c253a3960c00271506ce03937ad53c9"
+    },
+    {
+      "path": "partial-version-one.png",
+      "sha256": "0dd97c99af10e04dc5e47072cd10d0eee37cc6f72eb6dd5c0ee1c2a8d4f18f58"
+    },
+    {
+      "path": "report.json",
+      "sha256": "a48dd23c6f2b2511da5df435f1688cfb4ea78e3a836fdf7ed99488acbe180e61"
+    }
+  ]
+}

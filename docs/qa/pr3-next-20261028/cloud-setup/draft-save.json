@@ -1,0 +1,12 @@
+{
+  "status": "saved",
+  "fields": [
+    "install_script",
+    "start_skill"
+  ],
+  "requiresPublish": true,
+  "networkOrCredentialBindingsChanged": false,
+  "currentInstanceInstallStartupAndRepresentativeTest": "passed",
+  "freshTaskSnapshotRestoreVerified": false,
+  "activation": "Review and save in environment settings, then publish the environment through the product."
+}

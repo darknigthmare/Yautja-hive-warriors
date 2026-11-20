@@ -1,0 +1,18 @@
+{
+  "status": "scoped_diagnostic_evidence_verified",
+  "source": "48b5bd5 plus isolated three-line player-cache release",
+  "manifestSha256": "46aa3a1bff60f1ce8abdcf080b86e723cf9c5fde72b2ab65fb61148dec9f9b36",
+  "verifiedFiles": 19,
+  "measuredRestarts": 10,
+  "stableCounters": {
+    "geometries": 110,
+    "textures": 50,
+    "programs": 17
+  },
+  "importedTextureIDsStable": 6,
+  "cachedPlayersAfterCleanup": 0,
+  "diagnosticBuildNotPublishable": true,
+  "futureIntegratedBuildRetestRequired": true,
+  "hardwareOrVRAMMeasured": false,
+  "humanTesters": 0
+}

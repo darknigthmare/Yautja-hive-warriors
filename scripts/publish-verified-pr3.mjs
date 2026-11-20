@@ -6,8 +6,29 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, rm, rmdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { QA, STAGE, ORIGIN, REPO, PROJECT, DEFAULT_PINS, readPins, say, validateLocal, validateQa } from './publication-pr3-lib.mjs';
+import { QA, STAGE, ORIGIN, REPO, PROJECT, RELEASE, DEFAULT_PINS, readPins, say, validateLocal, validateQa } from './publication-pr3-lib.mjs';
 import { verifyHttp } from './verify-pr3-http.mjs';
+
+// Promotion can return before the canonical domain serves the new bytes. Only
+// the reviewed previous index may be observed while waiting; never resubmit.
+export async function waitForCanonicalIndex({ snapshot, indexSha256, previousIndexSha256, deploymentId,
+  now = Date.now, wait = ms => new Promise(done => setTimeout(done, ms)), timeoutMs = 60000 }) {
+  const deadline = now() + timeoutMs;
+  while (now() < deadline) {
+    let current;
+    try { current = await snapshot(Math.max(1, Math.min(30000, deadline - now()))); }
+    catch (error) {
+      if (['TimeoutError', 'AbortError'].includes(error.name) && now() >= deadline) break;
+      throw error;
+    }
+    assert.ok([previousIndexSha256, indexSha256].includes(current.sha256), 'Canonical changed to another build. Review before replacing it.');
+    if (current.sha256 === indexSha256) return current;
+    const remaining = deadline - now();
+    if (remaining > 0) await wait(Math.min(2000, remaining));
+  }
+  const error = new Error('Canonical propagation deadline reached; resume with --deployment ' + deploymentId);
+  error.waiting = true; throw error;
+}
 
 export function parseOptions(argv) {
   const options = { pinsPath: DEFAULT_PINS, deploy: false, promote: false, deploymentId: null, waitMs: 180000, checkOnly: false };
@@ -31,7 +52,7 @@ export async function main(argv = process.argv.slice(2)) {
   const options = parseOptions(argv), pins = await readPins(options.pinsPath), runId = new Date().toISOString().replace(/[:.]/g, '-');
   await mkdir(QA, { recursive: true });
   const reportPath = `${QA}/publication-${runId}.json`, latestPath = QA + '/vercel-delivery-status.json';
-  const report = { status: 'starting_local_validation', startedAt: new Date().toISOString(), sourceCommit: pins.sourceCommit,
+  const report = { status: 'starting_local_validation', releaseProfile: RELEASE.name, startedAt: new Date().toISOString(), sourceCommit: pins.sourceCommit,
     index_sha256: pins.indexSha256, build_info_sha256: pins.buildInfoSha256, stage: STAGE, promotion_executed: false,
     deployment_id: options.deploymentId, submission_attempted: false, remoteActionsExecuted: false, other_projects_changed: false, billing_changed: false };
   const save = async (latest = false) => {
@@ -63,8 +84,8 @@ export async function main(argv = process.argv.slice(2)) {
     report.sourceCommitIsAncestorOfRelease = true;
     return artifact;
   }
-  async function canonicalSnapshot() {
-    const response = await fetch(ORIGIN, { redirect: 'error', signal: AbortSignal.timeout(30000) });
+  async function canonicalSnapshot(timeoutMs = 30000) {
+    const response = await fetch(ORIGIN, { redirect: 'error', signal: AbortSignal.timeout(timeoutMs) });
     assert.equal(response.status, 200, 'Canonical HTTP');
     const sha256 = createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex');
     assert.ok([pins.previousPublicIndexSha256, pins.indexSha256].includes(sha256), 'Canonical changed to another build. Review before replacing it.');
@@ -128,9 +149,11 @@ export async function main(argv = process.argv.slice(2)) {
         const result = await cli(['promote', deploymentId, '--yes', '--timeout', '60s'], 'promotion', 90000);
         assert.equal(result.code, 0, 'Promotion failed; see ' + result.stderrPath);
         report.promotion_executed = true; report.status = 'promoted_waiting_for_public_bytes'; await save(true);
+        report.canonical_after = await waitForCanonicalIndex({ snapshot: canonicalSnapshot, indexSha256: pins.indexSha256,
+          previousIndexSha256: pins.previousPublicIndexSha256, deploymentId });
       } else { say({ status: report.status, deploymentId, filesVerified: candidate.files.length, promotionExecuted: false, reportPath }); return; }
     }
-    report.canonical_after = await canonicalSnapshot(); assert.equal(report.canonical_after.sha256, pins.indexSha256, 'Canonical index has not switched to the frozen build');
+    report.canonical_after ??= await canonicalSnapshot(); assert.equal(report.canonical_after.sha256, pins.indexSha256, 'Canonical index has not switched to the frozen build');
     const proof = await verifyHttp({ pins, artifact, mode: 'public', deploymentId, runId });
     report.publicProof = proof.reportPath; report.status = 'published_and_public_all_bytes_verified'; report.public_url = ORIGIN;
     report.publicFilesVerified = proof.files.length; report.publicModelsVerified = proof.modelsVerified; report.publicBundlesVerified = proof.bundlesVerified;

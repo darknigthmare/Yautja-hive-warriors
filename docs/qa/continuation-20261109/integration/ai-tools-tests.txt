@@ -1,0 +1,18 @@
+test_archive_link_is_rejected (test_setup.SetupTests.test_archive_link_is_rejected) ... ok
+test_collision_preflight_is_atomic (test_setup.SetupTests.test_collision_preflight_is_atomic) ... ok
+test_disallowed_settings_and_traversal_are_rejected (test_setup.SetupTests.test_disallowed_settings_and_traversal_are_rejected) ... ok
+test_doctor_is_read_only_and_does_not_claim_installation (test_setup.SetupTests.test_doctor_is_read_only_and_does_not_claim_installation) ... ok
+test_doctor_uses_root_studio_project_configuration (test_setup.SetupTests.test_doctor_uses_root_studio_project_configuration) ... ok
+test_existing_spec_project_refuses_preparation (test_setup.SetupTests.test_existing_spec_project_refuses_preparation) ... ok
+test_identical_existing_file_is_preserved (test_setup.SetupTests.test_identical_existing_file_is_preserved) ... ok
+test_preparation_must_be_outside_repository (test_setup.SetupTests.test_preparation_must_be_outside_repository) ... ok
+test_spec_preparation_is_pinned_without_live_root_init (test_setup.SetupTests.test_spec_preparation_is_pinned_without_live_root_init) ... ok
+test_studio_archive_excludes_activation_and_preserves_support_files (test_setup.SetupTests.test_studio_archive_excludes_activation_and_preserves_support_files) ... ok
+test_symlink_source_and_target_are_rejected (test_setup.SetupTests.test_symlink_source_and_target_are_rejected) ... ok
+test_tampered_hash_aborts_before_writes (test_setup.SetupTests.test_tampered_hash_aborts_before_writes) ... ok
+test_unlisted_file_and_manifest_escape_are_rejected (test_setup.SetupTests.test_unlisted_file_and_manifest_escape_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.019s
+
+OK

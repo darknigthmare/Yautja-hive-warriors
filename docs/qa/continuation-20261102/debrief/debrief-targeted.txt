@@ -1,0 +1,23 @@
+✔ final debrief snapshots all finite states and named losses before mission teardown (41.308276ms)
+✔ the critical alert identifies the earliest live deadline rather than the most recent loss event (8.170574ms)
+✔ a restored loss names only the expired front after the other front is recovered, and survives teardown (10.174101ms)
+✔ simultaneous critical losses retain both authored names and keep ordinary timeout and objective results specific (4.370737ms)
+✔ a critical defeat warning stays above ordinary reports and exposes its actual location and deadline (1.152441ms)
+✔ caused counterattacks keep their real countdown in the persistent HUD (0.193723ms)
+✔ a living officer at critical health is called out ahead of routine reinforcements (0.144971ms)
+✔ unknown reports never imply fresh contact or expose unobserved enemy counts (10.340565ms)
+✔ front comparison and text retain the old report age when the hidden group moves (12.086652ms)
+✔ route preview agrees with real accepted path and immediately excludes closed routes (2.496984ms)
+✔ delegation and tactic acknowledgements describe actual accepted actions without promising an instant arrival (1.534149ms)
+✔ debrief snapshots real objective completion and clan survivors before scene teardown (48.034547ms)
+✔ monochrome remains monochrome after persistence and preserves relationship shapes with flashes reduced (1.067972ms)
+✔ combat readout reflects actual player costs, reveal expiry and the real parasite escape action (7243.331644ms)
+✔ combat readout preserves finite action resource and execution protection without advertising invulnerability (0.531704ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7526.270844

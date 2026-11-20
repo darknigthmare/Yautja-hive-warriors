@@ -1,0 +1,9 @@
+Le smoke public est préparé mais **NON EXÉCUTÉ**. Aucun déploiement, promotion, appel CLI Vercel, lecture publique ou lancement Chromium n'est effectué par cette préparation.
+
+`verify-public.mjs` reprend exactement les 22 contrôles de la recette précédente : index et manifeste servis, menus réels, visibilité du joueur pendant l'arrivée/ouverture/sortie du module, population finie non nulle et plafond 32, compteur FRONTS, ordre de carte par clic, photo O, sauvegarde, pause et nettoyage. La portée reste un smoke public menu-vers-pilote ; aucune victoire complète, fidélité 1:1, session humaine ou performance matérielle n'est revendiquée.
+
+Seuls les chemins d'évidence et noms de rapports sont adaptés. Les anciennes archives ne sont jamais écrites : le nouveau journal externe est `/workspace/qa/continuation-final-20261101/publication-public/<timestamp-source>/`, les copies du dépôt sont dans ce répertoire et chaque tentative garde son nom propre. Le rapport courant s'appelle `publication-20261101.json`. Le manifeste local `dist` doit correspondre aux trois empreintes explicites et ses octets doivent rester inchangés après le smoke.
+
+La syntaxe, `--help` et `--check-config` ont passé avec un garde qui lève une erreur sur tout appel à `fetch` ou `chromium.launch`. Les compteurs sont restés à zéro et les arborescences de preuves n'ont pas changé pendant ces commandes. Les arguments de `check-configuration-only.txt`, notamment le SHA de 64 lettres a et `dpl_CONFIGURATIONONLY`, sont uniquement des fixtures du parseur ; ils ne constituent pas des pins ni un véritable candidat Vercel.
+
+La recette publique attend le GO explicite du coordinateur, l'ID réel du candidat de production promu, les empreintes source/index/build-info du gel final et la disponibilité exclusive de Chromium. `pending-publication.json` garde `result: null`, `deployment: null` et les pins en attente. L'ancien refus de quota n'est pas réutilisé comme diagnostic actuel.

@@ -463,25 +463,42 @@ export class WeatherSystem {
     this.scene.add(this.weatherParticles);
   }
 
-  spawnSteamVents(count = 5) {
+  configureMissionSteamVents(level, environment) {
+    // These are original industrial game hazards, not geothermal props to
+    // inject into every film location. The authored site must own conduits.
+    const industrial = environment?.referenceProfile?.builders?.includes('buildSteamConduits') === true;
+    const sectors = (environment?.battlefieldLayout?.sectors ?? []).filter(sector => sector.index > 0).slice(0, 3);
+    const positions = sectors.map(sector => {
+      const inset = Math.min(12, (sector.bounds.maxX - sector.bounds.minX) / 2 - 5);
+      return [sector.center[0] + inset, sector.center[1] + 8];
+    });
+    this.spawnSteamVents(industrial ? (positions.length || 3) : 0, {
+      positions,
+      elevationAt: (x, z) => environment?.getPlacementElevationAt?.(x, z) ?? 0,
+      context: industrial ? (environment.referenceProfile.id ?? level?.id) : null
+    });
+  }
+
+  spawnSteamVents(count = 5, { positions = [], elevationAt = () => 0, context = 'explicit-game-hazard' } = {}) {
     count = Math.min(12, Math.max(0, Math.floor(Number(count) || 0)));
-    const oldVents = new THREE.Group(); this.steamVents.forEach(v => oldVents.add(v.group)); disposeObject(oldVents);
-    this.steamVents = [];
+    this._clearSteamVents();
+    if (!count) return;
 
     const ventMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.3 });
     const grateMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true });
-    const steamMat = new THREE.MeshBasicMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0, side: THREE.DoubleSide });
 
     for (let i = 0; i < count; i++) {
       const group = new THREE.Group();
       const angle = (i / count) * Math.PI * 2 + Math.random() * 0.4;
       const radius = 16 + Math.random() * 22;
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
-      group.position.set(x, 0.05, z);
+      const [x, z] = positions[i] ?? [Math.cos(angle) * radius, Math.sin(angle) * radius];
+      const y = elevationAt(x, z);
+      group.position.set(x, Number.isFinite(y) ? y + .05 : .05, z);
+      group.name = `weather-steam-vent-${i}`;
+      group.userData.hazardContext = context;
 
       // Scorched metal circular collar
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 0.2, 12), ventMat);
+      const rim = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 0.2, 24), ventMat);
       group.add(rim);
 
       // Glowing heat grate
@@ -490,21 +507,34 @@ export class WeatherSystem {
       grate.position.y = 0.11;
       group.add(grate);
 
-      // High-pressure steam plume cone
-      const plume = new THREE.Mesh(new THREE.ConeGeometry(1.6, 8.5, 12, 1, true), steamMat.clone());
-      plume.position.y = 4.25;
+      // Soft alpha wisps retain the eruption's footprint without the old
+      // eight-metre, hard-edged translucent cone blocking the camera.
+      const plume = new THREE.Group(); plume.name = 'weather-steam-plume'; plume.visible = false;
+      plume.material = new THREE.SpriteMaterial({ color: 0xdce5e5, map: this.particleSprite,
+        transparent: true, opacity: 0, depthWrite: false, fog: true });
+      for (let puff = 0; puff < 3; puff++) {
+        const sprite = new THREE.Sprite(plume.material);
+        this.steamSpriteGeometry = sprite.geometry; // Three's shared sprite quad is not ours to dispose.
+        sprite.position.set(Math.sin(puff * 2.1) * .35, 1.35 + puff * 1.8, Math.cos(puff * 2.1) * .3);
+        sprite.scale.set(2.6 + puff * .45, 2.9 + puff * .2, 1); plume.add(sprite);
+      }
       group.add(plume);
 
       this.scene.add(group);
       this.steamVents.push({
         group: group,
         steamMesh: plume,
-        pos: new THREE.Vector3(x, 0, z),
+        pos: new THREE.Vector3(x, group.position.y - .05, z),
         cycleTimer: 1.5 + Math.random() * 5.0,
         isErupting: false,
         eruptDuration: 0
       });
     }
+  }
+
+  _clearSteamVents() {
+    const group = new THREE.Group(); for (const vent of this.steamVents) group.add(vent.group);
+    disposeObject(group, new Set([this.steamSpriteGeometry])); this.steamVents = [];
   }
 
   _updateMediaWeather(delta, playerPos, renderer, audioEngine, horde) {
@@ -630,6 +660,7 @@ export class WeatherSystem {
         v.cycleTimer -= delta;
         if (v.cycleTimer <= 0) {
           v.isErupting = true;
+          v.steamMesh.visible = true;
           v.eruptDuration = 2.4;
           v.cycleTimer = 5.0 + Math.random() * 4.5;
           if (audioEngine && audioEngine.playSteamVentHiss) {
@@ -638,8 +669,8 @@ export class WeatherSystem {
         }
       } else {
         v.eruptDuration -= delta;
-        const progress = v.eruptDuration / 2.4;
-        v.steamMesh.material.opacity = Math.sin((1.0 - progress) * Math.PI) * 0.75;
+        const progress = THREE.MathUtils.clamp(v.eruptDuration / 2.4, 0, 1);
+        v.steamMesh.material.opacity = Math.sin((1.0 - progress) * Math.PI) * 0.32;
         const puff = 1.0 + Math.sin(progress * 16) * 0.15;
         v.steamMesh.scale.set(puff, 1.0 + (1.0 - progress) * 0.35, puff);
 
@@ -659,6 +690,7 @@ export class WeatherSystem {
 
         if (v.eruptDuration <= 0) {
           v.isErupting = false;
+          v.steamMesh.visible = false;
           v.steamMesh.material.opacity = 0;
         }
       }
@@ -686,8 +718,7 @@ export class WeatherSystem {
   }
   clear() {
     this._clearBase(); this._clearMediaWeather();
-    const group = new THREE.Group(); for (const vent of this.steamVents) group.add(vent.group);
-    disposeObject(group); this.steamVents = [];
+    this._clearSteamVents();
   }
 
 }

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "label": "prey-environment-contracts",
+  "startedAt": "2026-10-28T08:30:55.817Z",
+  "scope": "Explicit automated CPU suite. No browser, human playtest, hardware performance or visual fidelity certification.",
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "tests/prey-interaction-contracts.test.js",
+    "tests/prey-reference-interactions.test.js"
+  ],
+  "cwd": "/workspace/Yautja-next-20261028",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceHeadBefore": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceBefore": {
+    "sha256": "9559c91c198f7407815194429f6bafb92aef60b6506718597c330dc383e1e4b7",
+    "files": 148
+  },
+  "testsBefore": [
+    {
+      "path": "tests/prey-interaction-contracts.test.js",
+      "sha256": "5c93a674309c02d827bb484678020f3850ae52035eb77aa9ca30bf1df191a25c"
+    },
+    {
+      "path": "tests/prey-reference-interactions.test.js",
+      "sha256": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095"
+    }
+  ],
+  "rawOutput": "output.txt",
+  "humanTesters": 0,
+  "browserSessions": 0,
+  "fidelity1to1Verified": false,
+  "exitCode": 0,
+  "signal": null,
+  "rawBytes": 3687,
+  "summaryParserReadsTailBytes": 3687,
+  "result": {
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceHeadAfter": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceAfter": {
+    "sha256": "9559c91c198f7407815194429f6bafb92aef60b6506718597c330dc383e1e4b7",
+    "files": 148
+  },
+  "testsAfter": [
+    {
+      "path": "tests/prey-interaction-contracts.test.js",
+      "sha256": "5c93a674309c02d827bb484678020f3850ae52035eb77aa9ca30bf1df191a25c"
+    },
+    {
+      "path": "tests/prey-reference-interactions.test.js",
+      "sha256": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095"
+    }
+  ],
+  "runtimeSourceUnchanged": true,
+  "testsUnchanged": true,
+  "rawSha256": "36a7ca0456281b41992b6101bbd303beb717aeab2aeac7c2d3bc991c66fc774e",
+  "endedAt": "2026-10-28T08:30:56.345Z",
+  "durationSeconds": 0.528
+}

@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen_locally",
+  "frozenAt": "2026-11-09T04:26:45.314Z",
+  "runtimeSourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "sourceFingerprint": "41cdcb0f8823e4f17fbb0d6f68b119c3b75e4e01778ba7a7c523ffb569bdf6e9",
+  "sourceFiles": 193,
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v69-continuation-20261109",
+    "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "sourceBranch": "codex/continuation-20261109",
+    "sourceFingerprint": "41cdcb0f8823e4f17fbb0d6f68b119c3b75e4e01778ba7a7c523ffb569bdf6e9",
+    "sourceFiles": 193,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1794198339,
+    "reproducibleBuildDate": "2026-11-09T04:25:39.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/continuation-20261109/docs/qa/continuation-20261109-validation.json"
+  },
+  "indexSha256": "8632fe71abb813f1b4242b5c74d446622533d93f91e4e643e80b1eb57d032022",
+  "buildInfoSha256": "e1a40930bd6b2c1aa0aeb36f9f430888ab8da32cc62144b4dab1f0d5d8265ad3",
+  "files": [
+    {
+      "path": "assets/confetti-CAXNRs-2.js",
+      "bytes": 10562,
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+    },
+    {
+      "path": "assets/engine-Ej7zsK31.js",
+      "bytes": 562106,
+      "sha256": "855a9c70aa4a63f0217279ffd398163a242ed2cfc186f2e6b1b5e8e86a579754"
+    },
+    {
+      "path": "assets/index-BpdJ9mhu.js",
+      "bytes": 3006968,
+      "sha256": "2803986bde5bac1d40f399808df5c0b6e47e08861102fd9404077e347cb109d0"
+    },
+    {
+      "path": "assets/index-yg3-rDqS.css",
+      "bytes": 90778,
+      "sha256": "3af911aaf6eae2dfb33d3c16dfc89a2f2dada69304c6fb37db380d8c3936ba29"
+    },
+    {
+      "path": "assets/orbitron-latin-600-normal-75H6acHo.woff",
+      "bytes": 9036,
+      "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937"
+    },
+    {
+      "path": "assets/orbitron-latin-600-normal-mazHmDYu.woff2",
+      "bytes": 6588,
+      "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6"
+    },
+    {
+      "path": "assets/orbitron-latin-800-normal-CQafOXEd.woff2",
+      "bytes": 6740,
+      "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc"
+    },
+    {
+      "path": "assets/orbitron-latin-800-normal-P4cBi4I7.woff",
+      "bytes": 9000,
+      "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61"
+    },
+    {
+      "path": "assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "bytes": 15084,
+      "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc"
+    },
+    {
+      "path": "assets/rajdhani-latin-500-normal-DfvNI-Td.woff",
+      "bytes": 11760,
+      "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625"
+    },
+    {
+      "path": "assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "bytes": 15732,
+      "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601"
+    },
+    {
+      "path": "assets/rajdhani-latin-600-normal-Dx02qI2_.woff",
+      "bytes": 12092,
+      "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a"
+    },
+    {
+      "path": "assets/rajdhani-latin-700-normal-BPDUZo87.woff2",
+      "bytes": 15688,
+      "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f"
+    },
+    {
+      "path": "assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff",
+      "bytes": 12060,
+      "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31"
+    },
+    {
+      "path": "assets/visual-effects-ZRMFH9Ew.js",
+      "bytes": 107717,
+      "sha256": "6f5e4325e97806d17644cd2150d946ff86298917d87106a5ce5400719734a6e6"
+    },
+    {
+      "path": "build-info.json",
+      "bytes": 566,
+      "sha256": "e1a40930bd6b2c1aa0aeb36f9f430888ab8da32cc62144b4dab1f0d5d8265ad3"
+    },
+    {
+      "path": "favicon.svg",
+      "bytes": 283,
+      "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6"
+    },
+    {
+      "path": "index.html",
+      "bytes": 104452,
+      "sha256": "8632fe71abb813f1b4242b5c74d446622533d93f91e4e643e80b1eb57d032022"
+    },
+    {
+      "path": "models/big-chap-rigged.glb",
+      "bytes": 56951716,
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+    },
+    {
+      "path": "models/big-chap-run.glb",
+      "bytes": 79336,
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+    },
+    {
+      "path": "models/big-chap-walk.glb",
+      "bytes": 89968,
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+    },
+    {
+      "path": "models/city-hunter-biomask.glb",
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    {
+      "path": "models/city-hunter-body-corrected.glb",
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+    },
+    {
+      "path": "models/city-hunter-rigged.glb",
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    {
+      "path": "models/city-hunter-run.glb",
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    },
+    {
+      "path": "models/city-hunter-walk.glb",
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    {
+      "path": "models/jungle-hunter-biomask.glb",
+      "bytes": 34211520,
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+    },
+    {
+      "path": "models/jungle-hunter-rigged.glb",
+      "bytes": 53768472,
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+    },
+    {
+      "path": "models/jungle-hunter-run.glb",
+      "bytes": 79764,
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+    },
+    {
+      "path": "models/jungle-hunter-walk.glb",
+      "bytes": 90416,
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+    }
+  ],
+  "staticFiles": 30,
+  "glbFiles": 12,
+  "bytes": 268104848,
+  "previewOrigin": "http://127.0.0.1:4349",
+  "newMeshyCreditsSpent": 0
+}

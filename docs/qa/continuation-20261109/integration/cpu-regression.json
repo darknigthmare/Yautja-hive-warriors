@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "tests": 275,
+  "passed": 275,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "durationMs": 85867.506419,
+  "testFiles": 37,
+  "log": "docs/qa/continuation-20261109/integration/cpu-regression.txt",
+  "sha256": "4e1f162f4c5e21a1775251c8a49c1ad3f56c40d593c94a9c1b6fe92cd0fdf57d",
+  "scope": "Selected complete regression of 37 files for changed provenance, Musou UI, Carrier synchronization, insertion cameras, shared actor ownership and checkpoints; not the entire repository suite."
+}

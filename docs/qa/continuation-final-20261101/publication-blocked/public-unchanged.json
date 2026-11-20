@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-01T02:07:30.597Z",
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "files": [
+    {
+      "path": "/",
+      "http": 200,
+      "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185"
+    },
+    {
+      "path": "/build-info.json",
+      "http": 200,
+      "sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+      "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b"
+    }
+  ]
+}

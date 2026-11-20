@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-10-28T10:00:05.259793+00:00",
+  "scope": "Helper source snapshots preserved during the first production run, before any later diagnostic or helper correction. No runtime or dist changed.",
+  "runtimeSourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "files": [
+    {
+      "path": "docs/qa/pr3-next-20261028/run-complete-contexts.mjs",
+      "snapshot": "harness-source.mjs",
+      "sha256": "b98a74cd4f88b2e5d5cce998c936e8780a0d86c263a320b4c1361a75883f420b"
+    },
+    {
+      "path": "tests/helpers/complete-battlefield.mjs",
+      "snapshot": "route-helper-source.mjs",
+      "sha256": "e7af9e4bef2a0608226c671cc50ed365f74ab114c9167d2930fdb96511720c6a"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "snapshot": "insertion-helper-source.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    }
+  ]
+}

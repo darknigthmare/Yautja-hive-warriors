@@ -1,0 +1,14 @@
+✔ crowds share one telegraphed attack turn per player and cannot hit during insertion grace (12.188801ms)
+✔ engagement and acid pressure are bounded per living cooperative target; cleanup releases turns (0.836106ms)
+✔ an introductory warrior stays reachable on the ground even when the stalker roll would succeed (4.069575ms)
+✔ simulation batches preserve the complete wave and never consume a queued spawn without a safe sector point (14.270918ms)
+✔ real horde callbacks report each defeat once and distinguish the objective commander (2.246424ms)
+✔ a real horde update protects both hunters from stacked acid, contact and latch during startup (6.565207ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 274.125699

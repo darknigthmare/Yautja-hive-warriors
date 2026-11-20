@@ -1,0 +1,26 @@
+✔ biome weather creates a single animated batch and releases its previous buffers (746.060444ms)
+✔ gas explosions apply one area hit and expire without wall-clock timers (3.874071ms)
+✔ rebuilding hazards reuses geometry and cannot accumulate old pipes (3.974779ms)
+✔ each recent weather mode is finite, pauses, follows the scene quality and disposes its owned particles once (660.716205ms)
+✔ steam damage integrates elapsed seconds at 30, 60 and 120 FPS and vent counts are bounded (11.686352ms)
+✔ Cheyenne launches six real micro-rockets on the simulation clock, applies impacts, and cancels them on clear (2875.154234ms)
+✔ APC prioritizes an attainable boss through its real muzzle, preserves reload and removes tracer resources (89.765422ms)
+✔ all eleven biome light palettes restore after vision and lightning instead of returning to the old generic sky (6.578169ms)
+✔ raised industrial floors preserve the lower layer, use real access slopes and stop jumps at the visible underside (65.759704ms)
+✔ the solid helipad has four actual cardinal access routes rather than a step through its cylinder (72.328807ms)
+✔ resin walkways leave insertion airspace clear and preserve real lower and upper crossing layers (21.556823ms)
+✔ a real USCM flametrooper leaves the lower layer, uses the ramp and reaches firing range on the upper deck (3354.666248ms)
+✔ the legacy Stargazer radius42 enclosure cannot teleport distant fronts back into the insertion room (4236.138021ms)
+✔ ahead-of-view buffer restoration obeys its byte budget while visible terrain and both players always take priority (3.403011ms)
+✔ three real sectors and a return preserve destruction, objectives, contacts and the same CPU buffers (8089.958605ms)
+ℹ {"measurement":"Node CPU buffer preparation; no rendered GPU frame or actual VRAM measurement","budgetBytes":2097152,"measurements":[{"sector":"insertion","preparationCpuMs":0.10670300000128918,"aheadPreparedBytes":0,"mandatoryPreparedBytes":0,"pendingBytes":0,"eligibleGpuBytes":5049828},{"sector":"area-6","preparationCpuMs":0.5558639999999286,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1107448,"pendingBytes":0,"eligibleGpuBytes":5149152},{"sector":"nest","preparationCpuMs":0.11625400000048103,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1296248,"pendingBytes":0,"eligibleGpuBytes":5337952},{"sector":"insertion","preparationCpuMs":0.16685900000084075,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1008124,"pendingBytes":0,"eligibleGpuBytes":5049828}]}
+✔ main and flank trails are actual upward-facing world geometry linked to physical exits, independently of the HUD (498.417256ms)
+✔ route markings at the Val Verde insertion do not stretch from an access deck onto its roof (313.342569ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22026.590603

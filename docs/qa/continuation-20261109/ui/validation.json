@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "status": "targeted_tests_passed_browser_pending",
+  "verifiedAt": "2026-11-09T04:26:03.494385+00:00",
+  "worktreeHeadAtVerification": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "runtimeTreeDirty": true,
+  "scope": [
+    "Operation-linked terrain cards remain synchronized and reject contradictory manual selection until free selection returns",
+    "Long front source paragraphs are indexed outside small canvas plans; source and intelligence states retained",
+    "Compact Musou priority text uses stable keys from front configuration order"
+  ],
+  "sourceContract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+  "auditCriteriaRelated": [
+    "AUD-103",
+    "AUD-032"
+  ],
+  "auditCriteriaClosed": [],
+  "guides": {
+    "repository": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+    "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+    "guides": [
+      "game-ui-ux",
+      "input-systems"
+    ]
+  },
+  "fileHashes": {
+    "js/ui/OperationMapLabels.js": "b0fc9187539dcbd1e1a0892bac90d9a4d4cc9957759e17e608e438a1f8f2d4e6",
+    "js/ui/OperationBriefing.js": "118317c98e0af628535aee7550bc3c53e0b429763012bf17cae5f93a99b04399",
+    "js/ui/OperationPanel.js": "8dd68e6ed07d9ea287e949fd4012723fa86de9499940c8e637c026448de2f24d",
+    "js/ui/UIManager.js": "490c71dddcb142aa30583ed98cf475dfd1c4c3bc20d00af5f5199e4cc770cdb5",
+    "css/styles.css": "30d9c08f5d278902bf4b62a6e9d9eadea76c68366f25c1c86a225bb377e8b707",
+    "tests/operation-map-readability.test.js": "004fdf542179b3ad4a61e3d923386bff8035e60c93c7848b95f2e0ca6cda9ca2"
+  },
+  "tests": {
+    "status": "passed",
+    "tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 520.051045,
+    "command": "node --test tests/operation-map-readability.test.js tests/operation-minimap-accessibility.test.js tests/extinction-evolved-variant.test.js tests/hive-coordination-feedback.test.js tests/critical-front-debrief.test.js tests/musou-battle-flow.test.js",
+    "report": "docs/qa/continuation-20261109/ui/targeted-tests.txt",
+    "sha256": "4cfdd4fd87c1dd9187c55e6aec9e6255704fddafec5831fb5c38b50c82e95fe6",
+    "newTests": 9
+  },
+  "priorAttempt": {
+    "report": "docs/qa/continuation-20261109/ui/first-fixture-attempt.txt",
+    "tests": 12,
+    "passed": 10,
+    "failed": 2,
+    "reason": "The test DOM fixture lacked its style object; corrected the fixture only, with no runtime change to satisfy that error."
+  },
+  "syntaxAndScopedDiffCheck": "passed",
+  "browserExecutionByThisAgent": false,
+  "browserValidation": "pending independent QA; do not infer layout, keyboard scrolling or rendering certification from Node tests",
+  "runtimeMutationsOutOfScope": [],
+  "dataAndSaveSchemaChanged": false,
+  "hardwarePerformanceMeasured": false,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "limitations": [
+    "Miniature legend titles can be visually ellipsized; complete original descriptions remain in the briefing legend and accessible labels/title attributes.",
+    "No general command-map label layout, full HUD audit or visual fidelity closure.",
+    "Root applied one integration line in main.setupOperationSelection to call setOperationLevel; code owner remained root."
+  ]
+}

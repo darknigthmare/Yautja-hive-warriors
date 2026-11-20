@@ -1,0 +1,14 @@
+node --check js/main.js
+exitCode: 0
+
+node --check js/entities/Player.js
+exitCode: 0
+
+node --check tests/legacy-hitscan-cover.test.js
+exitCode: 0
+
+node --check tests/projectile-boss-cover.test.js
+exitCode: 0
+
+node --check docs/qa/gamedev-combat-cover-20261029/replay-existing-collision-checks.mjs
+exitCode: 0

@@ -1,0 +1,434 @@
+{
+  "scope": "Node calculation using actual Player.move, actual capsule model/collision and actual environment. Default hunt is Gunnison/mapSeed0; ValVerde and seed1 provide the changed-canopy comparison. No browser/event-loop or keyboard-dispatch inference.",
+  "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "reports": [
+    {
+      "levelId": "gunnison_forest",
+      "mapSeed": 0,
+      "phase": "complete",
+      "steps": 286,
+      "p1Initial": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Initial": [
+        6,
+        0,
+        4.2
+      ],
+      "p1Final": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Final": [
+        23.000000000000036,
+        0,
+        4.2
+      ],
+      "podRecords": [
+        {
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        },
+        {
+          "target": [
+            6,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        }
+      ],
+      "guards": {
+        "disposed": false,
+        "latched": false,
+        "perched": false,
+        "mountedSmartgun": false,
+        "hp": 1150,
+        "moveSpeed": 17
+      },
+      "canopySurfaces": 0,
+      "firstMove": {
+        "frame": 0,
+        "before": [
+          6,
+          0,
+          4.2
+        ],
+        "requested": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterEnvironment": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterPods": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "deltaX": 0.2833333333333332
+      },
+      "minimumDeltaX": 0.2833333333333332,
+      "maximumEnvironmentCorrection": 0,
+      "maximumPodCorrection": 0,
+      "movementFrames": 60
+    },
+    {
+      "levelId": "gunnison_forest",
+      "mapSeed": 1,
+      "phase": "complete",
+      "steps": 286,
+      "p1Initial": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Initial": [
+        6,
+        0,
+        4.2
+      ],
+      "p1Final": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Final": [
+        23.000000000000036,
+        0,
+        4.2
+      ],
+      "podRecords": [
+        {
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        },
+        {
+          "target": [
+            6,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        }
+      ],
+      "guards": {
+        "disposed": false,
+        "latched": false,
+        "perched": false,
+        "mountedSmartgun": false,
+        "hp": 1150,
+        "moveSpeed": 17
+      },
+      "canopySurfaces": 0,
+      "firstMove": {
+        "frame": 0,
+        "before": [
+          6,
+          0,
+          4.2
+        ],
+        "requested": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterEnvironment": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterPods": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "deltaX": 0.2833333333333332
+      },
+      "minimumDeltaX": 0.2833333333333332,
+      "maximumEnvironmentCorrection": 0,
+      "maximumPodCorrection": 0,
+      "movementFrames": 60
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "mapSeed": 0,
+      "phase": "complete",
+      "steps": 286,
+      "p1Initial": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Initial": [
+        6,
+        0,
+        4.2
+      ],
+      "p1Final": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Final": [
+        23.000000000000036,
+        0,
+        4.2
+      ],
+      "podRecords": [
+        {
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        },
+        {
+          "target": [
+            6,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        }
+      ],
+      "guards": {
+        "disposed": false,
+        "latched": false,
+        "perched": false,
+        "mountedSmartgun": false,
+        "hp": 1150,
+        "moveSpeed": 17
+      },
+      "canopySurfaces": 4,
+      "firstMove": {
+        "frame": 0,
+        "before": [
+          6,
+          0,
+          4.2
+        ],
+        "requested": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterEnvironment": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterPods": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "deltaX": 0.2833333333333332
+      },
+      "minimumDeltaX": 0.2833333333333332,
+      "maximumEnvironmentCorrection": 0,
+      "maximumPodCorrection": 0,
+      "movementFrames": 60
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "mapSeed": 1,
+      "phase": "complete",
+      "steps": 286,
+      "p1Initial": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Initial": [
+        6,
+        0,
+        4.2
+      ],
+      "p1Final": [
+        0,
+        0,
+        4.2
+      ],
+      "p2Final": [
+        23.000000000000036,
+        0,
+        4.2
+      ],
+      "podRecords": [
+        {
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        },
+        {
+          "target": [
+            6,
+            0,
+            0
+          ],
+          "exit": [
+            0,
+            0,
+            4.2
+          ],
+          "collisionProfile": {
+            "shellRadiusX": 2.06,
+            "shellRadiusZ": 1.85,
+            "shellOpeningAngle": 0.895353906273091,
+            "hingeX": 1.55,
+            "hingeZ": 1.46,
+            "doorLength": 1.53,
+            "maxOpeningAngle": 1.9634954084936207
+          }
+        }
+      ],
+      "guards": {
+        "disposed": false,
+        "latched": false,
+        "perched": false,
+        "mountedSmartgun": false,
+        "hp": 1150,
+        "moveSpeed": 17
+      },
+      "canopySurfaces": 4,
+      "firstMove": {
+        "frame": 0,
+        "before": [
+          6,
+          0,
+          4.2
+        ],
+        "requested": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterEnvironment": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "afterPods": [
+          6.283333333333333,
+          0,
+          4.2
+        ],
+        "deltaX": 0.2833333333333332
+      },
+      "minimumDeltaX": 0.2833333333333332,
+      "maximumEnvironmentCorrection": 0,
+      "maximumPodCorrection": 0,
+      "movementFrames": 60
+    }
+  ]
+}

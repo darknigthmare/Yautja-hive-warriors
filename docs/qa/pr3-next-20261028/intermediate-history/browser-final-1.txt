@@ -1,0 +1,33 @@
+✔ production: self-hosted startup tolerates damaged saved data (6820.858876ms)
+✔ menus: every modal closes cleanly, settings persist, keyboard focus is visible (12293.681897ms)
+✔ solo: selected loadout, movement, pause, photo, defeat, replay and cleanup (50864.524921ms)
+✔ campaign: a boss victory advances the chapter and loads its actual arena (54788.691228ms)
+
+Interrupted while running:
+
+⚠ tests/browser.test.mjs (tests/browser.test.mjs:1:1)
+✖ tests/browser.test.mjs (131310.775381ms)
+✖ tests/gameplay.test.mjs
+✖ tests/render-browser.test.mjs
+ℹ tests 7
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 3
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131317.053602
+
+✖ failing tests:
+
+test at tests/browser.test.mjs:1:1
+✖ tests/browser.test.mjs (131310.775381ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/gameplay.test.mjs:1:1
+✖ tests/gameplay.test.mjs
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/render-browser.test.mjs:1:1
+✖ tests/render-browser.test.mjs
+  'Promise resolution is still pending but the event loop has already resolved'

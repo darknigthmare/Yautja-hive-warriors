@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-09T04:24:05.201Z",
+  "repository": "https://github.com/darknigthmare/Yautja-hive-warriors",
+  "defaultBranch": "master",
+  "consolidationCommit": "aa82cb1849fe4e688972dfe59361752f50e968b5",
+  "branch": "codex/continuation-20261109",
+  "refs": [
+    {
+      "ref": "origin/codex/depth-pr3-20261028",
+      "commit": "3fed0a1521035f10f5d0ac72e88c9473fba78b32",
+      "committedAt": "2026-11-04T11:42:56+01:00",
+      "subject": "Merge pull request #6 from darknigthmare/codex/hive-nodes-ci-20261030",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/master",
+      "commit": "aa0048d52eb05624eccab45fa98de16e31a15c4d",
+      "committedAt": "2026-11-04T09:43:06+01:00",
+      "subject": "chore(ai): add Spec Kit, Superpowers and Claude studio tooling",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/codex/hive-nodes-ci-20261030",
+      "commit": "c553b853e25af168beed05449a40e0a94ee29336",
+      "committedAt": "2026-11-04T08:55:07+01:00",
+      "subject": "Merge pull request #7 from darknigthmare/codex/alien-base-integration-20261101",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/feat/alien-base-v1-integration",
+      "commit": "9ea0f7313403127516e1874346ba61f5bad283b9",
+      "committedAt": "2026-11-02T09:49:52+01:00",
+      "subject": "ci: verify Yautja shared entity IDs and v2 provenance using Node tests",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/codex/continuation-20261102",
+      "commit": "d08efe97f47bf2f4fcd8cf89f50f56aa1c9d9581",
+      "committedAt": "2026-11-02T06:11:53Z",
+      "subject": "docs: record verified continuation QA and strategic defeat acceptance",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/codex/alien-base-integration-20261101",
+      "commit": "040c28941d246d5f41555401cde367651e252cf7",
+      "committedAt": "2026-11-01T21:44:35+01:00",
+      "subject": "feat: publish cross-game enemy families, media works and TCG identities with 773-row parity ledger",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/codex/gamedev-guides-20261029",
+      "commit": "f549f051ba520f171e0d460058af85167aa7a5e0",
+      "committedAt": "2026-10-30T17:30:22+01:00",
+      "subject": "ci: valider build Vite, budget source, batailles Node et navigateur Chromium",
+      "ancestorOfConsolidation": false
+    },
+    {
+      "ref": "origin/codex/complete-pr3-20261026",
+      "commit": "2fa875e0cbf80d42a0d197874dbb9b24131882fd",
+      "committedAt": "2026-10-28T12:42:28+01:00",
+      "subject": "Merge pull request #4 from darknigthmare/codex/catalogue-completeness-20261027",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/codex/catalogue-completeness-20261027",
+      "commit": "b3048dc3425e5017e275361950fff372ebb6626c",
+      "committedAt": "2026-10-27T07:14:34+01:00",
+      "subject": "docs: approfondir l’audit USCM et porter le catalogue à 270 fiches",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/main",
+      "commit": "af90000169256bd8781536ba7eca45d843d4173c",
+      "committedAt": "2026-10-26T13:52:56+01:00",
+      "subject": "Merge pull request #3 from darknigthmare/codex/audit-musou-excel-20261026",
+      "ancestorOfConsolidation": false
+    },
+    {
+      "ref": "origin/codex/audit-musou-excel-20261026",
+      "commit": "0435827e41eae19472179e8116d9eb4105647664",
+      "committedAt": "2026-10-26T11:21:42+01:00",
+      "subject": "docs: enrichit l’audit Excel avec profils des médias et batailles à trois espèces",
+      "ancestorOfConsolidation": true
+    },
+    {
+      "ref": "origin/codex/validated-gameplay-20261025",
+      "commit": "1d52d9ff91dbe85c08256f44f8b72086ab65200a",
+      "committedAt": "2026-10-25T09:11:34Z",
+      "subject": "Record verified Vercel delivery and fidelity QA evidence",
+      "ancestorOfConsolidation": true
+    }
+  ],
+  "allFetchedHeadsIncluded": false,
+  "scope": "Git remote heads fetched November9; no pull-request API or external Bible path inferred.",
+  "historicalHeadsReviewedWithoutMerging": [
+    {
+      "ref": "origin/main",
+      "commit": "af90000169256bd8781536ba7eca45d843d4173c",
+      "reason": "Historical October26 merge node; current continuation retains the source audit criteria, immutable workbook and later implementation tracking. This is not selected as the current gameplay baseline.",
+      "evidence": "docs/qa/continuation-20261109/alignment-sources.json"
+    },
+    {
+      "ref": "origin/codex/gamedev-guides-20261029",
+      "commit": "f549f051ba520f171e0d460058af85167aa7a5e0",
+      "reason": "Historical CI head; its guidance and pinned guide registry are retained. Compared with the frozen current workflow,51lines are added and0removed; current source-bound checks include the earlier workflow.",
+      "workflow": "94630d8302c320eb7c39c78ad62f1464e6f4d538:.github/workflows/yhw-fidelity.yml"
+    }
+  ],
+  "allHeadsReviewed": true
+}

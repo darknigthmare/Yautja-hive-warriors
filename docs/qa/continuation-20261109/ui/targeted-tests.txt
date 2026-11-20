@@ -1,0 +1,32 @@
+✔ the evolved LV-742 scenario signs upgrades without adding soldiers, cargo or starting HP (112.84806ms)
+✔ normal, basic and evolved checkpoints cannot be exchanged or upgraded by a live actor flag (149.827932ms)
+✔ the evolved scenario rejects another continuity and unknown variant before mutating its configuration (9.063775ms)
+✔ a real hive officer death names its group, front and mechanical coordination loss in the HUD feedback (6.501618ms)
+✔ captured debrief retains group and front labels after the operation has been disposed (1.413005ms)
+✔ the final debrief renders the mechanical consequence after scene teardown (1.58355ms)
+✔ the command map renders that real consequence in its tactical journal instead of a generic report (1.036755ms)
+✔ gameplay identity is hunter action Musou, source-specific Extinction traits are supporting content (1.341409ms)
+✔ one confirmed officer loss changes the local battle and raises allied morale once (7.222632ms)
+✔ ordinary losses, neutral encounters and an unknown killer do not give a Musou officer break (0.855605ms)
+✔ Musou HUD ranks critical front, endangered captain, then contested front without revealing hidden hostiles (0.748826ms)
+✔ the officer break is local: distant allied formations do not receive map-wide morale (2.056745ms)
+✔ all 27 operations retain their finite, unmodified tactical battle catalogue (242.678033ms)
+✔ 27-operation fidelity matrix flags the five actual fallback troop allocations and preserves budget totals (10.843207ms)
+✔ programmatic terrain selection updates the same cards as a real level click (3.035273ms)
+✔ cards rebuilt after checkpoint selection preserve the selected terrain rather than the first row (0.350902ms)
+✔ an authored operation prevents a contradictory terrain click and immediately releases cards for a free terrain mode (1.024838ms)
+✔ LV-742 map keys and source descriptions stay identical for standard and enhanced variants (62.079617ms)
+✔ compact map labels retain unknown control and leave concise maps readable by name (0.245566ms)
+✔ real LV-742 minimap draws bounded keys without painting its long source paragraphs over the map (35.897199ms)
+✔ briefing legends retain every full front description and expose unknown control without hidden troop counts (0.38928ms)
+✔ canvas label strokes and text remain inside the image even at a boundary front (0.266477ms)
+✔ the actual Musou panel uses stable map keys for priority-sorted fronts without deleting source labels (22.4557ms)
+✔ the actual fronts minimap draws monochrome role shapes, stale hollow reports and dashed closed routes (2.679523ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 520.051045

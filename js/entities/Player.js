@@ -18,6 +18,11 @@ import { installCityHunterRightGauntlet } from '../graphics/CityHunterRightGaunt
 import { CITY_HUNTER_RIGHT_GAUNTLET } from '../graphics/CityHunterRightGauntletCalibration.js';
 import { HUNTER_WEAPON_PROFILES, HUNTER_ARSENAL_PROFILES, HUNTER_ACTION_EQUIPMENT, resolveHunterLoadout } from '../data/hunterArsenal.js';
 import { hunterCombatStyle } from '../data/hunterCombatStyles.js';
+import { battleCoordinationDamage } from '../engine/BattleActorSupport.js';
+import { canAccessLegacyAir, canHitLegacyAirTarget } from '../engine/LegacyAirstrikePolicy.js';
+import { PREY_LEVEL_ID, PREY_WEAPON_PROFILES, createPreyWeaponVisual } from '../graphics/PreyEquipment.js';
+import { TemporaryCombatEffects } from '../engine/TemporaryCombatEffects.js';
+import { canExecuteCombatTarget } from '../engine/HunterStealth.js';
 
 const REQUIRED_RIG_BONES = ['hips', 'head', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftFoot', 'rightFoot'];
 const REQUIRED_ACCESSORIES = ['blade1', 'blade2', 'shieldMesh', 'secWeaponMesh', 'plasmaGlaiveMesh', 'clanMarkMesh'];
@@ -51,6 +56,8 @@ export class Player {
       (imported?.adapter.visualGroundOffsetY ?? this._proceduralMotionRoot?.position.y ?? 0)) * (this.mesh?.scale.y ?? 1);
   }
 
+  getCollisionHeight() { return Math.max(2.4, this.cameraEyeHeight + .35); }
+
   constructor(scene, charData, audioEngine, isPlayer2 = false, particles = null) {
     this.scene = scene;
     this.data = charData;
@@ -61,6 +68,16 @@ export class Player {
     this._effects = new Set();
     this._ownedFxDisposers = new Map();
     this._legacyDefeated = new WeakSet();
+    this._temporaryCombatEffects = new TemporaryCombatEffects();
+    this.stealthRevealTimer = 0;
+    // Stealth opening (HW-DEC-87): after touchdown the hunter is unlocated, under
+    // the same senses as the cloak but without its damage reduction or energy.
+    this.isInsertionConcealed = false;
+    this.insertionConcealmentTimer = 0;
+    this.insertionConcealmentEndReason = null;
+    this.executionProtectionTimer = 0;
+    this.facehuggerHoldTimer = 0;
+    this.facehuggerEscapeImmunity = 0;
     this._simulationTime = 0;
     this._disposed = false;
     this._generatedVisualGeneration = 0;
@@ -77,6 +94,12 @@ export class Player {
     this.fidelityMode = 'adapted';
     this.lastArsenalRefusal = null;
     this.feralBoltAmmo = 12; this.feralBoltCooldown = 0;
+    this.hasTaabeBow = false; this.hasNaruAxe = false;
+    this.taabeArrowAmmo = 0; this.naruAxeCharges = 0;
+    this.preyEquipmentSourceLevel = null;
+    this._preyWeaponVisuals = new Map();
+    this.orangeFlowerTimer = 0; this.isOrangeFlowerActive = false;
+    this.taabeWarTimer = 0; this.isTaabeWarActive = false;
     this.activeWeapon = 'wristblades';
     this.weaponProfile = { damage: 1, reach: 3.8, timing: 1 };
     this.bearTrapCharges = 3;
@@ -576,6 +599,8 @@ export class Player {
   _removeImportedCharacter() {
     const imported = this._importedCharacter;
     if (!imported) return;
+    // Held props belong to Player, not the replaceable native GLB template.
+    for (const visual of this._preyWeaponVisuals.values()) this.mesh.add(visual);
     for (const record of imported.records) {
       record.parent.add(record.object); record.object.position.copy(record.position);
       record.object.quaternion.copy(record.quaternion); record.object.scale.copy(record.scale);
@@ -651,6 +676,7 @@ export class Player {
     if (!this.canUseArsenalEquipment('combistick')) return false;
     if (this.combiStickCooldown > 0 || this.isFacehuggerLatched) return null;
     this.combiStickCooldown = 3.5;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playCombiStickThrow();
 
     const isElevated = this.isPerched || this.position.y >= 2.0;
@@ -675,6 +701,7 @@ export class Player {
     if (!this.canUseArsenalEquipment('shuriken')) return false;
     if (this.shurikenCooldown > 0 || this.isFacehuggerLatched) return null;
     this.shurikenCooldown = HUNTER_WEAPON_PROFILES.shuriken.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playShurikenOpen();
 
     const isElevated = this.isPerched || this.position.y >= 2.0;
@@ -875,6 +902,7 @@ export class Player {
     if (!this.canUseArsenalEquipment('smart_disc')) return false;
     if (this._disposed || this.hp <= 0 || this.smartDiscCooldown > 0 || this.isFacehuggerLatched) return null;
     this.smartDiscCooldown = HUNTER_WEAPON_PROFILES.smart_disc.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playSmartDiscHum();
     const origin = this.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
@@ -1092,10 +1120,7 @@ export class Player {
         if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a.mesh.position.distanceTo(this.position) <= empRadius) {
           a.hp -= 75;
-          a.speed = Math.max(2, a.speed * 0.3); // Severe nerve disruption
-          this.schedule(() => {
-            a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
-          }, 4000);
+          this._temporaryCombatEffects.slow(a, 'emp', .3, 4);
         }
       });
     }
@@ -1145,10 +1170,7 @@ export class Player {
       if (a.mesh.position.distanceTo(lurePoint) < 30) {
         a.mesh.position.addScaledVector(lurePoint.clone().sub(a.mesh.position).normalize(), 4.0);
         // Momentary disorientation
-        a.speed = Math.max(3, a.speed * 0.5);
-        this.schedule(() => {
-          a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
-        }, 2500);
+        this._temporaryCombatEffects.slow(a, 'voice_mimicry', .5, 2.5);
       }
     });
 
@@ -1169,7 +1191,16 @@ export class Player {
     return true;
   }
 
+  canExecuteTarget(victim, options = {}) {
+    return canExecuteCombatTarget(this, victim, { environment: this.gameContext?.env,
+      simulation: this.gameContext?.battleSimulation, ...options });
+  }
+
   executeSpineRip(victimKind = 'human') {
+    if (this._disposed || !(this.hp > 0) || this.isFacehuggerLatched || this.isRoyalFacehuggerLatched || this.executionProtectionTimer > 0) return false;
+    // Protect only the hunter's brief authored pose; other fronts keep fighting.
+    this.executionProtectionTimer = 2.2;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playSpineRip();
     this.audioEngine.playYautjaRoar();
     this.brandClanMark();
@@ -1178,11 +1209,13 @@ export class Player {
   }
 
   triggerFacehuggerLatch() {
+    if (this._disposed || this.hp <= 0 || this.isFacehuggerLatched || this.facehuggerEscapeImmunity > 0 || this.executionProtectionTimer > 0) return false;
     if (this.isBlocking || this.isPerched) {
       this.audioEngine.playShieldBlock();
-      return;
+      return false;
     }
     this.isFacehuggerLatched = true;
+    this.facehuggerHoldTimer = 12;
     this.qteStrugglePresses = 0;
     if (this.audioEngine.playFacehuggerLatch) {
       this.audioEngine.playFacehuggerLatch();
@@ -1216,6 +1249,7 @@ export class Player {
       this.headMesh.add(huggerGroup);
       this.latchedHuggerMesh = huggerGroup;
     }
+    return true;
   }
 
   struggleQTE() {
@@ -1225,12 +1259,14 @@ export class Player {
 
     if (this.qteStrugglePresses >= this.qteRequiredPresses) {
       this.isFacehuggerLatched = false;
+      this.facehuggerHoldTimer = 0;
+      this.facehuggerEscapeImmunity = 2.5;
       this.qteStrugglePresses = 0;
       this.audioEngine.playYautjaRoar();
       if (this.audioEngine.playAcidSizzle) this.audioEngine.playAcidSizzle();
 
       if (this.latchedHuggerMesh && this.headMesh) {
-        this.headMesh.remove(this.latchedHuggerMesh);
+        disposeObject(this.latchedHuggerMesh);
         this.latchedHuggerMesh = null;
       }
       return true;
@@ -1239,6 +1275,7 @@ export class Player {
   }
 
   deployBearTrap(horde) {
+    if (this.kitLocks?.tools && !this.canUseArsenalEquipment('bear_trap')) return false;
     if (this.bearTrapCharges <= 0) return false;
     this.bearTrapCharges--;
     const trapAttack = { origin: this.position, radius: 10, damage: 350 };
@@ -1347,9 +1384,20 @@ export class Player {
   }
 
   fireCompoundBow() {
+    if (this.activeWeapon === 'taabe_bow') {
+      if (this._disposed || this.hp <= 0 || this.isFacehuggerLatched || !this.canUseArsenalEquipment('taabe_bow') || this.compoundBowCooldown > 0 || !Number.isInteger(this.taabeArrowAmmo) || this.taabeArrowAmmo < 1 || this.taabeArrowAmmo > 12) return null;
+      this.taabeArrowAmmo--; this.compoundBowCooldown = PREY_WEAPON_PROFILES.taabe_bow.cooldown;
+      this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
+      this.audioEngine.playCompoundBowFire?.();
+      return { projectileKind: 'taabe_arrow', origin: this.position.clone().add(new THREE.Vector3(0, Math.min(2.2, this.cameraEyeHeight * .8), 0)),
+        direction: new THREE.Vector3(Math.sin(this.rotationY),0,Math.cos(this.rotationY)), speed:48,
+        damage:PREY_WEAPON_PROFILES.taabe_bow.projectileDamage, pierceRemaining:0, life:1.5, ammoCost:1, energyCost:0 };
+    }
+    if (this._disposed || this.hp <= 0) return null;
     if (!this.canUseArsenalEquipment('compound_bow')) return false;
     if (this.compoundBowCooldown > 0 || this.isFacehuggerLatched) return null;
     this.compoundBowCooldown = HUNTER_WEAPON_PROFILES.compound_bow.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
 
     this.audioEngine.playCompoundBowFire();
 
@@ -1527,7 +1575,7 @@ export class Player {
         if (a.hp > 0 && a.mesh.position.distanceTo(this.position) <= radius) {
           a.isAirborne = true;
           a.airborneVelY = 4.2; // Float up!
-          a.speed *= 0.2; // Severely slowed
+          this._temporaryCombatEffects.slow(a, 'anti_grav', .2, 4.5);
         }
       });
     }
@@ -1602,9 +1650,12 @@ export class Player {
     return !simulation || !actor.factionId || simulation.areHostile(simulation.config.playerFaction, actor.factionId);
   }
 
-  _canHitLegacyAlien(horde, actor, origin = null) {
+  _canHitLegacyAlien(horde, actor, origin = null, environment = this.gameContext?.env) {
     if (!this._canDamageLegacyAlien(horde, actor)) return false;
-    const environment = this.gameContext?.env;
+    return this._hasLegacyLineOfSight(actor, origin, environment);
+  }
+
+  _hasLegacyLineOfSight(actor, origin = null, environment = this.gameContext?.env) {
     const visual = actor.mesh ?? actor.group;
     if (!environment?.hasLineOfSight || !visual) return true;
     const from = origin ?? this.position.clone().add(new THREE.Vector3(0, 2, 0));
@@ -1648,6 +1699,7 @@ export class Player {
     this._disposed = true;
     this._generatedVisualGeneration++;
     this._timers = [];
+    this._temporaryCombatEffects.dispose();
     this._gadgetEffects?.dispose();
     this._gadgetEffects = null;
     [...this._effects].forEach(effect => this._removeOwnedEffect(effect));
@@ -1657,6 +1709,7 @@ export class Player {
     this.locomotion.dispose();
     this._removeImportedCharacter();
     disposeObject(this.mesh);
+    this._preyWeaponVisuals.clear();
   }
 
   applyLoadout(config = {}) {
@@ -1675,6 +1728,14 @@ export class Player {
   }
 
   canUseArsenalEquipment(id) {
+    // Ascension (spec 002): the Unblooded kit and the tools earned world after world, nothing else.
+    if (this.kitLocks?.tools) {
+      if (this.kitLocks.tools.has(id)) return true;
+      this.lastArsenalRefusal = { equipment: id, reason: 'unblooded_kit', message: 'Outil pas encore gagné par l’Unblooded.' };
+      this.gameContext?.ui?.showAnnouncement?.('OUTIL PAS ENCORE GAGNÉ — LA MEUTE L’APPRENDRA PLUS LOIN');
+      return false;
+    }
+    if (PREY_WEAPON_PROFILES[id]) return this._canUsePreyEquipment(id);
     if (this.fidelityMode !== 'faithful') return true;
     const reference = HUNTER_ARSENAL_PROFILES[this.data.id];
     if (reference?.weapons.includes(id) || this.loadout.gadgets.includes(id)) return true;
@@ -1693,6 +1754,18 @@ export class Player {
   }
 
   getWeaponState() {
+    if (PREY_WEAPON_PROFILES[this.activeWeapon]) {
+      const bow = this.activeWeapon === 'taabe_bow', profile = this.weaponProfile;
+      return { id:this.activeWeapon, fidelityMode:this.fidelityMode, definition:'adapted_human_reference_tool', fidelity1to1Verified:false,
+        action:bow?'projectile':'melee', actionMethod:bow?'fireCompoundBow':'lightAttack',
+        damage:this.meleeDamage*profile.damage*this.combatStyle.damage, radius:profile.reach*this.combatStyle.reach,
+        timing:profile.timing*(this.attackCooldownFactor||1), actionDamage:bow?profile.projectileDamage:this.meleeDamage*profile.damage*this.combatStyle.damage,
+        actionRange:bow?profile.projectileRange:profile.reach*this.combatStyle.reach, actionResource:bow?'arrows':'axe_charges',
+        actionCost:1, actionAmmo:bow?this.taabeArrowAmmo:this.naruAxeCharges, actionCooldown:bow?profile.cooldown:0,
+        actionCooldownRemaining:bow?this.compoundBowCooldown:0, rangedResource:bow?'arrows':'none', rangedCost:bow?1:0,
+        plasmaEnergy:this.plasmaEnergy, plasmaCost:0, stamina:this.stamina, lightCost:this.combatStyle.lightCost,
+        heavyCost:this.combatStyle.heavyCost*(1+Math.min(5,this.attackComboStep)*.12) };
+    }
     const actions = { smart_disc: 'throwSmartDisc', shuriken: 'throwShuriken', compound_bow: 'fireCompoundBow', crossbow: 'fireRangedShot' };
     const actionMethod = actions[this.activeWeapon] ?? 'lightAttack';
     const bolt = this.activeWeapon === 'crossbow' || (this.fidelityMode === 'faithful' && this.data.id === 'feral_predator');
@@ -1718,6 +1791,83 @@ export class Player {
     if (this._plasmaCasterVisual) this._plasmaCasterVisual.visible = !referenceFeral;
     if (this._feralFoldedShield) this._feralFoldedShield.visible = referenceFeral && this.loadout.gadgets.includes('feral_shield') && !this.isBlocking;
     if (this.shieldMesh && this.fidelityMode === 'faithful') this.shieldMesh.visible = this.isBlocking && this.loadout.gadgets.includes('feral_shield');
+    this._syncPreyWeaponVisuals();
+  }
+
+  _preyContextIsValid(sourceLevelId) {
+    const context = this.gameContext;
+    if (context) return (context.ui?.selectedLevel?.id ?? context.level?.id ?? context.levelData?.id ?? context.selectedLevel?.id) === PREY_LEVEL_ID;
+    return (sourceLevelId ?? this.preyEquipmentSourceLevel) === PREY_LEVEL_ID;
+  }
+
+  _canUsePreyEquipment(id, { allowLocked = false, sourceLevelId } = {}) {
+    const unlocked = id === 'taabe_bow' ? this.hasTaabeBow : id === 'naru_axe' && this.hasNaruAxe;
+    if (!PREY_WEAPON_PROFILES[id] || this._disposed || this.fidelityMode === 'faithful' || !this._preyContextIsValid(sourceLevelId) || (!allowLocked && !unlocked)) {
+      this.lastArsenalRefusal = { equipment:id, reason:this.fidelityMode==='faithful'?'unattested_in_reference_kit':'prey_tool_requires_mission_pickup', message:'Outil humain réservé aux trouvailles PREY du mode adapté.' };
+      return false;
+    }
+    return true;
+  }
+
+  equipPreyWeapon(id, { sourceLevelId } = {}) {
+    if (this.hp <= 0 || !this._canUsePreyEquipment(id,{allowLocked:true,sourceLevelId})) return false;
+    this.preyEquipmentSourceLevel = PREY_LEVEL_ID;
+    if (id === 'taabe_bow') this.hasTaabeBow = true; else this.hasNaruAxe = true;
+    return this.selectWeapon(id, false);
+  }
+
+  serializePreyEquipment() {
+    return { version:1, sourceLevelId:this.preyEquipmentSourceLevel, hasTaabeBow:this.hasTaabeBow, hasNaruAxe:this.hasNaruAxe,
+      taabeArrowAmmo:this.taabeArrowAmmo, naruAxeCharges:this.naruAxeCharges, selected:PREY_WEAPON_PROFILES[this.activeWeapon]?this.activeWeapon:null,
+      bowCooldown:Math.max(0,this.compoundBowCooldown), orangeFlowerRemaining:Math.max(0,this.orangeFlowerTimer),
+      taabeWarRemaining:Math.max(0,this.taabeWarTimer), mudRemaining:Math.max(0,this.mudCoatedTimer) };
+  }
+
+  restorePreyEquipment(saved) {
+    if (!saved || saved.version!==1 || this._disposed || (saved.sourceLevelId!==null && saved.sourceLevelId!==PREY_LEVEL_ID) ||
+      typeof saved.hasTaabeBow!=='boolean' || typeof saved.hasNaruAxe!=='boolean' ||
+      !Number.isInteger(saved.taabeArrowAmmo) || saved.taabeArrowAmmo<0 || saved.taabeArrowAmmo>12 ||
+      !Number.isInteger(saved.naruAxeCharges) || saved.naruAxeCharges<0 || saved.naruAxeCharges>4 ||
+      (!saved.hasTaabeBow&&saved.taabeArrowAmmo!==0) || (!saved.hasNaruAxe&&saved.naruAxeCharges!==0) ||
+      ((saved.hasTaabeBow||saved.hasNaruAxe)&&saved.sourceLevelId!==PREY_LEVEL_ID) ||
+      (saved.selected!==null && !PREY_WEAPON_PROFILES[saved.selected]) ||
+      (saved.selected==='taabe_bow'&&!saved.hasTaabeBow) || (saved.selected==='naru_axe'&&!saved.hasNaruAxe)) return false;
+    const durations = [['bowCooldown',10],['orangeFlowerRemaining',35],['taabeWarRemaining',25],['mudRemaining',30]];
+    if (durations.some(([key,max])=>!Number.isFinite(saved[key]??0)||(saved[key]??0)<0||(saved[key]??0)>max)) return false;
+    if (saved.sourceLevelId && !this._preyContextIsValid(saved.sourceLevelId)) return false;
+    this.preyEquipmentSourceLevel=saved.sourceLevelId; this.hasTaabeBow=saved.hasTaabeBow; this.hasNaruAxe=saved.hasNaruAxe;
+    this.taabeArrowAmmo=saved.taabeArrowAmmo; this.naruAxeCharges=saved.naruAxeCharges;
+    this.compoundBowCooldown=saved.bowCooldown??0;
+    this.orangeFlowerTimer=saved.orangeFlowerRemaining??0; this.isOrangeFlowerActive=this.orangeFlowerTimer>0;
+    this.taabeWarTimer=saved.taabeWarRemaining??0; this.isTaabeWarActive=this.taabeWarTimer>0;
+    this.mudCoatedTimer=saved.mudRemaining??0; this.isMudCoated=this.mudCoatedTimer>0;
+    if (saved.selected && this.fidelityMode!=='faithful') this.selectWeapon(saved.selected,false);
+    else if (PREY_WEAPON_PROFILES[this.activeWeapon]) this.selectWeapon(this.loadout.primary,false);
+    return true;
+  }
+
+  _syncPreyWeaponVisuals() {
+    if (!this._preyWeaponVisuals || !this.mesh) return;
+    const selected = PREY_WEAPON_PROFILES[this.activeWeapon] && this.fidelityMode!=='faithful' && this._preyContextIsValid() ? this.activeWeapon : null;
+    if (selected && !this._preyWeaponVisuals.has(selected)) this._preyWeaponVisuals.set(selected,createPreyWeaponVisual(selected));
+    if (selected && this.secWeaponMesh) this.secWeaponMesh.visible=false;
+    for (const [id,visual] of this._preyWeaponVisuals) {
+      const side=id==='taabe_bow'?'left':'right', native=this._importedCharacter?.adapter.sockets?.[`${side}Hand`];
+      const parent=native??this[`${side}Arm`]??this.mesh;
+      if (visual.parent!==parent) parent.add(visual);
+      visual.position.set(0,native?0:-1.3,native?0:.2); visual.rotation.set(0,0,id==='naru_axe'?-.12:0);
+      this.mesh.updateWorldMatrix(true,false); parent.updateWorldMatrix(true,false);
+      const parentScale=parent.getWorldScale(new THREE.Vector3()), ownerScale=this.mesh.getWorldScale(new THREE.Vector3());
+      visual.scale.set(Math.abs(ownerScale.x/parentScale.x),Math.abs(ownerScale.y/parentScale.y),Math.abs(ownerScale.z/parentScale.z));
+      visual.visible=id===selected;
+      visual.traverse(part=>{if(part.isMesh)part.visible=true;if(!part.material)return;
+        for(const material of(Array.isArray(part.material)?part.material:[part.material])) {
+          if(!this.armorMaterials.includes(material))this.armorMaterials.push(material);
+          if(this._uncloakedSurfaces&&!this._uncloakedSurfaces.has(material))this._uncloakedSurfaces.set(material,surfaceState(material));
+          if(this.isCloaked){material.transparent=true;material.opacity=.22;material.depthWrite=false;}
+        }
+      });
+    }
   }
 
   fireRangedShot(isCharged = false) {
@@ -1728,6 +1878,7 @@ export class Player {
     // held equipment and projectile admission agree.
     if (this.activeWeapon !== 'crossbow' && !this.selectWeapon('crossbow', false)) return null;
     this.feralBoltAmmo--; this.feralBoltCooldown = HUNTER_WEAPON_PROFILES.crossbow.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.lastArsenalRefusal = null;
     this.audioEngine.playFlechetteVolleyLaunch?.();
     this.mesh.updateWorldMatrix(true, true);
@@ -1745,7 +1896,7 @@ export class Player {
   }
 
   selectWeapon(id, playSound = true) {
-    const selected = HUNTER_WEAPON_PROFILES[id];
+    const selected = PREY_WEAPON_PROFILES[id] ?? HUNTER_WEAPON_PROFILES[id];
     if (!selected || !this.canUseArsenalEquipment(id)) return false;
     this.lastArsenalRefusal = null;
     this.activeWeapon = id;
@@ -1754,8 +1905,10 @@ export class Player {
     this.secWeaponMesh.visible = this.isSecondaryWeapon;
     this._syncWristbladeVisuals();
     // Give selected melee tools a distinct silhouette without changing shared materials.
-    this.secWeaponMesh.geometry.dispose();
-    this.secWeaponMesh.geometry = createHunterWeaponGeometry(id);
+    if (!PREY_WEAPON_PROFILES[id]) {
+      this.secWeaponMesh.geometry.dispose();
+      this.secWeaponMesh.geometry = createHunterWeaponGeometry(id);
+    }
     this._syncArsenalVisuals();
     if (playSound) this.audioEngine.playWeaponSwap();
     return true;
@@ -1769,6 +1922,8 @@ export class Player {
   }
 
   toggleCloak() {
+    // Ascension: the Unblooded learns the cloak at Rukh Tal (spec 002); switching it off is always allowed.
+    if (!this.isCloaked && this.kitLocks?.cloak) { this.gameContext?.ui?.showAnnouncement?.('CAMOUFLAGE NON APPRIS — IL S’ENSEIGNE À RUKH TAL'); return false; }
     this.isCloaked = !this.isCloaked;
     if (!this._uncloakedSurfaces) {
       this._uncloakedSurfaces = new Map([...this.skinMaterials, ...this.armorMaterials].map(material => [material, surfaceState(material)]));
@@ -1789,15 +1944,23 @@ export class Player {
   move(dir, delta) {
     if (this._disposed || !Number.isFinite(delta) || delta <= 0 || this.isFacehuggerLatched || this.isPerched || this.isMountedSmartgun) return;
 
+    let measuredStairTraversal = false;
     if (dir.lengthSq() > 0) {
       dir.normalize();
       let speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
       if (this.isExosuitActive) speedMult *= 1.25;
       if (this.isComancheWarPaintActive) speedMult *= 1.30; // +30% Comanche War Paint Spirit Agility (Prey 2022)
+      if (this.isTaabeWarActive && this.taabeWarTimer > 0) speedMult *= 1.30;
       if (this.isKenjiReflexesActive) speedMult *= 1.25; // +25% Ninja Agility (Killer of Killers 2025)
       if (this.isSyntheticAnkleGrabbed) speedMult *= 0.2;
       const moveDistance = this.moveSpeed * speedMult * delta;
-      this.position.addScaledVector(dir, moveDistance);
+      if (!this.isLeaping && this.gameContext?.env?.moveMeasuredStairTraversal) {
+        const displacement = this._measuredStairDisplacement ??= new THREE.Vector3();
+        displacement.copy(dir).multiplyScalar(moveDistance);
+        measuredStairTraversal = this.gameContext.env.moveMeasuredStairTraversal(
+          this.position, displacement, delta, .75, this.getCollisionHeight()) === true;
+      }
+      if (!measuredStairTraversal) this.position.addScaledVector(dir, moveDistance);
 
       const targetAngle = Math.atan2(dir.x, dir.z);
       let diff = targetAngle - this.rotationY;
@@ -1806,8 +1969,9 @@ export class Player {
       this.rotationY += diff * (1 - Math.exp(-12 * delta));
     }
 
-    // Verticality: Adjust elevation smoothly when traversing catwalks and ramps
-    if (!this.isLeaping && !this.isPerched) {
+    // Measured stairs already resolve their actual treads and final contacts.
+    // Other catwalks and ramps retain the ordinary smooth height adjustment.
+    if (!this.isLeaping && !this.isPerched && !measuredStairTraversal) {
       let groundY = 0;
       if (this.gameContext && this.gameContext.env && this.gameContext.env.getElevationAt) {
         groundY = this.gameContext.env.getElevationAt(this.position.x, this.position.z, this.position.y);
@@ -1815,6 +1979,7 @@ export class Player {
       this.position.y = THREE.MathUtils.lerp(this.position.y, groundY, 1 - Math.exp(-18 * delta));
     }
 
+    this.gameContext?.env?.resolveMovement?.(this.position, .75, this.getCollisionHeight());
     this.mesh.position.copy(this.position);
     this.mesh.rotation.y = this.rotationY;
   }
@@ -1825,6 +1990,11 @@ export class Player {
   }
 
   _beginCombatWindow(kind, staminaCost, oldDuration) {
+    const stealthPrepared = kind === 'light' && (this.isCloaked || this.isInsertionConcealed) && this.stealthRevealTimer <= 0 && this.cloakFlickerTimer <= 0;
+    const candidates = this.gameContext?.horde?.aliens;
+    const stealthUnawareTargets = stealthPrepared && Array.isArray(candidates) ?
+      new WeakSet(candidates.filter(target => target && target._npcTarget !== this)) : undefined;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     const style = this.combatStyle, heavy = kind === 'heavy';
     const windup = (heavy ? style.heavyWindup : style.lightWindup) * this.weaponProfile.timing;
     const active = heavy ? style.heavyActive : style.lightActive;
@@ -1838,7 +2008,7 @@ export class Player {
     const follow = target.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -side * (heavy ? .78 : .44)));
     const rest = this.locomotion.arms.find(arm => arm.node === this.rightArm)?.rest.clone() ?? new THREE.Quaternion();
     this._attackArmPose = { id: this.currentAttackId, target, lead, follow, rest, applied: target.clone() };
-    return { attackId: this.currentAttackId, style: style.id, windup, hitDelay: windup + active * .5, activeDuration: active, recovery, duration, staminaCost };
+    return { attackId: this.currentAttackId, style: style.id, windup, hitDelay: windup + active * .5, activeDuration: active, recovery, duration, staminaCost, stealthPrepared, stealthUnawareTargets };
   }
 
   _updateAttackArmPose() {
@@ -1875,12 +2045,21 @@ export class Player {
       crowdCooldown: this.crowdAttackCooldown, attackId: this.currentAttackId, window: this.attackWindow ? { ...this.attackWindow } : null,
       lightChainLength: this.combatStyle.lightChainLength, lightCost: this.combatStyle.lightCost,
       nextHeavyCost: this.combatStyle.heavyCost * (1 + Math.min(5, this.attackComboStep) * .12), lastRefusal: this.lastCombatRefusal,
+      stealth: { concealed: this.isCloaked && this.stealthRevealTimer <= 0 && this.cloakFlickerTimer <= 0 && !this.isAttacking,
+        revealedFor: this.stealthRevealTimer, ambushMultiplier: 2.5, definition: 'original_gameplay_adaptation' },
+      impairments: this.isRoyalFacehuggerLatched ? [{ kind: 'royal_facehugger', remaining: Math.max(0, this.royalFacehuggerHoldTimer ?? 5), exit: 'E × 8 : arracher' }] :
+        this.isFacehuggerLatched ? [{ kind: 'facehugger', remaining: this.facehuggerHoldTimer, exit: 'E × 5 : arracher' }] :
+        this.isSyntheticAnkleGrabbed ? [{ kind: 'ankle_grab', remaining: Math.max(0, this.ankleGrabTimer), exit: 'Déplacement ralenti temporairement' }] : [],
+      executionProtection: this.executionProtectionTimer,
       definition: 'original_gameplay_adaptation', fidelity1to1Verified: false };
   }
 
   lightAttack() {
     if (this._disposed || this.hp <= 0 || this.isAttacking || this.isBlocking || this.isFacehuggerLatched) return null;
+    if (this.activeWeapon==='taabe_bow') { this.lastCombatRefusal='projectile_action_required'; return null; }
+    if (this.activeWeapon==='naru_axe' && (!this.canUseArsenalEquipment('naru_axe') || !Number.isInteger(this.naruAxeCharges) || this.naruAxeCharges<1 || this.naruAxeCharges>4)) { this.lastCombatRefusal='axe_charges'; return null; }
     if (!this._spendCombatStamina(this.combatStyle.lightCost)) return null;
+    if (this.activeWeapon==='naru_axe') this.naruAxeCharges--;
     this.isAttacking = true;
     this.attackComboStep = (this.attackComboStep % this.combatStyle.lightChainLength) + 1;
     this.attackTimer = 0.28 * this.weaponProfile.timing * (this.attackCooldownFactor || 1);
@@ -1937,6 +2116,19 @@ export class Player {
 
   heavyAttack() {
     if (this._disposed || this.hp <= 0 || this.isAttacking || this.isBlocking || this.isFacehuggerLatched) return null;
+    if (this.activeWeapon==='taabe_bow') { this.lastCombatRefusal='projectile_action_required'; return null; }
+    if (this.activeWeapon==='naru_axe') {
+      if (!this.canUseArsenalEquipment('naru_axe') || !Number.isInteger(this.naruAxeCharges) || this.naruAxeCharges<1 || this.naruAxeCharges>4) { this.lastCombatRefusal='axe_charges'; return null; }
+      const cost=this.combatStyle.heavyCost;
+      if(!this._spendCombatStamina(cost))return null;
+      this.naruAxeCharges--; this.isAttacking=true; this.attackComboStep=0; this.comboResetTimer=0;
+      this.rightArm.rotation.x=-Math.PI*.7; this.rightArm.rotation.y=.2;
+      this.audioEngine.playSlash?.();
+      const window=this._beginCombatWindow('heavy',cost,.65);
+      return {...window,type:'heavy',step:0,chargeType:'prey_axe',chargeName:'HACHE À LIEN — FRAPPE LOURDE',
+        damage:this.meleeDamage*this.weaponProfile.damage*this.combatStyle.damage*2,
+        radius:this.weaponProfile.reach*this.combatStyle.reach,angle:Math.PI*.65,knockback:2.5};
+    }
     const step = this.attackComboStep;
     if (step >= 3 && this.crowdAttackCooldown > 0) { this.lastCombatRefusal = 'crowd_cooldown'; return null; }
     const staminaCost = this.combatStyle.heavyCost * (1 + Math.min(5, step) * .12);
@@ -2075,6 +2267,7 @@ export class Player {
     }
     if (this.plasmaEnergy < energyCost || this.isFacehuggerLatched) return null;
     this.plasmaEnergy -= energyCost;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
 
     this.audioEngine.playPlasmaShot();
     if (isCharged && this.audioEngine.playC6CataclysmBoom) {
@@ -2111,12 +2304,6 @@ export class Player {
     if (this.isRoryTelemetryActive) {
       dmg *= 1.35; // +35% decoded Yautja telemetry critical damage boost (The Predator 2018)
     }
-    if (this.isOrangeFlowerActive) {
-      dmg *= 1.50; // +50% thermal stealth critical strike (Prey 2022)
-    }
-    if (this.isMudCoated) {
-      dmg *= 1.40; // +40% mud-masked ambush strike (Prey 2022)
-    }
     if (this.isComancheWarPaintActive) {
       dmg *= 1.25; // +25% Comanche War Paint kinetic force (Prey 2022)
     }
@@ -2149,6 +2336,9 @@ export class Player {
 
   takeDamage(amount, isAcid = false, attacker = null, attackContext = {}) {
     if (!Number.isFinite(amount) || amount <= 0 || this._disposed) return this.hp;
+    if (this.executionProtectionTimer > 0) return this.hp;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
+    if(attacker?.battleUnitId)amount=battleCoordinationDamage(attacker,amount);
     if (!attackContext || typeof attackContext !== 'object') attackContext = {};
     // Chantier 4 & Lucas QA (v51.0): Dedicated Active Wristblade Parry Deflection [F]
     const parryable = !isAcid && attackContext.parryable === true;
@@ -2256,6 +2446,7 @@ export class Player {
     if (isAcid && this.hasEnkiduArmor) {
       amount *= (1.0 - (this.acidResistance || 0.40));
     }
+    if (isAcid && this.isMudCoated && this.mudCoatedTimer>0) amount *= .6;
     // Chantier 10 (v54.0): Cauterizing Wristblade 30% Acid Reduction
     if (isAcid && this.hasCauterizingWristblade) {
       amount *= 0.70;
@@ -2370,12 +2561,33 @@ export class Player {
     this._syncArsenalVisuals();
   }
 
+  beginInsertionConcealment(seconds = 25) {
+    if (!(this.hp > 0) || !Number.isFinite(seconds) || seconds <= 0) return false;
+    this.isInsertionConcealed = true; this.insertionConcealmentTimer = seconds; this.insertionConcealmentEndReason = null;
+    return true;
+  }
+
+  endInsertionConcealment(reason = 'ended') {
+    if (!this.isInsertionConcealed) return false;
+    this.isInsertionConcealed = false; this.insertionConcealmentTimer = 0; this.insertionConcealmentEndReason = reason;
+    return true;
+  }
+
   update(delta, horde = null) {
     if (this._disposed || !Number.isFinite(delta) || delta < 0) return;
     // A paused/photo frame still propagates explicit FPS visibility and pose
     // changes. It must not advance timers, attacks, cooldowns or resources.
     if (delta === 0) { this._syncVisualState(0); return; }
     this._simulationTime += delta;
+    if (this.isInsertionConcealed) {
+      this.insertionConcealmentTimer = Math.max(0, this.insertionConcealmentTimer - delta);
+      const reason = this.stealthRevealTimer > 0 ? 'revealed' : this.insertionConcealmentTimer <= 0 ? 'expired' : null;
+      if (reason) this.endInsertionConcealment(reason);
+    }
+    this.stealthRevealTimer = Math.max(0, this.stealthRevealTimer - delta);
+    this.executionProtectionTimer = Math.max(0, this.executionProtectionTimer - delta);
+    this.facehuggerEscapeImmunity = Math.max(0, this.facehuggerEscapeImmunity - delta);
+    this._temporaryCombatEffects.update(delta);
     this.feralBoltCooldown = Math.max(0, this.feralBoltCooldown - delta);
     this.crowdAttackCooldown = Math.max(0, this.crowdAttackCooldown - delta);
     const idleTime = this.isAttacking ? Math.max(0, delta - Math.max(0, this.attackTimer)) : delta;
@@ -2525,12 +2737,19 @@ export class Player {
     }
 
     if (this.isFacehuggerLatched) {
+      // Repeated latch calls cannot restart this deadline. Struggling ends it
+      // sooner; the finite hold still releases a surviving hunter automatically.
+      this.facehuggerHoldTimer -= delta;
       this.takeDamage(40 * delta);
+      if (this.facehuggerHoldTimer <= 0) {
+        this.isFacehuggerLatched = false; this.facehuggerHoldTimer = 0; this.qteStrugglePresses = 0;
+        this.facehuggerEscapeImmunity = 2.5;
+        if (this.latchedHuggerMesh) { disposeObject(this.latchedHuggerMesh); this.latchedHuggerMesh = null; }
+      }
     }
 
-    if (this.parryTimer > 0) {
-      this.parryTimer = Math.max(0, this.parryTimer - delta);
-    }
+    // The parry window is counted once, in _updateLegacyStates, which also closes the parry (AUD-091).
+    // A second count here halved every window and could stop at zero with the parry still open.
 
     if (this.riposteTimer > 0) {
       this.riposteTimer = Math.max(0, this.riposteTimer - delta);
@@ -2575,7 +2794,7 @@ export class Player {
       const previousY = this.position.y;
       this.leapVelocityY -= grav * delta;
       this.position.y += this.leapVelocityY * delta;
-      const vertical = this.gameContext?.env?.resolveVerticalMovement?.(this.position, previousY, 2.4);
+      const vertical = this.gameContext?.env?.resolveVerticalMovement?.(this.position, previousY, this.getCollisionHeight());
       if (vertical?.blocked) { this.position.copy(vertical.point); this.leapVelocityY = 0; }
 
       if (this.position.y <= groundY) {
@@ -2947,26 +3166,32 @@ export class Player {
     // Emit 3 rapid ionized azure/violet plasma burst sparks
     for (let b = 0; b < 3; b++) {
       this.schedule(() => {
-        const boltOrigin = origin.clone().addScaledVector(forward, 1.5 + b * 0.4);
+        const boltPos = origin.clone().addScaledVector(forward, 24.0);
+        const wallHit = environment?.traceSegment?.(origin, boltPos, { radius: .03 });
+        const impactFraction = Number.isFinite(wallHit?.t) ? THREE.MathUtils.clamp(wallHit.t, 0, 1) : 1;
+        // Custom colliders may supply only t. Keep the effect and interaction
+        // on the same finite segment, including a wall immediately at the muzzle.
+        const impactPos = origin.clone().lerp(boltPos, impactFraction);
+        const boltOrigin = origin.clone().addScaledVector(forward, Math.min(1.5 + b * 0.4, 24 * impactFraction));
         if (particles && particles.emitSparks) {
           particles.emitSparks(boltOrigin, 5);
         }
 
         // Raycast hit check along trajectory
         let hitTarget = false;
-        const boltPos = origin.clone().addScaledVector(forward, 24.0);
 
         // Check boss hit
-        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          const bossDist = bosses.activeBoss.mesh.position.distanceTo(origin);
+        const boss = bosses?.activeBoss;
+        if (boss?.mesh) {
+          const bossDist = boss.mesh.position.distanceTo(origin);
           if (bossDist <= 28.0) {
-            const toBoss = bosses.activeBoss.mesh.position.clone().sub(origin).normalize();
-            if (forward.dot(toBoss) > 0.88) {
+            const toBoss = boss.mesh.position.clone().sub(origin).normalize();
+            if (forward.dot(toBoss) > 0.88 && this._hasLegacyLineOfSight(boss, origin, environment)) {
               const isCrit = Math.random() < 0.45;
               const dmg = 95 * (isCrit ? 3.0 : 1.0);
               bosses.takeDamage(dmg, horde);
               hitTarget = true;
-              if (particles && particles.emitSparks) particles.emitSparks(bosses.activeBoss.mesh.position, 8);
+              if (particles && particles.emitSparks) particles.emitSparks(boss.mesh.position, 8);
               if (isCrit && this.gameContext && this.gameContext.ui) {
                 this.gameContext.ui.showAnnouncement('💥 TIR CRITIQUE PISTOLET PLASMA (AVP-R) : 285 DÉGÂTS D\'ÉNERGIE PURE !');
               }
@@ -2987,7 +3212,7 @@ export class Player {
               if (forward.dot(toAlien) > 0.88) {
                 const isCrit = Math.random() < 0.5;
                 const dmg = 95 * (isCrit ? 3.0 : 1.0);
-                if (!this._canHitLegacyAlien(horde, a, boltOrigin)) continue;
+                if (!this._canHitLegacyAlien(horde, a, origin, environment)) continue;
                 a.hp -= dmg;
                 hitTarget = true;
 
@@ -3008,9 +3233,10 @@ export class Player {
           }
         }
 
-        // Trigger electric floor grid if bolt lands on it
-        if (environment && environment.checkElectricGridInteraction) {
-          environment.checkElectricGridInteraction(boltPos, this, this.gameContext ? this.gameContext.ui : null, this.audioEngine, particles, horde);
+        // An actor consumes this bolt. Otherwise the grid owner checks the
+        // physical impact and visibility to the actual candidate grid.
+        if (!hitTarget && environment && environment.checkElectricGridInteraction) {
+          environment.checkElectricGridInteraction(impactPos, this, this.gameContext ? this.gameContext.ui : null, this.audioEngine, particles, horde, origin);
         }
       }, b * 85);
     }
@@ -3254,11 +3480,11 @@ export class Player {
       // Slow down and damage Xenomorphs in cloud
       if (horde && horde.aliens) {
         horde.aliens.forEach(a => {
-        if (!this._canDamageLegacyAlien(horde, a)) return;
+        if (!this._canHitLegacyAlien(horde, a, center, environment)) return;
           if (!a || a.hp <= 0 || !a.mesh) return;
           if (a.mesh.position.distanceTo(center) <= 7.5) {
             a.hp -= 15; // 30 dmg per second
-            a.speed = Math.max(2.5, a.speed * 0.7); // 70% slow down
+            this._temporaryCombatEffects.slow(a, 'neurotoxin', .7, 1);
             if (Math.random() < 0.2 && particles && particles.emitSmoke) {
               particles.emitSmoke(a.mesh.position, 2);
             }
@@ -3269,9 +3495,12 @@ export class Player {
       // Slow synthetics in cloud
       if (synthetics && synthetics.androids) {
         synthetics.androids.forEach(syn => {
-          if (syn.mesh.position.distanceTo(center) <= 7.5) {
+          const simulation = synthetics.battleSimulation;
+          const hostile = !simulation || !syn.factionId || simulation.areHostile(simulation.config.playerFaction, syn.factionId);
+          const visible = !(environment ?? this.gameContext?.env)?.hasLineOfSight || (environment ?? this.gameContext?.env).hasLineOfSight(center, syn.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)));
+          if (syn.hp > 0 && hostile && visible && syn.mesh.position.distanceTo(center) <= 7.5) {
             syn.hp -= 10;
-            syn.speed = Math.max(1.8, syn.speed * 0.7);
+            this._temporaryCombatEffects.slow(syn, 'neurotoxin', .7, 1);
           }
         });
       }
@@ -3776,27 +4005,42 @@ export class Player {
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
     const origin = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
 
-    // 45m Hypersonic Linear Railgun Beam + 6 Blue Ionization Shock Rings
-    const railGroup = new THREE.Group();
-    const beamGeo = new THREE.CylinderGeometry(0.08, 0.08, 45.0, 8);
-    beamGeo.rotateX(Math.PI / 2);
-    const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.95 });
-    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
-    beamMesh.position.copy(origin).addScaledVector(forward, 22.5);
-    beamMesh.lookAt(origin.clone().addScaledVector(forward, 45.0));
-    railGroup.add(beamMesh);
+    const range = 45.0;
+    const shotEnvironment = environment ?? this.gameContext?.env;
+    const beamEnd = origin.clone().addScaledVector(forward, range);
+    const wall = shotEnvironment?.traceSegment?.(origin, beamEnd, { radius: 0.08 });
+    const beamLength = range * (Number.isFinite(wall?.t) ? THREE.MathUtils.clamp(wall.t, 0, 1) : 1);
 
-    for (let r = 1; r <= 6; r++) {
-      const ringGeo = new THREE.TorusGeometry(0.45 + r * 0.08, 0.04, 6, 16);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.85 });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.position.copy(origin).addScaledVector(forward, r * 6.5);
-      ring.lookAt(origin.clone().addScaledVector(forward, 45.0));
-      railGroup.add(ring);
+    // Pierce actors, but stop the rail and its effects at the first physical cover.
+    if (beamLength > 0) {
+      const railGroup = new THREE.Group();
+      const beamGeo = new THREE.CylinderGeometry(0.08, 0.08, beamLength, 8);
+      beamGeo.rotateX(Math.PI / 2);
+      const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.95 });
+      const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+      beamMesh.position.copy(origin).addScaledVector(forward, beamLength / 2);
+      beamMesh.lookAt(beamEnd);
+      railGroup.add(beamMesh);
+
+      for (let r = 1; r <= 6; r++) {
+        const distance = r * 6.5, ringRadius = 0.45 + r * 0.08, tubeRadius = 0.04;
+        if (distance + tubeRadius > beamLength) continue;
+        const ringPosition = origin.clone().addScaledVector(forward, distance);
+        // A conservative swept envelope also keeps wide cosmetic rings out of
+        // side walls. It never changes the narrower rail's damage trajectory.
+        if (shotEnvironment?.traceSegment?.(origin, ringPosition, { radius: ringRadius + tubeRadius })) continue;
+        const ringGeo = new THREE.TorusGeometry(ringRadius, tubeRadius, 6, 16);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.85 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.copy(ringPosition);
+        ring.lookAt(beamEnd);
+        railGroup.add(ring);
+      }
+
+      this._addOwnedEffect(railGroup);
+      // Ownership, not scene attachment, controls disposal after early detach.
+      this.schedule(() => this._removeOwnedEffect(railGroup), 220);
     }
-
-    this._addOwnedEffect(railGroup);
-    this.schedule(() => this._removeOwnedEffect(railGroup), 220);
 
     // Pierce up to 15 enemies in a 45m line (550 armor-piercing damage, ignores 100% ballistic armor)
     let piercedCount = 0;
@@ -3809,11 +4053,11 @@ export class Player {
         const toEnemy = a.mesh.position.clone().sub(this.position);
         toEnemy.y = 0;
         const dist = toEnemy.length();
-        if (dist <= 45.0) {
+        if (dist <= range) {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
-          if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.95) {
-            if (!this._canHitLegacyAlien(horde, a, origin)) continue;
+          if (proj > 0 && proj <= beamLength && perpDist <= (a.radius || 1.2) + 0.95) {
+            if (!this._canHitLegacyAlien(horde, a, origin, shotEnvironment)) continue;
             a.hp -= 550;
             piercedCount++;
             if (particles && particles.emitSparks) {
@@ -3833,12 +4077,15 @@ export class Player {
       }
     }
 
-    // Pierce active boss
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+    // Pierce the active boss only along the accessible segment from the muzzle.
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0) {
+      const toBoss = boss.mesh.position.clone().sub(this.position);
       toBoss.y = 0;
       const dist = toBoss.length();
-      if (dist <= 45.0 && toBoss.normalize().dot(forward) > 0.88) {
+      const proj = toBoss.dot(forward);
+      if (dist <= range && proj <= beamLength && toBoss.normalize().dot(forward) > 0.88 &&
+        this._hasLegacyLineOfSight(boss, origin, shotEnvironment)) {
         bosses.takeDamage(550, horde);
         piercedCount++;
       }
@@ -4142,18 +4389,26 @@ export class Player {
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
     const startPos = this.position.clone().add(new THREE.Vector3(0, 2.3, 0));
 
-    // Incandescent orange-white tungsten spike beam
-    const spikeGeo = new THREE.CylinderGeometry(0.06, 0.06, 38.0, 8);
-    spikeGeo.rotateX(Math.PI / 2);
-    const spikeMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.95 });
-    const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
-    spikeMesh.position.copy(startPos).add(forward.clone().multiplyScalar(19.0));
-    spikeMesh.lookAt(startPos.clone().add(forward.clone().multiplyScalar(38.0)));
-    this._addOwnedEffect(spikeMesh);
+    const range = 38.0;
+    const endPos = startPos.clone().addScaledVector(forward, range);
+    const wall = this.gameContext?.env?.traceSegment?.(startPos, endPos, { radius: 0.06 });
+    // Custom physical colliders may report only the normalized hit fraction.
+    const beamLength = wall ? range * Math.max(0, Math.min(1, wall.t)) : range;
 
-    this.schedule(() => {
-      if (spikeMesh.parent) this._removeOwnedEffect(spikeMesh);
-    }, 180);
+    // Incandescent orange-white tungsten spike beam, ending at physical cover.
+    if (beamLength > 0) {
+      const spikeGeo = new THREE.CylinderGeometry(0.06, 0.06, beamLength, 8);
+      spikeGeo.rotateX(Math.PI / 2);
+      const spikeMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.95 });
+      const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
+      spikeMesh.position.copy(startPos).addScaledVector(forward, beamLength / 2);
+      spikeMesh.lookAt(endPos);
+      this._addOwnedEffect(spikeMesh);
+
+      this.schedule(() => {
+        if (spikeMesh.parent) this._removeOwnedEffect(spikeMesh);
+      }, 180);
+    }
 
     let hitTarget = false;
     if (horde && horde.aliens) {
@@ -4168,7 +4423,7 @@ export class Player {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
           if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.85) {
-            if (!this._canHitLegacyAlien(horde, a, null)) continue;
+            if (!this._canHitLegacyAlien(horde, a, startPos)) continue;
             a.hp -= 680;
             // Cauterizes Ancient Predalien Elder regeneration and bypasses frontal armor!
             a.regenActive = false;
@@ -4191,10 +4446,11 @@ export class Player {
       }
     }
 
-    if (!hitTarget && bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+    const boss = bosses?.activeBoss;
+    if (!hitTarget && boss?.mesh) {
+      const toBoss = boss.mesh.position.clone().sub(this.position);
       toBoss.y = 0;
-      if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.86) {
+      if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.86 && this._hasLegacyLineOfSight(boss, startPos)) {
         bosses.takeDamage(680, horde);
         hitTarget = true;
       }
@@ -4252,14 +4508,17 @@ export class Player {
   callInfiltrationDropshipBombing(horde, bosses, particles, audio, ui = null) {
     if (!this.canUseArsenalEquipment('dropship_bombing')) return false;
     if (this.dropshipBombingCooldown > 0) return false;
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const startPos = this.position.clone();
+    const impacts = Array.from({ length: 6 }, (_, index) => {
+      const point = startPos.clone().addScaledVector(forward, (index + 1) * 4.2); point.y = .2; return point;
+    });
+    if (!impacts.every(point => canAccessLegacyAir(this.missionSupportContext, point, 4.8))) return false;
     this.dropshipBombingCooldown = 28.0;
 
     if (audio && audio.playYautjaDropshipSwoop) {
       audio.playYautjaDropshipSwoop();
     }
-
-    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
-    const startPos = this.position.clone();
 
     // Swooping 3D Yautja Stealth Infiltration Dropship
     const dropshipGroup = new THREE.Group();
@@ -4304,8 +4563,8 @@ export class Player {
     // Drop 6 plasma cluster bomblets along 25m corridor
     for (let b = 1; b <= 6; b++) {
       this.schedule(() => {
-        const bombPos = startPos.clone().add(forward.clone().multiplyScalar(b * 4.2));
-        bombPos.y = 0.2;
+        const bombPos = impacts[b - 1].clone();
+        if (!canAccessLegacyAir(this.missionSupportContext, bombPos, 4.8)) return;
 
         // Plasma napalm fireball explosion
         const fireGeo = new THREE.SphereGeometry(2.4, 12, 12);
@@ -4341,7 +4600,7 @@ export class Player {
             const a = horde.aliens[j];
           if (!this._canDamageLegacyAlien(horde, a)) continue;
             if (!a || a.hp <= 0 || !a.mesh) continue;
-            if (a.mesh.position.distanceTo(bombPos) <= 4.8) {
+            if (a.mesh.position.distanceTo(bombPos) <= 4.8 && canHitLegacyAirTarget(this.missionSupportContext, a)) {
               a.hp -= 420;
               if (a.hp <= 0) {
                 if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
@@ -4352,7 +4611,7 @@ export class Player {
         }
 
         if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          if (bosses.activeBoss.mesh.position.distanceTo(bombPos) <= 5.5) {
+          if (bosses.activeBoss.mesh.position.distanceTo(bombPos) <= 5.5 && canHitLegacyAirTarget(this.missionSupportContext, bosses.activeBoss)) {
             bosses.takeDamage(380, horde);
           }
         }
@@ -4416,13 +4675,14 @@ export class Player {
     // Update active persistent napalm fire patches
     for (let i = this.activeDropshipBombs.length - 1; i >= 0; i--) {
       const p = this.activeDropshipBombs[i];
+      if (!canAccessLegacyAir(this.missionSupportContext, p.pos, p.radius)) { this.activeDropshipBombs.splice(i, 1); continue; }
       p.timer -= delta;
       if (horde && horde.aliens) {
         for (let j = horde.aliens.length - 1; j >= 0; j--) {
           const a = horde.aliens[j];
           if (!this._canDamageLegacyAlien(horde, a)) continue;
           if (!a || a.hp <= 0 || !a.mesh) continue;
-          if (a.mesh.position.distanceTo(p.pos) <= p.radius) {
+          if (a.mesh.position.distanceTo(p.pos) <= p.radius && canHitLegacyAirTarget(this.missionSupportContext, a)) {
             if (!this._canHitLegacyAlien(horde, a, p.pos)) continue;
             a.hp -= p.dps * delta;
             if (a.hp <= 0) {
@@ -4692,15 +4952,15 @@ export class Player {
       if (this.caseyDeconTimer <= 0) this.isCaseyDeconActive = false;
     }
     if (this.orangeFlowerTimer > 0) {
-      this.orangeFlowerTimer -= delta;
+      this.orangeFlowerTimer = Math.max(0,this.orangeFlowerTimer-delta);
       if (this.orangeFlowerTimer <= 0) this.isOrangeFlowerActive = false;
     }
     if (this.taabeWarTimer > 0) {
-      this.taabeWarTimer -= delta;
+      this.taabeWarTimer = Math.max(0,this.taabeWarTimer-delta);
       if (this.taabeWarTimer <= 0) this.isTaabeWarActive = false;
     }
     if (this.mudCoatedTimer > 0) {
-      this.mudCoatedTimer -= delta;
+      this.mudCoatedTimer = Math.max(0,this.mudCoatedTimer-delta);
       if (this.mudCoatedTimer <= 0) this.isMudCoated = false;
     }
     if (this.comancheWarPaintTimer > 0) {
@@ -4763,20 +5023,30 @@ export class Player {
   }
 
   applyPreyMudCamouflage(duration = 30.0) {
-    this.mudCoatedTimer = duration;
+    if(this._disposed||this.hp<=0||!Number.isFinite(duration)||duration<=0)return false;
+    this.mudCoatedTimer = Math.min(30,duration);
     this.isMudCoated = true;
-    if (!this.isCloaked) this.toggleCloak();
+    return true;
   }
 
   applyOrangeFlowerBuff(duration = 35.0) {
-    this.orangeFlowerTimer = duration;
+    if(this._disposed||this.hp<=0||!Number.isFinite(duration)||duration<=0)return false;
+    this.orangeFlowerTimer = Math.min(35,duration);
     this.isOrangeFlowerActive = true;
-    this.isCloaked = true;
+    return true;
   }
 
   applyTaabeWarAgility(duration = 25.0) {
-    this.taabeWarTimer = duration;
+    if(this._disposed||this.hp<=0||!Number.isFinite(duration)||duration<=0)return false;
+    this.taabeWarTimer = Math.min(25,duration);
     this.isTaabeWarActive = true;
+    return true;
+  }
+
+  getThermalSignatureMultiplier() {
+    if(this.isOrangeFlowerActive&&this.orangeFlowerTimer>0)return .35;
+    if(this.isMudCoated&&this.mudCoatedTimer>0)return .6;
+    return 1;
   }
 
   applyFriendlyLobo(duration = 35.0) {
@@ -4874,37 +5144,45 @@ export class Player {
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
   loadClanForgeUpgrades() {
+    const keys = ['barbedCombiStick', 'serratedSmartDisc', 'overchargedCoil', 'masterWristblades', 'enkiduBattleplate',
+      'burnerPlasmaCoil', 'cauterizingWristblade', 'ceramicThermalArmor', 'dlexTargetingHUD'];
+    const current = this.forgeUpgrades ?? {};
+    const upgrades = Object.fromEntries(keys.map(key => [key, Object.hasOwn(current, key) && current[key] === true]));
     try {
-      if (typeof localStorage === 'undefined') return;
-      const saved = localStorage.getItem('yautja_clan_forge');
+      const saved = typeof localStorage === 'undefined' ? null : localStorage.getItem('yautja_clan_forge');
       if (saved) {
         const parsed = JSON.parse(saved);
-        this.forgeUpgrades = { ...this.forgeUpgrades, ...parsed };
-        if (this.forgeUpgrades.masterWristblades) {
-          this.parryWindowDuration = 0.58;
-        }
-        if (this.forgeUpgrades.enkiduBattleplate) {
-          this.hasEnkiduArmor = true;
-          this.acidResistance = 0.40;
-          this.gauntletCooldownReduction = 0.80;
-          this.maxHp = (this.data && this.data.stats && this.data.stats.maxHp ? this.data.stats.maxHp : 1000) + 250;
-        }
-        if (this.forgeUpgrades.burnerPlasmaCoil) {
-          this.hasBurnerCoil = true;
-        }
-        if (this.forgeUpgrades.cauterizingWristblade) {
-          this.hasCauterizingWristblade = true;
-        }
-        if (this.forgeUpgrades.ceramicThermalArmor) {
-          this.hasCeramicThermalArmor = true;
-        }
-        if (this.forgeUpgrades.dlexTargetingHUD) {
-          this.hasDlexTargetingHUD = true;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          for (const key of keys) if (Object.hasOwn(parsed, key) && parsed[key] === true) upgrades[key] = true;
         }
       }
     } catch (e) {
       console.warn('Failed to load forge upgrades:', e);
     }
+    // The honor debit is committed before the separate clan slot. Its receipt
+    // restores a paid upgrade when the second write failed, without charging again.
+    const ledger = this.gameContext?.forge?.honorLedger;
+    const state = ledger?.getSnapshot?.();
+    if (state?.recoveryRequired === false && state.readOnly === false) {
+      for (const key of keys) {
+        const id = `clan-forge:${key}`;
+        const receipt = Object.hasOwn(ledger.transactions, id) ? ledger.transactions[id] : null;
+        if (receipt?.kind === 'clan-upgrade' && Number.isSafeInteger(receipt.amount) && receipt.amount < 0) upgrades[key] = true;
+      }
+    }
+    this.forgeUpgrades = upgrades;
+    if (upgrades.masterWristblades) this.parryWindowDuration = 0.58;
+    if (upgrades.enkiduBattleplate) {
+      // Reopening the forge or recovering a save must preserve other HP bonuses.
+      if (!this.hasEnkiduArmor) this.maxHp += 250;
+      this.hasEnkiduArmor = true;
+      this.acidResistance = 0.40;
+      this.gauntletCooldownReduction = 0.80;
+    }
+    if (upgrades.burnerPlasmaCoil) this.hasBurnerCoil = true;
+    if (upgrades.cauterizingWristblade) this.hasCauterizingWristblade = true;
+    if (upgrades.ceramicThermalArmor) this.hasCeramicThermalArmor = true;
+    if (upgrades.dlexTargetingHUD) this.hasDlexTargetingHUD = true;
   }
 
   /* === CHANTIER 4 & LUCAS QA (v51.0): Dedicated Wristblade Parry Action [F] (AVP 2010 / Hunting Grounds) === */
@@ -4949,6 +5227,7 @@ export class Player {
 
   /* === CHANTIER 5 & ELENA QA (v51.0): Yautja Vocal Mimicry Decoy System [Y] (Predator 1987) === */
   triggerVoiceMimicryDecoy(horde, audioEngine, ui, particles) {
+    if (this.kitLocks?.tools && !this.canUseArsenalEquipment('voice_lure')) return false;
     if (this.mimicryCooldown > 0) return false;
     this.mimicryCooldown = 14.0;
 
@@ -5360,14 +5639,20 @@ export class Player {
 
     // Direct linear piercing beam
     const beamStart = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+    const environment = this.gameContext?.env;
     const beamEnd = beamStart.clone().addScaledVector(forward, range);
+    const wall = environment?.traceSegment?.(beamStart, beamEnd, { radius: 0.03 });
+    const beamLength = range * (Number.isFinite(wall?.t) ? THREE.MathUtils.clamp(wall.t, 0, 1) : 1);
+    beamEnd.copy(beamStart).addScaledVector(forward, beamLength);
 
-    if (particles && particles.emitExplosion) {
+    if (beamLength > 0 && particles && particles.emitExplosion) {
       particles.emitExplosion(beamEnd, 24);
     }
-    if (particles && particles.emitSparks) {
+    if (beamLength > 0 && particles && particles.emitSparks) {
       for (let step = 1; step <= 8; step++) {
-        const p = beamStart.clone().addScaledVector(forward, step * 5.0);
+        const distance = step * 5.0;
+        if (distance > beamLength) break;
+        const p = beamStart.clone().addScaledVector(forward, distance);
         particles.emitSparks(p, 6);
       }
     }
@@ -5381,10 +5666,11 @@ export class Player {
         if (alien && alien.mesh) {
           const toAlien = alien.mesh.position.clone().sub(beamStart);
           const projDist = toAlien.dot(forward);
-          if (projDist > 0 && projDist <= range) {
-            const perp = toAlien.clone().subScaledVector(forward, projDist);
+          if (projDist > 0 && projDist <= beamLength) {
+            const perp = toAlien.clone().addScaledVector(forward, -projDist);
             if (perp.length() <= 1.8) {
-              if (!this._canHitLegacyAlien(horde, alien, null)) return;
+              if (!this._canHitLegacyAlien(horde, alien, beamStart, environment)) return;
+              alien.lastDamageFaction = horde.battleSimulation?.config.playerFaction ?? 'player_clan';
               alien.hp -= lanceDamage;
               hitsCount++;
               if (particles && particles.emitAlienBloodSpurt) {
@@ -5397,13 +5683,14 @@ export class Player {
     }
 
     // Check piercing hit on boss
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(beamStart);
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0) {
+      const toBoss = boss.mesh.position.clone().sub(beamStart);
       const projDist = toBoss.dot(forward);
-      if (projDist > 0 && projDist <= range) {
-        const perp = toBoss.clone().subScaledVector(forward, projDist);
-        if (perp.length() <= 3.2) {
-          bosses.takeDamage(lanceDamage);
+      if (projDist > 0 && projDist <= beamLength) {
+        const perp = toBoss.clone().addScaledVector(forward, -projDist);
+        if (perp.length() <= 3.2 && this._hasLegacyLineOfSight(boss, beamStart, environment)) {
+          bosses.takeDamage(lanceDamage, horde);
           hitsCount++;
         }
       }
@@ -5411,13 +5698,17 @@ export class Player {
 
     // Check piercing hit on synthetics
     if (synthetics && synthetics.androids) {
+      const simulation = synthetics.battleSimulation;
+      const playerFaction = simulation?.config.playerFaction ?? 'player_clan';
       synthetics.androids.forEach(syn => {
-        if (syn && syn.mesh) {
+        if (syn?.mesh && syn.hp > 0) {
+          if (simulation && syn.factionId && !simulation.areHostile(playerFaction, syn.factionId)) return;
           const toSyn = syn.mesh.position.clone().sub(beamStart);
           const projDist = toSyn.dot(forward);
-          if (projDist > 0 && projDist <= range) {
-            const perp = toSyn.clone().subScaledVector(forward, projDist);
-            if (perp.length() <= 1.8) {
+          if (projDist > 0 && projDist <= beamLength) {
+            const perp = toSyn.clone().addScaledVector(forward, -projDist);
+            if (perp.length() <= 1.8 && this._hasLegacyLineOfSight(syn, beamStart, environment)) {
+              syn.lastDamageFaction = playerFaction;
               syn.hp -= lanceDamage;
               hitsCount++;
             }

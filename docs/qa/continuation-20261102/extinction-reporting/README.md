@@ -1,0 +1,13 @@
+# Suivi courant des capacités Extinction — 2 novembre 2026
+
+Cette mise à jour corrige le registre CSV de 29 profils sans modifier les constats historiques du 26 octobre, les 132 contrôles du second audit ou les budgets et identités du jeu. Les profils sans revue courante sont annoncés comme non réévalués ; une ancienne absence n'est plus recopiée comme verdict du code actuel. Toutes les certifications visuelles restent à « non ».
+
+La cargaison Carrier de six individus, la capacité Supercarrier de douze sur profil signé, sa destruction incendiaire et le lâcher 3D étaient déjà implémentés avant cette passe. Leur consolidation ne constitue pas une nouvelle génération de modèles. Les contrôles ciblés de développement repassent : [9 cas cargo](carrier-cargo-baseline.txt) et [5 cas de vol](carrier-flight-baseline.txt), sans création d'identité, dépassement du budget ou falsification de cargaison.
+
+La variante améliorée optionnelle signe maintenant Supercarrier et Colossal Resilience dans une configuration différente. Sa capacité de douze garde **six occupants préparés**, pas douze parasites créés. Les IDs, PV initiaux et allocations restent identiques ; les checkpoints normal, standard et amélioré ne sont pas interchangeables. Voir [le prévol des huit cas de variante](../evolved-variant/review.json). Il s'agit d'un choix de scénario original, pas d'un achat via une Reine ni d'une économie STR.
+
+Le Ravager amélioré dispose désormais de la même phase finie en scène proche et à distance : douze secondes d'incapacité, corps vulnérable et posé procéduralement, puis récupération d'au moins 50 % des PV sur le même acteur/ID. Le feu, un coup terminal excessif ou un nouvel achèvement peuvent empêcher le retour. Le délai et l'usage consommé sont sauvegardés ; la pause conserve la phase. La réduction cinétique de 18 %, le seuil de blessure et les timings sont des réglages Musou, sans équivalence source 1:1 revendiquée. Les [tests détaillés du Ravager](../ravager-detailed/) complètent les tests distants existants.
+
+Le test de couverture CSV lit maintenant chaque vraie ligne, y compris les champs cités avec sauts de ligne. Il vérifie la conservation de chaque constat historique et la certification « non » de chaque caste, plutôt que chercher « NON implémenté » dans tout le fichier. Les capacités présentes ne sont donc plus niées pour satisfaire ce contrôle.
+
+Ces tests sont des contrôles logiciels de composants. Ils ne constituent ni un playtest humain, ni une recette de toutes les opérations, ni une mesure matérielle, ni une comparaison multi-angle des modèles aux œuvres. Le build final et ses scénarios navigateur restent des gates séparés avant toute clôture centrale.

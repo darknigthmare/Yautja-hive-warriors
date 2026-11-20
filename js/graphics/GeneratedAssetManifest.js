@@ -6820,5 +6820,915 @@ export const GENERATED_ASSETS = Object.freeze({
       "fidelity_1_to_1_verified": false
     },
     "assembly_note": "Raw provider rig plus calibrated local skin repair. A measured 28,590-vertex tail uses nine private weighted joints and bounded floor contact. Four additional measured ankle/toe joints articulate 5,081 vertices within the 8,138 reviewed lower-leg/foot vertices, preserving rigid collars and UV seams. Real clip rotations drive bounded joint motion; 1,953 exact supports provide visual contact compensation while preserving airborne phases. No planted-foot IK or horizontal anti-slide; foot anatomy remains simplified. Source GLB, rest surfaces, UVs and textures unchanged."
+  },
+  "feral_predator": {
+    "status": "verified",
+    "type": "character",
+    "url": "/models/feral-predator-rigged.glb",
+    "sha256": "adb114db0c37697e6c2e2a48e91121413fd65b7592e0d0ee8306c5995dd82ca8",
+    "resource": "rigging",
+    "task_id": "01a1e281-ee65-7151-b41f-d7c66528acef",
+    "source_task_id": "01a1e27d-b841-71dd-bfd7-ec8ca24cd965",
+    "characterRig": {
+      "calibrated": true,
+      "height": 4.31,
+      "forwardAxis": "+z",
+      "boneMap": {
+        "hips": "Hips",
+        "head": "Head",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "poseOffsets": {
+        "leftArm": [
+          -0.10822911737206792,
+          -2.9619717151208036e-8,
+          -0.31503511252160904,
+          0.9428888301680762
+        ],
+        "rightArm": [
+          -0.08218577850611786,
+          6.826195741993502e-8,
+          0.3861316813687786,
+          0.9187754310693153
+        ]
+      },
+      "accessories": {
+        "blade1": {
+          "socket": "rightHand",
+          "position": [
+            2.6806552173527223,
+            -5.454721424569968,
+            10.917626719733107
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "blade2": {
+          "socket": "rightHand",
+          "position": [
+            -2.9147563336866327,
+            -5.840561578871785,
+            10.65488056130964
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "shieldMesh": {
+          "socket": "leftHand",
+          "position": [
+            5.767995700328722,
+            -4.6930944489606645,
+            16.147815416773966
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "secWeaponMesh": {
+          "socket": "leftHand",
+          "position": [
+            1.5679054313611651,
+            8.242611523599038,
+            5.17552905061126
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "plasmaGlaiveMesh": {
+          "socket": "rightHand",
+          "position": [
+            -0.7597305306676319,
+            6.258472826644194,
+            6.98865034837759
+          ],
+          "quaternion": [
+            -0.03136862172477495,
+            0.2532222034698939,
+            0.9665130868064533,
+            -0.02733092336641233
+          ],
+          "scale": [
+            51.04408934784341,
+            51.04407344895156,
+            51.04407312577678
+          ]
+        },
+        "clanMarkMesh": {
+          "socket": "head",
+          "position": [
+            -0.12332512324888434,
+            29.862644822026994,
+            28.550950614444787
+          ],
+          "quaternion": [
+            -0.42946253450806454,
+            -0.0027094923646970603,
+            0.04397770682545782,
+            0.9020091746262123
+          ],
+          "scale": [
+            51.044086952324655,
+            51.044073513541726,
+            51.04407294039788
+          ]
+        }
+      },
+      "cameraEyeHeight": 3.8376651470827396,
+      "laserSight": {
+        "origin": [
+          0.394024,
+          4.025615,
+          0.372731
+        ],
+        "radius": 0.025
+      }
+    },
+    "animationUrls": {
+      "walk": "/models/feral-predator-walk.glb",
+      "run": "/models/feral-predator-run.glb"
+    },
+    "animationSha256": {
+      "walk": "6a48d4494508eb622bfc368feab2d35e9279295d5f7a243df0a9500ab8e2503e",
+      "run": "6fa0bc9c985a188a23fd53c6874b88181ae8a749e7cf8d6047fd98dbed00dd1a"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Meshy image-to-3d (A-pose) from Prime 1 Studio MMPR-07 front view; diorama slab removed locally (61,901 -> 42,963 triangles, textures unchanged); Meshy meshyrig rig. Socket, pose and eye calibration start from jungle_hunter (same 24-bone template) and are checked in game. See docs/meshy/HUNTERS-20261116.md."
+  },
+  "wolf_predator": {
+    "status": "verified",
+    "type": "character",
+    "url": "/models/wolf-predator-rigged.glb",
+    "sha256": "c91b638219453e1707b1d330ab35bc3922fff7950a65c58ea1a23ac0d6ca01d1",
+    "resource": "rigging",
+    "task_id": "01a1e289-300c-7443-8cb3-7acc3e19658b",
+    "source_task_id": "01a1e286-96f0-770f-87b0-585b909249a0",
+    "characterRig": {
+      "calibrated": true,
+      "height": 4.31,
+      "forwardAxis": "+z",
+      "boneMap": {
+        "hips": "Hips",
+        "head": "Head",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "poseOffsets": {
+        "leftArm": [
+          -0.10822911737206792,
+          -2.9619717151208036e-8,
+          -0.31503511252160904,
+          0.9428888301680762
+        ],
+        "rightArm": [
+          -0.08218577850611786,
+          6.826195741993502e-8,
+          0.3861316813687786,
+          0.9187754310693153
+        ]
+      },
+      "accessories": {
+        "blade1": {
+          "socket": "rightHand",
+          "position": [
+            2.6806552173527223,
+            -5.454721424569968,
+            10.917626719733107
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "blade2": {
+          "socket": "rightHand",
+          "position": [
+            -2.9147563336866327,
+            -5.840561578871785,
+            10.65488056130964
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "shieldMesh": {
+          "socket": "leftHand",
+          "position": [
+            5.767995700328722,
+            -4.6930944489606645,
+            16.147815416773966
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "secWeaponMesh": {
+          "socket": "leftHand",
+          "position": [
+            1.5679054313611651,
+            8.242611523599038,
+            5.17552905061126
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "plasmaGlaiveMesh": {
+          "socket": "rightHand",
+          "position": [
+            -0.7597305306676319,
+            6.258472826644194,
+            6.98865034837759
+          ],
+          "quaternion": [
+            -0.03136862172477495,
+            0.2532222034698939,
+            0.9665130868064533,
+            -0.02733092336641233
+          ],
+          "scale": [
+            51.04408934784341,
+            51.04407344895156,
+            51.04407312577678
+          ]
+        },
+        "clanMarkMesh": {
+          "socket": "head",
+          "position": [
+            -0.12332512324888434,
+            29.862644822026994,
+            28.550950614444787
+          ],
+          "quaternion": [
+            -0.42946253450806454,
+            -0.0027094923646970603,
+            0.04397770682545782,
+            0.9020091746262123
+          ],
+          "scale": [
+            51.044086952324655,
+            51.044073513541726,
+            51.04407294039788
+          ]
+        }
+      },
+      "cameraEyeHeight": 3.8376651470827396,
+      "laserSight": {
+        "origin": [
+          0.394024,
+          4.025615,
+          0.372731
+        ],
+        "radius": 0.025
+      }
+    },
+    "animationUrls": {
+      "walk": "/models/wolf-predator-walk.glb",
+      "run": "/models/wolf-predator-run.glb"
+    },
+    "animationSha256": {
+      "walk": "f87701d14b2ccab3227e8cb6623c564f8ee424e72da31b71b204885482cadb9e",
+      "run": "fc65940b32091ff87a141e1c586580603060dd638cb1bba8dc6fb23dbc497fc9"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Meshy image-to-3d (A-pose) from an image-to-image isolation (task 01a1e285-c553-76d0-aedb-cddec023a30c, AI-adapted input) of Prime 1 Studio REMAVP-01 photos a009 and a005; Meshy meshyrig rig. Socket, pose and eye calibration start from jungle_hunter (same 24-bone template) and are checked in game. See docs/meshy/HUNTERS-20261116.md."
+  },
+  "alpha_predator": {
+    "status": "verified",
+    "type": "character",
+    "url": "/models/alpha-predator-rigged.glb",
+    "sha256": "d011a354d21ddb0dfdde36484d83ac4d7ead6d1867171657b3438d357b27be45",
+    "resource": "rigging",
+    "task_id": "01a1e2c8-62f8-769f-bad6-156af81e2bd3",
+    "source_task_id": "01a1e2c4-b2cb-7415-a620-20688512a511",
+    "characterRig": {
+      "calibrated": true,
+      "height": 4.31,
+      "forwardAxis": "+z",
+      "boneMap": {
+        "hips": "Hips",
+        "head": "Head",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "poseOffsets": {
+        "leftArm": [
+          -0.10822911737206792,
+          -2.9619717151208036e-8,
+          -0.31503511252160904,
+          0.9428888301680762
+        ],
+        "rightArm": [
+          -0.08218577850611786,
+          6.826195741993502e-8,
+          0.3861316813687786,
+          0.9187754310693153
+        ]
+      },
+      "accessories": {
+        "blade1": {
+          "socket": "rightHand",
+          "position": [
+            2.6806552173527223,
+            -5.454721424569968,
+            10.917626719733107
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "blade2": {
+          "socket": "rightHand",
+          "position": [
+            -2.9147563336866327,
+            -5.840561578871785,
+            10.65488056130964
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "shieldMesh": {
+          "socket": "leftHand",
+          "position": [
+            5.767995700328722,
+            -4.6930944489606645,
+            16.147815416773966
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "secWeaponMesh": {
+          "socket": "leftHand",
+          "position": [
+            1.5679054313611651,
+            8.242611523599038,
+            5.17552905061126
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "plasmaGlaiveMesh": {
+          "socket": "rightHand",
+          "position": [
+            -0.7597305306676319,
+            6.258472826644194,
+            6.98865034837759
+          ],
+          "quaternion": [
+            -0.03136862172477495,
+            0.2532222034698939,
+            0.9665130868064533,
+            -0.02733092336641233
+          ],
+          "scale": [
+            51.04408934784341,
+            51.04407344895156,
+            51.04407312577678
+          ]
+        },
+        "clanMarkMesh": {
+          "socket": "head",
+          "position": [
+            -0.12332512324888434,
+            29.862644822026994,
+            28.550950614444787
+          ],
+          "quaternion": [
+            -0.42946253450806454,
+            -0.0027094923646970603,
+            0.04397770682545782,
+            0.9020091746262123
+          ],
+          "scale": [
+            51.044086952324655,
+            51.044073513541726,
+            51.04407294039788
+          ]
+        }
+      },
+      "cameraEyeHeight": 3.8376651470827396,
+      "laserSight": {
+        "origin": [
+          0.394024,
+          4.025615,
+          0.372731
+        ],
+        "radius": 0.025
+      }
+    },
+    "animationUrls": {
+      "walk": "/models/alpha-predator-walk.glb",
+      "run": "/models/alpha-predator-run.glb"
+    },
+    "animationSha256": {
+      "walk": "4b225e1f14e8acfeb19f21a7013e77dd74ca84c3ecd2b7888e3ba8d91b99881a",
+      "run": "680724ceac4f3ba9efcc2995758080762f8d0ea62626f6b5fbad05449fda61ef"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Corps Meshy image-to-3d en pose A depuis une image isolée par IA (image-to-image nano-banana, tâche 01a1e2c3-1733-7352-8050-7c7d23567a85) à partir de la photo officielle de face de la figurine NECA Ultimate Alpha Predator ; bâton d'os retiré, griffes réduites par l'IA. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée."
+  },
+  "samurai_predator": {
+    "status": "verified",
+    "type": "character",
+    "url": "/models/samurai-predator-rigged.glb",
+    "sha256": "1c3d45d2fb3d5797a29bea88255d216dd4cabb8bbd9e82b2e2ccc31cdfe823a6",
+    "resource": "rigging",
+    "task_id": "01a1e2c9-acc5-73ff-9d6c-e47f1fa951e3",
+    "source_task_id": "01a1e2c6-dade-70ed-a515-48e342b081ff",
+    "characterRig": {
+      "calibrated": true,
+      "height": 4.31,
+      "forwardAxis": "+z",
+      "boneMap": {
+        "hips": "Hips",
+        "head": "Head",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "poseOffsets": {
+        "leftArm": [
+          -0.10822911737206792,
+          -2.9619717151208036e-8,
+          -0.31503511252160904,
+          0.9428888301680762
+        ],
+        "rightArm": [
+          -0.08218577850611786,
+          6.826195741993502e-8,
+          0.3861316813687786,
+          0.9187754310693153
+        ]
+      },
+      "accessories": {
+        "blade1": {
+          "socket": "rightHand",
+          "position": [
+            2.6806552173527223,
+            -5.454721424569968,
+            10.917626719733107
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "blade2": {
+          "socket": "rightHand",
+          "position": [
+            -2.9147563336866327,
+            -5.840561578871785,
+            10.65488056130964
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "shieldMesh": {
+          "socket": "leftHand",
+          "position": [
+            5.767995700328722,
+            -4.6930944489606645,
+            16.147815416773966
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "secWeaponMesh": {
+          "socket": "leftHand",
+          "position": [
+            1.5679054313611651,
+            8.242611523599038,
+            5.17552905061126
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "plasmaGlaiveMesh": {
+          "socket": "rightHand",
+          "position": [
+            -0.7597305306676319,
+            6.258472826644194,
+            6.98865034837759
+          ],
+          "quaternion": [
+            -0.03136862172477495,
+            0.2532222034698939,
+            0.9665130868064533,
+            -0.02733092336641233
+          ],
+          "scale": [
+            51.04408934784341,
+            51.04407344895156,
+            51.04407312577678
+          ]
+        },
+        "clanMarkMesh": {
+          "socket": "head",
+          "position": [
+            -0.12332512324888434,
+            29.862644822026994,
+            28.550950614444787
+          ],
+          "quaternion": [
+            -0.42946253450806454,
+            -0.0027094923646970603,
+            0.04397770682545782,
+            0.9020091746262123
+          ],
+          "scale": [
+            51.044086952324655,
+            51.044073513541726,
+            51.04407294039788
+          ]
+        }
+      },
+      "cameraEyeHeight": 3.8376651470827396,
+      "laserSight": {
+        "origin": [
+          0.394024,
+          4.025615,
+          0.372731
+        ],
+        "radius": 0.025
+      }
+    },
+    "animationUrls": {
+      "walk": "/models/samurai-predator-walk.glb",
+      "run": "/models/samurai-predator-run.glb"
+    },
+    "animationSha256": {
+      "walk": "dc64e5ea227ba06269101025cae15934d465ca0a66d3caea4ebefe61fa9e6561",
+      "run": "2aae6bc3c5792c1ed8b2109bfc7c0e1398dbc79405fd821b7435e2f5fbd04781"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Corps Meshy image-to-3d en pose A directement depuis la photo officielle de face de la figurine NECA Ultimate Samurai Predator (Predator: Hunting Grounds), fond blanc, sans retouche. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée."
+  },
+  "viking_predator": {
+    "status": "verified",
+    "type": "character",
+    "url": "/models/viking-predator-rigged.glb",
+    "sha256": "c372736a5a096daec3cf3b507bdfa8a22fdda7edca20502dc102177f497d020a",
+    "resource": "rigging",
+    "task_id": "01a1e2cb-cc9b-74a0-8d46-0c6b845ae07f",
+    "source_task_id": "01a1e2c8-255e-718c-9812-5051b0cefa13",
+    "characterRig": {
+      "calibrated": true,
+      "height": 4.31,
+      "forwardAxis": "+z",
+      "boneMap": {
+        "hips": "Hips",
+        "head": "Head",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "poseOffsets": {
+        "leftArm": [
+          -0.10822911737206792,
+          -2.9619717151208036e-8,
+          -0.31503511252160904,
+          0.9428888301680762
+        ],
+        "rightArm": [
+          -0.08218577850611786,
+          6.826195741993502e-8,
+          0.3861316813687786,
+          0.9187754310693153
+        ]
+      },
+      "accessories": {
+        "blade1": {
+          "socket": "rightHand",
+          "position": [
+            2.6806552173527223,
+            -5.454721424569968,
+            10.917626719733107
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "blade2": {
+          "socket": "rightHand",
+          "position": [
+            -2.9147563336866327,
+            -5.840561578871785,
+            10.65488056130964
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "shieldMesh": {
+          "socket": "leftHand",
+          "position": [
+            5.767995700328722,
+            -4.6930944489606645,
+            16.147815416773966
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "secWeaponMesh": {
+          "socket": "leftHand",
+          "position": [
+            1.5679054313611651,
+            8.242611523599038,
+            5.17552905061126
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "plasmaGlaiveMesh": {
+          "socket": "rightHand",
+          "position": [
+            -0.7597305306676319,
+            6.258472826644194,
+            6.98865034837759
+          ],
+          "quaternion": [
+            -0.03136862172477495,
+            0.2532222034698939,
+            0.9665130868064533,
+            -0.02733092336641233
+          ],
+          "scale": [
+            51.04408934784341,
+            51.04407344895156,
+            51.04407312577678
+          ]
+        },
+        "clanMarkMesh": {
+          "socket": "head",
+          "position": [
+            -0.12332512324888434,
+            29.862644822026994,
+            28.550950614444787
+          ],
+          "quaternion": [
+            -0.42946253450806454,
+            -0.0027094923646970603,
+            0.04397770682545782,
+            0.9020091746262123
+          ],
+          "scale": [
+            51.044086952324655,
+            51.044073513541726,
+            51.04407294039788
+          ]
+        }
+      },
+      "cameraEyeHeight": 3.8376651470827396,
+      "laserSight": {
+        "origin": [
+          0.394024,
+          4.025615,
+          0.372731
+        ],
+        "radius": 0.025
+      }
+    },
+    "animationUrls": {
+      "walk": "/models/viking-predator-walk.glb",
+      "run": "/models/viking-predator-run.glb"
+    },
+    "animationSha256": {
+      "walk": "4daa97a64858bb81bdf974ebcc1618855e4fdd007a790e17059d67bdfe58ec59",
+      "run": "16ad32daae995240be43d9ab0d04eefccb14591dabaceeb0d3155b389c3e007c"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Corps Meshy image-to-3d en pose A depuis une image isolée par IA (image-to-image nano-banana, tâche 01a1e2c6-ded4-772f-95e5-a9ac8c89b012) à partir de deux rendus officiels du DLC Viking Predator de Predator: Hunting Grounds (illustration de la fiche Steam et rendu de profil) ; hache retirée, vue de face reconstruite par l'IA. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée."
   }
 });

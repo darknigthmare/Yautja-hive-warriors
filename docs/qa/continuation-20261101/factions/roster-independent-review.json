@@ -1,0 +1,744 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "reviewedAt": "2026-11-01T00:50:45.255Z",
+  "scope": "Independent enumeration of all27 executable original-operation configurations, repeated deterministic construction and actual simulation preflight. Original/adapted rosters only, not full270documentary catalogue or human/playable controller proof.",
+  "operations": [
+    {
+      "id": "AFF-01",
+      "optionalHumanController": false,
+      "groups": 21,
+      "units": 84,
+      "actors": {
+        "clan_hunter": 84
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-02",
+      "optionalHumanController": false,
+      "groups": 48,
+      "units": 192,
+      "actors": {
+        "clan_hunter": 192
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-03",
+      "optionalHumanController": false,
+      "groups": 21,
+      "units": 84,
+      "actors": {
+        "clan_hunter": 84
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-04",
+      "optionalHumanController": false,
+      "groups": 21,
+      "units": 84,
+      "actors": {
+        "clan_hunter": 84
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-05",
+      "optionalHumanController": false,
+      "groups": 21,
+      "units": 84,
+      "actors": {
+        "clan_hunter": 84
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-06",
+      "optionalHumanController": false,
+      "groups": 35,
+      "units": 264,
+      "actors": {
+        "marine": 256,
+        "clan_hunter": 8
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-07",
+      "optionalHumanController": false,
+      "groups": 35,
+      "units": 264,
+      "actors": {
+        "marine": 256,
+        "clan_hunter": 8
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-08",
+      "optionalHumanController": false,
+      "groups": 101,
+      "units": 800,
+      "actors": {
+        "marine": 673,
+        "smartgunner": 95,
+        "clan_hunter": 32
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-09",
+      "optionalHumanController": false,
+      "groups": 101,
+      "units": 800,
+      "actors": {
+        "marine": 768,
+        "clan_hunter": 32
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-10",
+      "optionalHumanController": false,
+      "groups": 101,
+      "units": 800,
+      "actors": {
+        "marine": 768,
+        "clan_hunter": 32
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-11",
+      "optionalHumanController": false,
+      "groups": 62,
+      "units": 416,
+      "actors": {
+        "clan_hunter": 80,
+        "marine": 295,
+        "smartgunner": 41
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-12",
+      "optionalHumanController": false,
+      "groups": 68,
+      "units": 416,
+      "actors": {
+        "marine": 288,
+        "clan_hunter": 128
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-13",
+      "optionalHumanController": false,
+      "groups": 23,
+      "units": 44,
+      "actors": {
+        "warrior": 8,
+        "working_joe": 32,
+        "clan_hunter": 4
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-14",
+      "optionalHumanController": false,
+      "groups": 149,
+      "units": 1048,
+      "actors": {
+        "warrior": 999,
+        "clan_hunter": 48,
+        "praetorian": 1
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-15",
+      "optionalHumanController": false,
+      "groups": 128,
+      "units": 952,
+      "actors": {
+        "warrior": 736,
+        "marine": 192,
+        "clan_hunter": 24
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-16",
+      "optionalHumanController": false,
+      "groups": 128,
+      "units": 952,
+      "actors": {
+        "runner": 644,
+        "spitter": 92,
+        "weyland_combat": 192,
+        "clan_hunter": 24
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-17",
+      "optionalHumanController": false,
+      "groups": 152,
+      "units": 952,
+      "actors": {
+        "warrior": 736,
+        "marine": 192,
+        "clan_hunter": 24
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-18",
+      "optionalHumanController": false,
+      "groups": 149,
+      "units": 1048,
+      "actors": {
+        "warrior": 1000,
+        "clan_hunter": 48
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-19",
+      "optionalHumanController": false,
+      "groups": 14,
+      "units": 44,
+      "actors": {
+        "warrior": 8,
+        "marine": 32,
+        "clan_hunter": 4
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-20",
+      "optionalHumanController": false,
+      "groups": 104,
+      "units": 800,
+      "actors": {
+        "marine": 768,
+        "clan_hunter": 32
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-21",
+      "optionalHumanController": false,
+      "groups": 21,
+      "units": 84,
+      "actors": {
+        "clan_hunter": 84
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-22",
+      "optionalHumanController": false,
+      "groups": 21,
+      "units": 84,
+      "actors": {
+        "clan_hunter": 84
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-23",
+      "optionalHumanController": false,
+      "groups": 7,
+      "units": 12,
+      "actors": {
+        "marine": 8,
+        "clan_hunter": 4
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-24",
+      "optionalHumanController": false,
+      "groups": 149,
+      "units": 1048,
+      "actors": {
+        "warrior": 1000,
+        "clan_hunter": 48
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-25",
+      "optionalHumanController": true,
+      "groups": 80,
+      "units": 608,
+      "actors": {
+        "warrior": 575,
+        "marine": 32,
+        "praetorian": 1
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-26",
+      "optionalHumanController": true,
+      "groups": 80,
+      "units": 608,
+      "actors": {
+        "warrior": 576,
+        "marine": 32
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "id": "AFF-27",
+      "optionalHumanController": false,
+      "groups": 122,
+      "units": 952,
+      "actors": {
+        "warrior": 469,
+        "runner": 166,
+        "facehugger": 83,
+        "marine": 122,
+        "smartgunner": 24,
+        "flametrooper": 22,
+        "synthetic": 24,
+        "clan_hunter": 24,
+        "praetorian": 17,
+        "queen": 1
+      },
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    }
+  ],
+  "humanGroups": 650,
+  "xenoGroups": 897,
+  "yautjaGroups": 375,
+  "syntheticGroups": 64,
+  "sameHeavyWeaponOnly": [],
+  "parasiteOnly": [],
+  "excluded": [],
+  "namedDuplicates": [],
+  "actorCounts": {
+    "clan_hunter": 1300,
+    "marine": 4682,
+    "smartgunner": 160,
+    "warrior": 6107,
+    "working_joe": 32,
+    "praetorian": 19,
+    "runner": 810,
+    "spitter": 92,
+    "weyland_combat": 192,
+    "facehugger": 83,
+    "flametrooper": 22,
+    "synthetic": 24,
+    "queen": 1
+  },
+  "sourceRoleCounts": {
+    "Section leader": 136,
+    "Infantry": 612,
+    "Smartgunner": 160,
+    "Breach specialist": 136,
+    "Radio operator": 136,
+    "Seegson Working Joe": 32,
+    "Warrior": 382,
+    "Runner": 810,
+    "Spitter": 91,
+    "Weyland-Yutani combat synthetic": 192,
+    "Drone (Warrior visual proxy)": 101,
+    "Facehugger": 83,
+    "Flamethrower": 22,
+    "Medic (unimplemented support)": 24,
+    "CommTech (unimplemented repairs)": 24,
+    "Colonial Marines synthetic (Extinction visual proxy)": 24,
+    "Sniper (rifle proxy)": 2,
+    "SADAR (rifle proxy)": 2,
+    "Exosuit + pilot (marine visual proxy)": 2,
+    "Hunter": 5,
+    "Brawler": 5,
+    "Spear Master": 5,
+    "Stalker": 5,
+    "Praetorian": 17,
+    "Disc Master": 1,
+    "Vanguard": 1,
+    "Hydra": 1,
+    "Blazer": 1
+  },
+  "visualKinds": {
+    "medic": 24,
+    "commtech": 24,
+    "sniper": 2,
+    "sadar": 2,
+    "exosuit": 2
+  },
+  "sourceFiles": [
+    {
+      "path": "js/data/BattleCatalog.js",
+      "sha256": "4a257d078262810710a6deee315b9956f232737be852df24acdaaa51c6cd24d9"
+    },
+    {
+      "path": "js/data/SourceBattleRoster.js",
+      "sha256": "cdfcc4518ccf8bc6c0e9c790177371c4d72e3de5d00633ce995172b7ea607c6d"
+    },
+    {
+      "path": "js/data/SourceActorPresentation.js",
+      "sha256": "a078b52ae354819296fad127f2a80d3bf8297b2b718970479deaa46cfbfe54f1"
+    },
+    {
+      "path": "js/battlefield/BattleSimulation.js",
+      "sha256": "4251a90f791f03be5fdae956b659a7d7a7344760db6347eefa9a32d715a3007b"
+    },
+    {
+      "path": "js/entities/YautjaAllies.js",
+      "sha256": "c6d2292cab02a49f4c5049b4b9e23ddedab96b28ef64aa00472f4aa7f62c4503"
+    },
+    {
+      "path": "js/entities/ColonialMarines.js",
+      "sha256": "36464c7d826f0743e85cf8f0af9c0f15870e8cc6dcb00b1b644c7457720ea1d3"
+    },
+    {
+      "path": "js/entities/Synthetics.js",
+      "sha256": "f32609ad208962d00174bd96175564194a6f327e73ebfbbe9f18afa1490f47e0"
+    },
+    {
+      "path": "js/battlefield/BattlefieldOperation.js",
+      "sha256": "79cfc515e2674fcced316e4d1304fa630141c68093b21781c510d28ecdb14a33"
+    },
+    {
+      "path": "js/data/BattlefieldLayouts.js",
+      "sha256": "8440cb53c6ff627e16e6050c43fcb5156decabcf5630466f2483c35915dd2335"
+    },
+    {
+      "path": "js/data/BattlefieldMapVariants.js",
+      "sha256": "6bba0244842507d7b7ca2f7d246b12fdbf8bfd091bb88c659a5edcd9f199f63a"
+    }
+  ],
+  "seededFronts": [
+    {
+      "levelId": "gunnison_forest",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "17723830f5189d0fb43a937de456b00e8f84dbb93fa7296988a9a0261a0d5b5c",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "gunnison_forest",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "17723830f5189d0fb43a937de456b00e8f84dbb93fa7296988a9a0261a0d5b5c",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "gunnison_forest",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "17723830f5189d0fb43a937de456b00e8f84dbb93fa7296988a9a0261a0d5b5c",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "xenomorph_prime",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "b4b0d13277e8872d89cae4b52f69209a97e566e6e1fa4018fb67fb285bb539fa",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "xenomorph_prime",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "b4b0d13277e8872d89cae4b52f69209a97e566e6e1fa4018fb67fb285bb539fa",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "xenomorph_prime",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "b4b0d13277e8872d89cae4b52f69209a97e566e6e1fa4018fb67fb285bb539fa",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "antarctic_pyramid",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6d6e685823dc5bc04634ac4469afc46376ee802440f5437f4e1c0a336afb8bb8",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "antarctic_pyramid",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6d6e685823dc5bc04634ac4469afc46376ee802440f5437f4e1c0a336afb8bb8",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "antarctic_pyramid",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6d6e685823dc5bc04634ac4469afc46376ee802440f5437f4e1c0a336afb8bb8",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "la_rooftops",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "801ffb49b1f525a8a4f4c4f5026248a86d9da6f742ee7d81c8f9fdfb6be81be2",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "la_rooftops",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "801ffb49b1f525a8a4f4c4f5026248a86d9da6f742ee7d81c8f9fdfb6be81be2",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "la_rooftops",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "801ffb49b1f525a8a4f4c4f5026248a86d9da6f742ee7d81c8f9fdfb6be81be2",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6427cf5f80800d225397c43cf4d2f35e6db1503895c0ed963a29842bc28ce992",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6427cf5f80800d225397c43cf4d2f35e6db1503895c0ed963a29842bc28ce992",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6427cf5f80800d225397c43cf4d2f35e6db1503895c0ed963a29842bc28ce992",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "romulus_station",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "c871c2c1e2dc78b03bf6c8dee1d0344cf0f591aab20d6c61f745dc4d953c0c30",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "romulus_station",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "c871c2c1e2dc78b03bf6c8dee1d0344cf0f591aab20d6c61f745dc4d953c0c30",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "romulus_station",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "c871c2c1e2dc78b03bf6c8dee1d0344cf0f591aab20d6c61f745dc4d953c0c30",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "charon_rogue_base",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "40acff98bb3ca9c36674bd409d82afc7d4f93e6ebb1ee4bb4cea3483520b1825",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "charon_rogue_base",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "40acff98bb3ca9c36674bd409d82afc7d4f93e6ebb1ee4bb4cea3483520b1825",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "charon_rogue_base",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "40acff98bb3ca9c36674bd409d82afc7d4f93e6ebb1ee4bb4cea3483520b1825",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "game_preserve_planet",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "a3f5010e637bea72f7737b62423ef66696fa9c82d6c0b81b5bebf8bab2cb9901",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "game_preserve_planet",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "a3f5010e637bea72f7737b62423ef66696fa9c82d6c0b81b5bebf8bab2cb9901",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "game_preserve_planet",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "a3f5010e637bea72f7737b62423ef66696fa9c82d6c0b81b5bebf8bab2cb9901",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "stargazer_facility",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6e7b290683e945e9154efb6cdfd65b9c47fd35e9f1e83733e135c9aab7d5fb1a",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "stargazer_facility",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6e7b290683e945e9154efb6cdfd65b9c47fd35e9f1e83733e135c9aab7d5fb1a",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "stargazer_facility",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "6e7b290683e945e9154efb6cdfd65b9c47fd35e9f1e83733e135c9aab7d5fb1a",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "prey_comanche_territory",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "0ef7f63af6709be860e4e8f4067633d44eb5a13a3db33e054e26bda0b0d77b45",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "prey_comanche_territory",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "0ef7f63af6709be860e4e8f4067633d44eb5a13a3db33e054e26bda0b0d77b45",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "prey_comanche_territory",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "0ef7f63af6709be860e4e8f4067633d44eb5a13a3db33e054e26bda0b0d77b45",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "killer_of_killers_arena",
+      "seed": 0,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "30cd1522b4d08e9e53f26ded9633fb4bcdb632419bb57f1a576d024bbb6747a5",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "killer_of_killers_arena",
+      "seed": 1,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "30cd1522b4d08e9e53f26ded9633fb4bcdb632419bb57f1a576d024bbb6747a5",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    },
+    {
+      "levelId": "killer_of_killers_arena",
+      "seed": 2,
+      "units": 132,
+      "groups": 33,
+      "configSha256": "30cd1522b4d08e9e53f26ded9633fb4bcdb632419bb57f1a576d024bbb6747a5",
+      "deterministic": true,
+      "simulationPreflightPassed": true
+    }
+  ]
+}

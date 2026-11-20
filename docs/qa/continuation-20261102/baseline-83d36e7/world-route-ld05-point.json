@@ -1,0 +1,68 @@
+{
+  "route": {
+    "id": "route-insertion-relay-main",
+    "from": "insertion",
+    "to": "relay",
+    "waypoints": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        -634
+      ],
+      [
+        0,
+        -1268
+      ]
+    ],
+    "travelSeconds": 211.33333333333334,
+    "open": true,
+    "physicalGateIds": [
+      "gate-insertion-approach",
+      "gate-approach-relay"
+    ]
+  },
+  "steps": 159,
+  "before": [
+    0,
+    6.660045484691142,
+    -35.88679245283019
+  ],
+  "after": [
+    0,
+    6.92737810749828,
+    -35.88679245283019
+  ],
+  "placement": 0,
+  "contacts": [
+    {
+      "id": "val-verde-canopy-west-north",
+      "kind": "canopy",
+      "requiresCurrentLayer": true,
+      "height": 6.660045484691142
+    },
+    {
+      "id": "val-verde-canopy-north-east",
+      "kind": "canopy",
+      "requiresCurrentLayer": true,
+      "height": 6.92737810749828
+    }
+  ],
+  "changes": [
+    {
+      "owner": "val-verde-canopy-north-east",
+      "before": [
+        0,
+        6.660045484691142,
+        -35.88679245283019
+      ],
+      "after": [
+        0,
+        6.92737810749828,
+        -35.88679245283019
+      ]
+    }
+  ]
+}

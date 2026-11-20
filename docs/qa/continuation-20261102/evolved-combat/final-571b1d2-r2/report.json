@@ -1,0 +1,1424 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "startedAt": "2026-11-02T05:03:41.729Z",
+  "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "indexSha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+  "buildInfoSha256": "0e70fd73c5d5cefa8e3499834d70975b024834b2be83345edf4eecbdd351a5bc",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "scope": "Two assisted rendered mechanisms in fresh AFF-27 evolved operations selected through real menus. Actual allocated UID ownership, physical launch, detailed catalepsy/recovery and typed lethal fire. No natural victory, route traversal, entire AI policy or hardware performance claim.",
+  "assistances": [
+    "Actual game.update completes insertion at1/60",
+    "Player-only inspection relocations use actual group coordinates, navigation safeSpawnNear and floor queries; no unit/group coordinate, profile, signature or HP is assigned",
+    "Global RAF gameplay stays paused while explicit Simulation/Bridge owner updates advance the selected subsystem in .25s steps",
+    "Carrier callback observations call the original and return its unchanged result; the callback is restored immediately. A recorded explicit real Bridge launch request may follow an expected physical refusal, testing the mechanism rather than natural target choice",
+    "Carrier flight uses actual Horde updates; other managers stay paused. Any additional normal launch consumes and records another original cargo UID",
+    "Damage requests use the real Horde applyDamage API with the signed player faction; no HP, timer, result or corpse flag is assigned",
+    "Captures use an explicitly recorded inspection camera and refresh normal environment visibility around the relocated player",
+    "Actual saveOperation writes a checkpoint during catalepsy; browser phase restore is not exercised"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "cases": [
+    {
+      "id": "carrier-real-cargo-flight",
+      "status": "passed",
+      "launch": {
+        "insertion": {
+          "simulated": 4.049999999999991,
+          "phase": "complete",
+          "visible": true
+        },
+        "selected": {
+          "operationId": "AFF-27",
+          "variant": "carrier-ravager-enhanced",
+          "digest": "9986fbf6"
+        }
+      },
+      "materialization": {
+        "uid": "AFF-27:hive:0:1",
+        "groupId": "AFF-27:hive:0",
+        "trials": [
+          {
+            "playerPosition": [
+              63.22836140246614,
+              0,
+              1.1480502970952697
+            ],
+            "time": 0.25,
+            "materialized": true,
+            "bridgeError": null
+          }
+        ]
+      },
+      "before": {
+        "id": "AFF-27:hive:0:1",
+        "type": "carrier",
+        "hp": 400,
+        "maxHp": 400,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "sourceUpgrade": "supercarrier-genome",
+        "profileId": "XEN-009",
+        "cargo": [
+          "AFF-27:hive:0:2",
+          "AFF-27:hive:0:3",
+          "AFF-27:hive:0:4",
+          "AFF-27:hive:0:5",
+          "AFF-27:hive:0:6",
+          "AFF-27:hive:0:7"
+        ],
+        "cargoStates": [
+          {
+            "id": "AFF-27:hive:0:2",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:3",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:4",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:5",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:6",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:7",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          }
+        ],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 18,
+          "actors": 18,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:1",
+          "type": "carrier",
+          "hp": 400,
+          "rootUuid": "b521a1bc-36da-43b5-9aa6-e563c00064dc",
+          "position": [
+            36.121320343559645,
+            0,
+            2.1213203435596424
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "approach": {
+        "before": [
+          63.22836140246614,
+          0,
+          1.1480502970952697
+        ],
+        "after": [
+          42.121320343559645,
+          0,
+          2.1213203435596424
+        ],
+        "distance": 6,
+        "standable": true,
+        "actorPositionUnchanged": [
+          36.121320343559645,
+          0,
+          2.1213203435596424
+        ]
+      },
+      "firstNormalTick": {
+        "attempts": [],
+        "callbackRestored": true
+      },
+      "afterFirstNormalTick": {
+        "id": "AFF-27:hive:0:1",
+        "type": "carrier",
+        "hp": 400,
+        "maxHp": 400,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "sourceUpgrade": "supercarrier-genome",
+        "profileId": "XEN-009",
+        "cargo": [
+          "AFF-27:hive:0:2",
+          "AFF-27:hive:0:3",
+          "AFF-27:hive:0:4",
+          "AFF-27:hive:0:5",
+          "AFF-27:hive:0:6",
+          "AFF-27:hive:0:7"
+        ],
+        "cargoStates": [
+          {
+            "id": "AFF-27:hive:0:2",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:3",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:4",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:5",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:6",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:7",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          }
+        ],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 18,
+          "actors": 18,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:1",
+          "type": "carrier",
+          "hp": 400,
+          "rootUuid": "b521a1bc-36da-43b5-9aa6-e563c00064dc",
+          "position": [
+            35.996467888883565,
+            0,
+            2.1152487242239193
+          ],
+          "rotation": [
+            0,
+            -1.619388401741409,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "launchMode": "assisted-real-bridge-request-after-observed-normal-tick",
+      "explicitRequest": {
+        "target": {
+          "playerReference": true,
+          "position": [
+            42.121320343559645,
+            0,
+            2.1213203435596424
+          ],
+          "hp": 1000
+        },
+        "groupPathLength": 0,
+        "result": {
+          "accepted": true,
+          "reason": null,
+          "facehuggerId": "AFF-27:hive:0:2"
+        }
+      },
+      "launched": {
+        "id": "AFF-27:hive:0:1",
+        "type": "carrier",
+        "hp": 400,
+        "maxHp": 400,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "sourceUpgrade": "supercarrier-genome",
+        "profileId": "XEN-009",
+        "cargo": [
+          "AFF-27:hive:0:3",
+          "AFF-27:hive:0:4",
+          "AFF-27:hive:0:5",
+          "AFF-27:hive:0:6",
+          "AFF-27:hive:0:7"
+        ],
+        "cargoStates": [
+          {
+            "id": "AFF-27:hive:0:3",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:4",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:5",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:6",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:7",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          }
+        ],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 19,
+          "actors": 19,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:1",
+          "type": "carrier",
+          "hp": 400,
+          "rootUuid": "b521a1bc-36da-43b5-9aa6-e563c00064dc",
+          "position": [
+            35.996467888883565,
+            0,
+            2.1152487242239193
+          ],
+          "rotation": [
+            0,
+            -1.619388401741409,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "faceId": "AFF-27:hive:0:2",
+      "flightStart": {
+        "id": "AFF-27:hive:0:2",
+        "type": "facehugger",
+        "hp": 200,
+        "maxHp": 200,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "profileId": "source_hive_GRP-58_default_7",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 19,
+          "actors": 19,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:2",
+          "type": "facehugger",
+          "hp": 200,
+          "rootUuid": "73b7206a-9e8e-4092-a4f7-3172ee72cbb0",
+          "position": [
+            35.996467888883565,
+            2.05,
+            2.1152487242239193
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": {
+            "elapsed": 0,
+            "duration": 1,
+            "start": [
+              35.996467888883565,
+              2.05,
+              2.1152487242239193
+            ],
+            "end": [
+              45.121320343559645,
+              0,
+              2.1213203435596424
+            ]
+          },
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "captures": [
+        {
+          "path": "carrier-launched.png",
+          "sha256": "b0fa2bd7ed8fa48efc02f5f46bb82216be1f272042aeb92c1c5bcc0666cac848",
+          "camera": {
+            "position": [
+              43.996467888883565,
+              6.525,
+              11.11524872422392
+            ],
+            "quaternion": [
+              -0.15951181503924625,
+              0.35016762971044463,
+              0.06064628398458633,
+              0.9210106623729799
+            ],
+            "focus": [
+              35.996467888883565,
+              1.025,
+              2.1152487242239193
+            ]
+          }
+        },
+        {
+          "path": "carrier-midair.png",
+          "sha256": "fb08c37b8f9bc0ec17843ec612e78e462847b920568c091970e479f46b0f7778",
+          "camera": {
+            "position": [
+              44.404894182411425,
+              7.1125,
+              11.025692339022005
+            ],
+            "quaternion": [
+              -0.15951181503924622,
+              0.35016762971044463,
+              0.06064628398458632,
+              0.9210106623729799
+            ],
+            "focus": [
+              36.404894182411425,
+              1.6125,
+              2.0256923390220054
+            ]
+          }
+        },
+        {
+          "path": "carrier-landed.png",
+          "sha256": "5eaa87f0ed1bac453fe928689781b13575116ff51d6d8971697de1f3e667bef6",
+          "camera": {
+            "position": [
+              44.81332047593927,
+              5.5,
+              10.936135953820092
+            ],
+            "quaternion": [
+              -0.15951181503924622,
+              0.35016762971044463,
+              0.06064628398458632,
+              0.9210106623729799
+            ],
+            "focus": [
+              36.81332047593927,
+              1.3471114790620887e-16,
+              1.936135953820092
+            ]
+          }
+        }
+      ],
+      "pause": {
+        "before": {
+          "flight": 0,
+          "strategic": 0.25,
+          "horde": 0.016666666666666666
+        },
+        "after": {
+          "flight": 0,
+          "strategic": 0.25,
+          "horde": 0.016666666666666666
+        },
+        "globalPaused": true
+      },
+      "midairUpdates": {
+        "attempts": [],
+        "callbackRestored": true
+      },
+      "midair": {
+        "id": "AFF-27:hive:0:2",
+        "type": "facehugger",
+        "hp": 200,
+        "maxHp": 200,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "profileId": "source_hive_GRP-58_default_7",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 19,
+          "actors": 19,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:2",
+          "type": "facehugger",
+          "hp": 200,
+          "rootUuid": "73b7206a-9e8e-4092-a4f7-3172ee72cbb0",
+          "position": [
+            40.55889411622161,
+            3.225,
+            2.1182845338917806
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": {
+            "elapsed": 0.5,
+            "duration": 1,
+            "start": [
+              35.996467888883565,
+              2.05,
+              2.1152487242239193
+            ],
+            "end": [
+              45.121320343559645,
+              0,
+              2.1213203435596424
+            ]
+          },
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "landingUpdates": {
+        "attempts": [],
+        "callbackRestored": true
+      },
+      "landed": {
+        "id": "AFF-27:hive:0:2",
+        "type": "facehugger",
+        "hp": 200,
+        "maxHp": 200,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "profileId": "source_hive_GRP-58_default_7",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 19,
+          "actors": 19,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:2",
+          "type": "facehugger",
+          "hp": 200,
+          "rootUuid": "73b7206a-9e8e-4092-a4f7-3172ee72cbb0",
+          "position": [
+            45.121320343559645,
+            2.6942229581241775e-16,
+            2.1213203435596424
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "finalCarrier": {
+        "id": "AFF-27:hive:0:1",
+        "type": "carrier",
+        "hp": 400,
+        "maxHp": 400,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "sourceUpgrade": "supercarrier-genome",
+        "profileId": "XEN-009",
+        "cargo": [
+          "AFF-27:hive:0:3",
+          "AFF-27:hive:0:4",
+          "AFF-27:hive:0:5",
+          "AFF-27:hive:0:6",
+          "AFF-27:hive:0:7"
+        ],
+        "cargoStates": [
+          {
+            "id": "AFF-27:hive:0:3",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:4",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:5",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:6",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:7",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          }
+        ],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 19,
+          "actors": 19,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:1",
+          "type": "carrier",
+          "hp": 400,
+          "rootUuid": "b521a1bc-36da-43b5-9aa6-e563c00064dc",
+          "position": [
+            28.505320608318897,
+            0,
+            1.7509515640805418
+          ],
+          "rotation": [
+            0,
+            -1.619388401741409,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "originalPayload": [
+        {
+          "id": "AFF-27:hive:0:2",
+          "state": "active",
+          "carrier": null,
+          "rendered": true,
+          "copies": 1
+        },
+        {
+          "id": "AFF-27:hive:0:3",
+          "state": "distant",
+          "carrier": "AFF-27:hive:0:1",
+          "rendered": false,
+          "copies": 0
+        },
+        {
+          "id": "AFF-27:hive:0:4",
+          "state": "distant",
+          "carrier": "AFF-27:hive:0:1",
+          "rendered": false,
+          "copies": 0
+        },
+        {
+          "id": "AFF-27:hive:0:5",
+          "state": "distant",
+          "carrier": "AFF-27:hive:0:1",
+          "rendered": false,
+          "copies": 0
+        },
+        {
+          "id": "AFF-27:hive:0:6",
+          "state": "distant",
+          "carrier": "AFF-27:hive:0:1",
+          "rendered": false,
+          "copies": 0
+        },
+        {
+          "id": "AFF-27:hive:0:7",
+          "state": "distant",
+          "carrier": "AFF-27:hive:0:1",
+          "rendered": false,
+          "copies": 0
+        }
+      ],
+      "cleanup": {
+        "playing": false,
+        "playerCleared": true,
+        "simulationCleared": true,
+        "bridgeCleared": true,
+        "aliens": 0,
+        "ravagerRoots": 0
+      }
+    },
+    {
+      "id": "ravager-detailed-phase-fire",
+      "status": "passed",
+      "launch": {
+        "insertion": {
+          "simulated": 4.34999999999999,
+          "phase": "complete",
+          "visible": true
+        },
+        "selected": {
+          "operationId": "AFF-27",
+          "variant": "carrier-ravager-enhanced",
+          "digest": "9986fbf6"
+        }
+      },
+      "materialization": {
+        "uid": "AFF-27:hive:13:1",
+        "groupId": "AFF-27:hive:13",
+        "trials": [
+          {
+            "playerPosition": [
+              1038.4384055940313,
+              0,
+              1091.471178010131
+            ],
+            "time": 0.25,
+            "materialized": true,
+            "bridgeError": null
+          }
+        ]
+      },
+      "before": {
+        "id": "AFF-27:hive:13:1",
+        "type": "ravager",
+        "hp": 1000,
+        "maxHp": 1000,
+        "state": "active",
+        "groupId": "AFF-27:hive:13",
+        "sourceUpgrade": "colossal-resilience",
+        "profileId": "XEN-010",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 24,
+          "actors": 24,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:13:1",
+          "type": "ravager",
+          "hp": 1000,
+          "rootUuid": "36a9c84b-85a7-49bb-a464-ef4c3078dc44",
+          "position": [
+            1013.9949633135843,
+            0,
+            1106.8208597561568
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": true,
+          "visualRotation": [
+            0,
+            0,
+            0
+          ],
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "approach": {
+        "before": [
+          1038.4384055940313,
+          0,
+          1091.471178010131
+        ],
+        "after": [
+          1019.9949633135843,
+          0,
+          1106.8208597561568
+        ],
+        "distance": 6,
+        "standable": true,
+        "actorPositionUnchanged": [
+          1013.9949633135843,
+          0,
+          1106.8208597561568
+        ]
+      },
+      "damage": {
+        "first": {
+          "damage": 600,
+          "killed": false
+        },
+        "second": {
+          "damage": 350,
+          "killed": false
+        }
+      },
+      "started": {
+        "id": "AFF-27:hive:13:1",
+        "type": "ravager",
+        "hp": 50,
+        "maxHp": 1000,
+        "state": "active",
+        "groupId": "AFF-27:hive:13",
+        "sourceUpgrade": "colossal-resilience",
+        "profileId": "XEN-010",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": {
+          "startedAt": 0.25,
+          "recoverAt": 12.25
+        },
+        "spent": true,
+        "incapacitated": true,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 24,
+          "actors": 24,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:13:1",
+          "type": "ravager",
+          "hp": 50,
+          "rootUuid": "36a9c84b-85a7-49bb-a464-ef4c3078dc44",
+          "position": [
+            1013.9949633135843,
+            0,
+            1106.8208597561568
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": true,
+          "visualChild": true,
+          "visualRotation": [
+            0,
+            0,
+            0
+          ],
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "fallen": {
+        "id": "AFF-27:hive:13:1",
+        "type": "ravager",
+        "hp": 50,
+        "maxHp": 1000,
+        "state": "active",
+        "groupId": "AFF-27:hive:13",
+        "sourceUpgrade": "colossal-resilience",
+        "profileId": "XEN-010",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": {
+          "startedAt": 0.25,
+          "recoverAt": 12.25
+        },
+        "spent": true,
+        "incapacitated": true,
+        "deadRegistered": false,
+        "time": 1,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 24,
+          "actors": 24,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:13:1",
+          "type": "ravager",
+          "hp": 50,
+          "rootUuid": "36a9c84b-85a7-49bb-a464-ef4c3078dc44",
+          "position": [
+            1013.9949633135843,
+            0,
+            1106.8208597561568
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": true,
+          "visualChild": true,
+          "visualRotation": [
+            0.08,
+            0,
+            -1.5707963267948966
+          ],
+          "pose": true,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "captures": [
+        {
+          "path": "ravager-cataleptic.png",
+          "sha256": "f0e4e156b3ea8d76e9192b09866c48b17fa68079d4863886c120b9ca138c44a8",
+          "camera": {
+            "position": [
+              1021.9949633135843,
+              5.5,
+              1115.8208597561568
+            ],
+            "quaternion": [
+              -0.15951181503924622,
+              0.35016762971044463,
+              0.06064628398458632,
+              0.9210106623729799
+            ],
+            "focus": [
+              1013.9949633135843,
+              0,
+              1106.8208597561568
+            ]
+          }
+        },
+        {
+          "path": "ravager-recovered.png",
+          "sha256": "e1800e9f16ff3016945196842e9a3fd26e1276d9701de1289d779317edcc6d2f",
+          "camera": {
+            "position": [
+              1021.9949633135843,
+              5.5,
+              1115.8208597561568
+            ],
+            "quaternion": [
+              -0.15951181503924622,
+              0.35016762971044463,
+              0.06064628398458632,
+              0.9210106623729799
+            ],
+            "focus": [
+              1013.9949633135843,
+              0,
+              1106.8208597561568
+            ]
+          }
+        },
+        {
+          "path": "ravager-fire-cleanup.png",
+          "sha256": "e4db8d892e66e42de2786bd66bc2c503c62c0dbe1460bd96b98669e02bf9432e",
+          "camera": {
+            "position": [
+              1021.9949633135843,
+              5.5,
+              1115.8208597561568
+            ],
+            "quaternion": [
+              -0.15951181503924622,
+              0.35016762971044463,
+              0.06064628398458632,
+              0.9210106623729799
+            ],
+            "focus": [
+              1013.9949633135843,
+              0,
+              1106.8208597561568
+            ]
+          }
+        }
+      ],
+      "pause": {
+        "before": {
+          "time": 1,
+          "phase": {
+            "startedAt": 0.25,
+            "recoverAt": 12.25
+          },
+          "hp": 50,
+          "rotation": [
+            0.08,
+            0,
+            -1.5707963267948966,
+            "XYZ"
+          ]
+        },
+        "after": {
+          "time": 1,
+          "phase": {
+            "startedAt": 0.25,
+            "recoverAt": 12.25
+          },
+          "hp": 50,
+          "rotation": [
+            0.08,
+            0,
+            -1.5707963267948966,
+            "XYZ"
+          ]
+        },
+        "rejectedDamage": 0
+      },
+      "checkpoint": {
+        "version": 1,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "time": 1,
+        "unit": {
+          "id": "AFF-27:hive:13:1",
+          "hp": 50,
+          "spent": true,
+          "phase": {
+            "startedAt": 0.25,
+            "recoverAt": 12.25
+          }
+        }
+      },
+      "beforeRecovery": {
+        "id": "AFF-27:hive:13:1",
+        "type": "ravager",
+        "hp": 50,
+        "maxHp": 1000,
+        "state": "active",
+        "groupId": "AFF-27:hive:13",
+        "sourceUpgrade": "colossal-resilience",
+        "profileId": "XEN-010",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": {
+          "startedAt": 0.25,
+          "recoverAt": 12.25
+        },
+        "spent": true,
+        "incapacitated": true,
+        "deadRegistered": false,
+        "time": 12,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 24,
+          "actors": 24,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:13:1",
+          "type": "ravager",
+          "hp": 50,
+          "rootUuid": "36a9c84b-85a7-49bb-a464-ef4c3078dc44",
+          "position": [
+            1013.9949633135843,
+            0,
+            1106.8208597561568
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": true,
+          "visualChild": true,
+          "visualRotation": [
+            0.08,
+            0,
+            -1.5707963267948966
+          ],
+          "pose": true,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "recovered": {
+        "id": "AFF-27:hive:13:1",
+        "type": "ravager",
+        "hp": 500,
+        "maxHp": 1000,
+        "state": "active",
+        "groupId": "AFF-27:hive:13",
+        "sourceUpgrade": "colossal-resilience",
+        "profileId": "XEN-010",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": null,
+        "spent": true,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 12.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 24,
+          "actors": 24,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:13:1",
+          "type": "ravager",
+          "hp": 500,
+          "rootUuid": "36a9c84b-85a7-49bb-a464-ef4c3078dc44",
+          "position": [
+            1013.9949633135843,
+            0,
+            1106.8208597561568
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": true,
+          "visualRotation": [
+            0.08,
+            0,
+            -1.5707963267948966
+          ],
+          "pose": true,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "standing": {
+        "id": "AFF-27:hive:13:1",
+        "type": "ravager",
+        "hp": 500,
+        "maxHp": 1000,
+        "state": "active",
+        "groupId": "AFF-27:hive:13",
+        "sourceUpgrade": "colossal-resilience",
+        "profileId": "XEN-010",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": null,
+        "spent": true,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 13,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 24,
+          "actors": 24,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:13:1",
+          "type": "ravager",
+          "hp": 500,
+          "rootUuid": "36a9c84b-85a7-49bb-a464-ef4c3078dc44",
+          "position": [
+            1013.9949633135843,
+            0,
+            1106.8208597561568
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": true,
+          "visualRotation": [
+            0,
+            0,
+            0
+          ],
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "fire": {
+        "noSecondPhase": true,
+        "first": {
+          "damage": 50,
+          "killed": true
+        },
+        "repeatRejected": true,
+        "eventsBefore": 1,
+        "eventsAfter": 1,
+        "actorPresent": false,
+        "hordeHasId": false
+      },
+      "dead": {
+        "id": "AFF-27:hive:13:1",
+        "type": "ravager",
+        "hp": 0,
+        "maxHp": 1000,
+        "state": "dead",
+        "groupId": "AFF-27:hive:13",
+        "sourceUpgrade": "colossal-resilience",
+        "profileId": "XEN-010",
+        "cargo": [],
+        "cargoStates": [],
+        "phase": null,
+        "spent": true,
+        "incapacitated": false,
+        "deadRegistered": true,
+        "time": 13,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 23,
+          "actors": 23,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": null
+      },
+      "cleanup": {
+        "playing": false,
+        "playerCleared": true,
+        "simulationCleared": true,
+        "bridgeCleared": true,
+        "aliens": 0,
+        "ravagerRoots": 0
+      }
+    }
+  ],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v68-continuation-20261102",
+    "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+    "sourceBranch": "codex/continuation-20261102",
+    "sourceFingerprint": "707705bfdc7beef5f9fecc4ede6774e3b5cb3db2708367806f9bd4a2c8c25d44",
+    "sourceFiles": 190,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793595196,
+    "reproducibleBuildDate": "2026-11-02T04:53:16.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/continuation-20261102/docs/qa/continuation-20261102-validation.json"
+  },
+  "helperSources": [
+    {
+      "path": "docs/qa/continuation-20261102/verify-evolved-combat.mjs",
+      "sha256": "b0cfa117115fa1be704f7dc2c744f89752f47f134856349a74dde1eb74c45a4f",
+      "snapshot": "helper-source-0.mjs"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+      "snapshot": "helper-source-1.mjs"
+    }
+  ],
+  "browserClosed": true,
+  "distUnchanged": true,
+  "helperSourcesUnchanged": true,
+  "finishedAt": "2026-11-02T05:07:27.474Z",
+  "durationSeconds": 225.745
+}

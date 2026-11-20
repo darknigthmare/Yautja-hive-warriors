@@ -1,0 +1,50 @@
+✔ the evolved LV-742 scenario signs upgrades without adding soldiers, cargo or starting HP (90.298976ms)
+✔ normal, basic and evolved checkpoints cannot be exchanged or upgraded by a live actor flag (127.13453ms)
+✔ the evolved scenario rejects another continuity and unknown variant before mutating its configuration (7.375829ms)
+✖ programmatic terrain selection updates the same cards as a real level click (1.104525ms)
+✖ cards rebuilt after checkpoint selection preserve the selected terrain rather than the first row (0.255801ms)
+✔ LV-742 map keys and source descriptions stay identical for standard and enhanced variants (44.915304ms)
+✔ compact map labels retain unknown control and leave concise maps readable by name (0.259798ms)
+✔ real LV-742 minimap draws bounded keys without painting its long source paragraphs over the map (28.121461ms)
+✔ briefing legends retain every full front description and expose unknown control without hidden troop counts (0.47041ms)
+✔ canvas label strokes and text remain inside the image even at a boundary front (0.28239ms)
+✔ the actual Musou panel uses stable map keys for priority-sorted fronts without deleting source labels (16.192407ms)
+✔ the actual fronts minimap draws monochrome role shapes, stale hollow reports and dashed closed routes (2.243903ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 10
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 360.726642
+
+✖ failing tests:
+
+test at tests/operation-map-readability.test.js:44:1
+✖ programmatic terrain selection updates the same cards as a real level click (1.104525ms)
+  TypeError: Cannot set properties of undefined (setting 'borderTopColor')
+      at file:///workspace/Yautja-continue-20261109/js/ui/UIManager.js:284:54
+      at Array.forEach (<anonymous>)
+      at UIManager.initLevelSelect (file:///workspace/Yautja-continue-20261109/js/ui/UIManager.js:277:17)
+      at file:///workspace/Yautja-continue-20261109/tests/operation-map-readability.test.js:49:8
+      at withDocument (file:///workspace/Yautja-continue-20261109/tests/operation-map-readability.test.js:32:16)
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/operation-map-readability.test.js:48:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at tests/operation-map-readability.test.js:65:1
+✖ cards rebuilt after checkpoint selection preserve the selected terrain rather than the first row (0.255801ms)
+  TypeError: Cannot set properties of undefined (setting 'borderTopColor')
+      at file:///workspace/Yautja-continue-20261109/js/ui/UIManager.js:284:54
+      at Array.forEach (<anonymous>)
+      at UIManager.initLevelSelect (file:///workspace/Yautja-continue-20261109/js/ui/UIManager.js:277:17)
+      at file:///workspace/Yautja-continue-20261109/tests/operation-map-readability.test.js:70:8
+      at withDocument (file:///workspace/Yautja-continue-20261109/tests/operation-map-readability.test.js:32:16)
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/operation-map-readability.test.js:69:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)

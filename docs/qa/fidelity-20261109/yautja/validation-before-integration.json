@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-09",
+  "baseCommit": "a8f9c75",
+  "stage": "Intermediate first integration, before CPU template optimization, final-physics animation hook and second anatomical review",
+  "scope": "Node model/animation, support lifecycle and rescue regression",
+  "command": "node --test --test-concurrency=1 tests/clan-hunter-visual.test.js tests/support-visual.test.js tests/ally-rescue.test.js",
+  "tests": 40,
+  "passed": 39,
+  "failed": 1,
+  "yautjaNewTestsPassed": 5,
+  "allyRescueTestsPassed": 17,
+  "sourceHashCaptured": false,
+  "unrelatedIntegrationFailure": {
+    "test": "pod: detailed finite model stays inside its rendering budget",
+    "observedTriangles": 63808,
+    "existingMaximumTriangles": 44000,
+    "reportedToIntegrationOwner": true,
+    "note": "Concurrent drop-pod graphics work was outside this agent's owned files. The honor-guard budget, manager lifecycle and all rescue tests passed. The later integrated pod fix is measured by validation.json, not retroactively assigned to this run."
+  },
+  "hardwarePerformanceMeasured": false,
+  "filmPropReplicaCertified": false
+}

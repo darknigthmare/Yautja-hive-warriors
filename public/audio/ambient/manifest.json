@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "note": "Un fichier par biome (jungle, rain, snow, city, station, hive, plains, arena, ship) remplace l’ambiance procédurale. Voir docs/audio/MUSIQUE-GOOGLE-FLOW.md.",
+  "beds": {}
+}

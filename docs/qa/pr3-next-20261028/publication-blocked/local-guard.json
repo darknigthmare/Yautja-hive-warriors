@@ -1,0 +1,20 @@
+{
+  "status": "passed_local_frozen_integrity_and_qa_after_blocked_publication_archival",
+  "files": 30,
+  "models": 12,
+  "bundles": 5,
+  "qa": {
+    "passed": true,
+    "cpuPassed": 833,
+    "regressionPassed": 8,
+    "runtimeChecksPassed": 9,
+    "path": "/workspace/Yautja-next-20261028/docs/qa/pr3-next-validation.json",
+    "sha256": "9cc83dad4d2024e1bfb1a96f18251977552125f5f29794c1a291c4f78ca0cb16"
+  },
+  "buildExecuted": false,
+  "gitExecuted": false,
+  "browserStarted": false,
+  "remoteRequestsExecuted": false,
+  "publicationExecuted": false,
+  "scope": "Library guard functions only. The full publisher is deliberately not invoked because it also performs a Git ancestry check. No new submission or registry mutation."
+}

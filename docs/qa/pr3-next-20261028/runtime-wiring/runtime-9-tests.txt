@@ -1,0 +1,17 @@
+✔ old checkpoints recover the original seed/difficulty despite different menu settings, while new saves retain both (1.264276ms)
+✔ command map reports the active terrain/difficulty and real pending phase threats, omitting cancelled threats (0.271186ms)
+✔ actual support context denies unknown maps and historical faithful tech, and checks a real roof and APC ownership (0.761229ms)
+✔ router binds support checkpoints to the persistent campaign run, retains wounds/ammo and reattaches only a real collider (2020.179308ms)
+✔ wooden arrow sweep chooses the first physical hostile body and the nearest physical cover (0.822385ms)
+✔ router dispatches Taabe to its owned mesh and actual Horde hit query only damages the first body once (3.838209ms)
+✔ router boss hit passes actual heavy counterplay and origin, while physical cover prevents damage/interruption (1.150823ms)
+✔ full player snapshot restores PREY possession before selecting the spent bow, without inventing possession from old flat ammo (3043.003689ms)
+✔ wheel adds only the current input owner’s actually acquired PREY tools (0.597669ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5281.304307

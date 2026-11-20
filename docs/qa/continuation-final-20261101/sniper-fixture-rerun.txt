@@ -1,0 +1,25 @@
+✔ sniper preserves a alien behind real solid, rotated or cylindrical cover without reporting a hit (2.904038ms)
+✔ sniper preserves a boss behind real solid, rotated or cylindrical cover without reporting a hit (0.676495ms)
+✔ sniper preserves a synthetic behind real solid, rotated or cylindrical cover without reporting a hit (0.54507ms)
+✔ sniper uses its 1.8-high muzzle for alien cover instead of the legacy default at height 2 (0.423829ms)
+✔ sniper retains piercing damage on several exposed actors, costs and the existing alien faction filter (0.611497ms)
+✔ restored sniper synthetic hits respect the owning simulation and preserve credit on rejected targets (1.88359ms)
+✔ an admitted alien hit replaces stale NPC credit while friendly or covered aliens keep it (0.405399ms)
+✔ sniper cannot reach a lateral boss beyond the first obstacle on its central trajectory (0.390295ms)
+✔ sniper respects the historical projected range and 3D corridors for every target family (0.521749ms)
+✔ sniper does not turn low, overhead, distant, disabled or render-hidden cover into incorrect admission (0.639035ms)
+✔ a lethal sniper boss impact keeps the real damage owner and remains safe after it clears the boss (0.432128ms)
+✔ lethal synthetic hits keep deferred bisection and final deactivation with the existing owner and player credit (2.679372ms)
+✔ a synthetic already at zero HP keeps its previous lethal credit until its owner restores a living torso (0.660762ms)
+✔ sniper preserves unobstructed endpoint and all eight existing spark emission points (0.163028ms)
+✔ sniper bounds its explosion and spark emission points at the nearest physical wall (0.229076ms)
+✔ sniper handles a custom t-only impact and an origin already inside cover without points beyond it (0.267807ms)
+✔ an unavailable, cooling or unaffordable sniper shot retains its existing refusal and consumes nothing (0.153953ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.035196

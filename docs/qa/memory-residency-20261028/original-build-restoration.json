@@ -1,0 +1,7 @@
+{
+  "recordedAt": "2026-10-28T07:55:25.461885+00:00",
+  "incident": "An accidental build used the original cwd once. Only dist/build-info.json differed and was immediately restored from the frozen stage before subsequent diagnostics. No publication occurred.",
+  "currentAllThirtyFilesMatchFrozenStage": true,
+  "differentFiles": [],
+  "indexSha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185"
+}

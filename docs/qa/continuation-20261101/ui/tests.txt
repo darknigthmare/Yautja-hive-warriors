@@ -1,0 +1,41 @@
+✔ versioned preferences persist real booleans and palette changes, and apply independent body hooks (1.988136ms)
+✔ private, absent, corrupt and future storage never prevents settings from operating (0.460233ms)
+✔ subscribers receive copies, can detach and cannot break other preference listeners (0.245252ms)
+✔ relationship shapes and meaningful glyphs distinguish markers even after every tint is converted to monochrome (0.697606ms)
+✔ camp families retain letters and different accessible tints independently of relationship shapes (0.332079ms)
+✔ canvas markers draw distinct paths, outlines and text without assuming color alone (0.788269ms)
+✔ reduced flashes suppresses lightning and pulsing while leaving warning symbols available (0.167767ms)
+✔ original clan continuity is opt-in and carries an actual named loss into a later operation only (24.174385ms)
+✔ suspension preserves a run; only an actual confirmed result or explicit withdrawal finalizes it once (14.443866ms)
+✔ finalized run IDs survive the 64-receipt debrief ring and a temporary quota failure retries safely (41.625869ms)
+✔ observing the same named loss retries a recovered store and prevents resurrection after reload (3.1542ms)
+✔ an unchanged named loss never reports persisted while the store remains unavailable (1.834991ms)
+✔ observing a named loss already loaded from a valid store performs no redundant write (1.384926ms)
+✔ incompatible records remain untouched until explicit reset, isolated from existing stores (1.430414ms)
+✔ an older checkpoint cannot revive a unique individual already confirmed dead by the campaign (8.114195ms)
+✔ final debrief snapshots all finite states and named losses before mission teardown (23.065462ms)
+✔ real recovered evidence earns an original mission commendation; kill counts never promote canonical rank or give stats (25.833797ms)
+✔ a fake task list cannot mint defence, rescue, archive or diplomatic recognition (2.775738ms)
+✔ character briefings and debriefs react to the selected hunter, real local agreement and persistent named consequences (8.148034ms)
+✔ returning from co-op to solo resets the command issuer to the player who exists (1.377239ms)
+✔ returning from co-op to solo resets the healing recipient to the living mission slot (0.345231ms)
+✔ co-op refresh preserves player-two choices and the selected groups, destination and view (0.829133ms)
+✔ solo-to-co-op enables the second slot without silently retargeting player-one actions (0.206634ms)
+✔ a real hive officer death names its group, front and mechanical coordination loss in the HUD feedback (6.414579ms)
+✔ captured debrief retains group and front labels after the operation has been disposed (1.406586ms)
+✔ the final debrief renders the mechanical consequence after scene teardown (1.715064ms)
+✔ the command map renders that real consequence in its tactical journal instead of a generic report (1.038314ms)
+✔ unknown reports never imply fresh contact or expose unobserved enemy counts (4.534267ms)
+✔ front comparison and text retain the old report age when the hidden group moves (9.716209ms)
+✔ route preview agrees with real accepted path and immediately excludes closed routes (1.81129ms)
+✔ delegation and tactic acknowledgements describe actual accepted actions without promising an instant arrival (0.971952ms)
+✔ debrief snapshots real objective completion and clan survivors before scene teardown (15.358307ms)
+✔ monochrome remains monochrome after persistence and preserves relationship shapes with flashes reduced (0.620468ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 870.231402

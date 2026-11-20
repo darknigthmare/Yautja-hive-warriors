@@ -1,0 +1,226 @@
+[
+  {
+    "id": "jungle_hunter",
+    "index": 0,
+    "primary": "wristblades",
+    "secondary": "wristblades",
+    "ranged": "plasma_caster",
+    "gadgets": [
+      "medicomp",
+      "nuke"
+    ],
+    "labels": {
+      "primary": "Lames de poignet",
+      "secondary": "Même arme : Lames de poignet",
+      "special": "Canon plasma d’épaule",
+      "gadgets": "Médicomp · Dispositif d’autodestruction"
+    },
+    "stats": {
+      "hp": 1000,
+      "maxHp": 1000,
+      "moveSpeed": 16,
+      "meleeDamage": 120,
+      "plasmaDamage": 250,
+      "plasmaEnergyCost": 20
+    },
+    "colors": {
+      "skin": 9075037,
+      "armor": 3817287,
+      "mask": 7239042,
+      "plasma": 54015,
+      "dreads": 1118481
+    }
+  },
+  {
+    "id": "wolf_predator",
+    "index": 1,
+    "primary": "wristblades",
+    "secondary": "plasma_whip",
+    "ranged": "dual_caster",
+    "gadgets": [
+      "medicomp",
+      "acid_solvent"
+    ],
+    "labels": {
+      "primary": "Lames de poignet",
+      "secondary": "Fouet segmenté de Wolf",
+      "special": "Deux canons plasma d’épaule",
+      "gadgets": "Médicomp · Liquide dissolvant de Wolf"
+    },
+    "stats": {
+      "hp": 1150,
+      "maxHp": 1150,
+      "moveSpeed": 17,
+      "meleeDamage": 145,
+      "plasmaDamage": 280,
+      "plasmaEnergyCost": 16
+    },
+    "colors": {
+      "skin": 8023128,
+      "armor": 2238512,
+      "mask": 5265510,
+      "plasma": 65535,
+      "dreads": 657930
+    }
+  },
+  {
+    "id": "alpha_predator",
+    "index": 2,
+    "primary": "alpha_sickle",
+    "secondary": "compound_bow",
+    "ranged": "plasma_caster",
+    "gadgets": [
+      "medicomp",
+      "bear_trap"
+    ],
+    "labels": {
+      "primary": "Faucille Alpha (Hunting Grounds)",
+      "secondary": "Arc composite Yautja",
+      "special": "Canon plasma d’épaule",
+      "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)"
+    },
+    "stats": {
+      "hp": 1200,
+      "maxHp": 1200,
+      "moveSpeed": 18,
+      "meleeDamage": 160,
+      "plasmaDamage": 220,
+      "plasmaEnergyCost": 15
+    },
+    "colors": {
+      "skin": 7233615,
+      "armor": 4010534,
+      "mask": 8548441,
+      "plasma": 54015,
+      "dreads": 1314828
+    }
+  },
+  {
+    "id": "feral_predator",
+    "index": 3,
+    "primary": "wristblades",
+    "secondary": "crossbow",
+    "ranged": "crossbow",
+    "gadgets": [
+      "medicomp",
+      "feral_shield"
+    ],
+    "labels": {
+      "primary": "Lames de poignet",
+      "secondary": "Lance-projectiles guidés du Feral",
+      "special": "Lance-projectiles guidés du Feral",
+      "gadgets": "Médicomp · Bouclier rétractable du Feral"
+    },
+    "stats": {
+      "hp": 1000,
+      "maxHp": 1000,
+      "moveSpeed": 19,
+      "meleeDamage": 135,
+      "plasmaDamage": 210,
+      "plasmaEnergyCost": 15
+    },
+    "colors": {
+      "skin": 6510405,
+      "armor": 4010275,
+      "mask": 4864810,
+      "plasma": 16746496,
+      "dreads": 1840914
+    }
+  },
+  {
+    "id": "samurai_predator",
+    "index": 4,
+    "primary": "katana",
+    "secondary": "smart_disc",
+    "ranged": "plasma_caster",
+    "gadgets": [
+      "medicomp",
+      "bear_trap"
+    ],
+    "labels": {
+      "primary": "Katana du Samurai (Hunting Grounds)",
+      "secondary": "Disque de chasse Smart-Disc",
+      "special": "Canon plasma d’épaule",
+      "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)"
+    },
+    "stats": {
+      "hp": 1050,
+      "maxHp": 1050,
+      "moveSpeed": 19,
+      "meleeDamage": 150,
+      "plasmaDamage": 200,
+      "plasmaEnergyCost": 18
+    },
+    "colors": {
+      "skin": 9074529,
+      "armor": 4855832,
+      "mask": 8526876,
+      "plasma": 16724736,
+      "dreads": 1710618
+    }
+  },
+  {
+    "id": "viking_predator",
+    "index": 5,
+    "primary": "viking_axe",
+    "secondary": "smart_disc",
+    "ranged": "plasma_caster",
+    "gadgets": [
+      "medicomp",
+      "bear_trap"
+    ],
+    "labels": {
+      "primary": "Hache de combat Viking (Hunting Grounds)",
+      "secondary": "Disque de chasse Smart-Disc",
+      "special": "Canon plasma d’épaule",
+      "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)"
+    },
+    "stats": {
+      "hp": 1350,
+      "maxHp": 1350,
+      "moveSpeed": 14,
+      "meleeDamage": 175,
+      "plasmaDamage": 260,
+      "plasmaEnergyCost": 30
+    },
+    "colors": {
+      "skin": 6049084,
+      "armor": 3024156,
+      "mask": 7231812,
+      "plasma": 16755200,
+      "dreads": 986121
+    }
+  },
+  {
+    "id": "city_hunter",
+    "index": 6,
+    "primary": "combistick",
+    "secondary": "smart_disc",
+    "ranged": "plasma_caster",
+    "gadgets": [
+      "medicomp",
+      "nuke"
+    ],
+    "labels": {
+      "primary": "Lance télescopique Combistick",
+      "secondary": "Disque de chasse Smart-Disc",
+      "special": "Canon plasma d’épaule",
+      "gadgets": "Médicomp · Dispositif d’autodestruction"
+    },
+    "stats": {
+      "hp": 850,
+      "maxHp": 850,
+      "moveSpeed": 19,
+      "meleeDamage": 100,
+      "plasmaDamage": 180,
+      "plasmaEnergyCost": 15
+    },
+    "colors": {
+      "skin": 10389609,
+      "armor": 4864812,
+      "mask": 8547417,
+      "plasma": 65535,
+      "dreads": 1710618
+    }
+  }
+]

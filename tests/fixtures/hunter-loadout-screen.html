@@ -1,0 +1,42 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><title>YHW — préparation isolée</title>
+<style>.hidden,[hidden]{display:none!important}body{font-family:sans-serif;max-width:1100px;margin:20px auto;padding:16px}button,select{font:inherit;margin:5px;padding:10px}.selected{outline:3px solid currentColor}.loadout-options{display:flex;flex-wrap:wrap}.loadout-section{margin:20px 0}button:focus-visible,select:focus-visible{outline:4px double currentColor}</style>
+<button id="outside">Hors du panneau</button>
+<!-- Existing index.html loadout structure at 59179bb, kept as the integration
+     fixture. This is not the full game's CSS or a WebGL gameplay test. -->
+<div id="loadout-prep-screen" class="ui-screen hidden">
+  <div class="screen-header"><span class="step-label">03 / ARMURERIE</span><h2>PRÉPAREZ VOTRE CHASSE</h2><p>Choisissez une arme principale, une secondaire et deux gadgets maximum.</p></div>
+  <div class="operation-setup"><label>Arsenal<select id="fidelity-mode-select"><option value="adapted">Adapté : choix libres pour cet affrontement alternatif</option><option value="faithful">Fidèle à l’incarnation : armes et capacités attestées</option></select></label><p class="operation-provenance">Les modèles et la géographie restent des adaptations ; aucune fidélité visuelle 1:1 n’est certifiée.</p></div>
+  <div class="loadout-grid-container">
+    <div class="loadout-section glass-panel"><h3>1. ARME PRINCIPALE (SÉLECTIONNEZ 1)</h3><div class="loadout-options">
+      <button class="loadout-btn loadout-primary-btn selected" data-item="wristblades">🔪 Dual Wristblades</button>
+      <button class="loadout-btn loadout-primary-btn" data-item="combistick">🗡️ Combistick Spear</button>
+      <button class="loadout-btn loadout-primary-btn" data-item="katana">⚔️ Samurai Katana</button>
+      <button class="loadout-btn loadout-primary-btn" data-item="alpha_sickle">🦴 Alpha Bone Sickle</button>
+    </div></div>
+    <div class="loadout-section glass-panel"><h3>2. ARME SECONDAIRE [TAB] (SÉLECTIONNEZ 1)</h3><div class="loadout-options">
+      <button class="loadout-btn loadout-secondary-btn selected" data-item="smart_disc">🛸 Smart-Disc Laser Rotor</button>
+      <button class="loadout-btn loadout-secondary-btn" data-item="shuriken">☸️ 6-Blade Shuriken</button>
+      <button class="loadout-btn loadout-secondary-btn" data-item="compound_bow">🏹 Yautja Compound Bow</button>
+      <button class="loadout-btn loadout-secondary-btn" data-item="plasma_whip">🐍 Vertebrae Plasma Whip</button>
+    </div></div>
+    <div class="loadout-section glass-panel full-grid"><h3>3. GADGETS TACTIQUES (CHOISIR 2 MAX)</h3><div class="loadout-options">
+      <button class="loadout-btn loadout-gadget-btn selected" data-item="medicomp">💉 Médicomp [Z / W AZERTY]</button>
+      <button class="loadout-btn loadout-gadget-btn selected" data-item="bear_trap">🪤 Steel Bear Trap [T]</button>
+      <button class="loadout-btn loadout-gadget-btn" data-item="acid_solvent">🧪 Solvant d'Acide</button>
+      <button class="loadout-btn loadout-gadget-btn" data-item="nuke">☢️ Auto-Destruction Nuke [N]</button>
+    </div></div>
+  </div>
+  <p id="loadout-feedback" class="selection-feedback" role="status" aria-live="polite">2 gadgets sélectionnés sur 2</p>
+  <div class="loadout-footer"><button id="btn-back-to-levels" class="btn-secondary">← RETOUR AUX ARÈNES</button><button id="btn-confirm-loadout" class="btn-primary">DÉPLOYER LA CHASSE ►</button></div>
+</div>
+<script type="module">
+import { LoadoutScreen } from '/js/ui/LoadoutScreen.js';
+import { resolveHunterLoadout } from '/js/data/hunterArsenal.js';
+window.gameInstance={ui:{selectedChar:{id:'jungle_hunter'}}};
+window.received=[];window.failNext=false;
+window.makeScreen=()=>new LoadoutScreen(config=>{if(window.failNext){window.failNext=false;throw new Error('fixture deployment rejected')}window.received.push(structuredClone(config))});
+window.prep=window.makeScreen();window.resolver=resolveHunterLoadout;
+window.selectContext=(id,mode='faithful')=>{window.gameInstance.ui.selectedChar={id};const select=document.getElementById('fidelity-mode-select');select.value=mode;select.dispatchEvent(new Event('change',{bubbles:true}));document.getElementById('loadout-prep-screen').classList.remove('hidden')};
+window.readSelection=()=>({primary:window.prep.selectedPrimary,secondary:window.prep.selectedSecondary,gadgets:[...window.prep.selectedGadgets]});
+window.ready=true;
+</script></html>

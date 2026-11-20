@@ -1,0 +1,53 @@
+✔ raised industrial floors preserve the lower layer, use real access slopes and stop jumps at the visible underside (36.363754ms)
+✔ the solid helipad has four actual cardinal access routes rather than a step through its cylinder (28.187453ms)
+✔ resin walkways leave insertion airspace clear and preserve real lower and upper crossing layers (15.251591ms)
+✔ a real USCM flametrooper leaves the lower layer, uses the ramp and reaches firing range on the upper deck (2936.317668ms)
+✔ the legacy Stargazer radius42 enclosure cannot teleport distant fronts back into the insertion room (3849.036111ms)
+✔ each of the 34 maps has reproducible, distinct seeded physical paths with stable named anchors (61.777365ms)
+✔ invalid seeds fail before producing ambiguous checkpoint geometry (0.779798ms)
+✔ LD-01: two seeded constructions retain physically open complete routes (13571.531059ms)
+✔ LD-02: two seeded constructions retain physically open complete routes (7997.741557ms)
+✔ LD-03: two seeded constructions retain physically open complete routes (1347.71488ms)
+✔ LD-04: two seeded constructions retain physically open complete routes (1922.738554ms)
+✔ LD-05: two seeded constructions retain physically open complete routes (4761.103127ms)
+✔ LD-06: two seeded constructions retain physically open complete routes (1481.929472ms)
+✔ LD-07: two seeded constructions retain physically open complete routes (2113.291402ms)
+✔ LD-08: two seeded constructions retain physically open complete routes (5691.7451ms)
+✔ LD-09: two seeded constructions retain physically open complete routes (3881.681211ms)
+✔ LD-10: two seeded constructions retain physically open complete routes (4939.477802ms)
+✔ LD-11: two seeded constructions retain physically open complete routes (4190.869923ms)
+✔ LD-12: two seeded constructions retain physically open complete routes (2796.011863ms)
+✔ LD-13: two seeded constructions retain physically open complete routes (6024.253769ms)
+✔ LD-14: two seeded constructions retain physically open complete routes (1262.048798ms)
+✔ LD-15: two seeded constructions retain physically open complete routes (3234.919689ms)
+✔ LD-16: two seeded constructions retain physically open complete routes (2105.624753ms)
+✔ LD-17: two seeded constructions retain physically open complete routes (2164.055009ms)
+✔ LD-18: two seeded constructions retain physically open complete routes (2085.779945ms)
+✔ LD-19: two seeded constructions retain physically open complete routes (3445.580967ms)
+✔ LD-20: two seeded constructions retain physically open complete routes (4308.40081ms)
+✔ LD-21: two seeded constructions retain physically open complete routes (5965.917224ms)
+✔ LD-22: two seeded constructions retain physically open complete routes (1539.532405ms)
+✔ LD-23: two seeded constructions retain physically open complete routes (5929.011983ms)
+✔ LD-24: two seeded constructions retain physically open complete routes (6283.156488ms)
+✔ LD-25: two seeded constructions retain physically open complete routes (5932.5498ms)
+✔ LD-26: two seeded constructions retain physically open complete routes (3751.318107ms)
+✔ LD-27: two seeded constructions retain physically open complete routes (4244.009211ms)
+✔ LD-28: two seeded constructions retain physically open complete routes (1422.64228ms)
+✔ LD-29: two seeded constructions retain physically open complete routes (7989.47535ms)
+✔ LD-30: two seeded constructions retain physically open complete routes (6299.984318ms)
+✔ LD-31: two seeded constructions retain physically open complete routes (5879.310486ms)
+✔ LD-32: two seeded constructions retain physically open complete routes (2628.671297ms)
+✔ LD-33: two seeded constructions retain physically open complete routes (9566.260759ms)
+✔ LD-34: two seeded constructions retain physically open complete routes (3436.34571ms)
+✔ ahead-of-view buffer restoration obeys its byte budget while visible terrain and both players always take priority (4.725337ms)
+✔ three real sectors and a return preserve destruction, objectives, contacts and the same CPU buffers (12001.561985ms)
+ℹ {"measurement":"Node CPU buffer preparation; no rendered GPU frame or actual VRAM measurement","budgetBytes":2097152,"measurements":[{"sector":"insertion","preparationCpuMs":0.1321109999989858,"aheadPreparedBytes":0,"mandatoryPreparedBytes":0,"pendingBytes":0,"eligibleGpuBytes":4980516},{"sector":"area-6","preparationCpuMs":0.5010559999991528,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1224568,"pendingBytes":0,"eligibleGpuBytes":5196960},{"sector":"nest","preparationCpuMs":0.15635400000064692,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1309304,"pendingBytes":0,"eligibleGpuBytes":5281696},{"sector":"insertion","preparationCpuMs":0.25096599999960745,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1008124,"pendingBytes":0,"eligibleGpuBytes":4980516}]}
+✔ main and flank trails are actual upward-facing world geometry linked to physical exits, independently of the HUD (858.085623ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150510.701726

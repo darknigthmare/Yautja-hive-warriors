@@ -1,6 +1,9 @@
+import { sourceSquadSlots, sourceCommanderSlot, SOURCE_BOSS_SPECIES } from './SourceBattleRoster.js';
+import { getOriginalMusouFrontPlan } from './OriginalMusouFrontAllocations.js';
 /* PR #3 source catalogue. A sourced profile, a proposed operation and a rendered
  * character are separate records; none of these exports certifies a 1:1 asset. */
 import { BATTLE_CATALOG_DATA as source } from './BattleCatalogData.js';
+import { getAlienBaseProfile } from './AlienBaseRegistry.js';
 import { ULTIMATE_YAUTJA_ARMORY } from './charactersData.js';
 import { createOperationObjectiveSpec } from '../battlefield/OperationObjectiveSpecs.js';
 
@@ -40,6 +43,7 @@ function species(row) {
 }
 export const BATTLE_PROFILES = freeze(source.profiles.map(row => ({
   id: row.id, name: row.name, species: species(row), sourceFamily: row.faction, kind: row.kind,
+  sharedAlienBaseId: getAlienBaseProfile(row.id)?.id ?? null,
   work: row.work, medium: row.medium, continuity: row.continuity, eligibility: eligibility(row),
   evidence: { status: row.evidenceStatus, fact: row.evidenceFact, sourceIds: [...row.sourceIds],
     urls: [...new Set(row.sourceIds.map(id => sourceIndex.get(id)?.url).filter(Boolean))] },
@@ -81,7 +85,15 @@ function lookup(rows, id, label) {
 }
 export const getBattleProfile = id => lookup(BATTLE_PROFILES, id, 'profile');
 export const getBattleMap = id => lookup(BATTLE_MAPS, id, 'map');
-export const getBattleOperation = id => lookup(BATTLE_OPERATIONS, id, 'operation');
+/* Post-audit adaptations (HW-DEC-90/99). The 27 audited operations are unchanged; an adapted
+ * operation reuses one of them and declares what it changes. Not a certified reconstruction. */
+export const ADAPTED_OPERATIONS = freeze(source.operations.filter(row => row.id === 'AFF-18').map(base => ({ ...clone(base),
+  id: 'ADP-01', baseOperationId: base.id, budgetId: 'EFF-06', title: 'Tobler-9 — la trêve du refuge',
+  playerSide: 'Un joueur Yautja, 12 chasseurs alliés PNJ originaux et, sous trêve, 108 survivants armés de Tobler-9 (GRP-52).',
+  forceAllocation: null, adaptedFrom: base.id, adaptationDecision: 'HW-DEC-99',
+  adaptation: 'Variante d’AFF-18 au budget EFF-06 : même ruche et mêmes réserves ; la trêve avec les survivants est expliquée, révocable, et commence neutre.' })));
+export const PLAYABLE_OPERATIONS = freeze([...BATTLE_OPERATIONS, ...ADAPTED_OPERATIONS]);
+export const getBattleOperation = id => lookup(PLAYABLE_OPERATIONS, id, 'operation');
 export const getBattleBudget = id => lookup(BATTLE_BUDGETS, id, 'budget');
 export const getBattleGroup = id => lookup(BATTLE_GROUPS, id, 'group');
 export const getBattleFront = id => lookup(BATTLE_FRONTS, id, 'front');
@@ -98,7 +110,7 @@ export function getBattleOperationScene(operationId) {
 /** Validate explicit deployments. A named or excluded profile can never become
  * an anonymous reserve template, even in free/crossover play. */
 export function validateBattleRoster(deployments, { mode = 'original', works = [], reserve = false } = {}) {
-  const errors = [], unique = new Set();
+  const errors = [], divergences = [], unique = new Set();
   if (!['original', 'clan_war', 'crossover', 'reconstruction'].includes(mode)) errors.push('unknown scenario mode');
   if (!Array.isArray(deployments)) return { valid: false, errors: ['roster must be an array'] };
   for (const deployment of deployments) {
@@ -116,8 +128,10 @@ export function validateBattleRoster(deployments, { mode = 'original', works = [
     if (mode === 'reconstruction' && !works.includes(profile.work)) errors.push(`${profile.id}: work is outside the selected reconstruction`);
     if (e.originalWarOnly && mode === 'reconstruction' && count > 1) errors.push(`${profile.id}: mass warfare is an original variant`);
     if (e.requiresSourcePreset && !works.includes(profile.work)) errors.push(`${profile.id}: source-game preset is required`);
+    // A hypothetical mode may allow what a reconstruction refuses, but it says so (REC-007).
+    if (mode === 'crossover' && works.length && profile.work && !works.includes(profile.work)) divergences.push(`${profile.id}: from ${profile.work}, outside ${works.join(', ')} (hypothetical crossover)`);
   }
-  return { valid: errors.length === 0, errors };
+  return { valid: errors.length === 0, errors, divergences };
 }
 
 // Conservative adaptation rules, linked to the audit rather than a claim that
@@ -147,8 +161,11 @@ function allocatedCamp(entry, side, playerSpecies) {
   if (/yautja|clan rival/.test(hint) && !/force humaine/.test(hint)) return { id: 'rival_clan', species: 'yautja' };
   return { id: 'human_force', species: 'human' };
 }
-function proposedAllocation(operation) {
+function proposedAllocation(operation, deploymentPlan = 'authored') {
   if (operation.forceAllocation) return operation.forceAllocation;
+  const authored = deploymentPlan === 'authored'
+    ? getOriginalMusouFrontPlan(operation.id) : null;
+  if (authored) return authored;
   // AFF-06..10 describe exact counts in prose rather than forceAllocation.
   // This is a reviewed translation of those five rows, not a text parser.
   const small = ['AFF-06', 'AFF-07'].includes(operation.id);
@@ -183,6 +200,41 @@ function commanderProfile(speciesId, boss) {
   return profile;
 }
 
+// A new battle may use source-role presets. Legacy checkpoints still reconstruct
+// the original generic profiles and exact config digest.
+// Affiliation is carried apart from species, role and camp (CTRL-086, HW-DEC-104): a USCM synthetic is
+// not Weyland-Yutani, and no USCM–WY opposition exists unless a scene chooses it.
+const TEMPLATE_AFFILIATIONS = freeze({ 'GRP-60': 'uscm', 'GRP-53': 'uscm', 'GRP-47': 'uscm', 'GRP-46': 'weyland_yutani', 'GRP-50': 'seegson', 'GRP-52': 'tobler_colony' });
+function applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks = false, squadIndex = 0 } = {}) {
+  // Dark Descent squads alternate their fourth class (CTRL-084).
+  const chosen = entry.groupId === 'GRP-53' ? (squadIndex % 2 ? 'recon' : 'default') : entry.profile;
+  const slots = sourceSquadSlots(entry.groupId, chosen, group.units.length, { legacySourceLinks });
+  if (!slots) return;
+  const preset = (chosen ?? 'default').replace(/[^a-zA-Z0-9_-]/g, '_');
+  slots.forEach((slot, index) => {
+    const id = `source_${faction.id}_${entry.groupId}_${preset}_${index}`;
+    if (!profiles.some(profile => profile.id === id)) profiles.push({
+      ...genericProfile(slot.species), id, name: slot.sourceRole, species: slot.species,
+      actorType: slot.actorType, role: 'soldier', sourceRole: slot.sourceRole,
+      sourceTemplateId: entry.groupId, visualStatus: slot.visual,
+      ...(slot.catalogueProfileId ? { catalogueProfileId: slot.catalogueProfileId } : {}),
+      ...(!legacySourceLinks && TEMPLATE_AFFILIATIONS[entry.groupId] ? { affiliation: TEMPLATE_AFFILIATIONS[entry.groupId] } : {}),
+      visualFidelity1to1Verified: false, fidelity: 'adaptation',
+      allowedFactions: [faction.id],
+      provenance: 'Audit composition mapped to existing identities; visual/actions are not certified as 1:1.'
+    });
+    group.units[index].profileId = id;
+  });
+}
+function assignSourceCommander(group, boss, speciesId, profiles, slotIndex = 0) {
+  const profile = commanderProfile(speciesId, boss);
+  if (profiles.some(item => item.id === profile.id)) return false;
+  profiles.push(profile);
+  if (slotIndex !== 0) group.units[0].officer = false;
+  group.units[slotIndex] = { ...group.units[slotIndex], profileId: profile.id, uniqueId: boss.id, officer: true };
+  return true;
+}
+
 function capDetailedAgents(byFaction, groups, ceiling) {
   const desired = Object.values(byFaction).reduce((sum, allocation) => sum + allocation.active, 0);
   const active = Math.min(desired, ceiling), original = clone(byFaction);
@@ -213,8 +265,52 @@ function capDetailedAgents(byFaction, groups, ceiling) {
 /** Translate one proposed operation into the persistent simulation contract.
  * Positions are overridable by the actual scene layout; source dimensions are
  * not silently treated as a constructed or certified map. */
+const TRUCE_FACTION = 'tobler_survivors';
+function truceVariantConfig(adapted, options) {
+  const base = getBattleOperationConfig(adapted.baseOperationId, options), budget = getBattleBudget(adapted.budgetId);
+  const config = clone(base), rename = id => id.replace(`${adapted.baseOperationId}:`, `${adapted.id}:`);
+  const clan = config.groups.filter(group => group.factionId === config.playerFaction);
+  const pick = (state, count) => clan.filter(group => group.sourceState === state).slice(0, count);
+  // 12 Yautja (4 near, 4 distant, 4 reserve) from the base allocation; the rest of the clan is not deployed here.
+  const keptClan = [...pick('active', 2), ...[clan.find(group => group.sourceState === 'distant' && group.frontId === 'front_a'), clan.find(group => group.sourceState === 'distant' && group.frontId === 'front_b')].filter(Boolean), ...pick('reserve', 2)];
+  const survivors = [], plan = [['active', 6], ['distant', 16], ['reserve', 5]];
+  for (const [state, count] of plan) for (let index = 0; index < count; index++) {
+    const id = `${adapted.id}:${TRUCE_FACTION}:${survivors.length}`;
+    survivors.push({ id, label: 'Survivants de Tobler-9', factionId: TRUCE_FACTION, frontId: 'front_a', state: state === 'reserve' ? 'reserve' : 'distant', sourceState: state,
+      sourceTemplateIds: ['GRP-52'], units: Array.from({ length: 4 }, (_, unit) => ({ id: `${id}:${unit}`, profileId: `original_human_${unit === 0 ? 'officer' : 'soldier'}`, officer: unit === 0 })) });
+  }
+  config.groups = [...config.groups.filter(group => group.factionId !== config.playerFaction), ...keptClan, ...survivors]
+    .map(group => ({ ...group, id: rename(group.id), units: group.units.map(unit => ({ ...unit, id: rename(unit.id) })) }));
+  if (!config.profiles.some(profile => profile.id === 'original_human_soldier')) config.profiles.push(genericProfile('human'), genericProfile('human', 'officer'));
+  config.factions.push({ id: TRUCE_FACTION, species: 'human', allegiance: 'independent', moraleModel: 'human_morale', label: 'Survivants de Tobler-9' });
+  // A scenario truce, not an alliance: neutral with the clan, hostile to the hive.
+  config.relations.push({ a: config.playerFaction, b: TRUCE_FACTION, state: 'neutral' },
+    ...config.factions.filter(faction => ![config.playerFaction, TRUCE_FACTION].includes(faction.id)).map(faction => ({ a: TRUCE_FACTION, b: faction.id, state: 'hostile' })));
+  const raw = clone(base.sourceDetailedBudget.byFaction);
+  raw[config.playerFaction] = { active: 4, distant: 4, reserve: 4, total: 12 };
+  raw[TRUCE_FACTION] = { active: 24, distant: 64, reserve: 20, total: 108 };
+  const allies = raw[config.playerFaction].total + raw[TRUCE_FACTION].total;
+  if (allies !== budget.ally.total || raw[config.playerFaction].reserve + raw[TRUCE_FACTION].reserve !== budget.ally.reserve) fail(`${adapted.id}: allies must match ${budget.id}`);
+  const enemyTotal = Object.entries(raw).filter(([id]) => ![config.playerFaction, TRUCE_FACTION].includes(id)).reduce((sum, [, row]) => sum + row.total, 0);
+  if (enemyTotal !== budget.enemy.total) fail(`${adapted.id}: enemy force must match ${budget.id}`);
+  const byFaction = clone(raw), detail = capDetailedAgents(byFaction, config.groups, base.detailBudgetPolicy.maxDetailedAgents);
+  Object.assign(config, { id: adapted.id, name: adapted.title, budgetId: budget.id, desiredDetailedBudget: detail.desired,
+    sourceDetailedBudget: { budgetId: budget.id, active: detail.desired, byFaction: detail.original },
+    adaptedFrom: adapted.baseOperationId, adaptationDecision: adapted.adaptationDecision, adaptation: adapted.adaptation });
+  config.budgets = { ...config.budgets, active: detail.active, desiredActive: detail.desired, byFaction };
+  config.context = { ...config.context, designOrigin: 'post_audit_adaptation', adaptedFrom: adapted.baseOperationId };
+  const spec = createOperationObjectiveSpec(getBattleOperation(adapted.baseOperationId), config);
+  config.operationObjectives = { ...spec, id: `${adapted.id}:narrative-v1`, operationId: adapted.id, title: adapted.title };
+  return config;
+}
+
 export function getBattleOperationConfig(operationId, { playerCount = 1, budgetId, frontPositions, allowHumanController = false,
-  maxDetailedAgents = 32, experimentalDetailBudget = false } = {}) {
+  maxDetailedAgents = 32, experimentalDetailBudget = false, rosterDetail = 'source',
+  deploymentPlan = 'authored', legacySourceLinks = false, legacyBrood = false } = {}) {
+  const adapted = ADAPTED_OPERATIONS.find(row => row.id === operationId);
+  if (adapted) return truceVariantConfig(adapted, { playerCount, budgetId: undefined, frontPositions, allowHumanController, maxDetailedAgents, experimentalDetailBudget, rosterDetail, deploymentPlan, legacySourceLinks, legacyBrood });
+  if (!['source', 'legacy'].includes(rosterDetail)) fail('unknown roster detail policy');
+  if (!['authored', 'historical-fallback'].includes(deploymentPlan)) fail('unknown front deployment plan');
   const operation = getBattleOperation(operationId), map = getBattleMap(operation.mapId), frontSpec = getBattleFront(operation.frontId), budget = getBattleBudget(budgetId ?? operation.budgetId);
   if (!Number.isInteger(playerCount) || playerCount < 1 || playerCount > 2) fail('one or two players are required');
   if (!Number.isInteger(maxDetailedAgents) || maxDetailedAgents < 1 || maxDetailedAgents > 512) fail('detail ceiling must be an integer from 1 to 512');
@@ -222,7 +318,7 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
   if (operation.requiresHumanController && !allowHumanController) fail(`${operation.id}: optional human controller is not implemented by this catalogue`);
   const count = Math.max(3, Math.min(5, budget.fronts)), positions = frontPositions ?? Array.from({ length: count }, (_, index) => [Math.cos(index / count * Math.PI * 2) * 120, Math.sin(index / count * Math.PI * 2) * 120]);
   if (!Array.isArray(positions) || positions.length !== count || positions.some(position => !Array.isArray(position) || position.length !== 2 || position.some(value => !Number.isFinite(value)))) fail(`exactly ${count} finite front positions are required`);
-  const playerFaction = 'player_clan', camps = new Map(), forceAllocation = proposedAllocation(operation), playerFrontIndex = operationId === 'AFF-27' ? 3 : 0;
+  const playerFaction = 'player_clan', camps = new Map(), forceAllocation = proposedAllocation(operation, deploymentPlan), playerFrontIndex = operationId === 'AFF-27' ? 3 : 0;
   for (const category of ['active', 'distant', 'reserve']) for (const placement of forceAllocation[category]) for (const side of ['enemy', 'ally']) for (const entry of placement[side]) {
     const camp = allocatedCamp(entry, side, operation.playerSpecies); camps.set(camp.id, camp);
   }
@@ -253,9 +349,18 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
       const group = { id, factionId: faction.id, frontId: fronts[Math.max(0, frontIndex)]?.id ?? fronts[0].id,
         state: category === 'reserve' ? 'reserve' : 'distant', sourceState: category, sourceTemplateIds: [entry.groupId],
         units: Array.from({ length: quantity }, (_, index) => ({ id: `${id}:${index}`, profileId: `original_${faction.species}_${index === 0 ? 'officer' : 'soldier'}`, officer: index === 0 })) };
+      if (rosterDetail === 'source') applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks, squadIndex: groups.filter(item => item.sourceTemplateIds.includes(entry.groupId)).length });
       if (entry.bossId && !assignedBosses.has(entry.bossId)) {
-        const boss = getBattleBoss(entry.bossId), profile = commanderProfile(faction.species, boss);
-        profiles.push(profile); group.units[0] = { ...group.units[0], profileId: profile.id, uniqueId: boss.id, officer: true }; assignedBosses.add(boss.id);
+        const boss = getBattleBoss(entry.bossId);
+        const slot = rosterDetail === 'source' ? sourceCommanderSlot(entry.groupId, entry.profile, boss.id, quantity) : 0;
+        if (assignSourceCommander(group, boss, faction.species, profiles, slot)) {
+          // BOS-30 and BOS-31 are distinct original humans across missions.
+          // Keep sourceBossId intact, scope the allocated individual's ID.
+          if (deploymentPlan === 'authored' && getOriginalMusouFrontPlan(operationId) &&
+              ['BOS-30','BOS-31'].includes(boss.id))
+            group.units[slot].uniqueId = `${operationId}:${boss.id}`;
+          assignedBosses.add(boss.id);
+        }
       }
       if (entry.groupId === 'GRP-57') {
         const theta = getBattleProfile('HUM-032'), profile = { ...genericProfile('human', 'officer'), id: 'adapted_theta', name: theta.name, unique: true, fidelity: 'adaptation', sourceProfileId: theta.id };
@@ -263,6 +368,35 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
         group.units[0] = { ...group.units[0], profileId: profile.id, uniqueId: 'HUM-032', officer: true };
       }
       groups.push(group);
+    }
+  }
+  // LV-742 brood (HW-DEC-90/97, GRP-05): eight Facehuggers already allocated to the hive reserve
+  // wait as eggs in the Queen's chamber. They are moved, not created: totals and reserves are unchanged.
+  if (operationId === 'AFF-27' && rosterDetail === 'source' && !legacyBrood) {
+    const queenGroup = groups.find(group => group.units.some(unit => unit.uniqueId === 'BOS-39'));
+    const donors = groups.filter(group => group.state === 'reserve' && group.sourceTemplateIds.includes('GRP-58') && group.units.length === 8).slice(-8);
+    if (queenGroup && donors.length === 8) {
+      const eggs = donors.map(group => group.units.pop());
+      groups.push({ id: `${operationId}:hive:brood`, label: 'Couvoir de la Reine', factionId: queenGroup.factionId, frontId: queenGroup.frontId,
+        reserveOriginId: queenGroup.frontId, state: 'reserve', sourceState: 'reserve', sourceTemplateIds: ['GRP-05'], brood: true,
+        allowHeavyFormation: true, units: eggs.map(unit => ({ ...unit, officer: false })) });
+    }
+  }
+  if (rosterDetail === 'source') {
+    // Preserve historical faction and budget IDs, but identify synthetic-only
+    // camps by their actual species rather than renaming their robots Marines.
+    for (const faction of factions.filter(item => item.id !== playerFaction)) {
+      const allocated = groups.filter(group => group.factionId === faction.id).flatMap(group => group.units);
+      if (allocated.length && allocated.every(unit => profiles.find(profile => profile.id === unit.profileId)?.species === 'synthetic')) {
+        faction.species = 'synthetic';
+        faction.label = operationId === 'AFF-13' ? 'Working Joes Seegson' : 'Synthétiques Weyland-Yutani';
+        faction.simulationLimitation = 'Current tactical morale model is a proxy, not a synthetic protocol simulation.';
+      }
+    }
+    // Working Joes at Sevastopol are not automatically a third anti-xeno army.
+    if (operationId === 'AFF-13') {
+      const relation = relations.find(item => [item.a, item.b].sort().join('|') === ['hive', 'human_force'].sort().join('|'));
+      if (relation) relation.state = 'neutral';
     }
   }
   const enemyTotal = sides.reduce((sum, camp) => sum + byFaction[camp.id].total, 0);
@@ -283,19 +417,24 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
   // finite force count, and repeated access to this factory does not spawn it.
   for (let index = 0; index < operation.bossIds.length; index++) {
     if (assignedBosses.has(operation.bossIds[index])) continue;
-    const faction = factions[1 + index % sides.length];
-    const preferredTemplate = faction.species === 'human' ? 'GRP-42' : faction.species === 'yautja' ? 'GRP-36' : 'GRP-62';
+    const boss = getBattleBoss(operation.bossIds[index]);
+    const expectedSpecies = rosterDetail === 'source' ? SOURCE_BOSS_SPECIES[boss.id] : null;
+    const faction = expectedSpecies ? sides.find(side => side.species === expectedSpecies) ?? sides[index % sides.length] : sides[index % sides.length];
+    const preferredTemplate = boss.id === 'BOS-32' ? 'GRP-45' : boss.id === 'BOS-33' ? 'GRP-44'
+      : faction.species === 'human' ? 'GRP-42' : faction.species === 'yautja' ? 'GRP-36' : 'GRP-62';
     const group = groups.find(item => item.factionId === faction.id && item.state === 'distant' && item.sourceTemplateIds.includes(preferredTemplate))
       ?? groups.find(item => item.factionId === faction.id && item.state === 'distant');
     if (!group) continue;
-    const boss = getBattleBoss(operation.bossIds[index]), profile = commanderProfile(faction.species, boss);
-    profiles.push(profile); group.units[0] = { ...group.units[0], profileId: profile.id, uniqueId: boss.id, officer: true };
+    const slot = rosterDetail === 'source' ? sourceCommanderSlot(group.sourceTemplateIds[0], null, boss.id, group.units.length) : 0;
+    assignSourceCommander(group, boss, faction.species, profiles, slot);
   }
   const detail = capDetailedAgents(byFaction, groups, maxDetailedAgents);
   const configuration = { id: operationId, name: operation.title, mode: 'original', playerFaction,
     mapId: map.id, levelId: getBattleOperationScene(operationId).levelId, sceneRecommendation: getBattleOperationScene(operationId), frontId: frontSpec.id, budgetId: budget.id,
     context: { era: 'operation_specific', works: [map.continuity], continuities: [operation.continuity], players: playerCount,
-      designOrigin: 'audit_operation_proposal', allowAdaptations: true, requiresSceneBinding: true, visualFidelity1to1Verified: false },
+      designOrigin: 'audit_operation_proposal', allowAdaptations: true, requiresSceneBinding: true, visualFidelity1to1Verified: false,
+       ...(deploymentPlan === 'authored' && getOriginalMusouFrontPlan(operationId)
+         ? { frontAllocationProvenance: 'original-audit-front-v1; not canon' } : {}) },
     desiredDetailedBudget: detail.desired, sourceDetailedBudget: { budgetId: budget.id, active: detail.desired, byFaction: detail.original },
     detailBudgetPolicy: { maxDetailedAgents, capped: detail.active < detail.desired, experimental: maxDetailedAgents > 32, hardwareProfiled: false },
     detailedBudgetNotice: `Plafond provisoire : ${detail.active} combattants proches ; proposition source : ${detail.desired}. Les unités excédentaires restent simulées à distance. Performances sur matériel non mesurées.`,

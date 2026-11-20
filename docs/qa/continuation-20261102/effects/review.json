@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "status": "targeted_checks_passed_before_final_release_freeze",
+  "reviewedAt": "2026-11-02T04:20:40.576216+00:00",
+  "baseCommit": "51856cbb570ab1b9f92174a85f184bc41db03303",
+  "finalRuntimeCommit": null,
+  "finalIntegrationRequired": true,
+  "guide": {
+    "name": "game-feel",
+    "sourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9"
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "newMeshyCreditsSpent": 0,
+  "checks": [
+    {
+      "run": "acceleration-before",
+      "log": "before.txt",
+      "passed": 0,
+      "failed": 3,
+      "scope": "Intentional baseline failures: challenge thawed a zero-speed hold to 5.4, paused activation was accepted, mutagen left a permanent actor flag."
+    },
+    {
+      "run": "targeted-32",
+      "log": "targeted.txt",
+      "passed": 32,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 27585.374133,
+      "scope": "Three actual environment-acceleration regressions plus selected existing environment, stealth, gadget, hold, phase and owner tests."
+    },
+    {
+      "run": "ownership-4",
+      "log": "ownership-complement.txt",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 123.50928,
+      "scope": "One additional overlapping-haste/bounds test and three repeated freeze-owner cases."
+    },
+    {
+      "run": "cryo-before",
+      "log": "cryo-before.txt",
+      "passed": 0,
+      "failed": 4,
+      "scope": "Intentional baseline failures: undisposed acid pool, mutated shared creature material, absent immediate death ledger event, marching despite active stun."
+    },
+    {
+      "run": "cryo-14",
+      "log": "cryo-targeted.txt",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 12904.142803,
+      "scope": "Four actual cryo regressions and ten existing combat identity/death/ownership cases."
+    }
+  ],
+  "distinctPassedCases": 47,
+  "passedCaseExecutions": 50,
+  "changes": [
+    {
+      "owner": "TemporaryCombatEffects",
+      "detail": "Strongest bounded haste times strongest slow; zero-speed holds stay zero; repeated boosts never multiply; independent owners and absolute phase speeds retain restoration ownership."
+    },
+    {
+      "owner": "ReferenceEnvironmentMechanisms.checkDutchChallengeRoar",
+      "detail": "A declared 12 second frenzy replaces permanent multiplicative speed writes; paused/dead/insertion input is rejected. HUD no longer promises an unconsumed targetPos lure."
+    },
+    {
+      "owner": "ReferenceEnvironmentMechanisms.updateMutagenPuddles",
+      "detail": "A .25-second contact refresh replaces permanent speed mutation and actor flag. Per-puddle WeakSet prevents repeated entry hisses without retaining actor lifetimes. Pause/photo/delta guards and expiry cleanup apply."
+    },
+    {
+      "owner": "ReferenceEnvironmentMechanisms.checkCryoPodInteraction",
+      "detail": "Damage goes through the existing manager/ledger with explicit player faction, allied actors are excluded, surviving targets get bounded stun, shared materials stay unchanged, acid pools are removed by Horde.removeAcidPool, and announcements reflect actual outcomes/healing."
+    },
+    {
+      "owner": "XenomorphHorde (implemented by ravager_carrier_nov02)",
+      "detail": "Idempotent owned acid pool removal plus target-independent net/stun advancement before formation/target early returns; tested here through the real cryo caller."
+    }
+  ],
+  "testSourceSnapshots": [
+    {
+      "run": "targeted-32",
+      "path": "tests/environment-acceleration-effects.test.js",
+      "snapshot": "targeted-32-source-0.txt",
+      "sha256": "c6110f7af81cda1165be49e8c6588558061c74bf454b77a08541577234bcd5ae"
+    },
+    {
+      "run": "targeted-32",
+      "path": "tests/environment-temporary-effects.test.js",
+      "snapshot": "targeted-32-source-1.txt",
+      "sha256": "da72fb9c2f717e8ca9eedfdbfdf0ebc0a847b4f9d4866ca423a92d6720d5efb9"
+    },
+    {
+      "run": "targeted-32",
+      "path": "tests/hunter-stealth-status.test.js",
+      "snapshot": "targeted-32-source-2.txt",
+      "sha256": "d1986e5bec760569e5c57a856724fb237fc27c84182b8b18e91bf6106591a43d"
+    },
+    {
+      "run": "targeted-32",
+      "path": "tests/temporary-freeze-owner.test.js",
+      "snapshot": "targeted-32-source-3.txt",
+      "sha256": "29fbb14256c027e8b0dc06abcfb09f98b38f56f18f43330b03a3191e0fd410c9"
+    },
+    {
+      "run": "ownership-4",
+      "path": "tests/temporary-freeze-owner.test.js",
+      "snapshot": "ownership-4-source-0.txt",
+      "sha256": "823f8bc7d87a9d190aebc9ad8ecfdc876e2573fac0b84867098f7f09dc6e5f50"
+    },
+    {
+      "run": "cryo-14",
+      "path": "tests/environment-cryo-cleanup.test.js",
+      "snapshot": "cryo-14-source-0.txt",
+      "sha256": "b295ae21c5d527cc351d9cf7ae160da1093f6c718556743ad4db8f49fbcdd49c"
+    },
+    {
+      "run": "cryo-14",
+      "path": "tests/combat-identity.test.js",
+      "snapshot": "cryo-14-source-1.txt",
+      "sha256": "46688c848aef740f13a6801e66c3318177d95addde3a56b83e0201527f9fc4e7"
+    }
+  ],
+  "sourceHashesCapturedAfterTargetedChecks": [
+    {
+      "path": "js/engine/TemporaryCombatEffects.js",
+      "sha256": "f8f93c9ad7782385836ca258fbcd468f9c5dc80cf687c0ea8f214d7cf9c8290e"
+    },
+    {
+      "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+      "sha256": "67328c46def27697b65c5435ade36cda029ecec80c1439c886d76c2ec50d842d"
+    },
+    {
+      "path": "js/entities/XenomorphHorde.js",
+      "sha256": "29540a3b4d7622b08e51ba03bfe15464c352d958bd7f296058c65de56923414a"
+    }
+  ],
+  "scopeLimitations": [
+    "AUD-091 remains open: no exhaustive cross-product of all player statuses, boss powers, weapons and legacy interactions is certified.",
+    "Targeted CPU checks use real managers and Three objects, with controlled player/relationship fixtures; no new browser or natural combat victory is claimed.",
+    "The shared-material regression intentionally exercises a supported Mesh-root representation using real manager-created cached geometry/material; the normal current warrior root is a Group.",
+    "The source hashes were captured after targeted checks while the collaborative tree remains under integration; root must bind its final full QA to the frozen source."
+  ],
+  "lastTargetedProcessExitCode": 0,
+  "runtimeEditsCompleteForThisAgent": true
+}

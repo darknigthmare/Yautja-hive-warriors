@@ -1,0 +1,92 @@
+{
+  "status": "passed",
+  "scope": "Scoped CPU contracts and actual Three models/managers; not full interactive/human or photographic fidelity certification",
+  "counts": {
+    "tests": 79,
+    "pass": 79,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "command": "node --max-old-space-size=2048 --test --test-concurrency=1 tests/boss-registry.test.js tests/boss-preflight-depth.test.js tests/boss-counterplay-depth.test.js tests/boss-engine-checkpoint.test.js tests/battle-actor-bridge.test.js tests/combat-identity.test.js tests/systems.test.js",
+  "duration_ms": 55879.082308,
+  "log": {
+    "path": "docs/audits/2026-10-28/qa/boss-encounters-tests.txt",
+    "sha256": "6ee19a6b07fde3b38d562c4849a62daa7c915d2cd9b8b3032ce4f69cbda8971e"
+  },
+  "modelMetrics": {
+    "path": "docs/audits/2026-10-28/qa/boss-model-metrics.json",
+    "sha256": "895f6a707d12517f3f2bd4b9928e1d99e954954803175668fe20d7af6ecbc3a1"
+  },
+  "files": [
+    {
+      "path": "js/entities/Bosses.js",
+      "sha256": "ceb7dd792d5793331636dc09a0912e802f9a9f132c0367395ab000b6754e4871"
+    },
+    {
+      "path": "js/data/BossRegistry.js",
+      "sha256": "badbf49859767dee98637ae2b3a2999c086b2204683e79a88ba9328e59b04dd5"
+    },
+    {
+      "path": "js/data/BossCombatPatterns.js",
+      "sha256": "3e84e455170500d3c9afe54cedaf971d7d78c0730b1dc3784983fd69d2b0a684"
+    },
+    {
+      "path": "js/data/BossEncounterValidation.js",
+      "sha256": "f497af282f81faf4af29b19b53010159f8db293af8372ffca660223adb8d932b"
+    },
+    {
+      "path": "js/battlefield/BossPhasePressure.js",
+      "sha256": "67c3e09df741a4e34ef99c9deb6b32570ca986830a06ce6e028c0b4744ce3dce"
+    },
+    {
+      "path": "tests/boss-preflight-depth.test.js",
+      "sha256": "b50dc3b2d2a6b569d2caea13a74fd69871cfbb06d4df81ab92fab706d25f9fcd"
+    },
+    {
+      "path": "tests/boss-counterplay-depth.test.js",
+      "sha256": "0fd0bb72684a39894b9f00de3bf620c2791799161f0a83c231b16c1faab5247f"
+    },
+    {
+      "path": "tests/boss-engine-checkpoint.test.js",
+      "sha256": "2fd0e5a95abf9deed0e8ac9e358ae82674303598a355251ca3e12e80b258f390"
+    }
+  ],
+  "integrationDependencies": [
+    {
+      "path": "js/battlefield/BattleSimulation.js",
+      "sha256": "ea83d6368d93efde22826dcc1113b84526806198a9adf8652fee27f02ff4a487"
+    },
+    {
+      "path": "js/battlefield/BattleActorBridge.js",
+      "sha256": "5b1824c32d23c65d20dd7d99477064f249bf29201338fdf1231779944fc7a6a3"
+    },
+    {
+      "path": "js/engine/BattleActorSupport.js",
+      "sha256": "9e83d1dcc1b004ba04170d845c8b362712d008b1bdb37b89e721065b908d7370"
+    }
+  ],
+  "certified": {
+    "humanTesters": 0,
+    "gpuHardwarePerformance": false,
+    "fidelity1to1": false,
+    "paidMeshyGeneration": false,
+    "sourceGLBEdits": false
+  },
+  "coverage": {
+    "actualBossBuilders": 18,
+    "builtLevelContextsRunThroughPhases": 11,
+    "playableOperationPreflights": 25,
+    "unavailableHumanOperationsNotClaimed": 2,
+    "coexistingRealMiniBosses": 2,
+    "coexistingRealMajorBosses": 1,
+    "restoredBossThroughRealBridgeSimulationDistantDamage": true,
+    "secondaryFrontUsesPreallocatedGroupsOnly": true
+  },
+  "limitations": [
+    "Native asynchronously imported hunter geometry and every warning require final browser review.",
+    "The encounter response table includes original gameplay adaptations; no 18 complete human victories are certified.",
+    "In-flight attacks are consumed/cancelled at checkpoint and are not restored frame-perfectly.",
+    "The phase reaction only runs if an optional friendly noncritical front and an eligible already-deployed hostile group exist."
+  ]
+}

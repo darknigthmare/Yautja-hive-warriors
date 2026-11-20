@@ -1,0 +1,33 @@
+✔ a real warrior below a player uses the complete ramp before its first 3D melee strike (4206.130687ms)
+✔ a real Working Joe with zero initial XZ separation climbs the access and grabs only at its real height (3265.134316ms)
+✔ a real warrior destroys the actual finite APC without using it as a hunter, spawn anchor or parasite host (168.521185ms)
+✔ an allocated Working Joe respects real wall cover then destroys a hostile APC through the NPC damage contract (323.677067ms)
+✔ ordinary and royal facehuggers ignore both real supports and retarget an organic hunter (213.180951ms)
+✔ targetOnly applies an impact to one real actor without damaging nearby horde or synthetic actors (124.459396ms)
+✔ gunnison_forest: a large connected map has locked physical corridors, safe spawns and a complete route (5153.409911ms)
+✔ xenomorph_prime: a large connected map has locked physical corridors, safe spawns and a complete route (1919.640757ms)
+✔ antarctic_pyramid: a large connected map has locked physical corridors, safe spawns and a complete route (356.555095ms)
+✔ la_rooftops: a large connected map has locked physical corridors, safe spawns and a complete route (445.545304ms)
+✔ val_verde_jungle: a large connected map has locked physical corridors, safe spawns and a complete route (489.242841ms)
+✔ romulus_station: a large connected map has locked physical corridors, safe spawns and a complete route (424.48085ms)
+✔ charon_rogue_base: a large connected map has locked physical corridors, safe spawns and a complete route (437.273212ms)
+✔ game_preserve_planet: a large connected map has locked physical corridors, safe spawns and a complete route (427.069726ms)
+✔ stargazer_facility: a large connected map has locked physical corridors, safe spawns and a complete route (430.833167ms)
+✔ prey_comanche_territory: a large connected map has locked physical corridors, safe spawns and a complete route (442.699923ms)
+✔ killer_of_killers_arena: a large connected map has locked physical corridors, safe spawns and a complete route (334.887813ms)
+✔ a real Working Joe leaves the helipad ramp for a ground-level front without returning to the raised insertion center (6105.524441ms)
+✔ helipad exit guidance cannot skip a closed territory gate (221.282947ms)
+✔ helipad exit guidance keeps a separate solid obstacle in front of the corridor (281.359687ms)
+✔ helipad exit guidance preserves the real elbow instead of cutting across absent diagonal floor (224.955965ms)
+✔ LD-01 raised crossing has continuous 0→3→0 ground for walkers and finite real surfaces for bolts (5879.018863ms)
+✔ destruction closes the real route for both camps, drops supported actors and preserves an alternative (469.033302ms)
+✔ repair and saved destruction restore support and route state without duplicating collisions (388.205802ms)
+✔ a real USCM actor and BattleActorBridge walk the access ramp, deck and exit at their actual elevations (1396.287643ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15395.940628

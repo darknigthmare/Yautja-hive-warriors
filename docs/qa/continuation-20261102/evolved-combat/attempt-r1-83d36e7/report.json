@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-11-02T04:39:35.961Z",
+  "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "indexSha256": "af055276cabe4892baa8d6a53472c3e6c6927adb9fa8396c3620b2455460267b",
+  "buildInfoSha256": "56191fea9d53d314a2709e4f3da3fb7a403fde4177c0d2502bfbf7d167539e3f",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "scope": "Two assisted rendered mechanisms in fresh AFF-27 evolved operations selected through real menus. Actual allocated UID ownership, physical launch, detailed catalepsy/recovery and typed lethal fire. No natural victory, route traversal, entire AI policy or hardware performance claim.",
+  "assistances": [
+    "Actual game.update completes insertion at1/60",
+    "Player-only inspection relocations use actual group coordinates, navigation safeSpawnNear and floor queries; no unit/group coordinate, profile, signature or HP is assigned",
+    "Global RAF gameplay stays paused while explicit Simulation/Bridge owner updates advance the selected subsystem in .25s steps",
+    "Carrier flight uses the actual Horde update and normal ability callback; other managers stay paused",
+    "Damage requests use the real Horde applyDamage API with the signed player faction; no HP, timer, result or corpse flag is assigned",
+    "Captures use an explicitly recorded inspection camera and refresh normal environment visibility around the relocated player",
+    "Actual saveOperation writes a checkpoint during catalepsy; browser phase restore is not exercised"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "cases": [
+    {
+      "id": "carrier-real-cargo-flight",
+      "status": "failed",
+      "launch": {
+        "insertion": {
+          "simulated": 4.24999999999999,
+          "phase": "complete",
+          "visible": true
+        },
+        "selected": {
+          "operationId": "AFF-27",
+          "variant": "carrier-ravager-enhanced",
+          "digest": "9986fbf6"
+        }
+      },
+      "materialization": {
+        "uid": "AFF-27:hive:0:1",
+        "groupId": "AFF-27:hive:0",
+        "trials": [
+          {
+            "playerPosition": [
+              63.22836140246614,
+              0,
+              1.1480502970952697
+            ],
+            "time": 0.25,
+            "materialized": true,
+            "bridgeError": null
+          }
+        ]
+      },
+      "before": {
+        "id": "AFF-27:hive:0:1",
+        "type": "carrier",
+        "hp": 400,
+        "maxHp": 400,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "sourceUpgrade": "supercarrier-genome",
+        "profileId": "XEN-009",
+        "cargo": [
+          "AFF-27:hive:0:2",
+          "AFF-27:hive:0:3",
+          "AFF-27:hive:0:4",
+          "AFF-27:hive:0:5",
+          "AFF-27:hive:0:6",
+          "AFF-27:hive:0:7"
+        ],
+        "cargoStates": [
+          {
+            "id": "AFF-27:hive:0:2",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:3",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:4",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:5",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:6",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:7",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          }
+        ],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 18,
+          "actors": 18,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:1",
+          "type": "carrier",
+          "hp": 400,
+          "rootUuid": "842c28e8-a267-4b27-92be-ef7d9599d288",
+          "position": [
+            36.121320343559645,
+            0,
+            2.1213203435596424
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "approach": {
+        "before": [
+          63.22836140246614,
+          0,
+          1.1480502970952697
+        ],
+        "after": [
+          42.121320343559645,
+          0,
+          2.1213203435596424
+        ],
+        "distance": 6,
+        "standable": true,
+        "actorPositionUnchanged": [
+          36.121320343559645,
+          0,
+          2.1213203435596424
+        ]
+      },
+      "launched": {
+        "id": "AFF-27:hive:0:1",
+        "type": "carrier",
+        "hp": 400,
+        "maxHp": 400,
+        "state": "active",
+        "groupId": "AFF-27:hive:0",
+        "sourceUpgrade": "supercarrier-genome",
+        "profileId": "XEN-009",
+        "cargo": [
+          "AFF-27:hive:0:2",
+          "AFF-27:hive:0:3",
+          "AFF-27:hive:0:4",
+          "AFF-27:hive:0:5",
+          "AFF-27:hive:0:6",
+          "AFF-27:hive:0:7"
+        ],
+        "cargoStates": [
+          {
+            "id": "AFF-27:hive:0:2",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:3",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:4",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:5",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:6",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          },
+          {
+            "id": "AFF-27:hive:0:7",
+            "state": "distant",
+            "carrier": "AFF-27:hive:0:1",
+            "rendered": false
+          }
+        ],
+        "phase": null,
+        "spent": false,
+        "incapacitated": false,
+        "deadRegistered": false,
+        "time": 0.25,
+        "paused": false,
+        "variant": "carrier-ravager-enhanced",
+        "digest": "9986fbf6",
+        "inventory": {
+          "idsSha256": "8e1e02380003a6dddee9f988fefb94d07e2b5ec50d2d6886a290080b6b3ccaff",
+          "allocated": 952,
+          "units": 952,
+          "active": 18,
+          "actors": 18,
+          "cap": 32,
+          "conserved": true,
+          "everyProjectionOwned": true,
+          "hordeIdsUnique": true
+        },
+        "actor": {
+          "uid": "AFF-27:hive:0:1",
+          "type": "carrier",
+          "hp": 400,
+          "rootUuid": "842c28e8-a267-4b27-92be-ef7d9599d288",
+          "position": [
+            35.996467888883565,
+            0,
+            2.1152487242239193
+          ],
+          "rotation": [
+            0,
+            -1.619388401741409,
+            0
+          ],
+          "rootParented": true,
+          "downed": false,
+          "visualChild": false,
+          "pose": false,
+          "flight": null,
+          "floor": 0,
+          "canStand": true
+        }
+      },
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n6 !== 5\n\n    at file:///workspace/Yautja-continue-20261102/docs/qa/continuation-20261102/verify-evolved-combat.mjs:202:47\n    at async run (file:///workspace/Yautja-continue-20261102/docs/qa/continuation-20261102/verify-evolved-combat.mjs:190:38)\n    at async file:///workspace/Yautja-continue-20261102/docs/qa/continuation-20261102/verify-evolved-combat.mjs:197:3"
+    }
+  ],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v68-continuation-20261102",
+    "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+    "sourceBranch": "codex/continuation-20261102",
+    "sourceFingerprint": "8c803291f3bb3d20b14457eaa9776b14071a4239524326ead7fb67bf26f9452a",
+    "sourceFiles": 190,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793593784,
+    "reproducibleBuildDate": "2026-11-02T04:29:44.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/continuation-20261102/docs/qa/continuation-20261102-validation.json"
+  },
+  "helperSources": [
+    {
+      "path": "docs/qa/continuation-20261102/verify-evolved-combat.mjs",
+      "sha256": "e71d02f99b66b8f2b244cc015d1e48dcd5ae7490071b410c0d454485efb70d35",
+      "snapshot": "helper-source-0.mjs"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+      "snapshot": "helper-source-1.mjs"
+    }
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n6 !== 5\n\n    at file:///workspace/Yautja-continue-20261102/docs/qa/continuation-20261102/verify-evolved-combat.mjs:202:47\n    at async run (file:///workspace/Yautja-continue-20261102/docs/qa/continuation-20261102/verify-evolved-combat.mjs:190:38)\n    at async file:///workspace/Yautja-continue-20261102/docs/qa/continuation-20261102/verify-evolved-combat.mjs:197:3",
+  "browserClosed": true,
+  "distUnchanged": true,
+  "helperSourcesUnchanged": true,
+  "finishedAt": "2026-11-02T04:40:05.577Z",
+  "durationSeconds": 29.616
+}

@@ -1,0 +1,31 @@
+cycle,phase,types_positions_LOD,gpu_geometries,gpu_textures,programs,scene_geometries,horde_retained_geometries,horde_rendered_resident_geometries,new_shared_geometry_groups
+1,warmup,"warrior@[8.451, 0, 45.277]:LOD1:procedural",69,47,17,98,38,0,{}
+2,warmup,"runner@[-9.342, 0, -32.531]:LOD2:procedural",79,50,17,98,68,10,"{""horde:runner:LOD2"": 10}"
+3,warmup,"warrior@[11.192, 0, -37.41]:LOD2:procedural",95,50,17,98,68,26,"{""horde:egg:LOD1"": 6, ""horde:warrior:LOD2"": 10}"
+4,warmup,"warrior@[-2.786, 0, -38.758]:LOD2:procedural",95,50,17,98,68,26,{}
+5,warmup,"runner@[33.007, 0, -2.345]:LOD2:procedural",95,50,17,98,68,26,{}
+6,warmup,"runner@[-8.882, 0, 40.643]:LOD1:procedural",105,50,17,98,68,36,"{""horde:runner:LOD1"": 10}"
+7,warmup,"warrior@[-23.396, 0, 39.614]:LOD1:procedural",105,50,17,98,68,36,{}
+8,warmup,"runner@[20.97, 0, -33.083]:LOD2:procedural",105,50,17,98,68,36,{}
+9,warmup,"warrior@[-8.458, 0, 41.651]:LOD1:procedural",115,50,17,98,68,46,"{""horde:warrior:LOD1"": 10}"
+10,warmup,"warrior@[-18.828, 0, -40.13]:LOD2:procedural",115,50,17,98,68,46,{}
+11,warmup,"warrior@[-1.022, 0, 39.032]:LOD1:procedural",115,50,17,98,68,46,{}
+12,warmup,"runner@[7.025, 0, -42.025]:LOD2:procedural",115,50,17,98,68,46,{}
+13,warmup,"runner@[-15.978, 0, 29.567]:LOD1:procedural",115,50,17,98,68,46,{}
+14,warmup,"warrior@[-40.753, 0, 17.374]:LOD2:procedural",115,50,17,98,68,46,{}
+15,warmup,"runner@[-34.505, 0, -18.535]:LOD2:procedural",115,50,17,98,68,46,{}
+16,warmup,"warrior@[25.929, 0, 38.168]:LOD1:procedural",115,50,17,98,68,46,{}
+17,warmup,"runner@[37.644, 0, 12.644]:LOD2:procedural",115,50,17,98,68,46,{}
+18,warmup,"warrior@[26.596, 0, 30.325]:LOD1:procedural",115,50,17,98,68,46,{}
+19,warmup,"warrior@[11.804, 0, -44.398]:LOD2:procedural",115,50,17,98,68,46,{}
+20,warmup,"warrior@[-2.378, 0, 40.694]:LOD1:procedural",115,50,17,98,68,46,{}
+21,measured,"runner@[-29.244, 0, 15.16]:LOD1:procedural",115,50,17,98,68,46,{}
+22,measured,"runner@[16.576, 0, -27.96]:LOD2:procedural",115,50,17,98,68,46,{}
+23,measured,"warrior@[41.988, 0, -17.611]:LOD2:procedural",115,50,17,98,68,46,{}
+24,measured,"runner@[-33.467, 0, -14.217]:LOD2:procedural",115,50,17,98,68,46,{}
+25,measured,"warrior@[-37.681, 0, -13.033]:LOD2:procedural",115,50,17,98,68,46,{}
+26,measured,"warrior@[40.895, 0, -3.827]:LOD2:procedural",115,50,17,98,68,46,{}
+27,measured,"warrior@[32.942, 0, 15.523]:LOD1:procedural",115,50,17,98,68,46,{}
+28,measured,"warrior@[-10.717, 0, -45.322]:LOD2:procedural",115,50,17,98,68,46,{}
+29,measured,"warrior@[-11.272, 0, 38.815]:LOD1:procedural",115,50,17,98,68,46,{}
+30,measured,"runner@[-8.609, 0, 39.433]:LOD1:procedural",115,50,17,98,68,46,{}

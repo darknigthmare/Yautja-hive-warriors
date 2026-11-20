@@ -2,6 +2,8 @@
  * finite cargo/civilian identities and real battle ownership drive outcomes. */
 import { bindOperationObjectivesToFronts } from './OperationObjectiveSpecs.js';
 export { bindOperationObjectivesToFronts } from './OperationObjectiveSpecs.js';
+import { CivilianPopulation } from './CivilianPopulation.js';
+import { operationThirdParties } from '../data/OperationThirdParties.js';
 
 const copy = value => structuredClone(value);
 const finitePoint = point => Array.isArray(point) && point.length === 2 && point.every(Number.isFinite);
@@ -12,6 +14,10 @@ const fail = message => { throw new Error(`OperationObjectives: ${message}`); };
 const INTERACTIVE = new Set(['secure', 'sabotage', 'activate', 'extract', 'rescue', 'negotiate']);
 const TYPES = new Set([...INTERACTIVE, 'defend', 'capture', 'eliminate']);
 const EPSILON = 1e-7;
+// Veteran extraction (GRP-16, HW-DEC-90/98): the captive of the player's clan is a wounded
+// veteran; once freed, the nearest allied squad escorts it to the evacuation front. Keyed here,
+// outside the task spec, so the spec digest of older checkpoints is unchanged.
+export const VETERAN_EXTRACTIONS = Object.freeze({ 'AFF-10': Object.freeze({ taskId: 'captive', sourceTemplateId: 'GRP-16' }) });
 const signature = value => { let result = 2166136261; for (const char of JSON.stringify(value)) result = Math.imul(result ^ char.charCodeAt(0), 16777619) >>> 0; return result.toString(16); };
 
 export class OperationObjectives {
@@ -41,6 +47,10 @@ export class OperationObjectives {
     this.reactions = new Map((spec.reactions ?? []).map(reaction => [reaction.id, { id: reaction.id, status: 'dormant', announcedAt: null, due: null, groupId: null, reason: null }]));
     this.uniqueUnits = new Map(config.groups.flatMap(group => group.units.filter(unit => unit.uniqueId).map(unit => [unit.uniqueId, unit.id])));
     this.playerFaction = config.playerFaction;
+    // Counted civilians beyond those the rescue tasks already carry (HW-DEC-90). A captive of the
+    // player's own clan is not a civilian. Kept outside the spec digest so older saves still resume.
+    const carried = [...this.entities.values()].filter(entity => entity.id !== 'captive').reduce((sum, entity) => sum + entity.members.length, 0);
+    this.population = new CivilianPopulation(config.id, operationThirdParties(config.id), config.fronts, carried);
   }
 
   _emit(type, details = {}) {
@@ -119,6 +129,11 @@ export class OperationObjectives {
       const entity = this.entities.get(task.entityId); entity.state = 'rescued'; entity.followerId = player.id; entity.followPath = [[...entity.position], [...player.position]];
       for (const member of entity.members) if (member.hp > 0) member.state = 'rescued';
       this._emit('noncombatants_freed', { taskId: task.id, entityId: entity.id, count: entity.members.filter(member => member.hp > 0).length });
+      const veteran = VETERAN_EXTRACTIONS[this.spec.operationId];
+      if (veteran?.taskId === task.id) this._assignVeteranEscort(task, entity, veteran);
+    } else if (task.type === 'sabotage' && task.burnsBroodGroupId) {
+      const burned = this.simulation.burnBrood?.(task.burnsBroodGroupId, this.playerFaction) ?? 0;
+      this._emit('brood_burned', { taskId: task.id, groupId: task.burnsBroodGroupId, count: burned });
     } else if (task.type === 'sabotage' && task.disableSource) {
       const front = this._front(task.frontId); if (front?.sourceHP > 0) this.simulation.damageSource(task.frontId, front.sourceHP, 'operation_sabotage');
       this._emit('source_disabled', { taskId: task.id, frontId: task.frontId });
@@ -149,6 +164,17 @@ export class OperationObjectives {
       }
     }
     return true;
+  }
+
+  _assignVeteranEscort(task, entity, veteran) {
+    const exit = [...this.tasks.values()].find(item => item.type === 'extract' && (item.evacuates ?? []).includes(entity.id));
+    const ready = group => (group.units ?? []).filter(id => { const unit = this.simulation.getUnit?.(id) ?? this.simulation.units?.get(id); return unit?.hp > 0 && ['active', 'distant'].includes(unit.state) && !unit.incapacitated; }).length;
+    const groups = [...(this.simulation.groups?.values?.() ?? [])].filter(group => group.factionId === this.playerFaction && !group.path?.length && ready(group) >= 2);
+    const near = position => groups.map(group => ({ group, d: distance(group.position, position) })).sort((a, b) => a.d - b.d || a.group.id.localeCompare(b.group.id))[0]?.group;
+    const escort = exit && near(task.position);
+    const answer = escort ? this.simulation.issueOrder(escort.id, { type: 'escort', frontId: exit.frontId, issuer: 'scenario' }) : { accepted: false, reason: 'no_allied_escort' };
+    entity.veteranEscortGroupId = answer.accepted ? escort.id : null; entity.sourceTemplateId = veteran.sourceTemplateId;
+    this._emit(answer.accepted ? 'veteran_escort_assigned' : 'veteran_escort_unavailable', { entityId: entity.id, groupId: entity.veteranEscortGroupId, frontId: exit?.frontId ?? null, reason: answer.accepted ? null : answer.reason });
   }
 
   _advanceReactions() {
@@ -241,6 +267,7 @@ export class OperationObjectives {
     for (const id of this.spec.failOnLoss) if (this.entities.get(id)?.hp <= 0) { this._finish('defeat', `objective_lost:${id}`); return true; }
     for (const id of this.spec.failOnEscape) if (this.entities.get(id)?.escaped) { this._finish('defeat', `convoy_escaped:${id}`); return true; }
     this._advanceReactions();
+    this.population.update(this.time, this.simulation, this.playerFaction, this.config.fronts.map(front => this._front(front.id) ?? front), (type, details) => this._emit(type, details));
     for (const [id, channel] of [...this.channels]) {
       const task = this.tasks.get(channel.taskId), player = this.players.get(id);
       const unavailable = !player || player.hp <= 0, damaged = player && player.hp < channel.hp, blocked = !unavailable && this._blocked(task, player);
@@ -307,13 +334,19 @@ export class OperationObjectives {
       reactions: (this.spec.reactions ?? []).map(reaction => ({ ...copy(reaction), ...copy(this.reactions.get(reaction.id)),
         remaining: this.reactions.get(reaction.id).status === 'announced' ? Math.max(0, this.reactions.get(reaction.id).due - this.time) : null })),
       noncombatants: { allocated: noncombatants.length, captive: count('captive'), rescued: count('rescued'), evacuated: count('evacuated'), dead: count('dead') },
+      civilians: this.population.counts(),
       events: this.events.slice(-12).map(copy), entities: this.getWorldEntities(), fidelity1to1Verified: false };
   }
   getResult() { return this.result ? copy(this.result) : null; }
+  damageCivilian(civilianId, amount) {
+    if (this.disposed || this.result || !this.population.damage(civilianId, amount)) return false;
+    const member = this.population.members.find(item => item.id === civilianId);
+    this._emit(member.hp ? 'civilian_wounded' : 'civilian_died', { civilianId, frontId: member.frontId }); return true;
+  }
   serialize() {
     return { version: 1, specId: this.spec.id, specDigest: this.digest, time: this.time, nextEvent: this.nextEvent,
       tasks: [...this.tasks.values()].map(task => ({ id: task.id, status: task.status, progress: task.progress, completions: task.completions, completedAt: task.completedAt, position: [...task.position] })),
-      entities: [...this.entities.values()].map(copy), reactions: [...this.reactions.values()].map(copy), channels: [...this.channels].map(copy), deadUnique: [...this.deadUnique], events: this.events.map(copy), result: this.getResult() };
+      entities: [...this.entities.values()].map(copy), reactions: [...this.reactions.values()].map(copy), channels: [...this.channels].map(copy), deadUnique: [...this.deadUnique], events: this.events.map(copy), result: this.getResult(), population: this.population.serialize() };
   }
   restore(saved) {
     if (this.disposed || saved?.version !== 1 || saved.specId !== this.spec.id || saved.specDigest !== this.digest || !Number.isFinite(saved.time) || saved.time < 0
@@ -356,6 +389,7 @@ export class OperationObjectives {
         || state.groupId !== null && !this.config.groups.some(group => group.id === state.groupId && group.factionId === spec.factionId)
         || state.reason !== null && (typeof state.reason !== 'string' || state.reason.length > 120)) fail('invalid saved reaction');
     }
+    if (!this.population.restore(saved.population, this.config.fronts)) fail('invalid saved civilian population');
     this.time = saved.time; this.nextEvent = saved.nextEvent;
     for (const task of saved.tasks) Object.assign(this.tasks.get(task.id), copy(task));
     this.entities = new Map(saved.entities.map(entity => [entity.id, copy(entity)])); this.channels = new Map(copy(saved.channels ?? []));

@@ -1,0 +1,6 @@
+{"stage":"case_start","id":"source-menu-coop-insertion-command-checkpoint","at":"2026-11-09T04:35:32.434Z"}
+{"stage":"ui-coop-smoke","message":"Actual co-op menus selected AFF-27 with one source terrain at both viewport sizes.","at":"2026-11-09T04:35:37.486Z"}
+{"stage":"ui-coop-smoke","message":"Both caste briefings and complete keyboard-scrolled front legends verified at both sizes.","at":"2026-11-09T04:35:39.239Z"}
+{"stage":"ui-coop-smoke","message":"Genuine split-screen insertion opening/exit cameras and populated finite pilot verified.","at":"2026-11-09T04:36:12.596Z"}
+{"stage":"case_complete","id":"source-menu-coop-insertion-command-checkpoint","status":"failed","at":"2026-11-09T04:36:43.009Z"}
+{"status":"failed","cases":[{"id":"source-menu-coop-insertion-command-checkpoint","status":"failed"}],"errors":0,"failedRequests":0,"distUnchanged":true,"helperSourcesUnchanged":true,"browserClosed":true,"report":"/workspace/qa/continuation-20261109/runtime-94630d8-r2/report.json"}

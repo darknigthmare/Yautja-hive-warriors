@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "path": "local-gate.json",
+      "sha256": "20b2b8aa1349c0095741d429627e787ee1551a05f6f4eeb65122edaa2d33591e"
+    },
+    {
+      "path": "pins-submitted.json",
+      "sha256": "0407356cf2611100f1bc33bc5cd2c29079597d48bad9358e0ffb5ad3aa3acff3"
+    },
+    {
+      "path": "qa-submitted.json",
+      "sha256": "c5d4091639d4cdc6f48d550c3c691e030ac80b96e01b732c5ba7be1635fd0ceb"
+    }
+  ]
+}

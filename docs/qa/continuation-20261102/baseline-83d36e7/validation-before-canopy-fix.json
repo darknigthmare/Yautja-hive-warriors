@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "status": "regression_under_investigation",
+  "baseCommit": "51856cb",
+  "runtimeSourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "build": {
+    "success": true,
+    "source_commit": "83d36e739c911eb40091689ff8a59c3810afb205",
+    "source_fingerprint": "8c803291f3bb3d20b14457eaa9776b14071a4239524326ead7fb67bf26f9452a",
+    "index_sha256": "af055276cabe4892baa8d6a53472c3e6c6927adb9fa8396c3620b2455460267b",
+    "build_info_sha256": "56191fea9d53d314a2709e4f3da3fb7a403fde4177c0d2502bfbf7d167539e3f",
+    "source_files": 190,
+    "source_tree_dirty": false
+  },
+  "cpu": {
+    "status": "running_with_detected_failure",
+    "log": "/workspace/qa/continuation-20261102/cpu-final.txt",
+    "knownFailures": [
+      "LD-05 physical route altitude mismatch at overlapping real canopy branches"
+    ],
+    "plannedResolution": "Minimal legacy canopy query fix prepared in isolated worktree; current83source remains unchanged until its full run ends."
+  },
+  "browser": {
+    "final_regression": {
+      "status": "pending"
+    },
+    "final_runtime": {
+      "status": "pending"
+    },
+    "world_comparison": {
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/world-visual-comparison.json"
+    },
+    "ui": {
+      "status": "attempt1_fixture_failed_retry_prepared",
+      "passedBeforeFixtureFailure": 6,
+      "cause": "Player left inside the critical capture radius naturally recaptures the front; helper must physically leave the radius before counting down."
+    },
+    "evolved_combat": {
+      "status": "attempt1_diagnostic",
+      "cause": "A single AI tick did not select/launch at the player; mechanism/candidate selection being inspected without runtime mutation."
+    }
+  },
+  "reproducibility": {
+    "status": "passed",
+    "matched": 30,
+    "files": 30,
+    "report": "docs/qa/continuation-20261102/reproducibility.json"
+  },
+  "publication": {
+    "status": "not_submitted",
+    "deploymentId": null,
+    "oldQuotaRefusalPreserved": true,
+    "currentQuotaResetVerified": false
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "newMeshyCreditsSpent": 0,
+  "scope": "Integrated latest Alien_base/public metadata + Hive Carrier flight branch, visible evolved AFF27 scenario, near Ravager phase, finite environmental effects, physical world layers and debrief. Source registers are not model counts.",
+  "inheritedEvidence": "Earlier a800 CPU/browser evidence remains archived; it is not claimed as a validation of this new source."
+}

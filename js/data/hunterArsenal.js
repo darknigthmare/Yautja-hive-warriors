@@ -26,23 +26,85 @@ export const HUNTER_ARSENAL_PROFILES = freeze({
     ['https://www.prime1studio.com/avpr-wolf-predator/REMAVP-01DXS.html'], { primary: 'wristblades', secondary: 'plasma_whip', gadgets: ['medicomp', 'acid_solvent'] }),
   feral_predator: profile('Prey — Northern Great Plains 1719', ['wristblades', 'combistick', 'crossbow', 'feral_shield'], ['medicomp', 'feral_shield'], 'crossbow',
     ['https://www.prime1studio.com/fp-feral-predator/MMPR-07DXS.html', 'https://store.necaonline.com/collections/pre-orders/products/prey-ultramate-feral-predator-7-inch-scale-action-figure'], { primary: 'wristblades', secondary: 'crossbow', gadgets: ['medicomp', 'feral_shield'] }),
-  alpha_predator: profile('Predator: Hunting Grounds — game adaptation', ['wristblades', 'alpha_sickle', 'compound_bow', 'plasma_caster', 'smart_disc', 'combistick'], ['medicomp', 'bear_trap', 'mines'], 'plasma_caster', [PHG], { primary: 'alpha_sickle', secondary: 'compound_bow', gadgets: ['medicomp', 'bear_trap'] }),
-  samurai_predator: profile('Predator: Hunting Grounds — game adaptation', ['wristblades', 'katana', 'smart_disc', 'combistick', 'plasma_caster'], ['medicomp', 'bear_trap', 'mines'], 'plasma_caster', [PHG], { primary: 'katana', secondary: 'smart_disc', gadgets: ['medicomp', 'bear_trap'] }),
-  viking_predator: profile('Predator: Hunting Grounds — game adaptation', ['wristblades', 'viking_axe', 'smart_disc', 'combistick', 'plasma_caster'], ['medicomp', 'bear_trap', 'mines'], 'plasma_caster', [PHG], { primary: 'viking_axe', secondary: 'smart_disc', gadgets: ['medicomp', 'bear_trap'] })
+  alpha_predator: profile('Predator: Hunting Grounds — game adaptation', ['wristblades', 'alpha_sickle', 'compound_bow', 'plasma_caster', 'smart_disc', 'combistick'], ['medicomp', 'bear_trap', 'mines'], 'plasma_caster', [PHG, 'https://blog.playstation.com/2020/07/17/july-free-update-comes-to-predator-hunting-grounds/'], { primary: 'alpha_sickle', secondary: 'compound_bow', gadgets: ['medicomp', 'bear_trap'] }),
+  samurai_predator: profile('Predator: Hunting Grounds — game adaptation', ['wristblades', 'katana', 'smart_disc', 'combistick', 'plasma_caster'], ['medicomp', 'bear_trap', 'mines'], 'plasma_caster', [PHG, 'https://predator.illfonic.com/'], { primary: 'katana', secondary: 'smart_disc', gadgets: ['medicomp', 'bear_trap'] }),
+  viking_predator: profile('Predator: Hunting Grounds — game adaptation', ['wristblades', 'viking_axe', 'smart_disc', 'combistick', 'plasma_caster'], ['medicomp', 'bear_trap', 'mines'], 'plasma_caster', [PHG, 'https://predator.illfonic.com/'], { primary: 'viking_axe', secondary: 'smart_disc', gadgets: ['medicomp', 'bear_trap'] })
 });
 export const ADAPTED_GADGETS = Object.freeze(['medicomp', 'bear_trap', 'acid_solvent', 'nuke', 'mines', 'feral_shield']);
 export function resolveHunterLoadout(characterId, configuration = {}) {
-  const config = configuration && typeof configuration === 'object' ? configuration : {};
+  const config = configuration && typeof configuration === 'object' && !Array.isArray(configuration) ? configuration : {};
   const fidelityMode = config.fidelityMode === 'faithful' ? 'faithful' : 'adapted';
-  const reference = HUNTER_ARSENAL_PROFILES[characterId] ?? null;
+  const reference = getHunterArsenalReference(characterId);
   const strict = fidelityMode === 'faithful', allowed = strict ? reference?.weapons ?? ['wristblades'] : Object.keys(HUNTER_WEAPON_PROFILES);
   const defaults = strict ? reference?.defaults ?? { primary: 'wristblades', secondary: 'wristblades', gadgets: [] } : { primary: 'wristblades', secondary: 'smart_disc', gadgets: ['medicomp', 'bear_trap'] };
-  const choose = (value, fallback) => Object.hasOwn(HUNTER_WEAPON_PROFILES, value) && allowed.includes(value) ? value : fallback;
+  const choose = (value, fallback) => typeof value === 'string' && Object.hasOwn(HUNTER_WEAPON_PROFILES, value) && allowed.includes(value) ? value : fallback;
   const permittedGadgets = strict ? reference?.gadgets ?? [] : ADAPTED_GADGETS;
   const requested = Array.isArray(config.gadgets) ? config.gadgets : defaults.gadgets;
   return { fidelityMode, primary: choose(config.primary, defaults.primary), secondary: choose(config.secondary, defaults.secondary),
     gadgets: [...new Set(requested.filter(id => permittedGadgets.includes(id)))].slice(0, 2),
     ranged: strict ? reference?.ranged ?? null : 'plasma_caster', referenceKnown: reference !== null };
+}
+
+// Internal ids stay stable for saved loadouts and action guards. Display names
+// distinguish the Feral bolt launcher from a bow and Wolf's whip from a caster.
+export const HUNTER_EQUIPMENT_LABELS = freeze({
+  wristblades: 'Lames de poignet', combistick: 'Lance télescopique Combistick',
+  katana: 'Katana du Samurai (Hunting Grounds)', alpha_sickle: 'Faucille Alpha (Hunting Grounds)',
+  viking_axe: 'Hache de combat Viking (Hunting Grounds)', smart_disc: 'Disque de chasse Smart-Disc',
+  shuriken: 'Shuriken déployable', compound_bow: 'Arc composite Yautja',
+  plasma_whip: 'Fouet segmenté de Wolf', crossbow: 'Lance-projectiles guidés du Feral',
+  plasma_caster: 'Canon plasma d’épaule', dual_caster: 'Deux canons plasma d’épaule',
+  plasma_pistol: 'Pistolet plasma de Wolf', netgun: 'Lance-filet', audio_lure: 'Leurre vocal',
+  medicomp: 'Médicomp', bear_trap: 'Piège de chasse (Hunting Grounds)',
+  acid_solvent: 'Liquide dissolvant de Wolf', nuke: 'Dispositif d’autodestruction',
+  mines: 'Mines — adaptation du jeu', feral_shield: 'Bouclier rétractable du Feral'
+});
+
+export function getHunterArsenalReference(characterId) {
+  return typeof characterId === 'string' && Object.hasOwn(HUNTER_ARSENAL_PROFILES, characterId)
+    ? HUNTER_ARSENAL_PROFILES[characterId] : null;
+}
+
+export function hunterEquipmentLabel(id) {
+  return typeof id === 'string' && Object.hasOwn(HUNTER_EQUIPMENT_LABELS, id)
+    ? HUNTER_EQUIPMENT_LABELS[id] : 'Équipement non référencé';
+}
+
+/** Choices are the same implemented weapon ids accepted by the runtime resolver.
+ * A source's passive equipment/ranged action is not silently made a weapon slot.
+ * Each caller receives private arrays so UI edits cannot alter the source kit. */
+export function getHunterLoadoutOptions(characterId, fidelityMode = 'adapted') {
+  const reference = getHunterArsenalReference(characterId);
+  const mode = fidelityMode === 'faithful' ? 'faithful' : 'adapted';
+  const strict = mode === 'faithful';
+  return {
+    fidelityMode: mode, referenceKnown: reference !== null,
+    continuity: reference?.continuity ?? null, sourceUrls: [...(reference?.sourceUrls ?? [])],
+    weapons: Object.keys(HUNTER_WEAPON_PROFILES).filter(id => !strict || (reference?.weapons ?? ['wristblades']).includes(id)),
+    gadgets: [...(strict ? reference?.gadgets ?? [] : ADAPTED_GADGETS)],
+    defaults: resolveHunterLoadout(characterId, { fidelityMode: mode }),
+    fidelity1to1Verified: false
+  };
+}
+
+/** The character card describes its reference default, not every cross-media
+ * button in adapted mode. Stats, musou and model fidelity remain independent. */
+export function getHunterReferenceCard(characterId) {
+  const reference = getHunterArsenalReference(characterId);
+  if (!reference) return null;
+  const loadout = resolveHunterLoadout(characterId, { fidelityMode: 'faithful' });
+  return {
+    continuity: reference.continuity, sourceUrls: [...reference.sourceUrls],
+    referenceScope: 'equipment-restricted-default; not an exhaustive scene inventory',
+    fidelity1to1Verified: false,
+    weapons: {
+      primary: hunterEquipmentLabel(loadout.primary),
+      secondary: loadout.secondary === loadout.primary
+        ? `Même arme : ${hunterEquipmentLabel(loadout.secondary)}` : hunterEquipmentLabel(loadout.secondary),
+      special: loadout.ranged ? hunterEquipmentLabel(loadout.ranged) : 'Aucun tir dédié',
+      gadgets: loadout.gadgets.map(hunterEquipmentLabel).join(' · ') || 'Aucun gadget'
+    }
+  };
 }
 
 // All additions remain callable in the explicit adapted kit; reference kits

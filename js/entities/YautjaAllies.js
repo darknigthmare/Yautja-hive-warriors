@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createHonorGuardModel } from '../graphics/SupportModels.js';
+import { updateClanHunterVisual } from '../graphics/ClanHunterModel.js';
 import { releaseHostileAttack, requestHostileAttack } from '../engine/HostilePressure.js';
 import { disposeObject } from '../engine/SceneResources.js';
 
@@ -36,8 +37,10 @@ export class YautjaAlliesManager {
 
   update(delta, playerPos, horde) {
     if (!Number.isFinite(delta) || delta <= 0) return;
+    this.time = (this.time ?? 0) + delta;
     for (const ally of [...this.allies]) {
       if (ally.hp <= 0) { this.defeatCombatant(ally, { cause: 'combat', killerFaction: ally.lastDamageFaction }); continue; }
+      if (ally.isDowned || ally.isRescueRecovering) { releaseHostileAttack(this, ally); ally._npcPreparation = 0; continue; }
       if(maintainBattleFormation(this,ally,delta,ally.moveSpeed))continue;
       let target = null;
       if (ally.battleUnitId && this.battleSimulation) target = selectBattleTarget(this, ally, [], horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
@@ -47,28 +50,45 @@ export class YautjaAlliesManager {
       }
       if (!target) {
         if (ally.battleUnitId) { moveBattleOrder(this, ally, delta, ally.moveSpeed); continue; }
-        const direction = playerPos.clone().sub(ally.mesh.position).setY(0), distance = direction.length();
-        if (distance > 6) { ally.mesh.position.addScaledVector(direction.normalize(), Math.min(ally.moveSpeed * delta, distance - 6)); this.environment?.resolveAgentMovement?.(ally.mesh.position, playerPos, ally.moveSpeed * delta, ally.radius); }
+        const vertical = this.environment?.getVerticalNavigationTarget?.(ally.mesh.position, playerPos);
+        const destination = vertical ?? playerPos;
+        const direction = destination.clone().sub(ally.mesh.position).setY(0), distance = direction.length();
+        if (vertical || distance > 6) { const previous = ally.mesh.position.clone(), step = Math.min(ally.moveSpeed * delta, Math.max(0, distance - (vertical ? 0 : 6))); if (step > 0) ally.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(ally.mesh.position, destination, step, ally.radius, previous); }
         continue;
       }
-      const direction = target.position.clone().sub(ally.mesh.position).setY(0), distance = direction.length();
+      const vertical = this.environment?.getVerticalNavigationTarget?.(ally.mesh.position, target.position);
+      const destination = vertical ?? target.position;
+      const direction = destination.clone().sub(ally.mesh.position).setY(0), walkingDistance = direction.length();
+      const distance = ally.mesh.position.distanceTo(target.position);
       if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(ally.mesh.position.clone().add(new THREE.Vector3(0,1.8,0)), target.position.clone().add(new THREE.Vector3(0,1.5,0)))) {
         releaseHostileAttack(this, ally); ally._npcPreparation = 0;
-        if (distance > .1) ally.mesh.position.addScaledVector(direction.normalize(), Math.min(ally.moveSpeed * delta, distance));
-        this.environment.resolveAgentMovement?.(ally.mesh.position, target.position, ally.moveSpeed * delta, ally.radius); continue;
+        const previous = ally.mesh.position.clone();
+        if (walkingDistance > .1) ally.mesh.position.addScaledVector(direction.normalize(), Math.min(ally.moveSpeed * delta, walkingDistance));
+        this.environment.resolveAgentMovement?.(ally.mesh.position, destination, ally.moveSpeed * delta, ally.radius, previous); continue;
       }
       ally.attackTimer = Math.max(0, ally.attackTimer - delta); ally.plasmaCooldown = Math.max(0, ally.plasmaCooldown - delta);
       ally.mesh.rotation.y = Math.atan2(direction.x, direction.z);
       const ranged = ally.companionAllowsPlasma!==false && distance >= 6 && distance <= 22 && ally.plasmaCooldown <= 0;
-      if (distance > 2.2 && !ranged) { const step = Math.min(ally.moveSpeed * delta, distance - 2.2); ally.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(ally.mesh.position, target.position, step, ally.radius); }
-      if (!ranged && (distance > 3 || ally.attackTimer > 0)) continue;
+      if ((vertical || distance > 2.2) && !ranged) { const previous = ally.mesh.position.clone(), step = Math.min(ally.moveSpeed * delta, Math.max(0, walkingDistance - (vertical ? 0 : 2.2))); if (step > 0) ally.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(ally.mesh.position, destination, step, ally.radius, previous); }
+      if (!ranged && (vertical || distance > 3 || Math.abs(target.position.y - ally.mesh.position.y) > 2.2 || ally.attackTimer > 0)) continue;
       const granted = target.isBattleNPC ? requestNPCStrike(ally, target, delta, { windup: .65, recovery: 1.1 })
         : requestHostileAttack(this, ally, target, delta, { kind: ranged ? 'ranged' : 'melee', windup: ranged ? 1.1 : .85, recovery: 1.6, duration: .35 });
       if (!granted) continue;
       if (ranged) { ally.plasmaCooldown = 4; this.audioEngine?.playPlasmaShot?.(); }
       else { ally.attackTimer = .95; this.audioEngine?.playSlash?.(); }
+      const before = target.hp;
       target.takeDamage(ranged ? 60 : ally.damage, false, ally, { attackKind: ranged ? 'plasma' : 'melee', blockable: !ranged, parryable: !ranged });
+      // A named companion's kills are tallied for the end-of-hunt count (Ascension rivalry with Harek).
+      if (before > 0 && !(target.hp > 0)) this.onAllyKill?.(ally);
     }
+  }
+
+  // Called once by the main frame after bridge/environment/vehicle corrections.
+  // update() can attempt movement that collision subsequently cancels: sampling
+  // there would generate footsteps against a wall or a convoy.
+  updateVisuals(delta) {
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    for (const ally of this.allies) updateClanHunterVisual(ally, delta);
   }
 
   spawnBattleUnit(unit, group) {
@@ -85,7 +105,9 @@ export class YautjaAlliesManager {
 
   defeatCombatant(actor, details = {}) {
     if (!actor) return null;
+    if (this.rescueSystem?.tryDown(actor, details)) { releaseHostileAttack(this, actor); actor._npcPreparation = 0; return null; }
     const event = recordCombatDeath(this, actor, { kind: actor.type ?? 'yautja', ...details });
+    this.rescueSystem?.onActorDeath(actor, details);
     actor.hp = 0; releaseHostileAttack(this, actor); const index = this.allies.indexOf(actor); if (index >= 0) this.allies.splice(index, 1);
     if (!actor._combatDisposed) { disposeObject(actor.mesh, this.sharedResources); actor._combatDisposed = true; } if (event) this.onDefeated?.(event); return event;
   }

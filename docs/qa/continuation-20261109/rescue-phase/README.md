@@ -1,0 +1,13 @@
+# Secours alliés et catalepsie du Ravager
+
+La vraie reprise navigateur R4 sur `94630d8` a été rejetée avec « Incapacitated unit has no saved rescue timer ». Le Ravager signé avait pourtant conservé ses 50 PV, son usage consommé et la phase `{ startedAt: 0.25, recoverAt: 12.25 }`, à l'horloge 1. La catalepsie et les secours alliés utilisaient le même indicateur d'incapacité avec des propriétaires distincts.
+
+La [baseline CPU composée](baseline-before-fix.txt) reproduit quatre défauts par les APIs déjà présentes : refus de la reprise avec dossier médical vide, adoption du corps par `onMaterialize`, admission d'un faux dossier médical sur une phase légale à 1 PV et admission d'une phase malformée masquée par un tel dossier. Deux cas de refus d'orphelins sont déjà positifs. Le premier essai de fixture, qui changeait trop tôt la continuité avant l'allocation légitime de cargaison Carrier, est conservé distinctement.
+
+`ownsRavagerCatalepsy` appartient au module de catalepsie. Il exige une unité effectivement allouée, son identité/caste et son amélioration dans la configuration, puis réutilise le validateur de sauvegarde existant sur l'unité autoritative et son clone. Il ne crée ni délai ni état de secours. Une échéance déjà atteinte reste la responsabilité du propriétaire jusqu'à son prochain pas.
+
+`AllyRescueSystem.onMaterialize` sort avant toute écriture de PV ou de posture pour cette seule propriété validée. La reprise médicale accepte alors des dossiers vides en parallèle de la phase. Elle conserve le rejet des orphelins et refuse un dossier médical portant une phase, y compris à 1 PV : deux minuteurs ne peuvent donc pas revendiquer le même corps. Les historiques médicaux ne reçoivent aucune nouvelle contrainte d'alliance actuelle.
+
+La [validation ciblée finale](validation.json) passe 48 tests dans six fichiers, dont huit nouveaux cas. Ils couvrent les vrais secours, la reprise, les phases forgées et non signées, l'identité des clones, la posture déjà couchée avant l'appel médical, la pause, la limite exacte de réveil, l'usage consommé, les 500 PV de reprise et la mort par feu unique. L'horloge et la projection isolées dans les fixtures CPU sont déclarées ; elles ne constituent pas la preuve d'un parcours humain.
+
+Les deux relectures indépendantes n'ont relevé aucun blocage statique après durcissement. Aucun build, navigateur, changement Git, classeur, achat Meshy, certification visuelle 1:1 ou mesure matérielle n'est produit par ce sous-chantier. Root doit figer une nouvelle source, reconstruire et reprendre la vérification rendue avant de clôturer le gate.

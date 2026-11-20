@@ -1,0 +1,39 @@
+{
+  "status": "confirmed_defects_not_acceptance_evidence",
+  "scope": "Read-only CPU calls on an actual offline Player and actual horde actor; no browser, asset generation or source edits.",
+  "baselineEvidence": {
+    "path": "docs/qa/pr3-next-20261028/prey-contract-defects-baseline.json",
+    "sha256": "5999b512e56d4c72534a978b421a1776a9a2797dff824a5545950ec8b163affb"
+  },
+  "taabeMobility": {
+    "baseDistanceForPointOneSecond": 1.9760000000000002,
+    "buffedDistanceForPointOneSecond": 1.9760000000000002,
+    "ratio": 1,
+    "flagActive": true
+  },
+  "hatchet": {
+    "accepted": true,
+    "m41aGrenadesBefore": 0,
+    "m41aGrenadesAfter": 4,
+    "selectedWeapon": "wristblades"
+  },
+  "campfire": {
+    "accepted": true,
+    "enemyHpBefore": 120,
+    "enemyHpAfter": 120,
+    "enemyHasIsAliveFlag": false,
+    "enemyHasPosition": false,
+    "enemyHasMeshPosition": true
+  },
+  "realPlayerHasScoreCallback": false,
+  "announcements": [
+    "🪓 HACHETTE À RAPPEL DE NARU RÉCUPÉRÉE (PREY 2022) : FRAPPE CINÉTIQUE (+4 CHARGES, +1800 SCORE) !",
+    "🔥 CHAUDRON D'HUILE BOUILLANTE RENVERSÉ (PREY 2022) : 500 DMG FEU DE ZONE & RATIONS (+75 PV, +1500 SCORE) !"
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "methodSha256": {
+    "checkNaruTomahawkInteraction": "3b630e25207c95a9b2b891976a3be0531d4237ca7277e877587a7a1684ad5035",
+    "checkTrapperCampfireInteraction": "39536f986beb27909040ad0fab6c4429df30811c813906f5223f68b36fdd61d5"
+  }
+}

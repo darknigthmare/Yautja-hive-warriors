@@ -1,0 +1,25 @@
+name: Alien_base Yautja cross-game contract
+on:
+  pull_request:
+  push:
+    branches: [feat/alien-base-v1-integration, codex/continuation-20261109]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+      - name: Validate immutable data modules
+        run: |
+          node --check js/data/alien-base-v1.js
+          node --check js/data/alien-base-v2-crossrefs.js
+          node --check js/data/charactersData.js
+      - name: Run cross-game ID and source regression
+        run: node --test --test-concurrency=1 tests/alien-base.test.mjs tests/alien-base-bridge.test.js tests/hunter-reference-preparation.test.js

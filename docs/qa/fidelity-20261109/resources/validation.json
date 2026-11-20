@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+  "scope": "Three r160 ownership and CPU event lifecycle; no GPU memory measurement",
+  "baselineProbe": {
+    "tests": 2,
+    "passed": 0,
+    "failed": 2,
+    "log": "before-fix.txt",
+    "source": "working tree before SceneResources change; runtime owner identical to a8f9c75"
+  },
+  "fixedProbe": {
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "log": "after-fix.txt"
+  },
+  "integration": "The final frozen-source 69-file regression rechecks both probes, the existing APC single-disposal assertion, actual blocked movement and support lifecycle. See ../integration/cpu-regression.txt.",
+  "files": {
+    "js/engine/SceneResources.js": "3a84ad85d0024b62da38eefbcb70d1d4cace9d732b8a3267f364dc816ff41faa",
+    "js/entities/APCVehicle.js": "13c351684d5f5e1327438edb07cc2b9ab42a41b424f83d42cd4b967f8ad69f6e",
+    "js/graphics/SupportAssembly.js": "89043efb97ec6cc72bb515e212cc0fd12db13d77c260ba9b9765afa17db8b40a",
+    "tests/instanced-resource-lifecycle.test.js": "e53716cf24b6edd89f692f819a860b30e5a267e9c7117921376f1460bcaddf97"
+  },
+  "review": "../review-resources.md",
+  "humanTesters": 0
+}

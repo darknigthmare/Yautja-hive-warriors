@@ -1,0 +1,508 @@
+TAP version 13
+# Subtest: the first lethal ally hit becomes a rendered casualty without death credit or military population loss
+ok 1 - the first lethal ally hit becomes a rendered casualty without death credit or military population loss
+  ---
+  duration_ms: 4441.299877
+  type: 'test'
+  ...
+# Subtest: three seconds of real channeling costs one medicomp only at completion and restores contribution once
+ok 2 - three seconds of real channeling costs one medicomp only at completion and restores contribution once
+  ---
+  duration_ms: 53.751824
+  type: 'test'
+  ...
+# Subtest: impact, movement, vertical separation and cover interrupt without consuming the medical resource
+ok 3 - impact, movement, vertical separation and cover interrupt without consuming the medical resource
+  ---
+  duration_ms: 46.969033
+  type: 'test'
+  ...
+# Subtest: pause and zero delta freeze both bleedout and an admitted rescue; another player cannot double-rescue
+ok 4 - pause and zero delta freeze both bleedout and an admitted rescue; another player cannot double-rescue
+  ---
+  duration_ms: 47.310552
+  type: 'test'
+  ...
+# Subtest: a finishing hostile strike records exactly one real casualty instead of starting another downed life
+ok 5 - a finishing hostile strike records exactly one real casualty instead of starting another downed life
+  ---
+  duration_ms: 45.916489
+  type: 'test'
+  ...
+# Subtest: culling a freshly lethal actor preserves its one remaining HP, casualty deadline and same identity on return
+ok 6 - culling a freshly lethal actor preserves its one remaining HP, casualty deadline and same identity on return
+  ---
+  duration_ms: 83.484378
+  type: 'test'
+  ...
+# Subtest: an offscreen casualty continues bleeding out while pause still freezes it
+ok 7 - an offscreen casualty continues bleeding out while pause still freezes it
+  ---
+  duration_ms: 38.207097
+  type: 'test'
+  ...
+# Subtest: evacuating an eligible wounded group closes rescue without inventing a death or another medical charge
+ok 8 - evacuating an eligible wounded group closes rescue without inventing a death or another medical charge
+  ---
+  duration_ms: 38.062026
+  type: 'test'
+  ...
+# Subtest: a genuine engine checkpoint resumes the same casualty and partial channel without resetting time or stock
+ok 9 - a genuine engine checkpoint resumes the same casualty and partial channel without resetting time or stock
+  ---
+  duration_ms: 95.517652
+  type: 'test'
+  ...
+# Subtest: rescue and bleedout event ordering agrees at 30, 60 and 120 Hz, including simultaneous deadlines
+ok 10 - rescue and bleedout event ordering agrees at 30, 60 and 120 Hz, including simultaneous deadlines
+  ---
+  duration_ms: 284.013085
+  type: 'test'
+  ...
+# Subtest: coordination damage follows the actual attacker instead of the first cached member of its faction
+ok 11 - coordination damage follows the actual attacker instead of the first cached member of its faction
+  ---
+  duration_ms: 0.654319
+  type: 'test'
+  ...
+# Subtest: a living ally follows the physical access waypoint toward an elevated target while a downed ally stays still
+ok 12 - a living ally follows the physical access waypoint toward an elevated target while a downed ally stays still
+  ---
+  duration_ms: 40.037281
+  type: 'test'
+  ...
+# Subtest: the real Bridge intercepts environmental HP0 before death bookkeeping, and a later finisher still dies once
+ok 13 - the real Bridge intercepts environmental HP0 before death bookkeeping, and a later finisher still dies once
+  ---
+  duration_ms: 283.480154
+  type: 'test'
+  ...
+# Subtest: the real Bridge hit result reports a casualty as alive and reports only the later finishing blow as a kill
+ok 14 - the real Bridge hit result reports a casualty as alive and reports only the later finishing blow as a kill
+  ---
+  duration_ms: 317.24847
+  type: 'test'
+  ...
+# Subtest: returning near a persistent wounded ally rematerializes its original group under the shared cap and allows real rescue
+ok 15 - returning near a persistent wounded ally rematerializes its original group under the shared cap and allows real rescue
+  ---
+  duration_ms: 506.055516
+  type: 'test'
+  ...
+# Subtest: unknown enemies are absent from tactical knowledge; direct sight respects walls and both living players
+ok 16 - unknown enemies are absent from tactical knowledge; direct sight respects walls and both living players
+  ---
+  duration_ms: 17.199518
+  type: 'test'
+  ...
+# Subtest: remote scouts deliver the actual old snapshot after a causal delay; losses and ownership stay unknown until reported
+ok 17 - remote scouts deliver the actual old snapshot after a causal delay; losses and ownership stay unknown until reported
+  ---
+  duration_ms: 9.447315
+  type: 'test'
+  ...
+# Subtest: reconnaissance is temporary and pause-safe, keeps a last known position, and survives checkpoints without new actors
+ok 18 - reconnaissance is temporary and pause-safe, keeps a last known position, and survives checkpoints without new actors
+  ---
+  duration_ms: 10.590689
+  type: 'test'
+  ...
+# Subtest: formation disruption, recovery and route availability are bounded causal state, never extra deaths or units
+ok 19 - formation disruption, recovery and route availability are bounded causal state, never extra deaths or units
+  ---
+  duration_ms: 8.012423
+  type: 'test'
+  ...
+# Subtest: all 27 catalogue operations allocate finite identities, preserve faction budgets and bind to real level corridors
+ok 20 - all 27 catalogue operations allocate finite identities, preserve faction budgets and bind to real level corridors
+  ---
+  duration_ms: 190.886264
+  type: 'test'
+  ...
+# Subtest: three-front built-level factory uses 132 declared NPCs and rejects fake film reconstruction
+ok 21 - three-front built-level factory uses 132 declared NPCs and rejects fake film reconstruction
+  ---
+  duration_ms: 292.0912
+  type: 'test'
+  ...
+# Subtest: all 34 built map variants provide navigable polyline routes and preserve their physical anchors
+ok 22 - all 34 built map variants provide navigable polyline routes and preserve their physical anchors
+  ---
+  duration_ms: 75.936157
+  type: 'test'
+  ...
+# Subtest: detail transitions preserve the exact wounded units and never count a despawn as a death
+ok 23 - detail transitions preserve the exact wounded units and never count a despawn as a death
+  ---
+  duration_ms: 2.804329
+  type: 'test'
+  ...
+# Subtest: a missing live actor releases detail without inventing a death or replacing its wounded identity
+ok 24 - a missing live actor releases detail without inventing a death or replacing its wounded identity
+  ---
+  duration_ms: 1.488828
+  type: 'test'
+  ...
+# Subtest: both living co-op fronts share a global budget and new detailed units stay outside both players
+ok 25 - both living co-op fronts share a global budget and new detailed units stay outside both players
+  ---
+  duration_ms: 1.208312
+  type: 'test'
+  ...
+# Subtest: distant battles inflict reciprocal losses without requiring a nearby player and a truce is persistent
+ok 26 - distant battles inflict reciprocal losses without requiring a nearby player and a truce is persistent
+  ---
+  duration_ms: 4.174008
+  type: 'test'
+  ...
+# Subtest: distant combat never deals a second invisible hit to materialized units
+ok 27 - distant combat never deals a second invisible hit to materialized units
+  ---
+  duration_ms: 3.690656
+  type: 'test'
+  ...
+# Subtest: a death from any source produces one loss and one officer consequence, including delayed duplicate callbacks
+ok 28 - a death from any source produces one loss and one officer consequence, including delayed duplicate callbacks
+  ---
+  duration_ms: 0.829428
+  type: 'test'
+  ...
+# Subtest: finite reserves are announced before arrival and sabotage cancels an inbound group without inventing kills
+ok 29 - finite reserves are announced before arrival and sabotage cancels an inbound group without inventing kills
+  ---
+  duration_ms: 56.428471
+  type: 'test'
+  ...
+# Subtest: a captured forward base cannot teleport a reserve around a severed supply line
+ok 30 - a captured forward base cannot teleport a reserve around a severed supply line
+  ---
+  duration_ms: 1.883063
+  type: 'test'
+  ...
+# Subtest: an eight-unit reserve respects the per-arrival limit and a route loss cancels the same identities intact
+ok 31 - an eight-unit reserve respects the per-arrival limit and a route loss cancels the same identities intact
+  ---
+  duration_ms: 1.219599
+  type: 'test'
+  ...
+# Subtest: closing a route before departure uses the real alternate polyline; closing mid-route never teleports a group
+ok 32 - closing a route before departure uses the real alternate polyline; closing mid-route never teleports a group
+  ---
+  duration_ms: 2.084294
+  type: 'test'
+  ...
+# Subtest: capture changes a real source; strategic defeat has a rescue window and a readable cause
+ok 33 - capture changes a real source; strategic defeat has a rescue window and a readable cause
+  ---
+  duration_ms: 2.513441
+  type: 'test'
+  ...
+# Subtest: alternative strategies finish once and unused reserve survivors are never credited as kills
+ok 34 - alternative strategies finish once and unused reserve survivors are never credited as kills
+  ---
+  duration_ms: 0.689542
+  type: 'test'
+  ...
+# Subtest: narrative operations keep strategic defeat but require their external objective controller to grant victory
+ok 35 - narrative operations keep strategic defeat but require their external objective controller to grant victory
+  ---
+  duration_ms: 0.903614
+  type: 'test'
+  ...
+# Subtest: an unavailable actor pool is retried with a bounded cadence and cannot consume or kill reserve identities
+ok 36 - an unavailable actor pool is retried with a bounded cadence and cannot consume or kill reserve identities
+  ---
+  duration_ms: 0.985695
+  type: 'test'
+  ...
+# Subtest: a 952-agent three-species operation advances all three fronts for 20 simulated minutes within fixed identity/event budgets
+ok 37 - a 952-agent three-species operation advances all three fronts for 20 simulated minutes within fixed identity/event budgets
+  ---
+  duration_ms: 1578.559206
+  type: 'test'
+  ...
+# Subtest: officers can receive delegated orders, simultaneous co-op orders replace once, and tactics reposition separate flanks
+ok 38 - officers can receive delegated orders, simultaneous co-op orders replace once, and tactics reposition separate flanks
+  ---
+  duration_ms: 1.234282
+  type: 'test'
+  ...
+# Subtest: hive source disruption changes coordination without human fear or an automatic retreat
+ok 39 - hive source disruption changes coordination without human fear or an automatic retreat
+  ---
+  duration_ms: 1.480827
+  type: 'test'
+  ...
+# Subtest: 20 minutes of the same deterministic battle agree at 30, 60 and 120 FPS; pause and dispose stop all clocks
+ok 40 - 20 minutes of the same deterministic battle agree at 30, 60 and 120 FPS; pause and dispose stop all clocks
+  ---
+  duration_ms: 131.353406
+  type: 'test'
+  ...
+# Subtest: save/reload keeps wounded identities, causal losses, orders, diplomacy and clocks without respawning named dead officers
+ok 41 - save/reload keeps wounded identities, causal losses, orders, diplomacy and clocks without respawning named dead officers
+  ---
+  duration_ms: 16.443704
+  type: 'test'
+  ...
+# Subtest: context, unique identities, profiles and malformed saved states fail closed before world spawning
+ok 42 - context, unique identities, profiles and malformed saved states fail closed before world spawning
+  ---
+  duration_ms: 6.376583
+  type: 'test'
+  ...
+# Subtest: all 34 built layouts calibrate physical return/capture time without rewriting the original proposed window
+ok 43 - all 34 built layouts calibrate physical return/capture time without rewriting the original proposed window
+  ---
+  duration_ms: 71.238596
+  type: 'test'
+  ...
+# Subtest: critical fronts retain separate deadlines through recovery, pause and checkpoint and reject timer tampering
+ok 44 - critical fronts retain separate deadlines through recovery, pause and checkpoint and reject timer tampering
+  ---
+  duration_ms: 10.9009
+  type: 'test'
+  ...
+# Subtest: a physical detour extends an announced deadline once; complete route loss remains explicitly reported
+ok 45 - a physical detour extends an announced deadline once; complete route loss remains explicitly reported
+  ---
+  duration_ms: 2.910414
+  type: 'test'
+  ...
+# Subtest: a retreat follows the actual route, retains losses and returns only after finite support physically arrives
+ok 46 - a retreat follows the actual route, retains losses and returns only after finite support physically arrives
+  ---
+  duration_ms: 6.175932
+  type: 'test'
+  ...
+# Subtest: morale recovery alone and severed supply cannot release regrouped survivors
+ok 47 - morale recovery alone and severed supply cannot release regrouped survivors
+  ---
+  duration_ms: 19.8979
+  type: 'test'
+  ...
+# Subtest: strategic difficulties preserve every soldier and combat/resource budget while officers choose different risks
+ok 48 - strategic difficulties preserve every soldier and combat/resource budget while officers choose different risks
+  ---
+  duration_ms: 8.481937
+  type: 'test'
+  ...
+# Subtest: an incapacitated identity contributes neither movement nor capture and rematerializes with its existing allied group
+ok 49 - an incapacitated identity contributes neither movement nor capture and rematerializes with its existing allied group
+  ---
+  duration_ms: 6.808666
+  type: 'test'
+  ...
+# Subtest: hive controller loss has persistent mechanical coordination consequences without human fear
+ok 50 - hive controller loss has persistent mechanical coordination consequences without human fear
+  ---
+  duration_ms: 2.828095
+  type: 'test'
+  ...
+# Subtest: one manager frame shares a candidate index while tie order, health and diplomacy remain live
+ok 51 - one manager frame shares a candidate index while tie order, health and diplomacy remain live
+  ---
+  duration_ms: 1.66052
+  type: 'test'
+  ...
+# Subtest: spawn and cull invalidate a shared provider and detached live actors cannot remain targets
+ok 52 - spawn and cull invalidate a shared provider and detached live actors cannot remain targets
+  ---
+  duration_ms: 0.855539
+  type: 'test'
+  ...
+# Subtest: providers without a frame stamp remain uncached and extra candidates retain deduplication and precedence
+ok 53 - providers without a frame stamp remain uncached and extra candidates retain deduplication and precedence
+  ---
+  duration_ms: 0.294083
+  type: 'test'
+  ...
+# Subtest: doubling distant armies doubles indexed candidate work without changing the detailed actor ceiling
+ok 54 - doubling distant armies doubles indexed candidate work without changing the detailed actor ceiling
+  ---
+  duration_ms: 14.170853
+  type: 'test'
+  ...
+# Subtest: boss IDs, contexts and attack biology are explicit; an unknown ID cannot erase an encounter
+ok 55 - boss IDs, contexts and attack biology are explicit; an unknown ID cannot erase an encounter
+  ---
+  duration_ms: 3.515799
+  type: 'test'
+  ...
+# Subtest: each actual boss builder is finite and normalized to its documented game-unit height
+ok 56 - each actual boss builder is finite and normalized to its documented game-unit height
+  ---
+  duration_ms: 6394.442731
+  type: 'test'
+  ...
+# Subtest: mask reorientation is a signal: only the later physical bolt can hurt Feral
+ok 57 - mask reorientation is a signal: only the later physical bolt can hurt Feral
+  ---
+  duration_ms: 3.178478
+  type: 'test'
+  ...
+# Subtest: a warned bolt commits to its trajectory and a lateral dodge avoids it
+ok 58 - a warned bolt commits to its trajectory and a lateral dodge avoids it
+  ---
+  duration_ms: 1.248436
+  type: 'test'
+  ...
+# Subtest: boss damage routes typed counters and terminal events exactly once
+ok 59 - boss damage routes typed counters and terminal events exactly once
+  ---
+  duration_ms: 0.923682
+  type: 'test'
+  ...
+# Subtest: pending broods, projectiles and shockwaves use simulation time and release on cleanup
+ok 60 - pending broods, projectiles and shockwaves use simulation time and release on cleanup
+  ---
+  duration_ms: 0.533967
+  type: 'test'
+  ...
+# Subtest: a real low-health execution bypasses residual armor, and duplicate or distant requests cannot kill
+ok 61 - a real low-health execution bypasses residual armor, and duplicate or distant requests cannot kill
+  ---
+  duration_ms: 0.48412
+  type: 'test'
+  ...
+# Subtest: a physical wall stops the Feral bolt before its target and lethal boss culls remain one death
+ok 62 - a physical wall stops the Feral bolt before its target and lethal boss culls remain one death
+  ---
+  duration_ms: 1.346403
+  type: 'test'
+  ...
+# Subtest: a prepared Feral leap has an airborne arc, commits to its landing and freezes during pause
+ok 63 - a prepared Feral leap has an airborne arc, commits to its landing and freezes during pause
+  ---
+  duration_ms: 2.862266
+  type: 'test'
+  ...
+# Subtest: one persistent death identity survives duplicate sources, reentrant callbacks and pool reuse
+ok 64 - one persistent death identity survives duplicate sources, reentrant callbacks and pool reuse
+  ---
+  duration_ms: 1.824223
+  type: 'test'
+  ...
+# Subtest: materialization preserves identity and HP without scoring culls; death scores and disposes once
+ok 65 - materialization preserves identity and HP without scoring culls; death scores and disposes once
+  ---
+  duration_ms: 2961.584301
+  type: 'test'
+  ...
+# Subtest: damage delivered by scenery is harvested once even after the last player dies
+ok 66 - damage delivered by scenery is harvested once even after the last player dies
+  ---
+  duration_ms: 1.629841
+  type: 'test'
+  ...
+# Subtest: three species use explicit relationships, not hardcoded human-versus-xenomorph targeting
+ok 67 - three species use explicit relationships, not hardcoded human-versus-xenomorph targeting
+  ---
+  duration_ms: 2555.290197
+  type: 'test'
+  ...
+# Subtest: an allocated synthetic has one terminal death; tactical despawn never manufactures another
+ok 68 - an allocated synthetic has one terminal death; tactical despawn never manufactures another
+  ---
+  duration_ms: 32.197782
+  type: 'test'
+  ...
+# Subtest: a raw lethal hit is recorded before culling, including an already observed death
+ok 69 - a raw lethal hit is recorded before culling, including an already observed death
+  ---
+  duration_ms: 202.847601
+  type: 'test'
+  ...
+# Subtest: retreat beats an adjacent hostile target instead of permitting a free attack
+ok 70 - retreat beats an adjacent hostile target instead of permitting a free attack
+  ---
+  duration_ms: 30.068719
+  type: 'test'
+  ...
+# Subtest: synthetic hit queries respect faction truces and the shared physical cover
+ok 71 - synthetic hit queries respect faction truces and the shared physical cover
+  ---
+  duration_ms: 32.983049
+  type: 'test'
+  ...
+# Subtest: raw lethal scenery damage preserves a boiler detonation exactly once
+ok 72 - raw lethal scenery damage preserves a boiler detonation exactly once
+  ---
+  duration_ms: 40.515553
+  type: 'test'
+  ...
+# Subtest: zero-delta cleanup records a boiler death but defers its blast until simulation resumes
+ok 73 - zero-delta cleanup records a boiler death but defers its blast until simulation resumes
+  ---
+  duration_ms: 1.160744
+  type: 'test'
+  ...
+# Subtest: four formations have distinct finite slots, maintain spacing and rotate with their direction
+ok 74 - four formations have distinct finite slots, maintain spacing and rotate with their direction
+  ---
+  duration_ms: 1.79592
+  type: 'test'
+  ...
+# Subtest: a sweep breaks a line more effectively than dispersed troops, with one cohesion impact per swing
+ok 75 - a sweep breaks a line more effectively than dispersed troops, with one cohesion impact per swing
+  ---
+  duration_ms: 23.202715
+  type: 'test'
+  ...
+# Subtest: real actor damage uses formation response and roots movement without teleporting to a slot
+ok 76 - real actor damage uses formation response and roots movement without teleporting to a slot
+  ---
+  duration_ms: 4.937443
+  type: 'test'
+  ...
+# Subtest: medic stock and cooldown survive re-equip, duplicate registration and checkpoints
+ok 77 - medic stock and cooldown survive re-equip, duplicate registration and checkpoints
+  ---
+  duration_ms: 5.218491
+  type: 'test'
+  ...
+# Subtest: a medic exhausts its finite stock and cannot heal through cover or refill by waiting
+ok 78 - a medic exhausts its finite stock and cannot heal through cover or refill by waiting
+  ---
+  duration_ms: 62.12083
+  type: 'test'
+  ...
+# Subtest: formation wounds and temporary disruptions survive an operation checkpoint
+ok 79 - formation wounds and temporary disruptions survive an operation checkpoint
+  ---
+  duration_ms: 10.34971
+  type: 'test'
+  ...
+# Subtest: a companion order plans during pause, survives a checkpoint, then walks and treats its patient
+ok 80 - a companion order plans during pause, survives a checkpoint, then walks and treats its patient
+  ---
+  duration_ms: 5.485211
+  type: 'test'
+  ...
+# Subtest: engineer and scout produce different real, finite effects and suppression expires
+ok 81 - engineer and scout produce different real, finite effects and suppression expires
+  ---
+  duration_ms: 22.800233
+  type: 'test'
+  ...
+# Subtest: two identified hives fight only in their declared scenario and never create extra reserve units
+ok 82 - two identified hives fight only in their declared scenario and never create extra reserve units
+  ---
+  duration_ms: 22.235057
+  type: 'test'
+  ...
+# Subtest: a red warrior in an ordinary wave no longer attacks its own hive by color alone
+ok 83 - a red warrior in an ordinary wave no longer attacks its own hive by color alone
+  ---
+  duration_ms: 6.183707
+  type: 'test'
+  ...
+1..83
+# tests 83
+# suites 0
+# pass 83
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22366.802563

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "d36daae2802ecea403eda125d1448ebf5fa1bf59aea29b820e2c2dbd07f57fa9"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "bca3d40e0776dc2bab4cc8c18e6a0edd15c0acaff99615a9efff0e72d9a9aa20"
+    },
+    {
+      "path": "helper-source-2.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "report.json",
+      "sha256": "88cc0925401ffe8366d4440899581391893bf1751e6e94075091e69d66898a18"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-linked-terrain-1280x720.png",
+      "sha256": "b4c04c2915d0e8b4e66baa32deb370e415371a85a3d1f3953da8369ee76446dc"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-linked-terrain-800x600.png",
+      "sha256": "9154a05c1d499d888cee785cdbb32a7a739138a5e55a76dc30d62e84762f7556"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-failure.png",
+      "sha256": "7f521e1e54df41b9e59959736464ee2889312fc64013f853c07111aa1ee48763"
+    }
+  ]
+}

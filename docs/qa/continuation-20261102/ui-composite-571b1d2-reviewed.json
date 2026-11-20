@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "status": "scoped_behavior_verified_with_visual_reservations",
+  "reviewedAt": "2026-11-02T05:15:05.180669+00:00",
+  "runtimeSourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "indexSha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+  "buildInfoSha256": "0e70fd73c5d5cefa8e3499834d70975b024834b2be83345edf4eecbdd351a5bc",
+  "compositeReport": "docs/qa/continuation-20261102/ui-composite-571b1d2.json",
+  "compositeSha256": "dcfeff03a08341867e53315e7f11fad6de98bd60b955b06e6e0b31824dd9ce68",
+  "distinctPassedCases": 8,
+  "fullEightPassedInOneRun": false,
+  "inputExecutions": 2,
+  "firstExecutionPassed": 7,
+  "firstExecutionFailed": 1,
+  "secondExecutionRequestedAndPassed": 1,
+  "humanTesters": 0,
+  "humanVisualReviewers": 0,
+  "visualReviewer": "AI agent debrief_command_nov02",
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "visualReview": [
+    {
+      "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/map-front-comparison-detail.png",
+      "sha256": "f499f9d80966600f3ef9e967d71960e04c74f67c2d4dd7320d12e5364d477263",
+      "observation": "Three actual fronts, report ages/unknown supply and route preview are visible. Internal squad naming remains exposed as player_clan 1; no general wording/readability certification."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/fronts-minimap-monochrome-detail.png",
+      "sha256": "cea3508ca6dbc321a084fcee749f54500ffba75ca1db3b4cc7253209771b1c58",
+      "observation": "Monochrome shapes are present, as measured by the case. Small text is dense and clipped at the map boundary; no human legibility certification."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/critical-front-expiry-restored-live-player-debrief.png",
+      "sha256": "a967d734d56c1ddd76511e7fb58e772de6cb1504124e5480b6cd619297215b99",
+      "observation": "The automatic final screen visibly names Zone d’insertion and expiry in both subtitle and debrief after cleanup. Its132 NPC losses are the explicitly assisted isolation, not natural combat kills."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/evolved-caste-menu-briefing-checkpoint-identity-failure.png",
+      "sha256": "5447e8c9b81ad1bfa43150359edc7a52dfa44c51f2e03f8be778dca7c7c5d9a1",
+      "observation": "The first evolved attempt has the normal HUD but no battle panel/minimap data while the fixture is frozen before the first strategic HUD update. This failed attempt is preserved."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/basic-caste-briefing.png",
+      "sha256": "80b37e86e5459e550314b8e277e9ccfeba43fc1f8e1ba792f1aeb4196f3eddf5",
+      "observation": "The basic variant states Carrier/Ravager, six already allocated parasites and capacity 6. Long authored front labels overlap one another in the briefing map."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/evolved-caste-briefing.png",
+      "sha256": "2a42ed43829629510d7f34667845a7f330170c172f7cbb70e2c60a9b1021a1bd",
+      "observation": "The evolved variant explicitly states Supercarrier capacity 12, six already allocated parasites and the Ravager resilience/fire/excess-damage counterplay. The same map-label overlap persists."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/evolved-caste-selection.png",
+      "sha256": "97db248c9070060390099a380cbb2fc6e775a277ab0237f74f57947ed0d4ad43",
+      "observation": "Both actual optional checkboxes are visibly checked and the evolved explanation is displayed. The bound-operation provenance says Xenomorph Prime while the old Gunnison terrain card can remain highlighted."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/evolved-caste-menu-briefing-checkpoint-identity.png",
+      "sha256": "21f58aa6b024c06c0fa0ab02367a3d6c54edfe5495d01670c69f907d4460b66d",
+      "observation": "After genuine checkpoint reload and zero-time strategic refresh, the actual four-front HUD/panel is present. Its long authored names overload the small minimap; no performance or appearance certification follows."
+    }
+  ],
+  "remainingVisualIssues": [
+    {
+      "issue": "Long LV-742 front names overlap the briefing canvas and minimap.",
+      "suggestedFollowup": "Provide concise display names and an accessible full-text legend or controlled wrapping; keep full authored descriptions in the objectives panel.",
+      "runtimeChangedHere": false
+    },
+    {
+      "issue": "The terrain card highlight can remain on an earlier manually selected biome when a bound catalogue operation selects another actual map.",
+      "suggestedFollowup": "Synchronize or clearly disable the manual terrain selection for bound catalogue operations. Current actual scene/provenance/configuration are correctly Xenomorph Prime.",
+      "runtimeChangedHere": false
+    },
+    {
+      "issue": "Generic internal squad labels such as player_clan 1 remain visible in command controls.",
+      "suggestedFollowup": "Give squads human-readable display labels while preserving their actual stable IDs.",
+      "runtimeChangedHere": false
+    }
+  ],
+  "scopeLimits": [
+    "Desktop 1600×1000 assisted UI behavior only; no human comprehension, general accessibility, natural battle difficulty or 1:1 rendering certification.",
+    "No direct Carrier launch or Ravager phase call in the UI helper; these mechanisms have separate component/integration evidence.",
+    "The 7+1 composite retains the first case8 fixture failure and all earlier 83 fixture attempts; none is rewritten as a successful full run."
+  ],
+  "browserClosed": true,
+  "runtimeEditedDuringRuns": false,
+  "distUnchangedInBothRuns": true
+}

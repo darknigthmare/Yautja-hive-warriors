@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "status": "bounded_reference_discovery_complete",
+  "checkedAt": "2026-11-09T05:06:49.733447+00:00",
+  "scope": "Read-only linked-source discovery; no application, public registry snapshot, audit workbook, build, test or browser mutation.",
+  "userBiblePathStillUnspecified": true,
+  "exactYautjaHiveWarriorsGameBibleFound": false,
+  "sources": {
+    "gameRepository": {
+      "repository": "darknigthmare/Yautja-hive-warriors",
+      "headsReviewedByParent": 12,
+      "designContract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+      "contractRole": "Existing explicit Musou design authority present in the game checkout"
+    },
+    "linkedReferenceHub": {
+      "repository": "darknigthmare/alien_base",
+      "mainCommit": "c01c621a9e9b0adaf884f5dea09b09287dd945cf",
+      "headMetadataCount": 30,
+      "allHeadTreesInspectedWithoutCheckout": true,
+      "bibleNamedPathsFound": 0,
+      "excelBinaryPathsFoundAcrossReviewedTrees": 0,
+      "markdownReadMetadata": [
+        {
+          "path": "README.md",
+          "commit": "c01c621a9e9b0adaf884f5dea09b09287dd945cf",
+          "gitBlob": "3f4ad2a6d61378a35769a12533f2baf6a4d46e3b",
+          "sha256": "1e6250d318f088b42c53bffef488d9afcdfe62abea3965c289196f3dcb26de06",
+          "completeDocumentBodyCopied": false
+        },
+        {
+          "path": "docs/COMPATIBILITY_PUBLIC_V1.md",
+          "commit": "c01c621a9e9b0adaf884f5dea09b09287dd945cf",
+          "gitBlob": "398facb6cdc1260ad21ac7e7ee709147f111f984",
+          "sha256": "9ab3d39eac1ac62d1219fcc4b8df1d24032834fa6f8e15db439f0b4f8abd33f7",
+          "completeDocumentBodyCopied": false
+        },
+        {
+          "path": "docs/INTEGRATIONS.md",
+          "commit": "c01c621a9e9b0adaf884f5dea09b09287dd945cf",
+          "gitBlob": "17491321b181e8df0ea4e6ca0448b0534646d336",
+          "sha256": "f743ff0a4dfa92faa95564e47d16ad91870730b2539e3ce20bb04ae08e6c8752",
+          "completeDocumentBodyCopied": false
+        },
+        {
+          "path": "docs/canon/RULES.md",
+          "commit": "4523008b777055177c10747148d111d92226d148",
+          "gitBlob": "8f80ee87533e7a35b2e225a260e65b9f054292ec",
+          "sha256": "e544f5f2d638a9ff04add07a91e6c5defba8ebcca083689e7fbafde667386c08",
+          "completeDocumentBodyCopied": false
+        },
+        {
+          "path": "docs/canon/INDEX.md",
+          "commit": "4523008b777055177c10747148d111d92226d148",
+          "gitBlob": "67eeb3c8692b3e7b5e85488c162624eba4e5b40d",
+          "sha256": "e23a05ad58b1b39d71130c3fe4d9a2198e9360eeecca87a26004f4c5ea03b069",
+          "completeDocumentBodyCopied": false
+        },
+        {
+          "path": "docs/CANON_REFERENCE_EXPANSION.md",
+          "commit": "4523008b777055177c10747148d111d92226d148",
+          "gitBlob": "71493ecfc7f1cf7c2ec5b144a990ea7a289ec1d3",
+          "sha256": "9a34928e15147ae2ecb9fbfa0a345e5f8173cc6c028a6dc430264ee9baa5f7c4",
+          "completeDocumentBodyCopied": false
+        }
+      ],
+      "masterDatasetImported": false
+    },
+    "wikiProbe": {
+      "repository": "darknigthmare/Yautja-hive-warriors.wiki",
+      "status": "repository_not_found_or_not_accessible",
+      "universalAbsenceInferred": false
+    }
+  },
+  "newRelatedReferenceLayer": {
+    "found": true,
+    "repository": "darknigthmare/alien_base",
+    "branch": "feat/gaska-canon-reference-20261108",
+    "commit": "4523008b777055177c10747148d111d92226d148",
+    "committedAt": "2026-11-08T19:50:39+01:00",
+    "kind": "Cross-media canon reference and research layer, not a Yautja Hive Warriors design Bible",
+    "csvCatalogues": 6,
+    "documentedNoticeCount": 912,
+    "gameSnapshotImportedOrRegenerated": false,
+    "canonOrModelCertificationInferred": false
+  },
+  "boundedCompatibilityReview": {
+    "basis": [
+      "Existing game Musou contract and source-scoped implementation criteria",
+      "Targeted metadata and Markdown review of linked canon-reference branch"
+    ],
+    "conclusion": "No conflict identified for the scoped terrain-selection, map-label, physical-camera, finite Carrier or Ravager-owner fixes; this is a design/provenance review, not new runtime validation.",
+    "principles": [
+      "Keep media continuities and incarnations separate",
+      "Treat documentary references and source classifications separately from admission into a runtime roster",
+      "Do not turn a reference record, source mention or collection membership into a visual fidelity claim",
+      "Retain the game-specific Musou loop and finite simulation ownership instead of importing another project gameplay"
+    ],
+    "scopedFixes": [
+      {
+        "area": "Operation terrain and front labels",
+        "assessment": "Preserves exact operation identities and source descriptions while retaining explicit adaptation labels"
+      },
+      {
+        "area": "Insertion cameras",
+        "assessment": "Changes only physical camera obstruction; no new lore, roster admission or source setting"
+      },
+      {
+        "area": "Carrier flight",
+        "assessment": "Retains signed Extinction scope, original six payload IDs and existing tactical bounds; no source-reference count becomes new troops"
+      },
+      {
+        "area": "Ravager and allied rescue ownership",
+        "assessment": "Keeps source-specific biological phase distinct from Yautja medical rescue; recovery timing and combat values remain Musou adaptations"
+      }
+    ],
+    "notAssessed": [
+      "Every notice in the linked canon catalogue",
+      "Every original-media classification",
+      "Visual 1:1 fidelity",
+      "Hardware performance",
+      "Final new-build runtime QA owned by the parent team"
+    ]
+  },
+  "newMeshyCreditsSpent": 0,
+  "humanTesters": 0,
+  "privateDatasetContentsPublished": false,
+  "applicationFilesChanged": false,
+  "newDeploymentSubmitted": false,
+  "limitations": [
+    "The requested Bible may exist under another path, repository, unpushed change or document title; this bounded review does not establish universal absence",
+    "No foreign-project Bible was applied to the game",
+    "No private master dataset or complete Markdown document body was copied into the game repository. The separate compatibility note contains only short general-rule excerpts with pinned provenance and a scoped interpretation."
+  ],
+  "compatibilityDocument": "docs/development/CANON-REFERENCE-20261108.md",
+  "compatibilityDocumentSha256": "457a8d5b8b2148508a93f8146227391d3ffc381c586ee4796eaeebef9de51244",
+  "shortGeneralRuleExcerptsRecorded": true
+}

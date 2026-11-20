@@ -1,0 +1,18 @@
+diff --git a/js/entities/ReferenceEnvironmentMechanisms.js b/js/entities/ReferenceEnvironmentMechanisms.js
+index 7ed2459..8dfbe9e 100644
+--- a/js/entities/ReferenceEnvironmentMechanisms.js
++++ b/js/entities/ReferenceEnvironmentMechanisms.js
+@@ -2503,10 +2503,12 @@ export class ReferenceEnvironmentMechanisms {
+ 
+     // 21. Canopy Bough Highway & Vine Tightrope Bridges (+6.8m) (Predator 1987)
+     if (this.canopyBoughHighways && this.canopyBoughHighways.length > 0) {
++      let highest = -Infinity;
+       for (const bridge of this.canopyBoughHighways) {
+         const height = bridge.heightAt(x, z);
+-        if (Number.isFinite(height)) return height;
++        if (Number.isFinite(height)) highest = Math.max(highest, height);
+       }
++      if (Number.isFinite(highest)) return highest;
+     }
+ 
+     // 22. Dutch's Challenge Rock (+1.8m) (Predator 1987)

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-10-28T10:36:45.038Z",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "selectedCases": null,
+  "fullFourCaseCoverage": true,
+  "scope": "Controlled UI and actual runtime integration acceptance; not natural victories, human playtesting or a measured reproduction of a film.",
+  "assistances": [
+    "deterministic advancement through the actual insertion cinematic",
+    "paused fixture setup between steps",
+    "player placement beside actual world pickups and an actual allocated ally",
+    "camera framing of the existing actors",
+    "controlled fatal callback on an actual allocated allied actor and 0.35 s of its real falling posture",
+    "deterministic advancement of the actual three-second rescue channel",
+    "placement of two existing hostile actors on a physically clear shooting lane",
+    "direct damage through an active APC combatant to exercise destruction"
+  ],
+  "cases": [
+    {
+      "id": "scene-seed-difficulty-checkpoint",
+      "status": "passed",
+      "insertion": {
+        "simulated": 4.24999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "before": {
+        "seed": 1,
+        "layoutSeed": 1,
+        "difficulty": "aggressive",
+        "difficultyConfig": {
+          "id": "aggressive",
+          "label": "Offensif",
+          "scope": "officer_decisions_only",
+          "populationChanged": false
+        },
+        "id": "mission-dda01f50-04e8-4ce8-925a-42be57654f22",
+        "hud": "3 FRONTS · RÉSERVES FINIES",
+        "score": 0,
+        "skulls": 0,
+        "conserved": true
+      },
+      "commandMap": "Bataille alternative à trois camps · Commandement Offensif · Terrain 1",
+      "checkpoint": {
+        "scene": {
+          "mapSeed": 1,
+          "difficultyId": "aggressive"
+        },
+        "campaignRunId": "mission-dda01f50-04e8-4ce8-925a-42be57654f22",
+        "supportMission": "mission-dda01f50-04e8-4ce8-925a-42be57654f22"
+      },
+      "after": {
+        "seed": 1,
+        "difficulty": "aggressive",
+        "id": "mission-dda01f50-04e8-4ce8-925a-42be57654f22",
+        "supportId": "mission-dda01f50-04e8-4ce8-925a-42be57654f22",
+        "hud": "3 FRONTS · RÉSERVES FINIES",
+        "conserved": true,
+        "score": 0,
+        "skulls": 0
+      }
+    },
+    {
+      "id": "allocated-ally-three-second-rescue",
+      "status": "failed",
+      "error": "page.evaluate: Error: No actual allocated allied Yautja is materialized\n    at eval (eval at evaluate (:370:30), <anonymous>:4:23)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:111:28\n    at caseRun (/workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:95:15)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:110:3"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "distTreeSha256": "4c75c2622c0b6fa2b2458bf77cf4992b3b7c1e1de871fd153dc7161015d7fad5",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-pr3-depth-20261028",
+    "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+    "sourceFiles": 151,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793182772,
+    "reproducibleBuildDate": "2026-10-28T10:19:32.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+  },
+  "error": "page.evaluate: Error: No actual allocated allied Yautja is materialized\n    at eval (eval at evaluate (:370:30), <anonymous>:4:23)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:111:28\n    at caseRun (/workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:95:15)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:110:3",
+  "distUnchanged": true,
+  "endedAt": "2026-10-28T10:37:44.074Z",
+  "durationSeconds": 59.036
+}

@@ -1,0 +1,13 @@
+✔ release profiles keep the two archived stages separate from the new continuation (3.178333ms)
+✔ unset environment retains every original default and NEXT selects its own paths (586.924525ms)
+✔ all profiles require their own frozen pins and reject every other release (1419.762896ms)
+✔ unknown profile aborts every entrypoint at import before local or remote actions (217.955618ms)
+✔ unfilled NEXT pins and pending QA cannot pass the final guards (63.095239ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2440.569139

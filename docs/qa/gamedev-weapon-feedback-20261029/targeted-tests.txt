@@ -1,0 +1,57 @@
+Command: node --test --test-isolation=none --test-reporter=spec tests/seegson-beam-cover.test.js tests/plasma-pistol-electric-grid.test.js tests/legacy-hitscan-cover.test.js tests/clan-forge-recovery.test.js
+Base commit: 570e443109cde26f63a8d9024213f1b4ed997aa0
+
+✔ a real clan purchase survives a failed second storage write and reload without another debit (7.122776ms)
+✔ the production retry restores clan effects in session and repeated refreshes preserve existing HP bonuses (2.153475ms)
+✔ invalid and future honor records do not grant clan upgrades or overwrite either saved slot (2.601781ms)
+✔ historical clan-only purchases still apply once without charging honor or replacing saved data (1.350576ms)
+✔ malformed clan data cannot suppress valid receipts or inject keys, prototypes or non-boolean purchases (5.595555ms)
+✔ only recognized clan debit receipts can restore upgrades (1.193659ms)
+✔ pistol cannot damage a boss through a real wall or report a target impact (1.998172ms)
+✔ pistol cannot damage a alien through a real wall or report a target impact (0.472442ms)
+✔ pistol retains damage and costs in open space, above low cover and with a wall beyond the target (1.350696ms)
+✔ pistol still respects its range and retains a shot cost when no target is reached (0.353834ms)
+✔ pistol still excludes an allied alien from the hit and its feedback (0.41155ms)
+✔ bolt cannot damage a boss through a real wall or report a target impact (2.953041ms)
+✔ bolt cannot damage a alien through a real wall or report a target impact (0.532452ms)
+✔ bolt retains damage and costs in open space, above low cover and with a wall beyond the target (2.457254ms)
+✔ bolt still respects its range and retains a shot cost when no target is reached (0.538842ms)
+✔ bolt still excludes an allied alien from the hit and its feedback (0.5175ms)
+✔ the pistol checks the real muzzle origin before all three cosmetic spark origins (0.790842ms)
+✔ the Seegson bolt uses its actual 2.3-high origin for a nearby overhead obstacle (0.522648ms)
+✔ each delayed pistol bolt reevaluates physical cover before applying its damage (0.343327ms)
+✔ pistol feedback remains safe when the real boss damage method clears a defeated boss (0.337298ms)
+✔ the pistol uses its supplied environment for boss and alien cover checks (0.371931ms)
+✔ a hidden boss does not consume a pistol hit that can reach a visible hostile alien (0.384119ms)
+✔ existing legacy alien callers retain their default origins, target offsets and absent-environment behavior (0.234954ms)
+✔ an unobstructed burst activates the real grid once, retaining its damage, duration and shot cadence (1.439279ms)
+✔ a frontal wall prevents a remote grid discharge and its real collateral damage (0.366603ms)
+✔ a grid before the nearest wall can activate at that wall impact instead of the unreachable endpoint (0.376748ms)
+✔ a grid just behind the first wall stays protected even inside the interaction radius of its impact (0.29834ms)
+✔ a lateral wall blocks the actual grid candidate even when the shot axis reaches its endpoint (0.262386ms)
+✔ the grid owner skips a hidden candidate and can still activate the next visible inactive grid (0.280853ms)
+✔ manual grid interactions retain historical order, active-grid skipping and the 3D radius without projectile filtering (0.243668ms)
+✔ disabled cover and walls beyond the shot do not block an otherwise reachable grid (0.432442ms)
+✔ a custom physical collider returning only t still supplies the correct interaction point (0.402717ms)
+✔ an obstacle before the first cosmetic spark bounds all three sparks at the real first impact (0.315736ms)
+✔ a successful alien impact consumes each bolt instead of also activating a distant grid (0.3053ms)
+✔ a successful boss impact consumes each bolt instead of also activating a distant grid (0.288465ms)
+✔ later bolts can reach a grid after an earlier bolt kills and clears the boss (0.238169ms)
+✔ each callback reevaluates a changing obstacle before grid activation (0.173852ms)
+✔ Seegson retains its full visible range, actual muzzle height and shot cost in clear space (1.596096ms)
+✔ Seegson visible vertices stop at the nearest physical wall, including close or render-hidden cover (2.018222ms)
+✔ Seegson transformed beam endpoints follow the player and real rotated or cylindrical cover (0.764693ms)
+✔ Seegson beam respects its real height and radius beside floors and overhead cover (1.250745ms)
+✔ Seegson visible radius cannot pass through cover missed by its center line (0.592823ms)
+✔ Seegson keeps full range past distant, disabled, nonblocking or destroyed cover (1.168331ms)
+✔ Seegson accepts a physical custom collider that reports only a normalized hit fraction (0.229025ms)
+✔ Seegson does not allocate a visible beam or cleanup timer when its muzzle is inside cover (0.122945ms)
+✔ Seegson cleans only its own beam after 180ms and cannot repeat cleanup after early removal (1.017514ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 143.183078

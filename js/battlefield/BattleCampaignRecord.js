@@ -101,8 +101,9 @@ export class BattleCampaignRecord {
       else fail('the persistent unique-identity budget is exhausted');
       changed = true;
     }
-    if (changed) this._persist();
-    return { recorded: changed, persisted: !changed || ['saved', 'memory_only'].includes(this.status), history: this.historyFor(configuration, { arcId }) };
+    // Unchanged consequences can still be pending after a failed storage write.
+    const persisted = changed || this.status === 'storage_unavailable' ? this._persist() : true;
+    return { recorded: changed, persisted, history: this.historyFor(configuration, { arcId }) };
   }
 
   recordOutcome(configuration, simulation, result, { arcId = null, runId, characterId = null, narrative = null } = {}) {

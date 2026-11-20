@@ -1,0 +1,8 @@
+Deploying yautja-hive-warriors
+Uploading [--------------------] (0.0B/2.7MB)
+Uploading [=====---------------] (688.5KB/2.7MB)
+Uploading [==========----------] (1.3MB/2.7MB)
+Uploading [===============-----] (2.0MB/2.7MB)
+Uploading [====================] (2.7MB/2.7MB)
+✗ Resource is limited - try again in 24 hours (more than 100, code: "api-deployments-free-per-day").
+  Check the billing or feature requirement reported above with a team owner. Retry after that requirement is resolved.

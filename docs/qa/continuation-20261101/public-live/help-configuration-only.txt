@@ -1,0 +1,10 @@
+Usage after final publication GO and exclusive Chromium handoff:
+  NODE_USE_ENV_PROXY=1 node docs/qa/continuation-20261101/public-live/verify-public.mjs \
+    --commit SOURCE_SHA40 --index-sha256 INDEX_SHA64 \
+    --build-info-sha256 BUILD_INFO_SHA64 --deployment dpl_ID
+
+Add --check-config to validate arguments without network, browser, or writes.
+--help prints this message without network, browser, or writes.
+The only target is https://yautja-hive-warriors.vercel.app.
+
+{"guard":true,"networkCalls":0,"launches":0}

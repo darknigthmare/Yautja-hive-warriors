@@ -1,0 +1,90 @@
+{
+  "status": "reviewed_no_new_blocker_identified",
+  "validatedRuntimeSource": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "scope": "Independent source review of newly integrated router calls, combat ownership, source metadata and faction behavior. Existing automated suites and root browser proof remain separate.",
+  "reviewedFiles": {
+    "js/main.js": "3a1a618e833b64a96ea1652ab34a87a66b362d2593f5ae6cad2498adb40d92d2",
+    "js/engine/BattleActorSupport.js": "466bcf1489f4765024fb946803834e0baeb8d4f5a1e0768feb7477f31ad215da",
+    "js/engine/HunterStealth.js": "090fea2cb45dc2759d7f7e6cf481532158bf619d76177499892aad593c0dfc67",
+    "js/engine/TemporaryCombatEffects.js": "c11c6ddeac3aa49287ebd0a937d678952bf85ce1210aaa9262709118298e942b",
+    "js/entities/Player.js": "9799b926c64647e601a12ac4b99ccb99d1efdc3247abe25d057849e6df166e43",
+    "js/entities/Bosses.js": "c450e2c20faa687b02f0f4474933026cc69d9456c7267c68b7df30336e7427ce",
+    "js/entities/ColonialMarines.js": "36464c7d826f0743e85cf8f0af9c0f15870e8cc6dcb00b1b644c7457720ea1d3",
+    "js/entities/Synthetics.js": "f32609ad208962d00174bd96175564194a6f327e73ebfbbe9f18afa1490f47e0",
+    "js/data/LevelEncounterPolicy.js": "906480dde9b1715882955d8d4eb0730909046ab5a3fd265df329c1709281c9cb",
+    "js/ui/LoreCodex.js": "a22ca40af5c2f461f3c30155b50ebcb359c98edebd96aa241c2edb7424c055dc"
+  },
+  "reviewedContracts": [
+    "P1 light and P2 light route ambush modifiers through actual Horde damage, retaining original non-bonus attacks for synthetics/bosses.",
+    "Bad Blood helper captures live victim and position before lethal clear, checks range and cover, and uses the existing trophy ledger with the correct player owner.",
+    "Boss execution delegates LOS/hostility/stun/range to shared eligibility; brief protection affects only owner and cannot refresh within the active pose.",
+    "Main HUD passes secondaryPlayer only when present; debrief copies selected character and campaign recognition before cleanup.",
+    "Named-hunter mirror duels are explicitly announced as alternate adaptations; sector support whitelist filters future human/synthetic/APC support from historical hunt levels.",
+    "Codex source links and scope metadata match the preserved audit; no new fidelity/biology certification follows from the rendered descriptions."
+  ],
+  "limitationsToRetainOpen": [
+    {
+      "ids": [
+        "AUD-091",
+        "AUD-089"
+      ],
+      "finding": "The new four slow sources and parasite exits are bounded, but the entire inherited gadget/environment matrix is not. Liquid nitrogen still writes isFrozen/freezeTimer/speed0 in ReferenceEnvironmentMechanisms without a matching Horde thaw consumer; other authored speed multipliers remain outside TemporaryCombatEffects.",
+      "scope": "Existing inherited NPC state gap, not a newly reproduced player-control blocker. Do not certify every legacy effect combination."
+    },
+    {
+      "ids": [
+        "AUD-088"
+      ],
+      "finding": "Concealment filtering applies to detailed battle target selection. Ordinary non-battle Horde pursuit and CombatDirector.selectTarget do not use this filter.",
+      "scope": "The current ambush and battle acquisition behavior are concrete; no claim of universal stealth across all historical modes."
+    },
+    {
+      "ids": [
+        "AUD-070"
+      ],
+      "finding": "Sector capacity metadata uses recommendedEnemies and area, not sampled live actor density over time.",
+      "scope": "New purposeful zones/arrival exclusions are planning and runtime functionality; keep actual per-zone density measurement separate."
+    },
+    {
+      "ids": [
+        "AUD-106",
+        "AUD-113",
+        "AUD-119"
+      ],
+      "finding": "No hardware or human evidence is introduced by this review.",
+      "scope": "Retain those criteria as open."
+    }
+  ],
+  "closureCandidatesAfterRootEvidence": [
+    {
+      "id": "AUD-076",
+      "assessment": "Strong mechanical closure candidate: all18distinct responses have measured positive and negative cases; Apex real-selector regression fixed.",
+      "proof": "docs/qa/continuation-20261101/boss-matrix/review.json",
+      "doesNotClose": [
+        "AUD-066",
+        "AUD-079",
+        "AUD-104"
+      ]
+    },
+    {
+      "id": "AUD-027",
+      "assessment": "Potential closure after real squad fire/advance/withdraw observation. All27 source configurations preserve finite allocations and contain no all-human homogeneous smartgunner/flametrooper group. Broader source-specific model fidelity remains open.",
+      "proof": "docs/qa/continuation-20261101/factions/implementation.json"
+    },
+    {
+      "id": "AUD-028",
+      "assessment": "Potential narrow closure for actual local industrial/security reactions and place boundaries after integrated AFF13/AFF16 observation; civilian policy fixture alone is not an added civilian roster.",
+      "proof": "docs/qa/continuation-20261101/factions/implementation.json"
+    },
+    {
+      "id": "AUD-115",
+      "assessment": "Closure requires all11victories and all11defeats on the frozen commit, with coherent outcomes and explicit assistance. Earlier commits cannot be combined to fill missing outcomes.",
+      "proof": "root current complete-contexts run pending at review"
+    },
+    {
+      "id": "AUD-118",
+      "assessment": "Review old/partial/invalid startup fixtures and valid trophy protection in the browser on the frozen commit; do not claim arbitrary unsupported migrations repaired.",
+      "proof": "root current save startup run pending at review"
+    }
+  ]
+}

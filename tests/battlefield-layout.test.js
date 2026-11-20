@@ -31,7 +31,8 @@ for (const level of LEVELS_DATA) {
         assert.equal(env.openGate(gate.id), true); assert.equal(env.openGate(gate.id), false);
         assert.equal(env.isGateOpen(gate.id), true); assert.equal(env.gateVisuals.get(gate.id).panel.visible, false);
         const actor = new THREE.Vector3(from.center[0], 0, from.center[1]);
-        for (let step = 0; step < 425; step++) { actor.addScaledVector(direction, 0.4); env.resolveMovement(actor); }
+        actor.y = env.getPlacementElevationAt(actor.x, actor.z);
+        for (let step = 0; step < 425; step++) { actor.addScaledVector(direction, 0.4); actor.y = env.getElevationAt(actor.x, actor.z, actor.y); env.resolveMovement(actor); }
         assert.ok(actor.distanceTo(new THREE.Vector3(to.center[0], 0, to.center[1])) < 0.01, `the open corridor ${gate.id} must be continuously walkable`);
         env.setActiveSector(to.id);
         for (let index = 0; index < 16; index++) {

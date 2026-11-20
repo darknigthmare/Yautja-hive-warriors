@@ -17,6 +17,7 @@ import { CHARACTERS_DATA } from '../js/data/charactersData.js';
 const audio = new Proxy({}, { get: () => () => {} });
 function ownerFixture() {
   const owner = { mesh: new THREE.Group(), _proceduralMotionRoot: new THREE.Group(), _disposed: false, isCloaked: false,
+    hp: 1000, executionProtectionTimer: 0, stealthRevealTimer: 0,
     audioEngine: audio, brandClanMark() {}, wristNukeHoloMesh: null };
   for (const role of ['hips', 'head', 'neck', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftLowerLeg', 'rightLowerLeg', 'leftFoot', 'rightFoot']) owner[role === 'head' ? 'headMesh' : role] = new THREE.Group();
   owner.leftArm.position.set(-0.66, 3.43, 0); owner.rightArm.position.set(0.66, 3.43, 0);

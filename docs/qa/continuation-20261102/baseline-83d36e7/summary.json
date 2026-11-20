@@ -1,0 +1,13 @@
+{
+  "status": "one_real_regression_found_and_corrected_in_isolation",
+  "runtimeSourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "cpu": {
+    "tests": 1390,
+    "pass": 1389,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "scope": "Full first run kept intact; only LD-05 altitude inconsistency failed. Corrected source will receive a new clean build and full suite.",
+  "noTestWeakened": true
+}

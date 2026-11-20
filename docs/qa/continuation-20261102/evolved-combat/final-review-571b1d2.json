@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_assisted_browser_mechanisms",
+  "reviewedAt": "2026-11-02T05:14:18.915678+00:00",
+  "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "indexSha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+  "buildInfoSha256": "0e70fd73c5d5cefa8e3499834d70975b024834b2be83345edf4eecbdd351a5bc",
+  "casesPassed": 2,
+  "casesFailed": 0,
+  "durationSeconds": 225.745,
+  "report": "docs/qa/continuation-20261102/evolved-combat/final-571b1d2-r2/report.json",
+  "reportSha256": "e14b69f9654071e5d4cd8b8489d8570420bbeabab7ac4235ada4c67a2baad6ab",
+  "archiveManifest": "docs/qa/continuation-20261102/evolved-combat/final-571b1d2-r2/archive-manifest.json",
+  "archiveManifestSha256": "859bf87eb8d9a7c6492f7dae74c69a313a04ebce444580a25263fa3d50204ddf",
+  "helperSha256": "b0cfa117115fa1be704f7dc2c744f89752f47f134856349a74dde1eb74c45a4f",
+  "distUnchanged": true,
+  "helperSourcesUnchanged": true,
+  "browserClosed": true,
+  "javascriptErrors": 0,
+  "failedRequests": 0,
+  "externalRequests": 0,
+  "humanReviewers": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "carrier": {
+    "initialCargoIds": [
+      "AFF-27:hive:0:2",
+      "AFF-27:hive:0:3",
+      "AFF-27:hive:0:4",
+      "AFF-27:hive:0:5",
+      "AFF-27:hive:0:6",
+      "AFF-27:hive:0:7"
+    ],
+    "initialCargoCount": 6,
+    "finalCargoCount": 5,
+    "launchedOriginalUid": "AFF-27:hive:0:2",
+    "normalRequestsObservedInFirstTick": 0,
+    "launchMode": "assisted-real-bridge-request-after-observed-normal-tick",
+    "explicitActualBridgeRequestAccepted": true,
+    "callbacksRestored": true,
+    "midairElapsed": 0.5,
+    "startHeight": 2.05,
+    "midairHeight": 3.225,
+    "landedFloorError": 2.6942229581241775e-16,
+    "normalAutonomousTargetChoiceVerified": false,
+    "scope": "Actual real menus and allocated source unit, normal request observed then real player-target Bridge request. No launch-gate refusal was bypassed; no natural request occurred. No HP, timer, signature, caste, ID or cooldown was assigned."
+  },
+  "ravager": {
+    "uid": "AFF-27:hive:13:1",
+    "initialHp": 1000,
+    "damageRequests": [
+      600,
+      350
+    ],
+    "catalepticHp": 50,
+    "phase": {
+      "startedAt": 0.25,
+      "recoverAt": 12.25
+    },
+    "lastCatalepticTime": 12,
+    "recoveryTime": 12.25,
+    "recoveredHp": 500,
+    "rootUuidPreserved": true,
+    "rootPositionPreserved": true,
+    "phaseCheckpointWritten": true,
+    "phaseCheckpointRestoredInBrowser": false,
+    "noSecondPhaseAfterSpentUpgrade": true,
+    "typedFireKill": true,
+    "repeatedDamageRejected": true,
+    "deathEventCountBeforeRepeat": 1,
+    "deathEventCountAfterRepeat": 1,
+    "finalState": "dead"
+  },
+  "finiteState": {
+    "allocatedUnitsPerFreshOperation": 952,
+    "unitIdDigestUnchangedInBothCases": true,
+    "actorCap": 32,
+    "uniqueOwnedProjectionChecksPassed": true,
+    "cleanupPassedBothCases": true
+  },
+  "visualReview": {
+    "imagesActuallyOpened": [
+      "carrier-launched.png",
+      "carrier-midair.png",
+      "carrier-landed.png",
+      "ravager-cataleptic.png",
+      "ravager-recovered.png",
+      "ravager-fire-cleanup.png"
+    ],
+    "observed": [
+      "A real light-coloured parasite is visible clear of the Carrier in the midair capture; the measured original UID has one physical flight arc and then a standable floor position.",
+      "The Ravager visual is visibly fallen on its side, then standing after the finite get-up, then absent after its real typed fire death.",
+      "Inspection camera transforms are explicitly recorded for every capture."
+    ],
+    "limitations": [
+      "Landing capture partially crops the parasite at the lower-right edge; floor contact is measured by the actual root/elevation/navigation checks, not fully demonstrated by that framing.",
+      "Other manager AI and normal HUD updates are paused intentionally. Crowded background units and the retained insertion HUD are not a natural combat or UI-readability certification.",
+      "Procedural caste models and asynchronous background imported-body replacements remain visible. No all-silhouette, reference-film 1:1, performance or absence-of-leak claim follows."
+    ]
+  },
+  "naturalAcquisitionDiagnostic": {
+    "observed": "No natural Carrier callback request in the first Horde tick; there is no recorded source-gate refusal.",
+    "staticReviewOnly": "selectBattleTarget bounds defend candidates to 24 units from battleOrderTarget and formation candidates to 28 units. The outward player inspection position may be outside these tactical limits. Actual order/formation bounds were not captured in this run, so this is not a confirmed attribution or a diagnosed AI bug."
+  },
+  "priorFailurePreserved": "docs/qa/continuation-20261102/evolved-combat/attempt-r1-83d36e7/report.json"
+}

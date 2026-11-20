@@ -1,0 +1,12 @@
+✔ a zero-speed environmental hold expires to the other hunter slow, then to the exact base speed (1.091819ms)
+✔ disposing either overlapping owner preserves the remaining zero-speed hold or slow (0.430804ms)
+✔ a phase speed authored during a zero-speed hold becomes the restored base, without divide-by-zero (0.220831ms)
+✔ separate acceleration owners refresh the strongest bounded effect and cannot bypass another owner freeze (0.288321ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123.50928

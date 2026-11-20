@@ -1,0 +1,43 @@
+✔ the first lethal ally hit becomes a rendered casualty without death credit or military population loss (4046.528556ms)
+✔ three seconds of real channeling costs one medicomp only at completion and restores contribution once (43.84282ms)
+✔ impact, movement, vertical separation and cover interrupt without consuming the medical resource (37.105206ms)
+✔ pause and zero delta freeze both bleedout and an admitted rescue; another player cannot double-rescue (43.570114ms)
+✔ a finishing hostile strike records exactly one real casualty instead of starting another downed life (27.005084ms)
+✔ culling a freshly lethal actor preserves its one remaining HP, casualty deadline and same identity on return (55.991057ms)
+✔ an offscreen casualty continues bleeding out while pause still freezes it (38.128167ms)
+✔ evacuating an eligible wounded group closes rescue without inventing a death or another medical charge (38.718508ms)
+✔ a genuine engine checkpoint resumes the same casualty and partial channel without resetting time or stock (80.324376ms)
+✔ rescue and bleedout event ordering agrees at 30, 60 and 120 Hz, including simultaneous deadlines (216.1779ms)
+✔ coordination damage follows the actual attacker instead of the first cached member of its faction (0.424987ms)
+✔ a living ally follows the physical access waypoint toward an elevated target while a downed ally stays still (33.630353ms)
+✔ the real Bridge intercepts environmental HP0 before death bookkeeping, and a later finisher still dies once (255.866829ms)
+✔ the real Bridge hit result reports a casualty as alive and reports only the later finishing blow as a kill (252.213126ms)
+✔ returning near a persistent wounded ally rematerializes its original group under the shared cap and allows real rescue (499.132558ms)
+✔ one persistent death identity survives duplicate sources, reentrant callbacks and pool reuse (1.846761ms)
+✔ materialization preserves identity and HP without scoring culls; death scores and disposes once (3236.459809ms)
+✔ damage delivered by scenery is harvested once even after the last player dies (2.095053ms)
+✔ three species use explicit relationships, not hardcoded human-versus-xenomorph targeting (2649.752642ms)
+✔ an allocated synthetic has one terminal death; tactical despawn never manufactures another (33.948431ms)
+✔ a raw lethal hit is recorded before culling, including an already observed death (195.072976ms)
+✔ retreat beats an adjacent hostile target instead of permitting a free attack (33.732687ms)
+✔ synthetic hit queries respect faction truces and the shared physical cover (34.607658ms)
+✔ raw lethal scenery damage preserves a boiler detonation exactly once (39.386277ms)
+✔ zero-delta cleanup records a boiler death but defers its blast until simulation resumes (1.289977ms)
+✔ four formations have distinct finite slots, maintain spacing and rotate with their direction (1.531696ms)
+✔ a sweep breaks a line more effectively than dispersed troops, with one cohesion impact per swing (22.202464ms)
+✔ real actor damage uses formation response and roots movement without teleporting to a slot (5.550951ms)
+✔ medic stock and cooldown survive re-equip, duplicate registration and checkpoints (5.643149ms)
+✔ a medic exhausts its finite stock and cannot heal through cover or refill by waiting (63.638982ms)
+✔ formation wounds and temporary disruptions survive an operation checkpoint (7.87545ms)
+✔ a companion order plans during pause, survives a checkpoint, then walks and treats its patient (5.41671ms)
+✔ engineer and scout produce different real, finite effects and suppression expires (27.408004ms)
+✔ two identified hives fight only in their declared scenario and never create extra reserve units (22.445503ms)
+✔ a red warrior in an ordinary wave no longer attacks its own hive by color alone (6.424783ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12506.986374

@@ -1,0 +1,54 @@
+$ node --test --test-isolation=none --test-reporter=spec tests/co-op-keyboard-interactions.test.js tests/command-map-coop-selection.test.js tests/battle-campaign-record.test.js tests/gamepad-controls.test.js tests/gamepad-menu-roots.test.js
+
+✔ original clan continuity is opt-in and carries an actual named loss into a later operation only (34.239662ms)
+✔ suspension preserves a run; only an actual confirmed result or explicit withdrawal finalizes it once (10.388603ms)
+✔ finalized run IDs survive the 64-receipt debrief ring and a temporary quota failure retries safely (47.389034ms)
+✔ observing the same named loss retries a recovered store and prevents resurrection after reload (4.238801ms)
+✔ an unchanged named loss never reports persisted while the store remains unavailable (1.557959ms)
+✔ observing a named loss already loaded from a valid store performs no redundant write (1.338278ms)
+✔ incompatible records remain untouched until explicit reset, isolated from existing stores (1.335934ms)
+✔ an older checkpoint cannot revive a unique individual already confirmed dead by the campaign (8.44268ms)
+✔ J2 Enter reaches the existing bridge interaction without also attacking or affecting J1 (3.322791ms)
+✔ J2 Enter reaches the existing transport interaction without also attacking or affecting J1 (0.857242ms)
+✔ J2 Enter reaches the existing objective interaction without also attacking or affecting J1 (0.695048ms)
+✔ J2 Enter reaches the existing prey interaction without also attacking or affecting J1 (0.956943ms)
+✔ a J2 rescue consumes one input before nearby objects and preserves the existing priority (0.877243ms)
+✔ a living J2 can still interact and attack when J1 is dead (1.17369ms)
+✔ J2 falls back to one light attack after rejected interactions and no executable target (0.910583ms)
+✔ a real accepted boss execution consumes J2 Enter without a second attack (1.787585ms)
+✔ a rejected boss execution returns false and permits the ordinary J2 attack (2.391706ms)
+✔ a real praetorian execution also consumes J2 Enter without a second attack (1.202904ms)
+✔ a real synthetic execution also consumes J2 Enter without a second attack (1.504228ms)
+✔ J2 Enter advances the ordinary facehugger QTE without an interaction or attack (0.965987ms)
+✔ J2 Enter advances the royal facehugger QTE without an interaction or attack (0.54382ms)
+✔ pause, insertion, photo mode, weapon wheel, dead J2, held keys and focused UI reject combat interactions (6.729512ms)
+✔ J2 heavy and plasma controls retain their ordinary attacks without activating nearby interactions (1.914196ms)
+✔ returning from co-op to solo resets the command issuer to the player who exists (0.973508ms)
+✔ returning from co-op to solo resets the healing recipient to the living mission slot (0.243026ms)
+✔ co-op refresh preserves player-two choices and the selected groups, destination and view (0.265791ms)
+✔ solo-to-co-op enables the second slot without silently retargeting player-one actions (0.267493ms)
+✔ radial deadzones eliminate drift, remap smoothly, bound diagonals and sanitize malformed axes (0.325341ms)
+✔ the default sampler calls the browser Gamepad API without requiring connection events (0.98156ms)
+✔ P1 and P2 own stable sparse pad slots and independent normalized movement and camera vectors (0.938695ms)
+✔ combat actions use fresh button fronts and Start suppresses simultaneous attacks (0.692725ms)
+✔ UI contexts route confirm/back/panels and cannot leak movement, attacks or a held button into gameplay (2.207419ms)
+✔ disconnect, blur and modal opening cancel held actions with an explicit reason instead of a firing release (0.313523ms)
+✔ trigger hysteresis avoids jitter and its natural release is distinguishable from cancellation (0.196786ms)
+✔ menu navigation repeats in seconds and held directions must be released when the context changes (3.593528ms)
+✔ radial vectors have clockwise angles from the top and no gameplay actions; missing or denied APIs fail closed (2.109451ms)
+✔ menu focus follows spatial directions, excludes disabled/hidden targets and activates only the focused control (1.19652ms)
+✔ keyboard navigation traps Tab in its supplied menu root and leaves text editing to native controls (0.484781ms)
+✔ gamepad selects change actual values; multiple groups toggle independently and B exits edit before closing a panel (2.906994ms)
+✔ LB/RB cycle and activate real tabs, while generic menus retain a focus navigation fallback (0.377799ms)
+✔ tactical dialog and command-map roots take precedence over the HUD even without ui-screen classes (0.487095ms)
+✔ generic visible dialogs block combat and radial menus remain the top focus scope (0.145028ms)
+✔ a nested briefing retains its loadout screen controls and absent menu roots return safely (0.214954ms)
+✔ Back activates the actual close control in a non-playing dialog without falling through to combat (0.19868ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 241.863899

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "reviewedSource": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "expectedBuildIndex": "8af6bd243df62fa4b9113d711bee3e011264d8e450ef399c49ed326024f17e83",
+  "scope": "Revue indépendante des six critères demandés sur le runtime gelé, sans édition runtime ni navigateur. Les états recommandés ne modifient pas le registre Excel.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "criteria": [
+    {
+      "id": "AUD-021",
+      "acceptanceUnchanged": "Une même graine et un même profil produisent une composition autorisée; aucune caste exclue n’apparaît.",
+      "recommendation": "candidate_for_closure",
+      "verifiedBehavior": "27 configurations source répétées et33 fronts semés sont déterministes, prévalidés et conservent leurs identités. Les gardes du catalogue et du moteur rejettent profils exclus, doubles uniques, faction/époque/œuvre invalides. Le critère porte sur la composition autorisée, pas sur le rendu de tous les115profils.",
+      "remainingLimits": "Clôture limitée aux générateurs réellement implémentés, modes originaux/adaptés déclarés. Les270fiches documentaires et115modèles distincts ne sont pas revendiqués."
+    },
+    {
+      "id": "AUD-025",
+      "acceptanceUnchanged": "Chaque groupe possède une raison de présence et des comportements cohérents; les parasites ne remplacent pas une ligne d’assaut permanente.",
+      "recommendation": "keep_open",
+      "verifiedBehavior": "897groupes xénomorphes exécutables recensés ; aucun n’est entièrement parasite. Runners, Spitters, Praetorians, Warriors, Drone visuel et Facehuggers sont distincts selon les presets pris en charge.",
+      "remainingLimits": "Beaucoup de groupes du catalogue restent des archétypes Warrior génériques ; leurs raisons biologiques individuelles et comportements de toutes les incarnations ne sont pas établis par cette énumération."
+    },
+    {
+      "id": "AUD-026",
+      "acceptanceUnchanged": "Une cellule garde son identité et ses équipements; son effectif reste justifié par le scénario de chasse ou de guerre.",
+      "recommendation": "keep_open",
+      "verifiedBehavior": "375groupes Yautja conservent IDs, effectifs et profils. Les cellules Extinction comptent4places et ne créent pas d’unités supplémentaires.",
+      "remainingLimits": "YautjaAllies utilise toujours createHonorGuardModel(index) et le même schéma lame/plasma. Les libellés Hunter/Brawler/SpearMaster/Stalker ou Hydra/Blazer ne prouvent pas les équipements distincts et persistants requis."
+    },
+    {
+      "id": "AUD-027",
+      "acceptanceUnchanged": "La composition autorise couverture, progression et replis; aucun groupe entier n’est composé de la même arme lourde.",
+      "recommendation": "candidate_after_visual_review",
+      "verifiedBehavior": "650groupes humains ont été recensés sans groupe entièrement composé d’une même arme lourde. Les vrais gestionnaires exécutent avance/couverture alternées, repli blessé, obstruction par amis ; les spécialistes existants ont stocks et fonctions réels.",
+      "remainingLimits": "Les tests CPU et scènes de composants prouvent les comportements qu’ils exercent ; le coordinateur doit regarder les captures du build final avant de conclure à leur lisibilité. Ceci ne clôt pas toutes les classes manquantes des autres œuvres."
+    },
+    {
+      "id": "AUD-028",
+      "acceptanceUnchanged": "Un profil de sécurité et un profil industriel réagissent différemment à une intrusion et restent limités à leur lieu.",
+      "recommendation": "keep_validation_open",
+      "verifiedBehavior": "Working Joes industriels possèdent origine de service stable, limite48unités et avertissement1,5seconde ; sécurité WY poursuit et tire. Rôle civil passif ne porte pas de fusil. Les différences sont exercées par les vrais gestionnaires.",
+      "remainingLimits": "Le rôle civil est une fixture explicite et n’est pas ajouté à un groupe source jouable. La scène visuelle d’avertissement ne valide pas intégralement les frontières de lieu de tous les profils/rencontres. Ne pas clôturer sur la seule présence du champ syntheticDuty."
+    },
+    {
+      "id": "AUD-031",
+      "acceptanceUnchanged": "Un test de silhouette identifie chef, appui, parasite et lourd sans dépendre uniquement de la couleur.",
+      "recommendation": "keep_open",
+      "verifiedBehavior": "Les kits smartgunner/flametrooper/medic/commtech/sniper/SADAR/exosuit et les parasites ont une géométrie distincte, au-delà de leurs couleurs.",
+      "remainingLimits": "Aucun test de reconnaissance de silhouette sans couleur n’est réalisé. Les chefs humains ordinaires gardent le modèle marine sans géométrie dédiée au rôle team_leader ; les clans et rangs Yautja partagent aussi le garde. Le critère reste matériellement incomplet."
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/qa/continuation-20261101/factions/roster-independent-review.json",
+      "sha256": "3304d587c296c1f43eac4e90aa41bd0d17d4a30c556a746f6b613d8a4af70907"
+    },
+    {
+      "path": "js/entities/ColonialMarines.js",
+      "sha256": "82b7e0f834cd69624e53ce6a4d2fe22f507491fb224b09ab03eb4e370905bda2"
+    },
+    {
+      "path": "js/entities/YautjaAllies.js",
+      "sha256": "c6d2292cab02a49f4c5049b4b9e23ddedab96b28ef64aa00472f4aa7f62c4503"
+    },
+    {
+      "path": "js/entities/Synthetics.js",
+      "sha256": "377d5da20d52218300711bbec517eee17c5bbe3d2708ed6dc224eec128109d50"
+    },
+    {
+      "path": "js/data/BattleCatalog.js",
+      "sha256": "4a257d078262810710a6deee315b9956f232737be852df24acdaaa51c6cd24d9"
+    },
+    {
+      "path": "js/data/SourceBattleRoster.js",
+      "sha256": "cdfcc4518ccf8bc6c0e9c790177371c4d72e3de5d00633ce995172b7ea607c6d"
+    },
+    {
+      "path": "js/graphics/SupportModels.js",
+      "sha256": "f43a2c571cd340be9fb4a7f2ccb55c172b9b79b1c23ebe31ee88c713b34ed6de"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/factions/independent-review-tests.txt",
+      "sha256": "e3562ad64a5e786ca5620d5432a2b292b8731146ceb669da68d0b51673693cf4"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/factions/verify-feedback.mjs",
+      "sha256": "92cfb95d3a239756bf96c4b944916fe1f16ad11dd6d2743411ef9fa4cb168768"
+    }
+  ],
+  "sourceFacts": {
+    "defaultMarineLeaderSilhouette": "js/entities/ColonialMarines.js spawnBattleUnit passes sourceVisualKind ?? weaponKind to mesh factory; squadRole team_leader does not alter geometry.",
+    "sharedClanEquipment": "js/entities/YautjaAllies.js spawnBattleUnit calls createHonorGuardModel(this.allies.length), same combat schema for current clan types.",
+    "civilianRosterLimit": "Source profiles built by BattleCatalog use soldier/officer and source-specific actorType. syntheticDuty civilian requires explicit civil/civilian/noncombatant role; no new source civilian group created."
+  },
+  "independentTests": {
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "path": "docs/qa/continuation-20261101/factions/independent-review-tests.txt",
+    "command": "node --test --test-concurrency=1 tests/source-battle-roster.test.js tests/battle-catalog.test.js tests/faction-squad-behavior.test.js"
+  }
+}

@@ -1,0 +1,6768 @@
+{
+  "schemaVersion": 1,
+  "status": "failed_resource_or_runtime_check",
+  "startedAt": "2026-10-28T10:43:03.656Z",
+  "expectedIndexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "expectedSourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "scope": "Fixed City Hunter / Los Angeles sandbox, real mission construction, insertion, active render and returnToMenu cleanup. Five default warmups then ten complete measured restarts; direct launch and simulation stepping are assisted. Native RNG remains unchanged.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "victoriesClaimed": 0,
+  "configuration": {
+    "levelId": "la_rooftops",
+    "characterId": "city_hunter",
+    "missionMode": "sandbox",
+    "enemyCount": 1,
+    "quality": "low",
+    "viewport": {
+      "width": 480,
+      "height": 320
+    },
+    "simulatedAfterInsertion": 0.25,
+    "warmups": 5,
+    "measured": 10,
+    "previewCwd": "/workspace/Yautja-next-20261028"
+  },
+  "cycles": [
+    {
+      "index": 1,
+      "phase": "warmup",
+      "measuredIndex": null,
+      "startedAt": "2026-10-28T10:43:09.395Z",
+      "started": {
+        "missionRun": "mission-24cb3fbc-077f-4083-a351-5e4816106067",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 243,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 458,
+          "triangles": 1508982
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 0,
+          "materials": 0,
+          "textures": 0
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 83,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 236,
+          "materials": 143,
+          "textures": 1
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 83,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 236,
+          "materials": 143,
+          "textures": 1
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 14271568,
+        "totalSize": 15790080,
+        "embedderHeapUsedSize": 2485288,
+        "backingStorageSize": 532013010
+      },
+      "disposalsDelta": {
+        "geometries": 236,
+        "materials": 143,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:43:22.691Z"
+    },
+    {
+      "index": 2,
+      "phase": "warmup",
+      "measuredIndex": null,
+      "startedAt": "2026-10-28T10:43:22.694Z",
+      "started": {
+        "missionRun": "mission-471f0436-0f70-43c8-aaa5-6673c0ac8fb5",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 1,
+        "settled": [
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "runner"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 778,
+          "renderableNodes": 551,
+          "geometries": 354,
+          "materials": 224,
+          "textures": 49
+        },
+        "gpuCounters": {
+          "geometries": 253,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 453,
+          "triangles": 1495526
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 313,
+          "materials": 196,
+          "textures": 1
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 93,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 549,
+          "materials": 339,
+          "textures": 2
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 93,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 549,
+          "materials": 339,
+          "textures": 2
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 15080908,
+        "totalSize": 16838656,
+        "embedderHeapUsedSize": 2585200,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:43:30.013Z"
+    },
+    {
+      "index": 3,
+      "phase": "warmup",
+      "measuredIndex": null,
+      "startedAt": "2026-10-28T10:43:30.018Z",
+      "started": {
+        "missionRun": "mission-36d8a22c-efb0-44b1-947a-5bfbae26c9e1",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 1,
+        "settled": [
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "runner"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 778,
+          "renderableNodes": 551,
+          "geometries": 354,
+          "materials": 224,
+          "textures": 49
+        },
+        "gpuCounters": {
+          "geometries": 249,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 445,
+          "triangles": 1492342
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 626,
+          "materials": 392,
+          "textures": 2
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 862,
+          "materials": 535,
+          "textures": 3
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 862,
+          "materials": 535,
+          "textures": 3
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 15425420,
+        "totalSize": 17362944,
+        "embedderHeapUsedSize": 2549664,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:43:36.911Z"
+    },
+    {
+      "index": 4,
+      "phase": "warmup",
+      "measuredIndex": null,
+      "startedAt": "2026-10-28T10:43:36.912Z",
+      "started": {
+        "missionRun": "mission-b9e023c9-8113-4d88-96df-1f4c1f2ee2ac",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 1,
+        "settled": [
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "runner"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 778,
+          "renderableNodes": 551,
+          "geometries": 354,
+          "materials": 224,
+          "textures": 49
+        },
+        "gpuCounters": {
+          "geometries": 249,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 443,
+          "triangles": 1501798
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 939,
+          "materials": 588,
+          "textures": 3
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1175,
+          "materials": 731,
+          "textures": 4
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1175,
+          "materials": 731,
+          "textures": 4
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 15603388,
+        "totalSize": 17362944,
+        "embedderHeapUsedSize": 2508056,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:43:42.485Z"
+    },
+    {
+      "index": 5,
+      "phase": "warmup",
+      "measuredIndex": null,
+      "startedAt": "2026-10-28T10:43:42.486Z",
+      "started": {
+        "missionRun": "mission-2c13adae-253f-4069-a858-6f93fa291f78",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 256,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 472,
+          "triangles": 1515654
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1252,
+          "materials": 784,
+          "textures": 4
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1488,
+          "materials": 927,
+          "textures": 5
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1488,
+          "materials": 927,
+          "textures": 5
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 15853440,
+        "totalSize": 17100800,
+        "embedderHeapUsedSize": 2455696,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:43:48.075Z"
+    },
+    {
+      "index": 6,
+      "phase": "measured",
+      "measuredIndex": 1,
+      "startedAt": "2026-10-28T10:43:48.076Z",
+      "started": {
+        "missionRun": "mission-fa7050b2-13c4-49a1-9fed-30eec736dc99",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 255,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 450,
+          "triangles": 1505794
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1565,
+          "materials": 980,
+          "textures": 5
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1801,
+          "materials": 1123,
+          "textures": 6
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1801,
+          "materials": 1123,
+          "textures": 6
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 15930976,
+        "totalSize": 17625088,
+        "embedderHeapUsedSize": 2576952,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:43:54.220Z"
+    },
+    {
+      "index": 7,
+      "phase": "measured",
+      "measuredIndex": 2,
+      "startedAt": "2026-10-28T10:43:54.223Z",
+      "started": {
+        "missionRun": "mission-5c32d10c-520c-4d2b-b62f-2af08156a728",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 250,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 446,
+          "triangles": 1502742
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 1878,
+          "materials": 1176,
+          "textures": 6
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2114,
+          "materials": 1319,
+          "textures": 7
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2114,
+          "materials": 1319,
+          "textures": 7
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16069960,
+        "totalSize": 17625088,
+        "embedderHeapUsedSize": 2461904,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:43:59.990Z"
+    },
+    {
+      "index": 8,
+      "phase": "measured",
+      "measuredIndex": 3,
+      "startedAt": "2026-10-28T10:43:59.992Z",
+      "started": {
+        "missionRun": "mission-426163bf-ee16-4f9a-b151-4259cb02b576",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 261,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 471,
+          "triangles": 1512246
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2191,
+          "materials": 1372,
+          "textures": 7
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2427,
+          "materials": 1515,
+          "textures": 8
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2427,
+          "materials": 1515,
+          "textures": 8
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16194976,
+        "totalSize": 18149376,
+        "embedderHeapUsedSize": 2476752,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:05.659Z"
+    },
+    {
+      "index": 9,
+      "phase": "measured",
+      "measuredIndex": 4,
+      "startedAt": "2026-10-28T10:44:05.660Z",
+      "started": {
+        "missionRun": "mission-cbf5e840-098e-48a2-9026-eb8fb25fb32e",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 1,
+        "settled": [
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "runner"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 778,
+          "renderableNodes": 551,
+          "geometries": 354,
+          "materials": 224,
+          "textures": 49
+        },
+        "gpuCounters": {
+          "geometries": 251,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 440,
+          "triangles": 1489674
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2504,
+          "materials": 1568,
+          "textures": 8
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2740,
+          "materials": 1711,
+          "textures": 9
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 95,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2740,
+          "materials": 1711,
+          "textures": 9
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16494904,
+        "totalSize": 18149376,
+        "embedderHeapUsedSize": 2507584,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:11.199Z"
+    },
+    {
+      "index": 10,
+      "phase": "measured",
+      "measuredIndex": 5,
+      "startedAt": "2026-10-28T10:44:11.201Z",
+      "started": {
+        "missionRun": "mission-80eb843c-a4fa-4ba5-906e-aef20a8dfa02",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 266,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 456,
+          "triangles": 1500374
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 2817,
+          "materials": 1764,
+          "textures": 9
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3053,
+          "materials": 1907,
+          "textures": 10
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3053,
+          "materials": 1907,
+          "textures": 10
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16531048,
+        "totalSize": 18149376,
+        "embedderHeapUsedSize": 2499280,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:17.243Z"
+    },
+    {
+      "index": 11,
+      "phase": "measured",
+      "measuredIndex": 6,
+      "startedAt": "2026-10-28T10:44:17.247Z",
+      "started": {
+        "missionRun": "mission-fdb308aa-b936-4067-a3b3-b4f7f3e8ee96",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 263,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 446,
+          "triangles": 1491638
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3130,
+          "materials": 1960,
+          "textures": 10
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3366,
+          "materials": 2103,
+          "textures": 11
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3366,
+          "materials": 2103,
+          "textures": 11
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16544552,
+        "totalSize": 17887232,
+        "embedderHeapUsedSize": 2515928,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:24.430Z"
+    },
+    {
+      "index": 12,
+      "phase": "measured",
+      "measuredIndex": 7,
+      "startedAt": "2026-10-28T10:44:24.432Z",
+      "started": {
+        "missionRun": "mission-4fc661aa-8337-48ed-9153-571b17a9794f",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 268,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 465,
+          "triangles": 1497814
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3443,
+          "materials": 2156,
+          "textures": 11
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3679,
+          "materials": 2299,
+          "textures": 12
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3679,
+          "materials": 2299,
+          "textures": 12
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16584336,
+        "totalSize": 18149376,
+        "embedderHeapUsedSize": 2502944,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:33.354Z"
+    },
+    {
+      "index": 13,
+      "phase": "measured",
+      "measuredIndex": 8,
+      "startedAt": "2026-10-28T10:44:33.357Z",
+      "started": {
+        "missionRun": "mission-77d5307a-efb4-4aa7-a24b-ad7094c7ae18",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 2,
+        "settled": [
+          "fulfilled",
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "warrior"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 820,
+          "renderableNodes": 552,
+          "geometries": 355,
+          "materials": 225,
+          "textures": 52
+        },
+        "gpuCounters": {
+          "geometries": 262,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 433,
+          "triangles": 1408198
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3756,
+          "materials": 2352,
+          "textures": 12
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3992,
+          "materials": 2495,
+          "textures": 13
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 3992,
+          "materials": 2495,
+          "textures": 13
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16673680,
+        "totalSize": 18411520,
+        "embedderHeapUsedSize": 2508896,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:39.224Z"
+    },
+    {
+      "index": 14,
+      "phase": "measured",
+      "measuredIndex": 9,
+      "startedAt": "2026-10-28T10:44:39.226Z",
+      "started": {
+        "missionRun": "mission-29ac3bc4-c11d-4705-ae05-0c2c82c64f43",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 1,
+        "settled": [
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "runner"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 778,
+          "renderableNodes": 551,
+          "geometries": 354,
+          "materials": 224,
+          "textures": 49
+        },
+        "gpuCounters": {
+          "geometries": 265,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 463,
+          "triangles": 1510054
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 4069,
+          "materials": 2548,
+          "textures": 13
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 4305,
+          "materials": 2691,
+          "textures": 14
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 4305,
+          "materials": 2691,
+          "textures": 14
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 16745308,
+        "totalSize": 18673664,
+        "embedderHeapUsedSize": 2490072,
+        "backingStorageSize": 533474134
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:45.035Z"
+    },
+    {
+      "index": 15,
+      "phase": "measured",
+      "measuredIndex": 10,
+      "startedAt": "2026-10-28T10:44:45.037Z",
+      "started": {
+        "missionRun": "mission-a399586a-20a6-4324-ac7a-c511bfb8767e",
+        "level": "la_rooftops",
+        "character": "city_hunter",
+        "remaining": 1,
+        "hp": 850
+      },
+      "assets": {
+        "awaitedPromises": 1,
+        "settled": [
+          "fulfilled"
+        ],
+        "playerState": "imported",
+        "playerError": null
+      },
+      "insertion": {
+        "simulated": 4.766666666666655,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "label": "active-after-insertion",
+        "playing": true,
+        "paused": true,
+        "playerPresent": true,
+        "playerHP": 850,
+        "generatedState": "imported",
+        "generatedError": null,
+        "alienTypes": [
+          "runner"
+        ],
+        "scene": {
+          "children": 39,
+          "nodes": 778,
+          "renderableNodes": 551,
+          "geometries": 354,
+          "materials": 224,
+          "textures": 49
+        },
+        "gpuCounters": {
+          "geometries": 264,
+          "textures": 67,
+          "programs": 24
+        },
+        "render": {
+          "calls": 470,
+          "triangles": 1502502
+        },
+        "sharedImportedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 4382,
+          "materials": 2744,
+          "textures": 14
+        },
+        "hordeCachedPlayers": 1,
+        "liveActors": {
+          "aliens": 1,
+          "allies": 3,
+          "marines": 4,
+          "synthetics": 3,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanup": {
+        "label": "menu-first-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 4618,
+          "materials": 2887,
+          "textures": 15
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cleanupSettled": {
+        "label": "menu-second-cleanup-render",
+        "playing": false,
+        "paused": false,
+        "playerPresent": false,
+        "playerHP": null,
+        "generatedState": null,
+        "generatedError": null,
+        "alienTypes": [],
+        "scene": {
+          "children": 12,
+          "nodes": 340,
+          "renderableNodes": 257,
+          "geometries": 98,
+          "materials": 70,
+          "textures": 15
+        },
+        "gpuCounters": {
+          "geometries": 102,
+          "textures": 50,
+          "programs": 17
+        },
+        "render": {
+          "calls": 137,
+          "triangles": 94012
+        },
+        "sharedImportedTextures": [],
+        "sharedCachedTextures": [
+          {
+            "uuid": "3356c616-48a9-4987-8cd2-2565fd188979",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "429b2b56-70c1-4fa1-918a-09eb6461e400",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "599a2885-05d6-4a4d-aebd-04b47039c16b",
+            "alive": true,
+            "name": "normal",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+            "alive": true,
+            "name": "Image_0",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "b73abb26-3577-4459-9e56-f4cedd97025c",
+            "alive": true,
+            "name": "Image_1",
+            "width": 2048,
+            "height": 2048,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          },
+          {
+            "uuid": "be5d6868-256a-4c2d-a277-b6a48f364192",
+            "alive": true,
+            "name": "Image_2",
+            "width": 4096,
+            "height": 4096,
+            "observedDisposed": false,
+            "gpuAllocated": true
+          }
+        ],
+        "disposeEvents": {
+          "geometries": 4618,
+          "materials": 2887,
+          "textures": 15
+        },
+        "hordeCachedPlayers": 0,
+        "liveActors": {
+          "aliens": 0,
+          "allies": 0,
+          "marines": 0,
+          "synthetics": 0,
+          "hounds": 0,
+          "bosses": 0,
+          "badBlood": 0
+        },
+        "pending": {
+          "spawns": 0,
+          "projectiles": 0,
+          "missionTasks": 0,
+          "dropshipStrikes": 0,
+          "dropshipRockets": 0,
+          "dropshipNapalm": 0,
+          "apcActive": false,
+          "environmentGeometries": null,
+          "environmentMaterials": null
+        }
+      },
+      "cpuHeap": {
+        "forcedGC": true,
+        "kind": "CPU JS heap after CDP GC; not VRAM/RSS/ordinary play memory",
+        "usedSize": 17033664,
+        "totalSize": 18935808,
+        "embedderHeapUsedSize": 2569272,
+        "backingStorageSize": 533474145
+      },
+      "disposalsDelta": {
+        "geometries": 313,
+        "materials": 196,
+        "textures": 1
+      },
+      "status": "completed",
+      "finishedAt": "2026-10-28T10:44:50.411Z"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "httpErrors": [],
+  "externalRequests": [],
+  "distBefore": {
+    "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "treeSha256": "4c75c2622c0b6fa2b2458bf77cf4992b3b7c1e1de871fd153dc7161015d7fad5",
+    "buildInfoSha256": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a",
+    "buildInfo": {
+      "schemaVersion": 1,
+      "contentVersion": "v67-pr3-depth-20261028",
+      "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "sourceBranch": "codex/depth-pr3-20261028",
+      "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+      "sourceFiles": 151,
+      "sourceTreeDirty": false,
+      "buildEpoch": 1793182772,
+      "reproducibleBuildDate": "2026-10-28T10:19:32.000Z",
+      "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+    },
+    "files": 30
+  },
+  "bootstrap": {
+    "label": "bootstrap",
+    "playing": false,
+    "paused": false,
+    "playerPresent": false,
+    "playerHP": null,
+    "generatedState": null,
+    "generatedError": null,
+    "alienTypes": [],
+    "scene": {
+      "children": 11,
+      "nodes": 37,
+      "renderableNodes": 21,
+      "geometries": 21,
+      "materials": 17,
+      "textures": 9
+    },
+    "gpuCounters": {
+      "geometries": 1,
+      "textures": 2,
+      "programs": 1
+    },
+    "render": {
+      "calls": 1,
+      "triangles": 1216
+    },
+    "sharedImportedTextures": [],
+    "sharedCachedTextures": [],
+    "disposeEvents": {
+      "geometries": 0,
+      "materials": 0,
+      "textures": 0
+    },
+    "hordeCachedPlayers": 0,
+    "liveActors": {
+      "aliens": 0,
+      "allies": 0,
+      "marines": 0,
+      "synthetics": 0,
+      "hounds": 0,
+      "bosses": 0,
+      "badBlood": 0
+    },
+    "pending": {
+      "spawns": 0,
+      "projectiles": 0,
+      "missionTasks": 0,
+      "dropshipStrikes": 0,
+      "dropshipRockets": 0,
+      "dropshipNapalm": 0,
+      "apcActive": false,
+      "environmentGeometries": null,
+      "environmentMaterials": null
+    }
+  },
+  "graphics": {
+    "requested": "low",
+    "effective": "low",
+    "softwareRenderer": true,
+    "postprocessing": false,
+    "ambientOcclusion": false,
+    "shadowSize": 512,
+    "maxPixelRatio": 1.25,
+    "splitScreen": false
+  },
+  "completed": {
+    "warmups": 5,
+    "measured": 10,
+    "total": 15
+  },
+  "assessment": {
+    "countersStable": false,
+    "texturesResident": true,
+    "playersReleased": true,
+    "textureUuids": [
+      "3356c616-48a9-4987-8cd2-2565fd188979",
+      "429b2b56-70c1-4fa1-918a-09eb6461e400",
+      "599a2885-05d6-4a4d-aebd-04b47039c16b",
+      "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+      "b73abb26-3577-4459-9e56-f4cedd97025c",
+      "be5d6868-256a-4c2d-a277-b6a48f364192"
+    ],
+    "trends": {
+      "gpuGeometries": {
+        "values": [
+          95,
+          95,
+          95,
+          95,
+          102,
+          102,
+          102,
+          102,
+          102,
+          102
+        ],
+        "min": 95,
+        "max": 102,
+        "firstToLast": 7,
+        "growthSteps": 1,
+        "allTenStable": false
+      },
+      "gpuTextures": {
+        "values": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        "min": 50,
+        "max": 50,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "gpuPrograms": {
+        "values": [
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17,
+          17
+        ],
+        "min": 17,
+        "max": 17,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneChildren": {
+        "values": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "min": 12,
+        "max": 12,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneNodes": {
+        "values": [
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340
+        ],
+        "min": 340,
+        "max": 340,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneRenderableNodes": {
+        "values": [
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257
+        ],
+        "min": 257,
+        "max": 257,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneGeometries": {
+        "values": [
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98
+        ],
+        "min": 98,
+        "max": 98,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneMaterials": {
+        "values": [
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70
+        ],
+        "min": 70,
+        "max": 70,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneTextures": {
+        "values": [
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "min": 15,
+        "max": 15,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      }
+    },
+    "cpuHeapAfterGC": {
+      "values": [
+        15930976,
+        16069960,
+        16194976,
+        16494904,
+        16531048,
+        16544552,
+        16584336,
+        16673680,
+        16745308,
+        17033664
+      ],
+      "min": 15930976,
+      "max": 17033664,
+      "firstToLast": 1102688,
+      "growthSteps": 9,
+      "allTenStable": false,
+      "kind": "CPU JavaScript heap after forced CDP GC; not VRAM, RSS or ordinary play usage",
+      "firstToLastPercent": 6.92166004141868,
+      "assessment": "positive_delta_observed_no_general_leak_claim"
+    },
+    "passedResourceCriterion": false
+  },
+  "distAfter": {
+    "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "treeSha256": "4c75c2622c0b6fa2b2458bf77cf4992b3b7c1e1de871fd153dc7161015d7fad5",
+    "files": 30
+  },
+  "distUnchanged": true,
+  "browserClosed": true,
+  "finishedAt": "2026-10-28T10:44:51.331Z",
+  "durationSeconds": 107.675
+}

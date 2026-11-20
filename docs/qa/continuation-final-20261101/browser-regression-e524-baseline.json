@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "tests": 15,
+  "passed": 15,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "durationMs": 554878.580293,
+  "scope": "All three existing browser suites on the explicitly retained e524 baseline. New navigation receives its own complete paths and eight gameplay regressions; these fifteen are not relabeled as a800 execution."
+}

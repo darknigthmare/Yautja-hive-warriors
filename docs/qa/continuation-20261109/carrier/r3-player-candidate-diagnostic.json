@@ -1,0 +1,4315 @@
+{
+  "schemaVersion": 1,
+  "status": "selector_candidate_diagnostic_complete",
+  "checkedAt": "2026-11-09T04:45:09.596Z",
+  "sourceRenderedReport": "/workspace/qa/continuation-20261109/runtime-94630d8-r3/report.json",
+  "sourceCarrierPosition": [
+    36.121320343559645,
+    0,
+    2.1213203435596424
+  ],
+  "initialPlayerPosition": [
+    63.22836140246614,
+    0,
+    1.1480502970952697
+  ],
+  "tacticalCenter": [
+    -7.5,
+    0
+  ],
+  "capUnchanged": 32,
+  "allocationsUnchanged": 952,
+  "scope": "Authoritative finite selection for 144 player-only observation candidates, without Horde motion or actual level nav. Select candidates in the actual rendered helper only after real physical validation; no runtime behavior is modified.",
+  "topCandidates": [
+    {
+      "position": [
+        15.5,
+        0,
+        0
+      ],
+      "radius": 23,
+      "angle": 0,
+      "gapToInitialCarrier": 20.730143576726785,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        14.71629400464857,
+        0,
+        5.952838037357977
+      ],
+      "radius": 23,
+      "angle": 15,
+      "gapToInitialCarrier": 21.74524500683693,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        13.5,
+        0,
+        0
+      ],
+      "radius": 21,
+      "angle": 0,
+      "gapToInitialCarrier": 22.72056632405859,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        14.716294004648567,
+        0,
+        -5.9528380373579965
+      ],
+      "radius": 23,
+      "angle": 345,
+      "gapToInitialCarrier": 22.877219807695592,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.784442352070435,
+        0,
+        5.4351999471529355
+      ],
+      "radius": 21,
+      "angle": 15,
+      "gapToInitialCarrier": 23.57099218142429,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.784442352070428,
+        0,
+        -5.435199947152953
+      ],
+      "radius": 21,
+      "angle": 345,
+      "gapToInitialCarrier": 24.52979562274429,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.41858428704209,
+        0,
+        11.499999999999998
+      ],
+      "radius": 23,
+      "angle": 30,
+      "gapToInitialCarrier": 25.490769479618805,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        9.5,
+        0,
+        0
+      ],
+      "radius": 17,
+      "angle": 0,
+      "gapToInitialCarrier": 26.70570532366488,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        10.686533479473212,
+        0,
+        10.499999999999998
+      ],
+      "radius": 21,
+      "angle": 30,
+      "gapToInitialCarrier": 26.7792952783816,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        8.92073904691416,
+        0,
+        4.399923766742853
+      ],
+      "radius": 17,
+      "angle": 15,
+      "gapToInitialCarrier": 27.29585419867938,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.418584287042084,
+        0,
+        -11.50000000000001
+      ],
+      "radius": 23,
+      "angle": 330,
+      "gapToInitialCarrier": 27.337886978821345,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        8.920739046914157,
+        0,
+        -4.399923766742867
+      ],
+      "radius": 17,
+      "angle": 345,
+      "gapToInitialCarrier": 27.971382654805886,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        10.686533479473205,
+        0,
+        -10.500000000000009
+      ],
+      "radius": 21,
+      "angle": 330,
+      "gapToInitialCarrier": 28.39412104708045,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        5.5,
+        0,
+        0
+      ],
+      "radius": 13,
+      "angle": 0,
+      "gapToInitialCarrier": 30.69471061246383,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        7.2224318643354515,
+        0,
+        -8.500000000000007
+      ],
+      "radius": 17,
+      "angle": 330,
+      "gapToInitialCarrier": 30.788929847838997,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        8.763455967290593,
+        0,
+        16.263455967290593
+      ],
+      "radius": 23,
+      "angle": 45,
+      "gapToInitialCarrier": 30.79695996734631,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    }
+  ],
+  "candidates": [
+    {
+      "position": [
+        15.5,
+        0,
+        0
+      ],
+      "radius": 23,
+      "angle": 0,
+      "gapToInitialCarrier": 20.730143576726785,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        14.71629400464857,
+        0,
+        5.952838037357977
+      ],
+      "radius": 23,
+      "angle": 15,
+      "gapToInitialCarrier": 21.74524500683693,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        13.5,
+        0,
+        0
+      ],
+      "radius": 21,
+      "angle": 0,
+      "gapToInitialCarrier": 22.72056632405859,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        14.716294004648567,
+        0,
+        -5.9528380373579965
+      ],
+      "radius": 23,
+      "angle": 345,
+      "gapToInitialCarrier": 22.877219807695592,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.784442352070435,
+        0,
+        5.4351999471529355
+      ],
+      "radius": 21,
+      "angle": 15,
+      "gapToInitialCarrier": 23.57099218142429,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.784442352070428,
+        0,
+        -5.435199947152953
+      ],
+      "radius": 21,
+      "angle": 345,
+      "gapToInitialCarrier": 24.52979562274429,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.41858428704209,
+        0,
+        11.499999999999998
+      ],
+      "radius": 23,
+      "angle": 30,
+      "gapToInitialCarrier": 25.490769479618805,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        9.5,
+        0,
+        0
+      ],
+      "radius": 17,
+      "angle": 0,
+      "gapToInitialCarrier": 26.70570532366488,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        10.686533479473212,
+        0,
+        10.499999999999998
+      ],
+      "radius": 21,
+      "angle": 30,
+      "gapToInitialCarrier": 26.7792952783816,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        8.92073904691416,
+        0,
+        4.399923766742853
+      ],
+      "radius": 17,
+      "angle": 15,
+      "gapToInitialCarrier": 27.29585419867938,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        12.418584287042084,
+        0,
+        -11.50000000000001
+      ],
+      "radius": 23,
+      "angle": 330,
+      "gapToInitialCarrier": 27.337886978821345,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        8.920739046914157,
+        0,
+        -4.399923766742867
+      ],
+      "radius": 17,
+      "angle": 345,
+      "gapToInitialCarrier": 27.971382654805886,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        10.686533479473205,
+        0,
+        -10.500000000000009
+      ],
+      "radius": 21,
+      "angle": 330,
+      "gapToInitialCarrier": 28.39412104708045,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        5.5,
+        0,
+        0
+      ],
+      "radius": 13,
+      "angle": 0,
+      "gapToInitialCarrier": 30.69471061246383,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        7.2224318643354515,
+        0,
+        -8.500000000000007
+      ],
+      "radius": 17,
+      "angle": 330,
+      "gapToInitialCarrier": 30.788929847838997,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        8.763455967290593,
+        0,
+        16.263455967290593
+      ],
+      "radius": 23,
+      "angle": 45,
+      "gapToInitialCarrier": 30.79695996734631,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        7.349242404917499,
+        0,
+        14.849242404917497
+      ],
+      "radius": 21,
+      "angle": 45,
+      "gapToInitialCarrier": 31.461603088642804,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        8.76345596729059,
+        0,
+        -16.263455967290597
+      ],
+      "radius": 23,
+      "angle": 315,
+      "gapToInitialCarrier": 32.96138260495654,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        7.349242404917494,
+        0,
+        -14.8492424049175
+      ],
+      "radius": 21,
+      "angle": 315,
+      "gapToInitialCarrier": 33.404078626827875,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        4.5208152801713055,
+        0,
+        -12.02081528017131
+      ],
+      "radius": 17,
+      "angle": 315,
+      "gapToInitialCarrier": 34.62068630546241,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        1.5,
+        0,
+        0
+      ],
+      "radius": 9,
+      "angle": 0,
+      "gapToInitialCarrier": 34.686248317328534,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        3.0000000000000018,
+        0,
+        -18.186533479473212
+      ],
+      "radius": 21,
+      "angle": 300,
+      "gapToInitialCarrier": 38.85139364550992,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        4.000000000000002,
+        0,
+        -19.918584287042087
+      ],
+      "radius": 23,
+      "angle": 300,
+      "gapToInitialCarrier": 38.955572345167745,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 32,
+      "totalDetailSteps": 32,
+      "finalState": "active",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        7.222431864335459,
+        0,
+        8.499999999999998
+      ],
+      "radius": 17,
+      "angle": 30,
+      "gapToInitialCarrier": 29.594481064788457,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        5.057035741757888,
+        0,
+        3.3646475863327696
+      ],
+      "radius": 13,
+      "angle": 15,
+      "gapToInitialCarrier": 31.089156316219963,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        5.057035741757884,
+        0,
+        -3.3646475863327803
+      ],
+      "radius": 13,
+      "angle": 345,
+      "gapToInitialCarrier": 31.544977761119853,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        3.7583302491977033,
+        0,
+        6.499999999999999
+      ],
+      "radius": 13,
+      "angle": 30,
+      "gapToInitialCarrier": 32.657862198580816,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        4.520815280171309,
+        0,
+        12.020815280171307
+      ],
+      "radius": 17,
+      "angle": 45,
+      "gapToInitialCarrier": 33.114829310465,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        3.758330249197698,
+        0,
+        -6.500000000000005
+      ],
+      "radius": 13,
+      "angle": 330,
+      "gapToInitialCarrier": 33.49164511208795,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        1.1933324366016151,
+        0,
+        2.3293714059226867
+      ],
+      "radius": 9,
+      "angle": 15,
+      "gapToInitialCarrier": 34.92860753699118,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        1.6923881554251192,
+        0,
+        9.192388155425117
+      ],
+      "radius": 13,
+      "angle": 45,
+      "gapToInitialCarrier": 35.14756565702902,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 380.62,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        1.1933324366016134,
+        0,
+        -2.329371405922694
+      ],
+      "radius": 9,
+      "angle": 345,
+      "gapToInitialCarrier": 35.210410339521985,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        0.29422863405994804,
+        0,
+        4.499999999999999
+      ],
+      "radius": 9,
+      "angle": 30,
+      "gapToInitialCarrier": 35.90596910360261,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        1.6923881554251157,
+        0,
+        -9.19238815542512
+      ],
+      "radius": 13,
+      "angle": 315,
+      "gapToInitialCarrier": 36.24019000522991,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        0.29422863405994537,
+        0,
+        -4.5000000000000036
+      ],
+      "radius": 9,
+      "angle": 330,
+      "gapToInitialCarrier": 36.43380824801243,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        4.000000000000002,
+        0,
+        19.918584287042087
+      ],
+      "radius": 23,
+      "angle": 60,
+      "gapToInitialCarrier": 36.72222521154674,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        3.0000000000000018,
+        0,
+        18.186533479473212
+      ],
+      "radius": 21,
+      "angle": 60,
+      "gapToInitialCarrier": 36.811858611092,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        1.0000000000000018,
+        0,
+        14.722431864335457
+      ],
+      "radius": 17,
+      "angle": 60,
+      "gapToInitialCarrier": 37.313471484625566,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -1.1360389693210715,
+        0,
+        6.363961030678928
+      ],
+      "radius": 9,
+      "angle": 45,
+      "gapToInitialCarrier": 37.498144260337725,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -1.1360389693210742,
+        0,
+        -6.363961030678929
+      ],
+      "radius": 9,
+      "angle": 315,
+      "gapToInitialCarrier": 38.21139650639714,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -0.9999999999999982,
+        0,
+        11.258330249197702
+      ],
+      "radius": 13,
+      "angle": 60,
+      "gapToInitialCarrier": 38.22927378416838,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -2.5,
+        0,
+        0
+      ],
+      "radius": 5,
+      "angle": 0,
+      "gapToInitialCarrier": 38.67953444755837,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -2.6703708685546585,
+        0,
+        1.2940952255126037
+      ],
+      "radius": 5,
+      "angle": 15,
+      "gapToInitialCarrier": 38.80051041535348,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -2.6703708685546594,
+        0,
+        -1.294095225512608
+      ],
+      "radius": 5,
+      "angle": 345,
+      "gapToInitialCarrier": 38.94175613150346,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        1.0000000000000018,
+        0,
+        -14.722431864335457
+      ],
+      "radius": 17,
+      "angle": 300,
+      "gapToInitialCarrier": 38.95149716141739,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -3.1698729810778064,
+        0,
+        2.4999999999999996
+      ],
+      "radius": 5,
+      "angle": 30,
+      "gapToInitialCarrier": 39.29301809680998,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -0.9999999999999982,
+        0,
+        -11.258330249197702
+      ],
+      "radius": 13,
+      "angle": 300,
+      "gapToInitialCarrier": 39.45893402049081,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -2.999999999999999,
+        0,
+        7.794228634059947
+      ],
+      "radius": 9,
+      "angle": 60,
+      "gapToInitialCarrier": 39.530489421405356,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -3.169872981077808,
+        0,
+        -2.500000000000002
+      ],
+      "radius": 5,
+      "angle": 330,
+      "gapToInitialCarrier": 39.562033246432534,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -3.9644660940672622,
+        0,
+        3.5355339059327373
+      ],
+      "radius": 5,
+      "angle": 45,
+      "gapToInitialCarrier": 40.11072517822426,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -2.999999999999999,
+        0,
+        -7.794228634059947
+      ],
+      "radius": 9,
+      "angle": 300,
+      "gapToInitialCarrier": 40.35834259420209,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -3.964466094067263,
+        0,
+        -3.5355339059327386
+      ],
+      "radius": 5,
+      "angle": 315,
+      "gapToInitialCarrier": 40.48296276611969,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -5,
+        0,
+        4.330127018922193
+      ],
+      "radius": 5,
+      "angle": 60,
+      "gapToInitialCarrier": 41.180599968028375,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -4.13535241366723,
+        0,
+        12.557035741757888
+      ],
+      "radius": 13,
+      "angle": 75,
+      "gapToInitialCarrier": 41.58730404047183,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -5,
+        0,
+        -4.330127018922193
+      ],
+      "radius": 5,
+      "angle": 300,
+      "gapToInitialCarrier": 41.624321734636425,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -3.1000762332571474,
+        0,
+        16.42073904691416
+      ],
+      "radius": 17,
+      "angle": 75,
+      "gapToInitialCarrier": 41.74675226517365,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -5.170628594077313,
+        0,
+        8.693332436601615
+      ],
+      "radius": 9,
+      "angle": 75,
+      "gapToInitialCarrier": 41.81167767525608,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -2.0648000528470645,
+        0,
+        20.284442352070435
+      ],
+      "radius": 21,
+      "angle": 75,
+      "gapToInitialCarrier": 42.2856806971925,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -6.205904774487396,
+        0,
+        4.8296291314453415
+      ],
+      "radius": 5,
+      "angle": 75,
+      "gapToInitialCarrier": 42.413782225644184,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -5.170628594077318,
+        0,
+        -8.693332436601615
+      ],
+      "radius": 9,
+      "angle": 285,
+      "gapToInitialCarrier": 42.68467830292116,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -1.547161962642023,
+        0,
+        22.21629400464857
+      ],
+      "radius": 23,
+      "angle": 75,
+      "gapToInitialCarrier": 42.69335458467144,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -4.135352413667237,
+        0,
+        -12.55703574175789
+      ],
+      "radius": 13,
+      "angle": 285,
+      "gapToInitialCarrier": 42.849198812227876,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -6.205904774487399,
+        0,
+        -4.829629131445342
+      ],
+      "radius": 5,
+      "angle": 285,
+      "gapToInitialCarrier": 42.894168424133184,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -3.1000762332571554,
+        0,
+        -16.420739046914164
+      ],
+      "radius": 17,
+      "angle": 285,
+      "gapToInitialCarrier": 43.38347514752356,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.5,
+        0,
+        5
+      ],
+      "radius": 5,
+      "angle": 90,
+      "gapToInitialCarrier": 43.71620277517084,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.499999999999999,
+        0,
+        9
+      ],
+      "radius": 9,
+      "angle": 90,
+      "gapToInitialCarrier": 44.16034218992621,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.500000000000001,
+        0,
+        -5
+      ],
+      "radius": 5,
+      "angle": 270,
+      "gapToInitialCarrier": 44.1987872226269,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -2.0648000528470742,
+        0,
+        -20.284442352070435
+      ],
+      "radius": 21,
+      "angle": 285,
+      "gapToInitialCarrier": 44.27412328778242,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -1.5471619626420328,
+        0,
+        -22.216294004648574
+      ],
+      "radius": 23,
+      "angle": 285,
+      "gapToInitialCarrier": 44.84678395843719,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.499999999999999,
+        0,
+        13
+      ],
+      "radius": 13,
+      "angle": 90,
+      "gapToInitialCarrier": 44.957371582232206,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -8.794095225512603,
+        0,
+        4.8296291314453415
+      ],
+      "radius": 5,
+      "angle": 105,
+      "gapToInitialCarrier": 44.99699425776123,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.500000000000002,
+        0,
+        -9
+      ],
+      "radius": 9,
+      "angle": 270,
+      "gapToInitialCarrier": 45.01670084201555,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -8.794095225512603,
+        0,
+        -4.8296291314453415
+      ],
+      "radius": 5,
+      "angle": 255,
+      "gapToInitialCarrier": 45.45008530626241,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.499999999999999,
+        0,
+        17
+      ],
+      "radius": 17,
+      "angle": 90,
+      "gapToInitialCarrier": 46.08898671954529,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.500000000000003,
+        0,
+        -13
+      ],
+      "radius": 13,
+      "angle": 270,
+      "gapToInitialCarrier": 46.16788837978191,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -10,
+        0,
+        4.330127018922194
+      ],
+      "radius": 5,
+      "angle": 120,
+      "gapToInitialCarrier": 46.174181283076095,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -9.829371405922686,
+        0,
+        8.693332436601615
+      ],
+      "radius": 9,
+      "angle": 105,
+      "gapToInitialCarrier": 46.418287508341294,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -10.000000000000002,
+        0,
+        -4.330127018922193
+      ],
+      "radius": 5,
+      "angle": 240,
+      "gapToInitialCarrier": 46.57034854179344,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -11.035533905932738,
+        0,
+        3.5355339059327378
+      ],
+      "radius": 5,
+      "angle": 135,
+      "gapToInitialCarrier": 47.17805530866939,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -9.829371405922686,
+        0,
+        -8.693332436601615
+      ],
+      "radius": 9,
+      "angle": 255,
+      "gapToInitialCarrier": 47.20617318753336,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -11.03553390593274,
+        0,
+        -3.5355339059327355
+      ],
+      "radius": 5,
+      "angle": 225,
+      "gapToInitialCarrier": 47.49493554799151,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.499999999999999,
+        0,
+        21
+      ],
+      "radius": 21,
+      "angle": 90,
+      "gapToInitialCarrier": 47.53129636445807,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.5000000000000036,
+        0,
+        -17
+      ],
+      "radius": 17,
+      "angle": 270,
+      "gapToInitialCarrier": 47.628189973968965,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -11.830127018922195,
+        0,
+        2.4999999999999996
+      ],
+      "radius": 5,
+      "angle": 150,
+      "gapToInitialCarrier": 47.95294258373586,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -10.864647586332769,
+        0,
+        12.557035741757888
+      ],
+      "radius": 13,
+      "angle": 105,
+      "gapToInitialCarrier": 48.130918734022416,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -11.830127018922195,
+        0,
+        -2.4999999999999987
+      ],
+      "radius": 5,
+      "angle": 210,
+      "gapToInitialCarrier": 48.17362251143944,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.499999999999998,
+        0,
+        23
+      ],
+      "radius": 23,
+      "angle": 90,
+      "gapToInitialCarrier": 48.3605092271753,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -11.999999999999998,
+        0,
+        7.794228634059948
+      ],
+      "radius": 9,
+      "angle": 120,
+      "gapToInitialCarrier": 48.45454942603341,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -12.32962913144534,
+        0,
+        1.294095225512605
+      ],
+      "radius": 5,
+      "angle": 165,
+      "gapToInitialCarrier": 48.45801075596701,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -12.32962913144534,
+        0,
+        -1.294095225512604
+      ],
+      "radius": 5,
+      "angle": 195,
+      "gapToInitialCarrier": 48.5711804318049,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -12.5,
+        0,
+        6.123233995736766e-16
+      ],
+      "radius": 5,
+      "angle": 180,
+      "gapToInitialCarrier": 48.66757433806463,
+      "tacticalDistance": 5,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -12.000000000000004,
+        0,
+        -7.794228634059946
+      ],
+      "radius": 9,
+      "angle": 240,
+      "gapToInitialCarrier": 49.132266212083685,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -10.864647586332769,
+        0,
+        -12.557035741757888
+      ],
+      "radius": 13,
+      "angle": 255,
+      "gapToInitialCarrier": 49.22535240784221,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.5000000000000036,
+        0,
+        -21
+      ],
+      "radius": 21,
+      "angle": 270,
+      "gapToInitialCarrier": 49.37018374428999,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -11.899923766742852,
+        0,
+        16.42073904691416
+      ],
+      "radius": 17,
+      "angle": 105,
+      "gapToInitialCarrier": 50.10502231468526,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -13.863961030678928,
+        0,
+        6.3639610306789285
+      ],
+      "radius": 9,
+      "angle": 135,
+      "gapToInitialCarrier": 50.16501125348027,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -7.500000000000004,
+        0,
+        -23
+      ],
+      "radius": 23,
+      "angle": 270,
+      "gapToInitialCarrier": 50.337861737654244,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -13.863961030678931,
+        0,
+        -6.363961030678924
+      ],
+      "radius": 9,
+      "angle": 225,
+      "gapToInitialCarrier": 50.70037824377449,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -13.999999999999996,
+        0,
+        11.258330249197703
+      ],
+      "radius": 13,
+      "angle": 120,
+      "gapToInitialCarrier": 50.94734245274679,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -15.294228634059948,
+        0,
+        4.499999999999999
+      ],
+      "radius": 9,
+      "angle": 150,
+      "gapToInitialCarrier": 51.47054296952736,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -11.899923766742852,
+        0,
+        -16.42073904691416
+      ],
+      "radius": 17,
+      "angle": 255,
+      "gapToInitialCarrier": 51.47667289502227,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -15.29422863405995,
+        0,
+        -4.499999999999997
+      ],
+      "radius": 9,
+      "angle": 210,
+      "gapToInitialCarrier": 51.840144287627474,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -14.000000000000005,
+        0,
+        -11.2583302491977
+      ],
+      "radius": 13,
+      "angle": 240,
+      "gapToInitialCarrier": 51.87640892511739,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -12.935199947152933,
+        0,
+        20.284442352070435
+      ],
+      "radius": 21,
+      "angle": 105,
+      "gapToInitialCarrier": 52.31100442668964,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -16.193332436601615,
+        0,
+        2.3293714059226893
+      ],
+      "radius": 9,
+      "angle": 165,
+      "gapToInitialCarrier": 52.315066479489296,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -16.193332436601615,
+        0,
+        -2.329371405922687
+      ],
+      "radius": 9,
+      "angle": 195,
+      "gapToInitialCarrier": 52.50363370813247,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -16.5,
+        0,
+        1.102182119232618e-15
+      ],
+      "radius": 9,
+      "angle": 180,
+      "gapToInitialCarrier": 52.66406131983674,
+      "tacticalDistance": 9,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -16.692388155425117,
+        0,
+        9.19238815542512
+      ],
+      "radius": 13,
+      "angle": 135,
+      "gapToInitialCarrier": 53.2849679123084,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -13.452838037357974,
+        0,
+        22.21629400464857
+      ],
+      "radius": 23,
+      "angle": 105,
+      "gapToInitialCarrier": 53.4921035818948,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -15.999999999999996,
+        0,
+        14.722431864335459
+      ],
+      "radius": 17,
+      "angle": 120,
+      "gapToInitialCarrier": 53.62294327911323,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -12.935199947152933,
+        0,
+        -20.284442352070435
+      ],
+      "radius": 21,
+      "angle": 255,
+      "gapToInitialCarrier": 53.93107068291879,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -16.69238815542512,
+        0,
+        -9.192388155425112
+      ],
+      "radius": 13,
+      "angle": 225,
+      "gapToInitialCarrier": 54.01192280798505,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -16.000000000000007,
+        0,
+        -14.722431864335455
+      ],
+      "radius": 17,
+      "angle": 240,
+      "gapToInitialCarrier": 54.77539614459156,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -18.758330249197705,
+        0,
+        6.499999999999999
+      ],
+      "radius": 13,
+      "angle": 150,
+      "gapToInitialCarrier": 55.05405420781341,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -13.452838037357974,
+        0,
+        -22.21629400464857
+      ],
+      "radius": 23,
+      "angle": 255,
+      "gapToInitialCarrier": 55.22605047745507,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 379.549,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -18.758330249197705,
+        0,
+        -6.4999999999999964
+      ],
+      "radius": 13,
+      "angle": 210,
+      "gapToInitialCarrier": 55.55270662757492,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -20.057035741757886,
+        0,
+        3.364647586332773
+      ],
+      "radius": 13,
+      "angle": 165,
+      "gapToInitialCarrier": 56.19211292593788,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -20.057035741757886,
+        0,
+        -3.3646475863327705
+      ],
+      "radius": 13,
+      "angle": 195,
+      "gapToInitialCarrier": 56.44558031038871,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -17.999999999999993,
+        0,
+        18.186533479473212
+      ],
+      "radius": 21,
+      "angle": 120,
+      "gapToInitialCarrier": 56.45536634220464,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -19.520815280171306,
+        0,
+        12.020815280171309
+      ],
+      "radius": 17,
+      "angle": 135,
+      "gapToInitialCarrier": 56.51590268915174,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -20.5,
+        0,
+        1.592040838891559e-15
+      ],
+      "radius": 13,
+      "angle": 180,
+      "gapToInitialCarrier": 56.661044090697814,
+      "tacticalDistance": 13,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -19.520815280171313,
+        0,
+        -12.020815280171302
+      ],
+      "radius": 17,
+      "angle": 225,
+      "gapToInitialCarrier": 57.411211943048805,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -18.000000000000007,
+        0,
+        -18.18653347947321
+      ],
+      "radius": 21,
+      "angle": 240,
+      "gapToInitialCarrier": 57.80593605009674,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -18.999999999999993,
+        0,
+        19.91858428704209
+      ],
+      "radius": 23,
+      "angle": 120,
+      "gapToInitialCarrier": 57.92324714906185,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -22.22243186433546,
+        0,
+        8.499999999999998
+      ],
+      "radius": 17,
+      "angle": 150,
+      "gapToInitialCarrier": 58.691404616483254,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -22.222431864335462,
+        0,
+        -8.499999999999995
+      ],
+      "radius": 17,
+      "angle": 210,
+      "gapToInitialCarrier": 59.30266324151707,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -19.00000000000001,
+        0,
+        -19.918584287042084
+      ],
+      "radius": 23,
+      "angle": 240,
+      "gapToInitialCarrier": 59.36427673730509,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -22.349242404917497,
+        0,
+        14.849242404917499
+      ],
+      "radius": 21,
+      "angle": 135,
+      "gapToInitialCarrier": 59.839842146546495,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -23.92073904691416,
+        0,
+        4.399923766742857
+      ],
+      "radius": 17,
+      "angle": 165,
+      "gapToInitialCarrier": 60.08528047208672,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -23.92073904691416,
+        0,
+        -4.3999237667428535
+      ],
+      "radius": 17,
+      "angle": 195,
+      "gapToInitialCarrier": 60.39516140052396,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -24.5,
+        0,
+        2.0818995585505003e-15
+      ],
+      "radius": 17,
+      "angle": 180,
+      "gapToInitialCarrier": 60.65842464321406,
+      "tacticalDistance": 17,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -22.349242404917504,
+        0,
+        -14.84924240491749
+      ],
+      "radius": 21,
+      "angle": 225,
+      "gapToInitialCarrier": 60.883550390262265,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -23.763455967290593,
+        0,
+        16.263455967290593
+      ],
+      "radius": 23,
+      "angle": 135,
+      "gapToInitialCarrier": 61.53199520412588,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -25.686533479473212,
+        0,
+        10.499999999999998
+      ],
+      "radius": 21,
+      "angle": 150,
+      "gapToInitialCarrier": 62.37317586105942,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -23.763455967290604,
+        0,
+        -16.263455967290582
+      ],
+      "radius": 23,
+      "angle": 225,
+      "gapToInitialCarrier": 62.643327129077136,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -25.686533479473216,
+        0,
+        -10.499999999999995
+      ],
+      "radius": 21,
+      "angle": 210,
+      "gapToInitialCarrier": 63.08334583251073,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -27.784442352070432,
+        0,
+        5.435199947152942
+      ],
+      "radius": 21,
+      "angle": 165,
+      "gapToInitialCarrier": 63.99162682521281,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -27.41858428704209,
+        0,
+        11.499999999999998
+      ],
+      "radius": 23,
+      "angle": 150,
+      "gapToInitialCarrier": 64.22833574493498,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 400,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -27.784442352070435,
+        0,
+        -5.435199947152936
+      ],
+      "radius": 21,
+      "angle": 195,
+      "gapToInitialCarrier": 64.35097127949302,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -28.5,
+        0,
+        2.5717582782094417e-15
+      ],
+      "radius": 21,
+      "angle": 180,
+      "gapToInitialCarrier": 64.65612919859149,
+      "tacticalDistance": 21,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -27.418584287042094,
+        0,
+        -11.499999999999993
+      ],
+      "radius": 23,
+      "angle": 210,
+      "gapToInitialCarrier": 64.98353520983477,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -29.716294004648567,
+        0,
+        5.952838037357983
+      ],
+      "radius": 23,
+      "angle": 165,
+      "gapToInitialCarrier": 65.94901053769708,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -29.71629400464857,
+        0,
+        -5.952838037357978
+      ],
+      "radius": 23,
+      "angle": 195,
+      "gapToInitialCarrier": 66.33086383142869,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    },
+    {
+      "position": [
+        -30.5,
+        0,
+        2.8166876380389124e-15
+      ],
+      "radius": 23,
+      "angle": 180,
+      "gapToInitialCarrier": 66.65508475967302,
+      "tacticalDistance": 23,
+      "materializedDetailSteps": 0,
+      "totalDetailSteps": 32,
+      "finalState": "distant",
+      "finalHP": 386.995,
+      "selectionEvents": [
+        {
+          "type": "materialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.25
+        },
+        {
+          "type": "dematerialize",
+          "groupId": "AFF-27:hive:0",
+          "time": 0.5
+        }
+      ],
+      "conserved": true
+    }
+  ],
+  "runtimeModified": false,
+  "browserLaunched": false,
+  "completeMissionVerified": false
+}

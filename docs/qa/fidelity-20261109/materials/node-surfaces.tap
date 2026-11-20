@@ -1,0 +1,15 @@
+✔ PBR maps have actual surface variation and valid normals rather than flat colors (7969.19108ms)
+✔ surface maps are shared safely and repeat settings cannot leak between materials (1.822805ms)
+✔ organic surfaces distinguish human pores from hunter pigmentation and preserve controlled reflections (0.632302ms)
+✔ coated and exposed metal share maps while retaining distinct physical finishes and caller overrides (0.497371ms)
+✔ sawn timber has restrained longitudinal grain and no bright wrap seam (12.436ms)
+✔ fabric roughness follows yarn detail and organic maps remain dielectric by default (5.268831ms)
+✔ fine 1K and 2K normal maps retain detail above RGB8 quantization (7.66483ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8127.168778

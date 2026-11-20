@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { access, copyFile, cp, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { REPO, QA, STAGE, DEFAULT_PINS, assertProject, hashFile, jsonFile, listFiles, readPins, say, validateBuildIdentity } from './publication-pr3-lib.mjs';
+import { REPO, QA, STAGE, RELEASE, DEFAULT_PINS, assertProject, hashFile, jsonFile, listFiles, readPins, say, validateBuildIdentity } from './publication-pr3-lib.mjs';
 
 export async function main(argv = process.argv.slice(2)) {
   let pinsPath = DEFAULT_PINS;
@@ -44,7 +44,7 @@ export async function main(argv = process.argv.slice(2)) {
   assert.deepEqual(await listFiles(output + '/static'), allFiles.map(file => file.relativePath).sort());
   for (const file of allFiles) assert.equal(await hashFile(output + '/static/' + file.relativePath), file.sha256, 'Copy changed: ' + file.path);
   await validateBuildIdentity(REPO + '/dist', pins, true); await validateBuildIdentity(output + '/static', pins);
-  const artifact = { schemaVersion: 1, status: 'staged_locally_without_deploying', createdAt: new Date().toISOString(), stage: STAGE,
+  const artifact = { schemaVersion: 1, status: 'staged_locally_without_deploying', releaseProfile: RELEASE.name, createdAt: new Date().toISOString(), stage: STAGE,
     sourceCommit: pins.sourceCommit, sourceFingerprint: pins.sourceFingerprint, index_sha256: pins.indexSha256, build_info_sha256: pins.buildInfoSha256,
     static_files: allFiles.length, static_bytes: allFiles.reduce((sum, file) => sum + file.bytes, 0),
     expected_headers: configuration.headers, files: allFiles.filter(file => file.path.startsWith('/assets/') && /\.(?:css|js)$/.test(file.path)),

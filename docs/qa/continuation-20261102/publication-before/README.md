@@ -1,0 +1,3 @@
+Lecture du 2 novembre 2026, avant toute nouvelle publication. Le domaine canonique sert encore la source 48b5, index 124d7735… ; la dernière preview observée correspond à 3fc6206, cible preview. Aucune version Git courante ni le candidat a800 n’est trouvée dans la liste complète retournée (15 déploiements, pagination suivante nulle).
+
+Ces lectures ne prouvent pas la réouverture du quota de déploiement. Le probe GET `/v1/limits` renvoie 404 ; le dernier refus réel reste celui du 1er novembre. Aucun déploiement, promotion, changement de credentials ou effacement de registre n’a lieu pendant cette revue. Les réponses brutes restent hors Git ; seules les métadonnées minimisées et leurs empreintes sont archivées ici.

@@ -1,0 +1,15 @@
+✔ final debrief snapshots all finite states and named losses before mission teardown (36.266943ms)
+✔ the critical alert identifies the earliest live deadline rather than the most recent loss event (7.968339ms)
+✔ a restored loss names only the expired front after the other front is recovered, and survives teardown (10.193858ms)
+✔ simultaneous critical losses retain both authored names and keep ordinary timeout and objective results specific (4.712625ms)
+✔ a critical defeat warning stays above ordinary reports and exposes its actual location and deadline (4.328146ms)
+✔ caused counterattacks keep their real countdown in the persistent HUD (0.194753ms)
+✔ a living officer at critical health is called out ahead of routine reinforcements (0.851538ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 358.918815

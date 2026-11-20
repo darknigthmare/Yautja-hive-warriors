@@ -1,0 +1,14 @@
+✔ real signed Ravager phase and empty medical state compose across checkpoint restoration (67.778652ms)
+✔ medical materialization never changes a real cataleptic Ravager HP, pose or owner timer (2728.458204ms)
+✔ a medical record cannot steal a legal one-HP Ravager phase or its spent upgrade (18.105977ms)
+✔ genuine allied Yautja orphan incapacity is still refused without its medical timer (15.422878ms)
+✔ unphased, unsigned, wrong-continuity and malformed Ravager incapacity remain orphan errors (120.907898ms)
+✔ malformed phase plus forged medical record cannot bypass either owner validation (28.885036ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3138.47049

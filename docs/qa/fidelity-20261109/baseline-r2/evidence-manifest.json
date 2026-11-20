@@ -1,0 +1,82 @@
+[
+  {
+    "path": "helper-source-0.mjs",
+    "sha256": "0579ab25b504fe646341161bf0eace1152f070a725f3072d7be68a3c16272698"
+  },
+  {
+    "path": "helper-source-1.mjs",
+    "sha256": "e272d30a756f6bebe9798e9bcabb01e0c565469f9a5c8768d7c781a8b2e021ae"
+  },
+  {
+    "path": "helper-source-2.mjs",
+    "sha256": "e58ad3dd98b02907c7a1f8b1eed0869cb9ec7f2353efb75550ad7259156c5b6c"
+  },
+  {
+    "path": "helper-source-3.mjs",
+    "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+  },
+  {
+    "path": "report.json",
+    "sha256": "440af4b8279a98b5a5d6ffe75d03d0efc594f1f68de08657d2e894a242aa1597"
+  },
+  {
+    "path": "studio-capsule-front-opening0.png",
+    "sha256": "05fa5a80667ccf5b14d1d5bac03af03b2301a39b55e69c761753022328c0b743"
+  },
+  {
+    "path": "studio-capsule-front-opening1.png",
+    "sha256": "21795efac5d463186f081c35ff16b48d042603f0a7848b134313b99b3a0aa5b5"
+  },
+  {
+    "path": "studio-capsule-quarter-opening0.png",
+    "sha256": "d51844e80e0795f31ee6199438c396165724851a9058fc83653489c4835cf7a4"
+  },
+  {
+    "path": "studio-capsule-quarter-opening1.png",
+    "sha256": "63a25006d3f054cbca28c6394b7246347102a828f052f7877985c8a26642e9bf"
+  },
+  {
+    "path": "studio-honor-guard-alt-quarter.png",
+    "sha256": "36ddc337bba14f855fa2cd3cb3b967a8b29831ff64c229927e16f0ba0958f250"
+  },
+  {
+    "path": "studio-honor-guard-front.png",
+    "sha256": "f5d7b2ba6287c4c8906d68e7139c9a00e91318385960b3a296cc90950e22fb33"
+  },
+  {
+    "path": "studio-honor-guard-quarter.png",
+    "sha256": "4b78499569f0e9d9938aabb68d9e35bf4be2f348d0d49d5a6b991563d3a81309"
+  },
+  {
+    "path": "studio-marine-marine-front.png",
+    "sha256": "892d2752da1a4e6ffd7ebf0a5c1a993d922bde021591a1aeae9a37af6753b15a"
+  },
+  {
+    "path": "studio-marine-marine-quarter.png",
+    "sha256": "eeb452ce7db607ea606dbe0b9335b26bf9e97ae66238f6980bfe7bbeb717df64"
+  },
+  {
+    "path": "studio-roleSheet.png",
+    "sha256": "9734d2146db0ce184a0adf9915ffe68c0c9fff1ae813893e7f9d9034fc963bbb"
+  },
+  {
+    "path": "studio-surfaceSheet.png",
+    "sha256": "4cfaff7ca19fb469b19f96ff92aab4bd0ab38d9a3c5ec2e2312457dbfd5ba039"
+  },
+  {
+    "path": "studio-synthetic-quarter.png",
+    "sha256": "f90682e5f151587757aa73dbe79c1f41da9e50cf3fb1f362a30c8424902d3342"
+  },
+  {
+    "path": "val-verde-real-coop-after3s.png",
+    "sha256": "2c02440e74d7e9af0d36e966e436c3125d9662e6219e5397b664772a447c542e"
+  },
+  {
+    "path": "val-verde-real-coop-exiting.png",
+    "sha256": "728d78d529904341883dfbf2c0e78a452017156d1dcb14781473630393ac1372"
+  },
+  {
+    "path": "val-verde-real-coop-opening.png",
+    "sha256": "f38fa3175a139026810f341ec6371c0f9a6c71cb48281ebdcf1344964a4c07af"
+  }
+]

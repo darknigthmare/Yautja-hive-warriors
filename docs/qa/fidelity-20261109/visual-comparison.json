@@ -1,0 +1,715 @@
+{
+  "schemaVersion": 1,
+  "status": "visual_pass",
+  "humanTesters": 0,
+  "hardwarePerformanceMeasured": false,
+  "fidelity1to1Verified": false,
+  "before": {
+    "buildSource": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+    "sourceFingerprint": "a214c05a3ad459495d24cd3028e058106b57632aad6a24811b3b8456053f92f5",
+    "report": "baseline-r2/report.json"
+  },
+  "after": {
+    "buildSource": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+    "report": "final-r1/report.json"
+  },
+  "commonScreenshotPairs": 15,
+  "newWoodSample": "final-r1/studio-wood-new-surface.png",
+  "sceneFixtureSha256": "e272d30a756f6bebe9798e9bcabb01e0c565469f9a5c8768d7c781a8b2e021ae",
+  "comparison": "comparison.html",
+  "models": [
+    {
+      "model": "honor-guard:0",
+      "before": {
+        "triangles": 42680,
+        "meshes": 7,
+        "meshInstances": 7,
+        "buffers": {
+          "totalUniqueBytes": 4097280,
+          "staticAttributeBytes": 4097280,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 21,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 46616,
+        "meshes": 9,
+        "meshInstances": 39,
+        "buffers": {
+          "totalUniqueBytes": 2403676,
+          "staticAttributeBytes": 1198700,
+          "morphAttributeBytes": 1202928,
+          "instanceAttributeBytes": 2048,
+          "uniqueArrayBuffers": 67,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:marine",
+      "before": {
+        "triangles": 40812,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 3917952,
+          "staticAttributeBytes": 3917952,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 40928,
+        "meshes": 7,
+        "meshInstances": 7,
+        "buffers": {
+          "totalUniqueBytes": 4033920,
+          "staticAttributeBytes": 4033920,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 22,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:smartgunner",
+      "before": {
+        "triangles": 41004,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 3936384,
+          "staticAttributeBytes": 3936384,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 41120,
+        "meshes": 7,
+        "meshInstances": 7,
+        "buffers": {
+          "totalUniqueBytes": 4052352,
+          "staticAttributeBytes": 4052352,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 22,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:flametrooper",
+      "before": {
+        "triangles": 40284,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 3867264,
+          "staticAttributeBytes": 3867264,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 40400,
+        "meshes": 7,
+        "meshInstances": 7,
+        "buffers": {
+          "totalUniqueBytes": 3983232,
+          "staticAttributeBytes": 3983232,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 22,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:medic",
+      "before": {
+        "triangles": 42336,
+        "meshes": 12,
+        "meshInstances": 12,
+        "buffers": {
+          "totalUniqueBytes": 4064256,
+          "staticAttributeBytes": 4064256,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 36,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 42452,
+        "meshes": 8,
+        "meshInstances": 8,
+        "buffers": {
+          "totalUniqueBytes": 4180224,
+          "staticAttributeBytes": 4180224,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 25,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:commtech",
+      "before": {
+        "triangles": 42232,
+        "meshes": 12,
+        "meshInstances": 12,
+        "buffers": {
+          "totalUniqueBytes": 4054272,
+          "staticAttributeBytes": 4054272,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 36,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 42348,
+        "meshes": 8,
+        "meshInstances": 8,
+        "buffers": {
+          "totalUniqueBytes": 4170240,
+          "staticAttributeBytes": 4170240,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 25,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:sniper",
+      "before": {
+        "triangles": 41292,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 3964032,
+          "staticAttributeBytes": 3964032,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 41408,
+        "meshes": 7,
+        "meshInstances": 7,
+        "buffers": {
+          "totalUniqueBytes": 4080000,
+          "staticAttributeBytes": 4080000,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 22,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:sadar",
+      "before": {
+        "triangles": 38300,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 3676800,
+          "staticAttributeBytes": 3676800,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 38416,
+        "meshes": 7,
+        "meshInstances": 7,
+        "buffers": {
+          "totalUniqueBytes": 3792768,
+          "staticAttributeBytes": 3792768,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 22,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "marine:exosuit",
+      "before": {
+        "triangles": 43560,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 4181760,
+          "staticAttributeBytes": 4181760,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 43676,
+        "meshes": 7,
+        "meshInstances": 7,
+        "buffers": {
+          "totalUniqueBytes": 4297728,
+          "staticAttributeBytes": 4297728,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 22,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "synthetic",
+      "before": {
+        "triangles": 36084,
+        "meshes": 16,
+        "meshInstances": 16,
+        "buffers": {
+          "totalUniqueBytes": 3434832,
+          "staticAttributeBytes": 3434832,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 49,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 36084,
+        "meshes": 16,
+        "meshInstances": 16,
+        "buffers": {
+          "totalUniqueBytes": 3434832,
+          "staticAttributeBytes": 3434832,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 49,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "capsule:0",
+      "before": {
+        "triangles": 43504,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 4176384,
+          "staticAttributeBytes": 4176384,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 63808,
+        "meshes": 14,
+        "meshInstances": 14,
+        "buffers": {
+          "totalUniqueBytes": 6139392,
+          "staticAttributeBytes": 6139392,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 43,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    },
+    {
+      "model": "capsule:1",
+      "before": {
+        "triangles": 43504,
+        "meshes": 11,
+        "meshInstances": 11,
+        "buffers": {
+          "totalUniqueBytes": 4176384,
+          "staticAttributeBytes": 4176384,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 33,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      },
+      "after": {
+        "triangles": 63808,
+        "meshes": 14,
+        "meshInstances": 14,
+        "buffers": {
+          "totalUniqueBytes": 6139392,
+          "staticAttributeBytes": 6139392,
+          "morphAttributeBytes": 0,
+          "instanceAttributeBytes": 0,
+          "uniqueArrayBuffers": 43,
+          "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+        }
+      }
+    }
+  ],
+  "occlusionBefore": [
+    {
+      "phase": "opening",
+      "cameras": [
+        {
+          "player": 1,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 1
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 1
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 1
+            }
+          ]
+        },
+        {
+          "player": 2,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 1,
+              "allVisibleMeshHits": 2
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 1,
+              "allVisibleMeshHits": 2
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 2,
+              "allVisibleMeshHits": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "exiting",
+      "cameras": [
+        {
+          "player": 1,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            }
+          ]
+        },
+        {
+          "player": 2,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 1,
+              "allVisibleMeshHits": 1
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 1,
+              "allVisibleMeshHits": 1
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 2,
+              "allVisibleMeshHits": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "complete",
+      "cameras": [
+        {
+          "player": 1,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 2,
+              "allVisibleMeshHits": 2
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            }
+          ]
+        },
+        {
+          "player": 2,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 2,
+              "allVisibleMeshHits": 2
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 2,
+              "allVisibleMeshHits": 2
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 1,
+              "allVisibleMeshHits": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "occlusionAfter": [
+    {
+      "phase": "opening",
+      "cameras": [
+        {
+          "player": 1,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 3,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 3
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 1
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 1
+            }
+          ]
+        },
+        {
+          "player": 2,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 2,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 2
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 1
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 1,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "exiting",
+      "cameras": [
+        {
+          "player": 1,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            }
+          ]
+        },
+        {
+          "player": 2,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "complete",
+      "cameras": [
+        {
+          "player": 1,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            }
+          ]
+        },
+        {
+          "player": 2,
+          "probes": [
+            {
+              "height": 0.2,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 1.8,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            },
+            {
+              "height": 3.6,
+              "capsuleHits": 0,
+              "decorativeWorldHits": 0,
+              "allVisibleMeshHits": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Visual observations are AI review of actual screenshots, not human tester sessions.",
+    "Three centerline probes per camera do not certify the entire silhouette or all possible views.",
+    "Opening capsule leaf intersections are expected while doors move; decorative world obstructions are counted separately.",
+    "Geometry/morph/instance CPU byte inventories exclude textures, JS objects, renderer and GPU allocations.",
+    "Renderer snapshots include multiple views/shadow passes and are not hardware FPS or a single-view draw-call budget.",
+    "Original clan/capsule models and commercial collectible reference photographs do not establish exact film likeness or 1:1 fidelity."
+  ],
+  "comparisonHtmlSha256": "9fae5964eddb96261a05cce62144eb97741c18bd7935104faf65310b431a1c4c",
+  "comparisonCreatorSha256": "38f96daafb36de356214099fc416b9b47ed885589fb620fce6c1059c90c1d6c3",
+  "regression": {
+    "status": "passed",
+    "report": "regression-v70-r1/report.json",
+    "fullThreeCasesInOneCleanRun": true,
+    "cases": [
+      {
+        "id": "source-menu-coop-insertion-command-checkpoint",
+        "status": "passed"
+      },
+      {
+        "id": "carrier-autonomous-main-update-flight",
+        "status": "passed"
+      },
+      {
+        "id": "ravager-checkpoint-phase-recovery-fire",
+        "status": "passed"
+      }
+    ],
+    "durationSeconds": 201.041,
+    "sourceInputsUnchanged": true,
+    "distUnchanged": true,
+    "helperSourcesUnchanged": true,
+    "browserClosed": true
+  }
+}

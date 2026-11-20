@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "historicalFilesModified": false,
+  "upstreamBuildSource": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+  "copies": [
+    {
+      "source": "docs/qa/continuation-20261109/verify-evolved-combat.mjs",
+      "sourceSha256": "6096de6443a23357d8261fba099bb3fd6cfe0a6728b96ef85f1bbc7f3f2d116b",
+      "destination": "docs/qa/fidelity-20261109/verify-regression-v70.mjs"
+    },
+    {
+      "source": "docs/qa/continuation-20261109/ui-coop-smoke.mjs",
+      "sourceSha256": "e5f48d56a61007a897c045d0f52bd243ace25a90744ed41173def25ac806315a",
+      "destination": "docs/qa/fidelity-20261109/regression-ui-coop.mjs"
+    }
+  ],
+  "adaptations": [
+    "New QA output and helper paths, port4352, explicit source fingerprint guard.",
+    "Same three canonical cases, actions, assertions and assistance disclosures.",
+    "Production build must be clean; final source and dist must remain unchanged."
+  ]
+}

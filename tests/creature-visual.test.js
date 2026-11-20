@@ -96,8 +96,11 @@ test('boss cleanup retains its sculpted geometry for a fresh encounter', () => {
   const boss = new BossManager(scene, audio);
   boss.spawnBoss('xenomorph_queen', new THREE.Vector3());
   const first = boss.activeBoss.mesh;
+  const geometries = new Set();
+  first.traverse(part => { if (part.isMesh && part.geometry) geometries.add(part.geometry); });
+  assert.ok(geometries.size > 0, 'the grounded boss root contains real sculpted geometry');
   let disposed = 0;
-  first.children.forEach(part => part.geometry.addEventListener('dispose', () => disposed++));
+  geometries.forEach(geometry => geometry.addEventListener('dispose', () => disposed++));
   boss.takeDamage(100000);
   assert.equal(scene.children.length, 0);
   assert.equal(disposed, 0);

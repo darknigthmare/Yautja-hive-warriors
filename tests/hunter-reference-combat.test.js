@@ -200,7 +200,7 @@ test('player elevation supplies its layer and an ascending jump stops at the sha
   const player = actor(), previousWindow = globalThis.window, layers = [];
   globalThis.window = { gameInstance: { env: {
     getElevationAt: (x, z, y) => { layers.push(y); return 0; },
-    resolveVerticalMovement: (position, previousY, height) => { assert.equal(height, 2.4); return position.y > previousY ? { blocked: true, point: new THREE.Vector3(position.x, 1, position.z) } : { blocked: false, point: position.clone() }; }
+    resolveVerticalMovement: (position, previousY, height) => { assert.equal(height, player.getCollisionHeight()); assert.ok(height >= player.cameraEyeHeight + .35); return position.y > previousY ? { blocked: true, point: new THREE.Vector3(position.x, 1, position.z) } : { blocked: false, point: position.clone() }; }
   } } };
   try {
     player.position.y = .5; player.move(new THREE.Vector3(), .01); assert.equal(layers[0], .5);

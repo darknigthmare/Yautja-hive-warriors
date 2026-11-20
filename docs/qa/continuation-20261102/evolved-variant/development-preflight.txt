@@ -1,0 +1,16 @@
+✔ the evolved LV-742 scenario signs upgrades without adding soldiers, cargo or starting HP (142.465705ms)
+✔ normal, basic and evolved checkpoints cannot be exchanged or upgraded by a live actor flag (184.034504ms)
+✔ the evolved scenario rejects another continuity and unknown variant before mutating its configuration (11.81837ms)
+✔ the selectable LV-742 source variant preserves ALL original finite IDs, factions and budgets (52.346844ms)
+✔ the LV-742 variant boards exactly six existing Facehuggers at mission initialization (102.45583ms)
+✔ normal AFF-27 cannot be interpreted as the optional Carrier/Ravager checkpoint (92.215552ms)
+✔ the CASTE preset cannot leak into Lethe, Sevastopol or an unknown option (14.233449ms)
+✔ fronts/operation setup exposes an opt-in checkbox rather than silently changing the baseline (3.835054ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 994.963383

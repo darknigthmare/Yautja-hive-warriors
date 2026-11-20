@@ -1,0 +1,78 @@
+{
+  "status": "frozen_readonly_runtime_contract",
+  "final_build_pins": {
+    "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "build_info_sha256": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a",
+    "source_fingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe"
+  },
+  "authority": "createMissionSupportContext supplies existing level/fidelity and physical target-to-sky trace checks; unknown context denies access",
+  "hooks": {
+    "orbital": "initializeMissionSupports assigns this.orbital.supportContext=context",
+    "player": "after Player and P2 construction, assigns player.missionSupportContext=this.missionSupportContext before restore and insertion",
+    "planetary": "uses this.missionSupportContext"
+  },
+  "footprints": {
+    "orbital_radius": 30,
+    "infiltration_impacts": 6,
+    "infiltration_radius": 4.8,
+    "planetary_radius": 60,
+    "planetary_visual_impacts": 8,
+    "planetary_visual_impact_radius": 2,
+    "samples_per_positive_radius": 9
+  },
+  "pre_cost_checks": {
+    "orbital": "before existing cooldown30",
+    "infiltration": "before existing cooldown28",
+    "planetary": "before existing honor spend4000"
+  },
+  "target_checks": "Every damaged covered alien, synthetic, bad-blood or boss must pass a ray from its own position; boss distance limits remain in force",
+  "delayed_work": "Each infiltration impact rechecks the live context and roof; cancelled work does not refund cooldown, and closed-roof burn patches are removed",
+  "main_snippets": {
+    "mission_context": "  initializeMissionSupports(saved) {\n    const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,\n      onDestroyed:event=>{if(event.kind==='apc')this.clearAPCSupport();this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');}});\n    this.missionSupportContext=context;\n    this.orbital.supportContext=context;\n    this.apc.beginMission(context);this.dropship.beginMission(context);\n  }\n\n",
+    "player_assignment": "for(const player of [this.player,this.player2].filter(Boolean))player.missionSupportContext=this.missionSupportContext;",
+    "planetary": "  callPlanetaryOrbitalBarrage() {\n    const cost = 4000;\n    if (!this.player || this.forge.getBalance() < cost) {\n      if (this.ui && this.ui.showAnnouncement) {\n        this.ui.showAnnouncement('⚠️ HONNEUR INSUFFISANT POUR LE BARRAGE PLANÉTAIRE (4000 REQUIS) !');\n      }\n      return;\n    }\n    const origin=this.player.position.clone();\n    const impacts=Array.from({length:8},(_,index)=>origin.clone().add(new THREE.Vector3(Math.cos(index*Math.PI/4)*25,0,Math.sin(index*Math.PI/4)*25)));\n    if(!canAccessLegacyAir(this.missionSupportContext,origin,60)||impacts.some(point=>!canAccessLegacyAir(this.missionSupportContext,point,2))){\n      this.ui.showAnnouncement('BARRAGE REFUSÉ : LE SCÉNARIO OU L’ACCÈS PHYSIQUE AU CIEL NE PERMET PAS CETTE FRAPPE.');return false;\n    }\n    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) return false;\n    this.refreshMothershipBridgeUI();\n    this.closeTacticalModal('mothership-bridge-modal');\n\n    if (this.audio && this.audio.playPlanetaryOrbitalBarrage) {\n      this.audio.playPlanetaryOrbitalBarrage();\n    }\n    this.triggerCameraShake(2.5, 2.0);\n\n    // Each actual target also needs its own physical sky access; the area\n    // footprint cannot authorize damage through a smaller roof between samples.\n    const attack={origin,radius:60,damage:1400,type:'plasma',killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'};\n    if (this.horde) {\n      const actors=new Set([...(this.horde.aliens??[]),...(this.horde.eggs??[]),...(this.horde.chestbursters??[]),\n        ...[...(this.battleBridge?.actors?.values()??[])].filter(entry=>entry.manager!==this.synthetics&&entry.manager!==this.bosses).map(entry=>entry.actor)]);\n      for(const actor of actors)if(actor.mesh?.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,actor))this.registerHits(this.horde.checkMeleeHits({...attack,targetOnly:actor}));\n    }\n    if (this.bosses?.activeBoss?.mesh.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,this.bosses.activeBoss)) {\n      this.bosses.takeDamage(1400,this.horde,{cause:'orbital-barrage',killerFaction:attack.killerFaction});\n    }\n    if (this.badBlood?.isActive&&this.badBlood.badBlood?.mesh.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,this.badBlood.badBlood)) {\n      this.badBlood.takeDamage(1400);\n    }\n    if (this.synthetics) {\n      for(const actor of this.synthetics.androids??[])if(actor.mesh?.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,actor))this.synthetics.checkHits({...attack,targetOnly:actor});\n    }\n    if (this.particles && this.particles.emitExplosion) {\n      for(const point of impacts)this.particles.emitExplosion(point,25);\n    }\n    if (this.ui && this.ui.showAnnouncement) {\n      this.ui.showAnnouncement('🚀 BARRAGE PLANÉTAIRE ORBITAL DÉPLOYÉ : 1400 DÉGÂTS DE SATURATION !');\n    }\n    return true;\n  }\n\n"
+  },
+  "source_files": [
+    {
+      "path": "js/engine/LegacyAirstrikePolicy.js",
+      "bytes": 968,
+      "sha256": "9f77a3d691be083b728605150aeb6456f833277c1883d719849acec7d3ee3790"
+    },
+    {
+      "path": "js/engine/MissionRuntimeContext.js",
+      "bytes": 1797,
+      "sha256": "329a3b1d62ff03a7f3874bc2c120903346f35b5e170d914d53a6b41207431ecc"
+    },
+    {
+      "path": "js/engine/OrbitalStrike.js",
+      "bytes": 3921,
+      "sha256": "4b6619d239162b62a0b2d00ab4ccbc651f6b76150722df735b96daf82c3c2241"
+    },
+    {
+      "path": "js/entities/Player.js",
+      "bytes": 223575,
+      "sha256": "b418163f1e29421adaa5a1c8b732dbc00fd500475d5cc5a3d1d41f119c7d5121"
+    },
+    {
+      "path": "js/main.js",
+      "bytes": 295199,
+      "sha256": "162dbb1147256f251baebbfe1dbd8e545747f51a5ec5330c526189ef98659204"
+    },
+    {
+      "path": "tests/legacy-airstrike-roof.test.js",
+      "bytes": 6401,
+      "sha256": "f9959946c13b12f90916c3089059c9ec2d059eb2c450184bbf7dc0a6a1d668a8"
+    },
+    {
+      "path": "tests/systems.test.js",
+      "bytes": 15317,
+      "sha256": "d3129e88fc6cfb4f8762f0d6af6e5cd1878c4f364c5bce567a280f3b2dedf801"
+    },
+    {
+      "path": "tests/runtime-final-wiring.test.js",
+      "bytes": 16577,
+      "sha256": "3dbd53a45f59c51bf94562b7079ea2e1ea6e9ab154a38898633c6ab63330ff24"
+    }
+  ]
+}

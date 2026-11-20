@@ -1,64 +1,18 @@
 /* Detailed support actors. Static pieces merge per surface; gameplay pivots stay separate. */
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { Assembly } from './SupportAssembly.js';
+import { buildClanHunterModel } from './ClanHunterModel.js';
+import { addMarineAnatomy } from './MarineAnatomy.js';
 import { createSurfaceMaterial } from './SurfaceLibrary.js';
 import { loftGeometry, sweptLimb, sculptedFaceGeometry, tireGeometry } from './SupportSculpt.js';
 import { buildInsertionPodModel } from './InsertionPodModel.js';
 import { buildAPCModel } from './APCModel.js';
 
-class Assembly {
-  constructor(name) { this.name = name; this.parts = new Map(); }
-  add(geometry, material, position = [0, 0, 0], scale = [1, 1, 1], rotation = [0, 0, 0]) {
-    const transform = new THREE.Matrix4().compose(new THREE.Vector3(...position), new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale));
-    const prepared = geometry.index ? geometry.toNonIndexed() : geometry.clone();
-    geometry.dispose();
-    prepared.applyMatrix4(transform);
-    if (!this.parts.has(material)) this.parts.set(material, []);
-    this.parts.get(material).push(prepared);
-    return this;
-  }
-  box(material, position, size, rounded = false, rotation = [0, 0, 0]) {
-    const geometry = rounded ? new RoundedBoxGeometry(1, 1, 1, 3, 0.14) : new THREE.BoxGeometry(1, 1, 1);
-    return this.add(geometry, material, position, size, rotation);
-  }
-  sphere(material, position, scale, segments = 28) {
-    const radius = Math.max(...scale);
-    const widthSegments = radius < 0.08 ? 12 : radius < 0.2 ? 20 : Math.max(24, segments);
-    const heightSegments = radius < 0.08 ? 8 : radius < 0.2 ? 12 : 20;
-    return this.add(new THREE.SphereGeometry(1, widthSegments, heightSegments), material, position, scale);
-  }
-  cylinder(material, position, radii, height, rotation = [0, 0, 0], segments = 24) {
-    return this.add(new THREE.CylinderGeometry(radii[0], radii[1], height, Math.max(16, segments)), material, position, [1, 1, 1], rotation);
-  }
-  bone(material, from, to, radius, endRadius = radius * 0.9, segments = 10) {
-    const a = new THREE.Vector3(...from), b = new THREE.Vector3(...to), direction = b.clone().sub(a);
-    const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
-    return this.add(new THREE.CylinderGeometry(endRadius, radius, direction.length(), segments), material, a.clone().add(b).multiplyScalar(0.5).toArray(), [1, 1, 1], new THREE.Euler().setFromQuaternion(quaternion).toArray().slice(0, 3));
-  }
-  tube(material, points, radius, segments = 20, radialSegments = 10) {
-    return this.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p))), segments, radius, radialSegments, false), material);
-  }
-  finish() {
-    const group = new THREE.Group(); group.name = this.name;
-    for (const [material, parts] of this.parts) {
-      const geometry = mergeGeometries(parts, false);
-      parts.forEach(part => part.dispose());
-      geometry.computeBoundingSphere();
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.castShadow = true; mesh.receiveShadow = true;
-      mesh.name = `${this.name}-${material.name || 'surface'}`;
-      group.add(mesh);
-    }
-    this.parts.clear();
-    return group;
-  }
-}
 
-function surfaces(color = 0x52604b) {
-  const armor = createSurfaceMaterial('armor', { color, roughness: 0.49, metalness: 0.65 });
+function surfaces(color = 0x52604b, { armorFinish = null, clothRepeat = [1, 1] } = {}) {
+  const armor = createSurfaceMaterial('armor', { color, ...(armorFinish ? { finish: armorFinish } : { roughness: 0.49, metalness: 0.65 }) });
   const dark = createSurfaceMaterial('metal', { color: 0x293139, roughness: 0.48, metalness: 0.75 });
-  const cloth = createSurfaceMaterial('fabric', { color: 0x353c37, roughness: 0.9, metalness: 0 });
+  const cloth = createSurfaceMaterial('fabric', { color: 0x353c37, roughness: 0.9, metalness: 0, repeat: clothRepeat });
   const skin = createSurfaceMaterial('humanSkin', { color: 0xc4a08a, roughness: 0.66, metalness: 0, normalScale: new THREE.Vector2(0.2, 0.2) });
   const rubber = createSurfaceMaterial('leather', { color: 0x181b1c, roughness: 0.82, metalness: 0.05 });
   const steel = createSurfaceMaterial('metal', { color: 0x929d9b, roughness: 0.29, metalness: 0.86 });
@@ -167,22 +121,124 @@ function addRifle(parts, mats, smartgun = false) {
   } else parts.cylinder(mats.armor, [x, y - 0.14, 1.03], [0.08, 0.08], 0.4, [Math.PI / 2, 0, 0], 32);
 }
 
-export function createMarineModel(smartgunner = true) {
-  const mats = surfaces(smartgunner ? 0x65715f : 0x766d54), parts = new Assembly('colonial-marine');
-  addHumanTorso(parts, mats); addHumanLegs(parts, mats); addArms(parts, mats); addFace(parts, mats);
-  // Fitted ballistic vest follows the chest profile; thin plates stay over the body.
-  parts.add(loftGeometry([[1.74, 0.305, 0.235], [1.97, 0.31, 0.25], [2.2, 0.375, 0.275], [2.43, 0.43, 0.285], [2.62, 0.445, 0.26], [2.72, 0.4, 0.23]], { radial: 36, rows: 26, superellipse: 2.5 }), mats.armor);
+// Functional silhouettes for the three actual human weapon types. These are
+// in-game interpretations, not scans or proportion-verified film props.
+function addFlamethrower(parts, mats) {
+  const x = 0.30, y = 2.10;
+  parts.box(mats.dark, [x, y, 0.70], [0.22, 0.21, 0.90], true);
+  parts.box(mats.armor, [x, y + 0.12, 0.88], [0.22, 0.09, 0.42], true);
+  parts.cylinder(mats.dark, [x, y + 0.01, 1.30], [0.095, 0.105], 0.57, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.steel, [x, y + 0.01, 1.63], [0.12, 0.12], 0.17, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.dark, [x, y + 0.01, 1.74], [0.065, 0.065], 0.025, [Math.PI / 2, 0, 0], 24);
+  parts.box(mats.rubber, [x, y - 0.17, 0.48], [0.10, 0.35, 0.15], true);
   for (const side of [-1, 1]) {
-    parts.tube(mats.rubber, [[side * 0.25, 2.76, -0.16], [side * 0.29, 2.7, 0.2], [side * 0.24, 2.23, 0.29], [side * 0.2, 1.98, 0.23]], 0.025, 20, 6);
-    parts.box(mats.cloth, [side * 0.21, 1.9, 0.22], [0.16, 0.22, 0.09], true);
+    parts.cylinder(mats.armor, [side * 0.21, 2.13, -0.45], [0.13, 0.13], 0.76, [0, 0, 0], 20);
+    parts.cylinder(mats.steel, [side * 0.21, 2.53, -0.45], [0.14, 0.14], 0.075, [0, 0, 0], 20);
   }
-  // Open helmet leaves a sculpted adult face and jaw visible.
-  parts.add(loftGeometry([[3.25, 0.161, 0.168, 0, -0.014], [3.3, 0.174, 0.18, 0, -0.014], [3.37, 0.145, 0.15, 0, -0.02], [3.43, 0.075, 0.075, 0, -0.025], [3.445, 0.014, 0.014, 0, -0.025]], { radial: 40, rows: 24 }), mats.armor);
-  parts.box(mats.armor, [0, 3.256, 0.148], [0.345, 0.022, 0.078], true, [-0.08, 0, 0]);
-  parts.cylinder(mats.dark, [0.187, 3.18, -0.01], [0.045, 0.045], 0.04, [0, 0, Math.PI / 2], 24);
-  parts.box(glow(0x9a594b), [0.13, 3.22, 0.19], [0.038, 0.018, 0.025], true);
-  addRifle(parts, mats, smartgunner);
-  const group = parts.finish(); group.userData.anatomy = { headHeight: 0.46, standingHeight: 3.44, headsTall: 7.48 };
+  parts.tube(mats.rubber, [[0.22, 1.85, -0.51], [0.58, 1.84, -0.22], [0.57, 1.96, 0.42], [x, 2.04, 0.85]], 0.036, 26, 10);
+  parts.box(mats.armor, [0, 2.16, -0.65], [0.58, 0.87, 0.24], true);
+}
+
+// Source-role silhouettes for AVP: Extinction squads. These are integrated
+// meshes, not claims of exact licensed prop geometry or functional abilities.
+// Canonical weapon families: the Extinction Medic uses a sidearm and the
+// CommTech a compact close-assault MP9. These are original low-poly studies,
+// not measured copies of the film/game meshes.
+function addMedicSidearm(parts, mats) {
+  const x = .35, y = 2.06, z = .7;
+  parts.box(mats.dark, [x, y, z], [.19, .20, .43], true);
+  parts.box(mats.steel, [x, y + .10, z + .055], [.18, .06, .41], true);
+  parts.box(mats.rubber, [x, y - .21, z - .11], [.12, .34, .14], true, [-.17, 0, 0]);
+  parts.cylinder(mats.steel, [x, y + .01, z + .27], [.029, .029], .12, [Math.PI / 2, 0, 0], 16);
+  parts.box(mats.dark, [x, y + .14, z + .12], [.04, .06, .03], true);
+}
+function addCommtechMP9(parts, mats) {
+  const x = .31, y = 2.07;
+  parts.box(mats.dark, [x, y, .72], [.20, .18, .55], true);
+  parts.box(mats.armor, [x, y + .10, .78], [.16, .07, .33], true);
+  parts.box(mats.rubber, [x, y - .21, .62], [.11, .31, .13], true, [.10, 0, 0]);
+  parts.box(mats.dark, [x, y - .15, .90], [.09, .29, .09], true, [-.12, 0, 0]);
+  parts.cylinder(mats.steel, [x, y, 1.1], [.035, .038], .33, [Math.PI / 2, 0, 0], 18);
+  parts.box(mats.dark, [x, y + .19, .72], [.15, .13, .08], true);
+  parts.box(mats.rubber, [x, y + .02, .25], [.17, .13, .23], true);
+}
+function addMedicalPack(parts, mats) {
+  parts.box(mats.armor, [0, 2.25, -0.42], [0.64, 0.72, 0.31], true);
+  for (const x of [-0.20, 0.20]) {
+    parts.box(mats.rubber, [x, 2.31, -0.60], [0.12, 0.46, 0.06], true);
+    parts.cylinder(mats.steel, [x, 2.02, -0.62], [0.055, 0.055], 0.14, [0, 0, 0], 12);
+  }
+  const cross = glow(0x9bd3ac); cross.emissiveIntensity = 0.6;
+  parts.box(cross, [0, 2.39, -0.589], [0.08, 0.32, 0.023]);
+  parts.box(cross, [0, 2.39, -0.602], [0.31, 0.08, 0.023]);
+  for (const side of [-1, 1]) {
+    parts.box(mats.armor, [side * 0.40, 1.74, 0.12], [0.16, 0.33, 0.25], true);
+    parts.box(mats.steel, [side * 0.40, 1.9, 0.255], [0.14, 0.04, 0.05]);
+  }
+}
+function addCommtechPack(parts, mats) {
+  parts.box(mats.dark, [0, 2.27, -0.43], [0.58, 0.75, 0.28], true);
+  parts.box(mats.armor, [0.28, 2.46, -0.56], [0.17, 0.24, 0.06], true);
+  parts.bone(mats.steel, [0.32, 2.56, -0.45], [0.35, 3.65, -0.42], 0.018, 0.01, 10);
+  const signal = glow(0x76cbb5); signal.emissiveIntensity = 0.55;
+  parts.box(signal, [0, 2.31, -0.595], [0.34, 0.09, 0.02]);
+  parts.box(mats.dark, [-0.43, 1.99, 0.46], [0.34, 0.20, 0.08], true);
+  parts.box(signal, [-0.43, 2.0, 0.512], [0.25, 0.12, 0.016]);
+}
+function addSniperEquipment(parts, mats) {
+  addRifle(parts, mats, false);
+  parts.cylinder(mats.dark, [0.30, 2.10, 1.94], [0.025, 0.03], 0.66, [Math.PI / 2, 0, 0], 32);
+  parts.cylinder(mats.steel, [0.30, 2.10, 2.29], [0.055, 0.055], 0.11, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.dark, [0.30, 2.29, 0.95], [0.068, 0.068], 0.53, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.steel, [0.30, 2.29, 1.225], [0.075, 0.075], 0.035, [Math.PI / 2, 0, 0], 24);
+  for (const side of [-1, 1]) {
+    parts.bone(mats.steel, [0.30, 2.05, 1.60], [0.30 + side * 0.22, 1.65, 1.62], 0.022, 0.014, 8);
+  }
+}
+function addSadarLauncher(parts, mats) {
+  // Shoulder-mounted launcher volume; firing model must be added separately.
+  parts.cylinder(mats.armor, [-0.54, 2.56, 0.68], [0.18, 0.21], 1.88, [Math.PI / 2, 0, 0], 32);
+  parts.cylinder(mats.dark, [-0.54, 2.56, 1.68], [0.14, 0.14], 0.11, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.steel, [-0.54, 2.56, -0.34], [0.23, 0.23], 0.12, [Math.PI / 2, 0, 0], 24);
+  parts.box(mats.rubber, [-0.53, 2.23, 0.65], [0.15, 0.45, 0.18], true);
+  parts.box(mats.dark, [-0.37, 2.84, 0.65], [0.23, 0.11, 0.45], true);
+}
+function addExosuitFrame(parts, mats) {
+  // Mechanical braces retain the same pilot identity; no separate soldier is created.
+  parts.box(mats.armor, [0, 2.48, -0.46], [0.94, 1.15, 0.41], true);
+  parts.box(mats.dark, [0, 1.58, -0.35], [0.82, 0.29, 0.51], true);
+  for (const side of [-1, 1]) {
+    const x = side * 0.55;
+    parts.box(mats.steel, [x, 2.49, 0.02], [0.26, 0.63, 0.39], true);
+    parts.bone(mats.dark, [x, 2.49, 0.05], [side * 0.77, 1.65, 0.18], 0.095, 0.073, 12);
+    parts.box(mats.armor, [side * 0.77, 1.56, 0.18], [0.33, 0.39, 0.34], true);
+    parts.bone(mats.steel, [side * 0.43, 1.55, -0.25], [side * 0.47, 0.55, -0.13], 0.11, 0.085, 12);
+    parts.box(mats.armor, [side * 0.48, 0.65, -0.16], [0.30, 0.76, 0.28], true);
+    parts.box(mats.dark, [side * 0.48, 0.17, 0.11], [0.37, 0.26, 0.65], true);
+  }
+  parts.box(mats.dark, [0.3, 2.14, 0.87], [0.25, 0.29, 0.84], true);
+  parts.cylinder(mats.steel, [0.3, 2.14, 1.47], [0.10, 0.12], 0.75, [Math.PI / 2, 0, 0], 24);
+}
+
+export function createMarineModel(smartgunner = true) {
+  const weaponKind = typeof smartgunner === 'string' ? smartgunner : smartgunner ? 'smartgunner' : 'flametrooper';
+  if (!['marine', 'smartgunner', 'flametrooper', 'medic', 'commtech', 'sniper', 'sadar', 'exosuit'].includes(weaponKind)) throw new RangeError('Unknown Marine weapon silhouette');
+  const mats = surfaces(weaponKind === 'smartgunner' ? 0x65715f : 0x766d54, { armorFinish: 'painted', clothRepeat: [3, 3] }), parts = new Assembly('colonial-marine');
+  // Painted ballistic plates and original role equipment share a fitted adult body.
+  const marineAnatomy = addMarineAnatomy(parts, mats, weaponKind);
+  if (weaponKind === 'flametrooper') addFlamethrower(parts, mats);
+  else if (weaponKind === 'medic') { addMedicSidearm(parts, mats); addMedicalPack(parts, mats); }
+  else if (weaponKind === 'commtech') { addCommtechMP9(parts, mats); addCommtechPack(parts, mats); }
+  else if (weaponKind === 'sniper') addSniperEquipment(parts, mats);
+  else if (weaponKind === 'sadar') addSadarLauncher(parts, mats);
+  else if (weaponKind === 'exosuit') addExosuitFrame(parts, mats);
+  else addRifle(parts, mats, weaponKind === 'smartgunner');
+  const group = parts.finish(); group.userData.anatomy = { headHeight: marineAnatomy.headHeight, standingHeight: marineAnatomy.standingHeight, headsTall: marineAnatomy.headsTall };
+  group.userData.marineAnatomy = marineAnatomy;
+  group.userData.weaponKind = weaponKind;
+  group.userData.visualSource = 'procedural-role-study';
+  group.userData.behaviorFidelity1to1Verified = false;
+  group.userData.visualFidelity1to1Verified = false;
   return group;
 }
 
@@ -212,39 +268,7 @@ export function createSyntheticModel() {
 }
 
 export function createHonorGuardModel(index = 0) {
-  const mats = surfaces(index % 2 ? 0x746b59 : 0x687575), parts = new Assembly('yautja-honor-guard');
-  mats.skin = createSurfaceMaterial('skin', { color: 0xa28d69, roughness: 0.6, normalScale: new THREE.Vector2(0.35, 0.35) });
-  const hide = mats.skin, bone = createSurfaceMaterial('bone', { color: 0xb8af91, roughness: 0.55 });
-  addHumanTorso(parts, { ...mats, cloth: hide }, true);
-  addHumanLegs(parts, { ...mats, cloth: hide });
-  for (const side of [-1, 1]) {
-    parts.add(sweptLimb([[side * 0.46, 2.72, 0, 0.19, 0.2], [side * 0.58, 2.43, 0, 0.19, 0.18], [side * 0.57, 2.12, 0.03, 0.12, 0.12], [side * 0.54, 1.89, 0.08, 0.15, 0.12], [side * 0.49, 1.64, 0.13, 0.085, 0.08]], 32, 30), hide);
-    parts.add(loftGeometry([[2.37, 0.09, 0.05], [2.46, 0.19, 0.08], [2.66, 0.21, 0.11], [2.8, 0.11, 0.07]], { radial: 32, rows: 18 }), mats.armor, [side * 0.44, 0, 0.23]);
-    parts.add(sweptLimb([[side * 0.54, 1.7, 0.1, 0.12, 0.12], [side * 0.56, 1.9, 0.07, 0.17, 0.15], [side * 0.57, 2.04, 0.03, 0.13, 0.11]], 24, 16), mats.armor);
-    addHand(parts, mats, side * 0.49, 1.61, 0.13, side);
-    parts.sphere(mats.armor, [side * 0.48, 2.71, -0.015], [0.24, 0.17, 0.25], 32);
-  }
-  parts.add(sculptedFaceGeometry({ width: 0.17, height: 0.23, depth: 0.18, mask: true }), mats.armor, [0, 3.18, 0.015]);
-  const optics = glow(0xad6f4e);
-  for (const side of [-1, 1]) {
-    parts.tube(mats.dark, [[side * 0.029, 3.225, 0.17], [side * 0.075, 3.24, 0.18], [side * 0.126, 3.21, 0.135]], 0.018, 12, 6);
-    parts.tube(optics, [[side * 0.04, 3.226, 0.185], [side * 0.075, 3.228, 0.19], [side * 0.112, 3.216, 0.159]], 0.006, 12, 5);
-    parts.tube(mats.dark, [[side * 0.05, 3.11, 0.195], [side * 0.092, 3.04, 0.16], [side * 0.12, 3.01, 0.11]], 0.012, 12, 6);
-  }
-  for (let vent = 0; vent < 4; vent++) parts.box(mats.dark, [(vent - 1.5) * 0.028, 3.055, 0.185], [0.012, 0.055, 0.01], true);
-  for (let dread = 0; dread < 14; dread++) {
-    const angle = dread / 13 * Math.PI + Math.PI;
-    const x = Math.cos(angle) * 0.17, z = Math.sin(angle) * 0.16 - 0.055;
-    parts.add(sweptLimb([[x, 3.32, z, 0.024], [x * 1.5, 3.17, z - 0.05, 0.026], [x * 1.75, 2.89, z - 0.05, 0.022], [x * 1.7, 2.65, z - 0.02, 0.006]], 8, 20), mats.rubber);
-    parts.cylinder(bone, [x * 1.74, 2.83, z - 0.043], [0.028, 0.028], 0.06, [0, 0, -x * 0.1], 12);
-  }
-  for (let blade = 0; blade < 2; blade++) parts.add(loftGeometry([[0.16, 0.022, 0.012], [0.35, 0.026, 0.012], [0.82, 0.018, 0.006], [1.0, 0.001, 0.001]], { axis: 'z', radial: 12, rows: 16, superellipse: 3 }), mats.steel, [0.46 + blade * 0.09, 1.61, 0]);
-  parts.add(loftGeometry([[-0.34, 0.08, 0.09], [-0.15, 0.13, 0.12], [0.21, 0.105, 0.1], [0.31, 0.07, 0.07]], { axis: 'z', radial: 28, rows: 22, superellipse: 3 }), mats.armor, [-0.47, 2.9, 0]);
-  parts.cylinder(optics, [-0.47, 2.9, 0.315], [0.039, 0.039], 0.018, [Math.PI / 2, 0, 0], 24);
-  for (const side of [-1, 1]) parts.tube(mats.rubber, [[side * 0.19, 2.85, -0.1], [side * 0.25, 2.64, 0.25], [-side * 0.12, 2.02, 0.24], [-side * 0.21, 1.62, 0.2]], 0.024, 24, 8);
-  const group = parts.finish(); group.scale.setScalar(1.2);
-  group.userData.anatomy = { headHeight: 0.552, standingHeight: 4.1, headsTall: 7.43 };
-  return group;
+  return buildClanHunterModel(index);
 }
 
 export function createHoundModel(skin, spike) {

@@ -1,0 +1,35 @@
+✔ reference kits preserve their own sources and reject undocumented equipment while adapted kits retain crossovers (1.286506ms)
+✔ Feral reference mode hides its crossover cannon and fires finite solid bolts without plasma energy or charged plasma (2737.033176ms)
+✔ all wheel weapons have one selected state, explicit projectile actions and repeatable loadouts without stacked statistics (1886.818934ms)
+✔ the seven hunters have distinct committed timings, costs, reach, mobility and finite light/heavy chains (3574.348843ms)
+✔ attack phases, cancellation and stamina recovery use simulation seconds consistently at 30, 60 and 120 fps (1220.019522ms)
+✔ mass finishers cannot bypass endurance or their style cooldown (448.637674ms)
+✔ selected projectile profiles match actual admitted damage, resources and cooldowns (1270.43116ms)
+✔ parry and shield require the attack context, spend reserves and cannot negate Queen-like hits or acid (475.291043ms)
+✔ legacy timers and afterimages stop with their owner and never dispose live actor geometry (482.13663ms)
+✔ legacy ranged damage obeys physical cover and faction relations before changing HP (524.25124ms)
+✔ net pinning uses nearby physical walls on expanded maps and releases when a truce begins (415.348928ms)
+✔ player elevation supplies its layer and an ascending jump stops at the shared physical ceiling (417.067488ms)
+✔ bow, sickle, whip and physical bolt launcher are distinct finite silhouettes with bounded geometry (4.236963ms)
+✔ operation resume keeps spent resources and remaining cooldowns instead of refilling the hunter (1.513418ms)
+✔ a defeated co-op hunter stays defeated when the surviving partner resumes (0.19101ms)
+✔ empty gadget and ammunition stocks stay empty after a checkpoint rebuild (0.183363ms)
+✔ same planar point preserves separate above-bridge and underground checkpoint layers (0.392371ms)
+✔ laser lock stays on its world target during positive and negative visual grounding offsets (4030.649992ms)
+✔ real Taabe pickup equips the wooden bow, grants six finite arrows once and never spends or refills plasma (2893.634353ms)
+✔ real Naru pickup creates a right-hand tethered axe and spends exactly four admitted physical swings (731.769019ms)
+✔ faithful kits and other missions reject human Prey tools without consuming the pickup or granting stock (410.10756ms)
+✔ save/reload preserves exhausted stocks, partial bow cooldown and buff time without a refill or extra life (826.83724ms)
+✔ Taabe agility changes actual travel by 30 percent once and expires at 25 seconds at30/60/120fps; pause freezes it (1252.67782ms)
+✔ orange flower attenuates heat temporarily, mud reduces actual acid damage by40 percent, and neither toggles technological cloak (419.745276ms)
+✔ solid arrow and held tool geometry use finite bounded authored detail and can be fully disposed (5.747563ms)
+✔ held tools follow native hand sockets with compensated GLB scale and survive removal of the imported body exactly once (370.893742ms)
+✔ actual player height prevents walking or pouncing through a low overhead deck (388.814834ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25426.916667

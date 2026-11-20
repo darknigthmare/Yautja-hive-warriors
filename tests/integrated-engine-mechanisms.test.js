@@ -1,3 +1,4 @@
+import { configureSupportFixture } from './helpers/finite-support-fixture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
@@ -35,7 +36,7 @@ test('steam damage integrates elapsed seconds at 30, 60 and 120 FPS and vent cou
 });
 
 test('Cheyenne launches six real micro-rockets on the simulation clock, applies impacts, and cancels them on clear', () => {
-  const scene = new THREE.Scene(), strikes = [], ship = new CheyenneDropship(scene, null, null);
+  const scene = new THREE.Scene(), strikes = [], ship = configureSupportFixture(new CheyenneDropship(scene, null, null));
   const horde = { checkMeleeHits: hit => strikes.push({ damage: hit.damage, radius: hit.radius }) };
   ship.triggerAirstrike(new THREE.Vector3(), horde);
   ship.update(0, horde); assert.equal(ship.microRockets.length, 0);
@@ -48,7 +49,7 @@ test('Cheyenne launches six real micro-rockets on the simulation clock, applies 
 });
 
 test('APC prioritizes an attainable boss through its real muzzle, preserves reload and removes tracer resources', () => {
-  const scene = new THREE.Scene(), apc = new APCVehicle(scene, null, null), damage = [];
+  const scene = new THREE.Scene(), apc = configureSupportFixture(new APCVehicle(scene, null, null)), damage = [];
   apc.spawn(new THREE.Vector3());
   const boss = { hp: 1000, mesh: new THREE.Group() }; boss.mesh.position.set(0, 0, 24);
   const ordinary = { hp: 100, mesh: new THREE.Group() }; ordinary.mesh.position.set(15, 0, 15);

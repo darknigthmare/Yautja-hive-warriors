@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "checkedAt": "2026-11-09T05:07:52.400936+00:00",
+  "runtimeSourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+  "indexSha256": "70067415028edf40bac7085f72b56a43037f55deae2de7b332524e8f7012795a",
+  "buildInfoSha256": "14d4e808f5252c27667699aa220ed60afd1c2422c38579d44cc4ad819b5d02ba",
+  "sourceFingerprint": "a214c05a3ad459495d24cd3028e058106b57632aad6a24811b3b8456053f92f5",
+  "sourceFiles": 193,
+  "report": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/report.json",
+  "reportSha256": "9341074dd35f9b2cd5c2a5d8a56dfa8142ec0364e090a6911a233f05c1b1715c",
+  "manifest": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/manifest.json",
+  "manifestSha256": "27f1c9d10b47b013f690bdf6c8a214e840d3abaf870d6253885860d40d0ddf60",
+  "manifestFilesVerified": 25,
+  "pngCount": 21,
+  "durationSeconds": 179.928,
+  "cases": [
+    {
+      "id": "source-menu-coop-insertion-command-checkpoint",
+      "status": "passed"
+    },
+    {
+      "id": "carrier-autonomous-main-update-flight",
+      "status": "passed"
+    },
+    {
+      "id": "ravager-checkpoint-phase-recovery-fire",
+      "status": "passed"
+    }
+  ],
+  "fullThreeCasesInOneCleanRun": true,
+  "priorAttemptsRelabeled": false,
+  "historicalAttempts": "docs/qa/continuation-20261109/runtime-attempts/archive-validation-94630d8.json",
+  "browserClosed": true,
+  "frozenDistUnchanged": true,
+  "helperSourcesUnchanged": true,
+  "errors": 0,
+  "failedRequests": 0,
+  "externalRequests": 0,
+  "humanTesters": 0,
+  "hardwarePerformanceVerified": false,
+  "fidelity1to1Verified": false,
+  "limitations": [
+    "Software WebGL, no hardware FPS or GPU certification.",
+    "Deterministic updates, player inspection relocations and real damage-owner requests are declared in the actual helper report.",
+    "Co-op insertion captures preserve genuine cameras; actor closeups use a declared inspection camera.",
+    "The foreground Val Verde roof remains a separate visual limitation.",
+    "No full mission victory, exhaustive AI-policy or source-film fidelity claim.",
+    "The restored-catalepsy closeup is partly occluded by the capsule/player and clips part of the fallen anatomy; complete visual silhouette readability is not certified."
+  ]
+}

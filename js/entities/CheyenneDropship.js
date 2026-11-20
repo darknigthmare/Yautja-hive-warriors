@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { createDropshipModel } from '../graphics/SupportModels.js';
 import { disposeObject } from '../engine/SceneResources.js';
+import { FiniteSupportPolicy, createSupportCombatant, supportDestroyedEvent } from '../engine/FiniteSupportPolicy.js';
 
 export class CheyenneDropship {
   constructor(scene, audioEngine, particles) {
@@ -16,10 +17,53 @@ export class CheyenneDropship {
     this.pendingStrikes = [];
     this.microRockets = [];
     this.elapsed = 0;
+    this.maxHp = 1800;
+    this.policy = new FiniteSupportPolicy('cheyenne', { maxHp: this.maxHp, ammunition: { sorties: 2, rockets: 12, napalm: 6 } });
+    this.flightCooldown = 0;
+    this.lastPosition = new THREE.Vector3();
+    this.combatant = createSupportCombatant(this, { kind: 'cheyenne', radius: 4.5, airborne: true });
+  }
+
+  get hp() { return this.policy.hp; }
+  beginMission(context) {
+    const answer = this.policy.beginMission(context);
+    if (answer.newMission) { this.clear(); this.flightCooldown = 0; }
+    else if (!answer.accepted) this.clear();
+    return answer;
+  }
+  isSupportActive() { return this.isFlying && !!this.shipMesh && this.policy.available; }
+  getCombatant() { return this.isSupportActive() ? this.combatant : null; }
+  getSupportState() { return { ...this.policy.getState(), flying: this.isFlying, cooldown: this.flightCooldown }; }
+  takeDamage(amount, source) {
+    if (!this.isSupportActive()) return 0;
+    const dealt = this.policy.damage(amount);
+    if (dealt && this.hp === 0) { this.clear(); this.policy.context?.onDestroyed?.(supportDestroyedEvent('cheyenne', source)); }
+    return dealt;
+  }
+  serialize() { return { version: 1, policy: this.policy.serialize(), cooldown: this.flightCooldown,
+    position: (this.shipMesh?.position ?? this.lastPosition).toArray(), wasFlying: this.isFlying }; }
+  restore(state) {
+    if (!state || state.version !== 1 || typeof state.wasFlying !== 'boolean' || !Number.isFinite(state.cooldown) || state.cooldown < 0 || state.cooldown > 4 ||
+      !Array.isArray(state.position) || state.position.length !== 3 || !state.position.every(Number.isFinite) || !this.policy.restore(state.policy)) return false;
+    // Reserved ordnance stays spent. Interrupted sorties are cancelled instead
+    // of replaying impacts that may already have occurred before the save.
+    const cooldown = Math.max(this.flightCooldown, state.cooldown); this.clear();
+    this.flightCooldown = cooldown; this.lastPosition.fromArray(state.position); return true;
   }
 
   triggerAirstrike(playerPos, horde) {
-    if (this.isFlying) return;
+    if (!playerPos?.isVector3 || ![playerPos.x, playerPos.y, playerPos.z].every(Number.isFinite)) return this.policy.refuse('invalid');
+    if (this.isFlying || this.flightCooldown > 0) return this.policy.refuse('busy');
+    const napalmCount = Math.min(4, this.policy.remaining.napalm);
+    const napalmTargets = Array.from({ length: napalmCount }, (_, b) => new THREE.Vector3(playerPos.x + (b - 1.5) * 8, .05, playerPos.z + (b - 1.5) * 10));
+    const rocketTargets = Array.from({ length: 6 }, (_, rocket) => playerPos.clone().add(new THREE.Vector3((rocket % 3 - 1) * 3, 0, (Math.floor(rocket / 3) - .5) * 4)));
+    // Every impact footprint needs an explicit open sky check. Missing/throwing
+    // callbacks fail closed; a bare level name does not establish access.
+    for (const target of [playerPos, ...napalmTargets, ...rocketTargets]) {
+      const access = this.policy.airAccess(target); if (!access.accepted) return access;
+    }
+    const accepted = this.policy.spend({ sorties: 1, rockets: 6, napalm: napalmCount });
+    if (!accepted.accepted) return accepted;
 
     if (this.shipMesh) {
       disposeObject(this.shipMesh);
@@ -31,23 +75,31 @@ export class CheyenneDropship {
     shipGroup.position.set(playerPos.x - 20, 22, playerPos.z - 90);
     this.scene.add(shipGroup);
     this.shipMesh = shipGroup;
+    this.lastPosition.copy(shipGroup.position);
 
     this.isFlying = true;
     this.flightProgress = 0;
+    this.flightCooldown = 4;
 
     if (this.audioEngine && this.audioEngine.playDropshipFlyby) {
       this.audioEngine.playDropshipFlyby();
     }
 
     // Snapshot the target; queued strikes advance with the game, not wall-clock timers.
-    this.pendingStrikes.push({ time: 1.2, kind: 'rocket', pos: playerPos.clone(), horde });
-    for (let b = 0; b < 4; b++) {
+    this.pendingStrikes.push({ time: 1.2, kind: 'rocket', pos: playerPos.clone(), targets: rocketTargets, horde });
+    for (let b = 0; b < napalmTargets.length; b++) {
       this.pendingStrikes.push({ time: 0.7 + b * 0.45, kind: 'napalm',
-        pos: new THREE.Vector3(playerPos.x + (b - 1.5) * 8, 0.05, playerPos.z + (b - 1.5) * 10), horde });
+        pos: napalmTargets[b], horde });
     }
+    return accepted;
   }
 
   spawnNapalmInferno(pos, horde) {
+    if (!this.isSupportActive() || !pos?.isVector3 || ![pos.x, pos.y, pos.z].every(Number.isFinite) || !this.policy.airAccess(pos).accepted || !this.policy.spend({ napalm: 1 }).accepted) return false;
+    return this._spawnNapalmInferno(pos, horde);
+  }
+
+  _spawnNapalmInferno(pos, horde) {
     if (this.audioEngine && this.audioEngine.playNapalmBarrage) {
       this.audioEngine.playNapalmBarrage();
     }
@@ -95,13 +147,16 @@ export class CheyenneDropship {
         origin: pos,
         radius: 4.5,
         damage: 180,
-        type: 'heavy'
+        type: 'heavy', killerFaction: this.policy.context?.factionId ?? 'player_clan'
       });
     }
+    return true;
   }
 
   update(delta, horde = null) {
     if (!Number.isFinite(delta) || delta <= 0) return;
+    this.flightCooldown = Math.max(0, this.flightCooldown - delta);
+    if (!this.policy.permission().accepted && (this.isFlying || this.pendingStrikes.length || this.microRockets.length || this.napalmPools.length)) this.clear();
     this.elapsed += delta;
     for (let i = this.pendingStrikes.length - 1; i >= 0; i--) {
       const strike = this.pendingStrikes[i];
@@ -109,10 +164,10 @@ export class CheyenneDropship {
       if (strike.time > 0) continue;
       this.pendingStrikes.splice(i, 1);
       const targets = horde || strike.horde;
-      if (strike.kind === 'napalm') this.spawnNapalmInferno(strike.pos, targets);
-      else for (let rocket = 0; rocket < 6; rocket++) {
-        const target = strike.pos.clone().add(new THREE.Vector3((rocket % 3 - 1) * 3, 0, (Math.floor(rocket / 3) - .5) * 4));
-        this.fireMicroRocket(rocket % 2 ? 4 : -4, target, targets);
+      if (!this.isSupportActive()) continue;
+      if (strike.kind === 'napalm') { if (this.policy.airAccess(strike.pos).accepted) this._spawnNapalmInferno(strike.pos, targets); }
+      else for (const [rocket, target] of strike.targets.entries()) {
+        if (this.policy.airAccess(target).accepted) this._launchMicroRocket(rocket % 2 ? 4 : -4, target, targets);
       }
     }
     for (let i = this.microRockets.length - 1; i >= 0; i--) {
@@ -120,13 +175,14 @@ export class CheyenneDropship {
       rocket.life -= delta; const step = Math.min(distance, rocket.speed * delta);
       rocket.mesh.position.addScaledVector(rocket.dir, step);
       if (distance <= step + .05) {
-        (horde ?? rocket.horde)?.checkMeleeHits({ origin: rocket.target, radius: 3.8, damage: 210, type: 'heavy' });
+        if (this.policy.airAccess(rocket.target).accepted) (horde ?? rocket.horde)?.checkMeleeHits({ origin: rocket.target, radius: 3.8, damage: 210, type: 'heavy', killerFaction: this.policy.context?.factionId ?? 'player_clan' });
         this.particles?.emitSparks?.(rocket.target, 12); disposeObject(rocket.mesh); this.microRockets.splice(i, 1);
       } else if (rocket.life <= 0) { disposeObject(rocket.mesh); this.microRockets.splice(i, 1); }
     }
     // 1. Dropship Flight Trajectory
     if (this.isFlying && this.shipMesh) {
       this.shipMesh.position.z += 65 * delta;
+      this.lastPosition.copy(this.shipMesh.position);
       this.flightProgress += delta;
 
       if (this.flightProgress >= 4.0) {
@@ -155,7 +211,7 @@ export class CheyenneDropship {
           origin: p.pos,
           radius: 3.8,
           damage: p.damage * burnStep,
-          type: 'light'
+          type: 'light', killerFaction: this.policy.context?.factionId ?? 'player_clan'
         });
       }
 
@@ -174,6 +230,7 @@ export class CheyenneDropship {
     this.isFlying = false;
     this.flightProgress = 0;
     if (this.shipMesh) {
+      this.lastPosition.copy(this.shipMesh.position);
       disposeObject(this.shipMesh);
       this.shipMesh = null;
       this.isFlying = false;
@@ -186,8 +243,12 @@ export class CheyenneDropship {
   }
 
   fireMicroRocket(podXOffset, targetPos, horde) {
-    if (!this.shipMesh || !targetPos?.isVector3) return false;
-    if (!this.shipMesh) return;
+    if (!this.isSupportActive() || !Number.isFinite(podXOffset) || !targetPos?.isVector3 || ![targetPos.x, targetPos.y, targetPos.z].every(Number.isFinite) || !this.policy.airAccess(targetPos).accepted || !this.policy.spend({ rockets: 1 }).accepted) return false;
+    return this._launchMicroRocket(podXOffset, targetPos, horde);
+  }
+
+  _launchMicroRocket(podXOffset, targetPos, horde) {
+    if (!this.isSupportActive() || !targetPos?.isVector3) return false;
 
     const startPos = this.shipMesh.position.clone().add(new THREE.Vector3(podXOffset, 0.8, 1.0));
     const rocketGroup = new THREE.Group();
@@ -231,5 +292,6 @@ export class CheyenneDropship {
       speed: 52.0,
       life: 2.5
     });
+    return true;
   }
 }

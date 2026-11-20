@@ -1,3 +1,4 @@
+import { configureSupportFixture } from './helpers/finite-support-fixture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
@@ -28,8 +29,12 @@ function stats(group) {
     const position = mesh.geometry.attributes.position;
     assert.ok(position && mesh.geometry.attributes.normal && mesh.geometry.attributes.uv);
     assert.equal(position.array.every(Number.isFinite), true, 'all model coordinates must stay finite');
-    triangles += (mesh.geometry.index?.count ?? position.count) / 3;
-    materials.add(mesh.material);
+    // One InstancedMesh is one draw, but *count* physical instances are
+    // submitted. The old helper undercounted M577's four movable wheels.
+    const instanceCount = mesh.isInstancedMesh ? mesh.count : 1;
+    triangles += (mesh.geometry.index?.count ?? position.count) / 3 * instanceCount;
+    for (const material of (Array.isArray(mesh.material) ? mesh.material : [mesh.material]))
+      if (material) materials.add(material);
   });
   return { triangles, meshes, materials };
 }
@@ -42,7 +47,7 @@ for (const [name, build, min, max, maxMeshes] of [
   ['hound', () => createHoundModel(new THREE.MeshStandardMaterial(), new THREE.MeshStandardMaterial()), 22000, 38000, 5],
   ['APC', () => createAPCModel().group, 26000, 44000, 14],
   ['dropship', createDropshipModel, 20000, 38000, 10],
-  ['pod', () => createDropPodModel().group, 28000, 44000, 11],
+  ['pod', () => createDropPodModel().group, 28000, 65000, 14],
   ['skimmer', createSkimmerModel, 22000, 38000, 10]
 ]) {
   test(`${name}: detailed finite model stays inside its rendering budget`, () => {
@@ -81,7 +86,7 @@ test('synthetic bisection retains its named pivots and material ownership', () =
 });
 
 test('vehicle turret and capsule hatch remain independently movable and cleanup owns every buffer', () => {
-  const scene = new THREE.Scene(), apc = new APCVehicle(scene, audio, null), pod = new DropPodEntrance(scene, audio, null);
+  const scene = new THREE.Scene(), apc = configureSupportFixture(new APCVehicle(scene, audio, null)), pod = new DropPodEntrance(scene, audio, null);
   apc.spawn(origin());
   assert.ok(apc.turretMesh.parent === apc.mesh);
   apc.turretMesh.rotation.y = 0.8;
@@ -122,7 +127,7 @@ test('detailed support squads and persistent equipment still follow gameplay lif
 });
 
 test('dropship keeps strike cancellation while replacing the box hull', () => {
-  const scene = new THREE.Scene(), ship = new CheyenneDropship(scene, audio, null);
+  const scene = new THREE.Scene(), ship = configureSupportFixture(new CheyenneDropship(scene, audio, null));
   ship.triggerAirstrike(origin(), { checkMeleeHits() {} });
   assert.ok(stats(ship.shipMesh).triangles > 3000);
   assert.equal(ship.pendingStrikes.length, 5);

@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_scoped_fidelity_validation",
+  "checkedAt": "2026-11-09T06:08:31.226282+00:00",
+  "branch": "codex/fidelity-20261109",
+  "baseCommit": "a8f9c759a30bc97c5400ce48709f6ad10856003d",
+  "runtimeSourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+  "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+  "build": {
+    "status": "passed",
+    "contentVersion": "v70-fidelity-20261109",
+    "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+    "sourceFiles": 197,
+    "sourceTreeDirty": false,
+    "indexSha256": "a8526c19acfa8c5199fdb780e1da44eae352491cd45f4c7ea6b4def7104abf9d",
+    "buildInfoSha256": "60bba725f2efd7a63626c2319050b6b903e5f72c6008c7d9d1396b476887dcfe",
+    "files": 30,
+    "bytes": 268139993,
+    "unchangedGlbs": 12,
+    "report": "docs/qa/fidelity-20261109/integration/frozen-build.json"
+  },
+  "cpu": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+    "testFiles": 69,
+    "tests": 482,
+    "pass": 482,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "durationMs": 253256.777316,
+    "log": "docs/qa/fidelity-20261109/integration/cpu-regression.txt",
+    "sha256": "156e34106e4fd6bc9547f272cfbc890c05f77db1b53191003ff604f193d4453a",
+    "command": "docs/qa/fidelity-20261109/integration/cpu-command.json",
+    "scope": "Selected complete regression of 69 files for visual geometry/materials, resource ownership, measured world contacts, player movement, finite combat, insertion, rescue and checkpoints; not the entire repository/browser suite."
+  },
+  "visual": {
+    "status": "passed_scoped_ai_visual_review",
+    "baselineSourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+    "baselineFingerprint": "a214c05a3ad459495d24cd3028e058106b57632aad6a24811b3b8456053f92f5",
+    "finalSourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "commonPairs": 15,
+    "additionalNewWoodSample": 1,
+    "afterScreenshots": 16,
+    "report": "docs/qa/fidelity-20261109/visual-comparison.json",
+    "comparison": "docs/qa/fidelity-20261109/comparison.html",
+    "comparisonSha256": "9fae5964eddb96261a05cce62144eb97741c18bd7935104faf65310b431a1c4c",
+    "captureReport": "docs/qa/fidelity-20261109/final-r1/report.json",
+    "hashVerifiedNativePngs": true,
+    "centerlineOcclusion": "Both genuine cameras are clear of decorative world blockers at head/torso/feet during exiting and after3s; opening doors remain expected occluders."
+  },
+  "browserRegression": {
+    "status": "passed",
+    "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+    "fullThreeCasesInOneCleanRun": true,
+    "cases": [
+      {
+        "id": "source-menu-coop-insertion-command-checkpoint",
+        "status": "passed"
+      },
+      {
+        "id": "carrier-autonomous-main-update-flight",
+        "status": "passed"
+      },
+      {
+        "id": "ravager-checkpoint-phase-recovery-fire",
+        "status": "passed"
+      }
+    ],
+    "durationSeconds": 201.041,
+    "screenshots": 21,
+    "errors": 0,
+    "failedRequests": 0,
+    "externalRequests": 0,
+    "distUnchanged": true,
+    "sourceInputsUnchanged": true,
+    "helperSourcesUnchanged": true,
+    "browserClosed": true,
+    "report": "docs/qa/fidelity-20261109/regression-v70-r1/report.json",
+    "sha256": "14377062e813cf04f84f8bab85e434525f20442a966919048f65edcd5b56e80f"
+  },
+  "modules": {
+    "shaAttestation": "docs/qa/fidelity-20261109/integration/module-attestation.json",
+    "guard": {
+      "trianglesBefore": 42680,
+      "trianglesAfter": 46616,
+      "meshesBefore": 7,
+      "meshesAfter": 9,
+      "ownedBufferBytesBefore": 4097280,
+      "ownedBufferBytesAfter": 2403676,
+      "constantCpuTemplateBytes": 2401628,
+      "report": "docs/qa/fidelity-20261109/yautja/README.md"
+    },
+    "humans": {
+      "existingRoles": 8,
+      "trianglesAddedPerRole": 116,
+      "meshBatchesRemovedPerRole": 4,
+      "maximumTriangles": 43676,
+      "report": "docs/qa/fidelity-20261109/humans/README.md"
+    },
+    "capsule": {
+      "trianglesBefore": 43504,
+      "trianglesAfter": 63808,
+      "meshesBefore": 11,
+      "meshesAfter": 14,
+      "closedAndOpenBoundsUnchanged": true,
+      "budgetTriangles": 65000,
+      "report": "docs/qa/fidelity-20261109/capsule/README.md"
+    },
+    "world": {
+      "report": "docs/qa/fidelity-20261109/world/README.md",
+      "finalOwnerTests": 6,
+      "realPlayerMovementCases": 60,
+      "note": "91 earlier route/geometry cases remain explicitly intermediate evidence, not reassigned to this frozen source."
+    },
+    "materials": {
+      "allSourcesCpuBytes": 230424576,
+      "existingResolutionsIncreased": false,
+      "newWoodSourceBytes": 3145728,
+      "threeSourcesProbeBefore": 117,
+      "threeSourcesProbeAfter": 42,
+      "repeatProbeTypesBefore": 13,
+      "repeatProbeTypesAfter": 14,
+      "report": "docs/qa/fidelity-20261109/materials/README.md"
+    }
+  },
+  "performance": {
+    "hardwareFpsMeasured": false,
+    "gameplayRendererBefore": {
+      "memory": {
+        "geometries": 206,
+        "textures": 53
+      },
+      "render": {
+        "frame": 55,
+        "calls": 732,
+        "triangles": 4475414,
+        "points": 150,
+        "lines": 12
+      },
+      "worldMeshes": 482,
+      "worldTriangles": 1673965
+    },
+    "gameplayRendererAfter": {
+      "memory": {
+        "geometries": 249,
+        "textures": 100
+      },
+      "render": {
+        "frame": 55,
+        "calls": 898,
+        "triangles": 5150486,
+        "points": 150,
+        "lines": 12
+      },
+      "worldMeshes": 527,
+      "worldTriangles": 1940157
+    },
+    "note": "Renderer snapshots include cooperative views and shadow passes. Added geometry/draws have a cost; Source sharing and CPU model caching are not a claim of higher whole-game FPS."
+  },
+  "sourceAlignment": {
+    "contract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+    "canonReference": "docs/development/CANON-REFERENCE-20261108.md",
+    "sourceChecks": "docs/qa/fidelity-20261109/integration/source-checks.json",
+    "existingUnitKitsAndFiniteIdentityBudgetPreserved": true,
+    "detailedActorCap": 32,
+    "commercialPhotosStoredInGameAssets": false
+  },
+  "audit": {
+    "status": "passed",
+    "criteria": 126,
+    "counts": {
+      "Bloqué": 0,
+      "En cours": 12,
+      "Terminé": 78,
+      "À faire": 0,
+      "À valider": 36
+    },
+    "newlyClosed": [],
+    "allNonFollowupContentPreserved": true,
+    "auditAndGlbsUnchangedFromBase": true
+  },
+  "preservedAttempts": {
+    "baselineR1": "Failed only on fixture favicon404. The original failure report, failure screenshot and helper snapshots are committed under history/baseline-r1; its manifest describes the full raw archive retained at /workspace/qa/fidelity-20261109/baseline-r1. Baseline-r2 is the complete clean rerun, with errors unfiltered.",
+    "explorations": "history/exploratory-r1/r2 retain actual prefinal pictures and labels; final validation only uses final-r1.",
+    "intermediateWorldAndGuard": "Owner reports preserve failed/intermediate tests separately; final 482-case regression rechecks the corrected source."
+  },
+  "newMeshyCreditsSpent": 0,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "deployment": {
+    "status": "no_manual_deployment_submitted",
+    "vercelCliPresent": false,
+    "localVercelProjectLinkPresent": false,
+    "callableVercelConnectorFound": false,
+    "note": "Git push or an automatic Git preview does not establish a verified production deployment."
+  },
+  "limits": [
+    "Procedural original clan/capsule designs and shared eight-role human anatomy do not establish exact film-prop or named-character likeness.",
+    "AI screenshot review and CPU/browser tests are scoped; there were no human tester sessions or hardware performance measurements.",
+    "All maps, all castes, every effect combination and natural mission victory are not covered by the three browser cases."
+  ]
+}

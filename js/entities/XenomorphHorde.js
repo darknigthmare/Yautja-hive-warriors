@@ -1,11 +1,18 @@
 /* Xenomorph Swarm Engine 3.0 - Crusher, Praetorian, Ovimorph Eggs & Gore */
 
+import { createFaunaModel } from '../graphics/FaunaModels.js';
 import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, listBattleTargets, battleHostile, moveBattleOrder, requestNPCStrike, applyBattleFormationHit, maintainBattleFormation } from '../engine/BattleActorSupport.js';
-import { requestHostileAttack } from '../engine/HostilePressure.js';
+import { requestHostileAttack, releaseConcealedPreparation } from '../engine/HostilePressure.js';
+import { canDetectConcealedTarget } from '../engine/HunterStealth.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { createCreatureModel, createEggModel, animateCreatureModel } from '../graphics/CreatureModels.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { EXTINCTION_CASTE_PROFILES, validExtinctionCasteUnit } from '../battlefield/ExtinctionCastePolicy.js';
+import { advanceCarrierFacehuggerFlight } from '../battlefield/ExtinctionCarrierFlight.js';
+import { isUpgradedRavager } from '../battlefield/ExtinctionRavagerRegenesis.js';
+import { updateRavagerCatalepsyPose } from '../graphics/RavagerCatalepsyPose.js';
 
 export class XenomorphHorde {
   constructor(scene, audioEngine, goreEngine = null) {
@@ -22,6 +29,7 @@ export class XenomorphHorde {
     this.deadCount = 0;
     this.combatDirector = null;
     this.spawnPositionProvider = null;
+    this.supportTargetsProvider = null;
     this.pendingSpawns = [];
     this.spawnTimer = 0;
     this.spawnSequence = 0;
@@ -121,6 +129,9 @@ export class XenomorphHorde {
 
   defeatAlien(enemy, details = {}) {
     if (!enemy) return null;
+    this.syncBattleRavager(enemy, details);
+    if (enemy.ravagerCatalepsy && enemy.hp > 0) return null;
+    this._releaseRoyalHold(enemy);
     if (enemy.type === 'boiler' && !enemy._boilerDetonated && !enemy._boilerQueued) {
       if(!details.deferEffects)return this.detonateBoiler(enemy, null, details);
       enemy._boilerQueued=true;this.pendingBoilerDetonations ??= [];this.pendingBoilerDetonations.push(enemy);
@@ -135,13 +146,111 @@ export class XenomorphHorde {
     return event;
   }
 
+  _releaseRoyalHold(actor) {
+    if (!actor?.latchedTo) return;
+    actor.latchedTo.isRoyalFacehuggerLatched = false;
+    actor.latchedTo.royalFacehuggerHoldTimer = 0;
+    actor.latchedTo = null; actor.isLatched = false; actor.latchTimer = 0;
+  }
+
   applyDamage(enemy, amount, details = {}) {
+    this.syncBattleRavager(enemy, details);
     if (!enemy || !(enemy.hp > 0) || !Number.isFinite(amount) || amount <= 0) return null;
     if (this.battleSimulation && details.killerFaction && enemy.factionId && !this.battleSimulation.areHostile(details.killerFaction, enemy.factionId)) return null;
-    const dealt = Math.min(enemy.hp, amount); enemy.hp = Math.max(0, enemy.hp - amount);
+    const special = this._damageBattleRavager(enemy, amount, details);
+    const dealt = special?.damage ?? Math.min(enemy.hp, amount);
+    if (!special) enemy.hp = Math.max(0, enemy.hp - amount);
     enemy.lastDamageFaction = details.killerFaction ?? null;
     const event = enemy.hp === 0 ? this.defeatAlien(enemy, details) : null;
     return { damage: dealt, killed: enemy.hp === 0, event };
+  }
+
+  _damageBattleRavager(actor, amount, details = {}) {
+    const sim = this.battleSimulation, unit = sim?.units?.get(actor?.battleUnitId);
+    if (!unit || unit.state !== 'active' || !isUpgradedRavager(sim, unit)) return null;
+    if (sim.disposed || sim.paused || sim.result)
+      return { damage: 0, killed: false, cataleptic: !!unit.ravagerCatalepsy };
+    const cause = details.damageType ?? details.cause ?? 'raw';
+    const damageType = /ballistic|bullet|rifle|rail/i.test(cause) ? 'kinetic' : cause;
+    const before = unit.hp;
+    const result = sim.damageDetailedRavager(unit.id, amount, { ...details, damageType });
+    if (!result) return null;
+    actor.hp = unit.hp; actor._ravagerSyncedHp = unit.hp;
+    actor.lastDamageType = damageType;
+    this._projectBattleRavager(actor, unit);
+    return { ...result, damage: Math.min(before, result.damage) };
+  }
+
+  _projectBattleRavager(actor, unit) {
+    if (!actor.ravagerCatalepsy && unit.ravagerCatalepsy) {
+      actor.mesh.rotation.x = 0; actor.mesh.rotation.z = 0;
+      if (actor.ravagerVisual) { actor.ravagerVisual.rotation.x = 0; actor.ravagerVisual.rotation.z = 0; }
+    }
+    actor.isDowned = unit.incapacitated === true;
+    actor.ravagerCatalepsy = unit.ravagerCatalepsy ?? null;
+    if (actor.ravagerCatalepsy) {
+      this.combatDirector?.release(actor); this._clearAttackCue(actor);
+      actor._npcPreparation = 0; actor._npcTarget = null;
+      actor.isAirborne = false; actor.isLeaping = false;
+    }
+    updateRavagerCatalepsyPose(actor, actor.ravagerCatalepsy, this.battleSimulation.time);
+  }
+
+  // Legacy environmental callers may still write HP directly. Settle their
+  // observed loss BEFORE recording death, using the same finite phase owner.
+  syncBattleRavager(actor, details = {}) {
+    const sim = this.battleSimulation, unit = sim?.units?.get(actor?.battleUnitId);
+    if (!unit || unit.state !== 'active' || !isUpgradedRavager(sim, unit)) return false;
+    const previous = actor._ravagerSyncedHp ?? unit.hp;
+    if (Number.isFinite(actor.hp) && actor.hp < previous)
+      this._damageBattleRavager(actor, previous - actor.hp, details);
+    actor.hp = unit.hp; actor._ravagerSyncedHp = unit.hp;
+    this._projectBattleRavager(actor, unit);
+    return true;
+  }
+
+  _advanceControlLocks(actor, delta) {
+    let locked = false;
+    if (actor.isNetEntangled) {
+      if (actor.isNetgunImmune) { actor.isNetEntangled = false; actor.netTimer = 0; }
+      else {
+        locked = true;
+        const remaining = Math.max(0, actor.netTimer ?? 0), held = Math.min(delta, remaining);
+        actor.netTimer = Math.max(0, remaining - delta);
+        const amount = 25 * held;
+        const special = amount > 0 && this._damageBattleRavager(actor, amount, {
+          cause: 'razor-net', killerFaction: actor.lastDamageFaction
+        });
+        if (!special) actor.hp -= amount;
+        if (!actor.ravagerCatalepsy) actor.mesh.rotation.y += Math.sin(this.time * 50) * held * 3;
+        if (actor.netTimer === 0) actor.isNetEntangled = false;
+      }
+    }
+    if (actor.isStunned) {
+      locked = true;
+      actor.stunTimer = Math.max(0, (actor.stunTimer ?? 0) - delta);
+      const visual = actor.ravagerVisual ?? actor.mesh;
+      if (!actor.ravagerCatalepsy) visual.rotation.z = actor.stunTimer > 0 ? Math.sin(this.time * 20) * .1 : 0;
+      if (actor.stunTimer === 0) actor.isStunned = false;
+    }
+    if (locked) { this.combatDirector?.release(actor); this._clearAttackCue(actor); }
+    return locked;
+  }
+
+  _advanceAirborneActor(actor, delta) {
+    if (!actor.isAirborne) return false;
+    this.combatDirector?.release(actor); this._clearAttackCue(actor);
+    actor.airborneVelY -= 36 * delta;
+    actor.mesh.position.y += actor.airborneVelY * delta;
+    if (actor.airborneVelHoriz) actor.mesh.position.addScaledVector(actor.airborneVelHoriz, delta);
+    actor.mesh.rotation.x += 8 * delta; actor.mesh.rotation.z += 5 * delta;
+    const floor = this.environment?.getElevationAt?.(actor.mesh.position.x,
+      actor.mesh.position.z, actor.mesh.position.y) ?? 0;
+    if (actor.mesh.position.y <= floor) {
+      actor.mesh.position.y = floor; actor.isAirborne = false; actor.airborneVelY = 0;
+      actor.mesh.rotation.x = 0; actor.mesh.rotation.z = 0;
+    }
+    return true;
   }
 
 
@@ -172,6 +281,35 @@ export class XenomorphHorde {
     return livingPlayers.reduce((nearest, candidate) => !nearest || candidate.position.distanceToSquared(position) < nearest.position.distanceToSquared(position) ? candidate : nearest, null);
   }
 
+  _supportTargets() {
+    return (this.supportTargetsProvider?.() ?? []).filter(target => target?.isSupport && target.isBattleNPC && target.hp > 0 &&
+      typeof target.takeDamage === 'function' && target.position?.isVector3 && target.position.toArray().every(Number.isFinite));
+  }
+
+  _canParasitize(target, royal = false) {
+    const actor = target?.actor ?? target;
+    return !!target && !target.isSupport && target.canBeFacehugged !== false && actor.canBeFacehugged !== false &&
+      !['synthetic', 'weyland_combat', 'working_joe'].includes(actor.type) && (royal || typeof target.triggerFacehuggerLatch === 'function');
+  }
+
+  _pursuitTarget(actor, livingPlayers, supports = []) {
+    releaseConcealedPreparation(this, actor);
+    const royal = this.royalFacehuggers.includes(actor), parasite = actor.type === 'facehugger' || royal;
+    const eligible = target => (!parasite || this._canParasitize(target, royal)) &&
+      (!target.isSupport || !target.isAirborne || this.mantaSwarmers.includes(actor));
+    const fallbacks = [...livingPlayers, ...supports].filter(target => eligible(target) && battleHostile(this, actor, target) &&
+      canDetectConcealedTarget(actor, target, this.environment));
+    if (!actor.battleUnitId || !this.battleSimulation) return this._nearestPlayer(actor.mesh.position, fallbacks);
+    const target = selectBattleTarget(this, actor, fallbacks);
+    if (!target || eligible(target)) return target;
+    // A shared battle provider may contain vehicles too. Parasites retarget an
+    // eligible organic combatant without changing formation/defend constraints.
+    const formation = actor.battleFormationTarget, defend = actor.battleOrder?.type === 'defend' ? actor.battleOrderTarget : null;
+    return this._nearestPlayer(actor.mesh.position, listBattleTargets(this, actor, fallbacks).filter(candidate => eligible(candidate) &&
+      (!Array.isArray(formation) || Math.hypot(candidate.position.x - formation[0], candidate.position.z - formation[1]) <= 28) &&
+      (!Array.isArray(defend) || Math.hypot(candidate.position.x - defend[0], candidate.position.z - defend[1]) <= 24)));
+  }
+
 
   _spawnPosition(playerPos, distance = 34) {
     if (this.spawnPositionProvider) {
@@ -185,6 +323,67 @@ export class XenomorphHorde {
     return position.distanceToSquared(playerPos) >= 20 * 20 ? position : null;
   }
 
+
+  /** Ascension fauna (spec 002): an ordinary horde actor, so every weapon, the combat director and
+   * defeatAlien apply. No acid, parasite or egg; a fleeing animal stays in the world (no despawn). */
+  spawnFauna(spec, role, position, home = position) {
+    const leader = role === 'leader', mesh = createFaunaModel(spec, { crest: leader });
+    mesh.position.copy(position); this.environment?.resolveMovement?.(mesh.position, spec.radius ?? 1); this.scene.add(mesh);
+    const animal = { isFauna: true, role, type: leader ? 'fauna_leader' : 'fauna_herd', name: spec.name, mesh,
+      hp: spec.hp, maxHp: spec.hp, speed: spec.speed, damage: spec.bite, radius: spec.radius, home: home.clone(),
+      chargeTimer: 4 + (this.aliens.length % 5) * .4, chargeLeft: 0, spawnBudget: leader ? (spec.spawns ?? 0) : 0, spawnTimer: 6,
+      stationary: spec.stationary === true, burrows: spec.burrows === true, burrowTimer: 5, burrowLeft: 0, isBurrowed: false, isFleeing: false, wanderAngle: this.aliens.length * 2.399, visualFidelity1to1Verified: false };
+    this.aliens.push(animal); return animal;
+  }
+
+  _updateFauna(a, delta, livingPlayers) {
+    const target = this._nearestPlayer(a.mesh.position, livingPlayers);
+    const toTarget = target ? target.position.clone().sub(a.mesh.position).setY(0) : null, distance = toTarget?.length() ?? Infinity;
+    const leash = a.mesh.position.distanceTo(a.home);
+    // Breeding leaders give birth only while alive and within their fixed budget.
+    if (a.spawnBudget > 0 && (a.spawnTimer -= delta) <= 0 && this.aliens.length < 200) {
+      a.spawnTimer = 6; a.spawnBudget--;
+      const herd = this.aliens.find(other => other.isFauna && other.role === 'herd' && other.home.distanceTo(a.home) < 1);
+      if (herd) this.spawnFauna({ name: herd.name, hp: herd.maxHp, speed: herd.speed, bite: herd.damage, radius: herd.radius, color: a.herdColor ?? 0x55524a, size: 1 }, 'herd', a.mesh.position.clone().add(new THREE.Vector3(2, 0, 2)), a.home);
+    }
+    // Kharuun's burrower dives under the sand, cannot be struck, and surfaces beside the hunter.
+    if (a.burrows && !a.isFleeing) {
+      if (a.isBurrowed) {
+        if ((a.burrowLeft -= delta) > 0) return;
+        a.isBurrowed = false; a.mesh.visible = true; a.burrowTimer = 6;
+        if (target) a.mesh.position.copy(target.position).add(new THREE.Vector3(Math.cos(a.wanderAngle) * 4, 0, Math.sin(a.wanderAngle) * 4)).setY(0);
+      } else if (target && distance < 25 && (a.burrowTimer -= delta) <= 0) { a.isBurrowed = true; a.burrowLeft = 2.5; a.mesh.visible = false; this.combatDirector?.release(a); this._clearAttackCue(a); return; }
+    }
+    if (a.stationary) {
+      if (target && distance <= a.radius + 2.4 && this._requestAttack(a, target, { windup: .7, recovery: 1.2 })) target.takeDamage(a.damage, false, a, { attackKind: 'bite', blockable: true, parryable: true });
+      return;
+    }
+    let move = null, speed = a.speed;
+    if (a.isFleeing && target) move = toTarget.clone().negate();
+    else if (target && (distance < 30 || leash < 45)) move = toTarget.clone();
+    else if (leash > 12) move = a.home.clone().sub(a.mesh.position).setY(0);
+    else { a.wanderAngle += delta * .6; move = new THREE.Vector3(Math.cos(a.wanderAngle), 0, Math.sin(a.wanderAngle)); speed *= .3; }
+    if (a.isFleeing && leash > 50) move = a.home.clone().sub(a.mesh.position).setY(0);
+    if (a.role === 'leader' && target && !a.isFleeing) {
+      a.chargeTimer -= delta;
+      if (a.chargeTimer <= 0 && distance < 18 && distance > 5) { a.chargeTimer = 5; a.chargeLeft = .55; }
+      if (a.chargeLeft > 0) { a.chargeLeft -= delta; speed *= 2.6; }
+    }
+    const reach = a.radius + 1.6;
+    if (target && !a.isFleeing && distance <= reach) {
+      if (this._requestAttack(a, target, { windup: .55, recovery: 1 })) target.takeDamage(a.damage, false, a, { attackKind: 'bite', blockable: true, parryable: true });
+      a.mesh.rotation.y = Math.atan2(toTarget.x, toTarget.z); return;
+    }
+    if (move && move.lengthSq() > 1e-6) {
+      move.normalize(); const previous = a.mesh.position.clone();
+      a.mesh.position.addScaledVector(move, speed * delta);
+      this.environment?.resolveAgentMovement?.(a.mesh.position, target?.position ?? a.home, speed * delta, a.radius, previous);
+      a.mesh.rotation.y = Math.atan2(move.x, move.z);
+    }
+  }
+
+  /** The herd of a fallen leader flees; it is never removed from the world. */
+  scatterFaunaHerd(home) { for (const animal of this.aliens) if (animal.isFauna && animal.role === 'herd' && animal.home.distanceTo(home) < 1) animal.isFleeing = true; }
 
   spawnWave(count, playerPos) {
     this.clearWave();
@@ -289,10 +488,14 @@ export class XenomorphHorde {
 
 
   _requestAttack(enemy, player, options) {
+    if (!canDetectConcealedTarget(enemy, player, this.environment)) {
+      this.combatDirector?.release(enemy); this._clearAttackCue(enemy);
+      enemy._npcPreparation = 0; enemy._npcTarget = null; return false;
+    }
     const group=this.battleSimulation?.groups?.get(enemy.battleGroupId);
     if((group?.rootUntil ?? 0)>(this.battleSimulation?.time ?? 0))return false;
     if((group?.suppressedUntil ?? 0)>(this.battleSimulation?.time ?? 0))options={...options,windup:(options.windup ?? .8)*1.6};
-    if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(enemy.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), player.position.clone().add(new THREE.Vector3(0,1.6,0)))) { this.combatDirector?.release(enemy); this._clearAttackCue(enemy); return false; }
+    if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(enemy.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), player.position.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: player.isSupport ? player.collisionOwner : undefined })) { this.combatDirector?.release(enemy); this._clearAttackCue(enemy); return false; }
     if (player.isBattleNPC) return requestNPCStrike(enemy, player, this._simulationDelta ?? 1/60, options);
     if (!this.combatDirector) return requestNPCStrike(enemy, player, this._simulationDelta ?? 1/60, options);
     const allowed = this.combatDirector.requestAttack(enemy, player, options);
@@ -302,6 +505,7 @@ export class XenomorphHorde {
 
 
   _hazardDamage(source, player, amount) {
+    if (player.isSupport) return player.takeDamage(amount, source);
     if (player.isBattleNPC) { player.takeDamage(amount, true, source); return amount; }
     if (this.combatDirector) return this.combatDirector.applyHazardDamage(source, player, amount);
     player.takeDamage(amount, true);
@@ -436,14 +640,19 @@ export class XenomorphHorde {
 
     for (let i = this.aliens.length - 1; i >= 0; i--) {
       const a = this.aliens[i];
+      this.syncBattleRavager(a, { cause: a.lastDamageType ?? 'combat', killerFaction: a.lastDamageFaction });
+      if (attack.targetOnly && a !== attack.targetOnly) continue;
       if (a.isLatched) continue;
+      if (a.isBurrowed) continue;
       if (this.battleSimulation && a.factionId && !this.battleSimulation.areHostile(attackingFaction, a.factionId)) continue;
       if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(attack.origin.clone().add(new THREE.Vector3(0,1.2,0)), a.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)))) continue;
       if (a.hp <= 0) { this.defeatAlien(a, { cause: 'prior-combat', killerFaction: a.lastDamageFaction }); continue; }
       const dist = a.mesh.position.distanceTo(attack.origin);
 
       if (dist <= attack.radius + (a.radius || 1.0)) {
-        let dealt = applyBattleFormationHit(this,a,attack);
+        const requested = typeof attack.damageForTarget === 'function' ? attack.damageForTarget(a, attack.damage) : attack.damage;
+        if (!Number.isFinite(requested) || requested <= 0) continue;
+        let dealt = applyBattleFormationHit(this,a,attack,requested);
         const thermal = /plasma|flame|fire|incendiary/.test(attack.type ?? '');
         if (a.regenActive && thermal) a.regenActive = false;
         if (a.isFrontalShielded && /ballistic|bullet|rifle|rail/.test(attack.type ?? '')) {
@@ -452,11 +661,15 @@ export class XenomorphHorde {
         }
         if (a.isFrontalShielded && (attack.damage >= 250 || attack.isLauncher || thermal)) a.isFrontalShielded = false;
         a.lastDamageFaction = attackingFaction;
-        a.hp -= dealt;
+        const special = this._damageBattleRavager(a, dealt, {
+          cause: attack.type ?? 'melee', killerFaction: attackingFaction
+        });
+        if (special) dealt = special.damage;
+        else a.hp -= dealt;
         const killed = a.hp <= 0;
 
         // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
-        if (attack.origin) {
+        if (attack.origin && !a.isFauna) {
           this.spawnAcidSplash(a.mesh.position, attack.origin, { source: a });
         }
 
@@ -466,7 +679,7 @@ export class XenomorphHorde {
         }
 
         // Dynasty Warriors Musou Launcher & Knockback Physics
-        if (!killed && attack.origin) {
+        if (!killed && !a.isDowned && attack.origin) {
           const knockDir = a.mesh.position.clone().sub(attack.origin).setY(0).normalize();
           if (knockDir.lengthSq() < 0.001) knockDir.set(0, 0, 1);
 
@@ -481,7 +694,7 @@ export class XenomorphHorde {
 
         hits.push({
           pos: a.mesh.position.clone(),
-          damage: attack.damage,
+          damage: dealt,
           killed: killed,
           isOfficer: a.isOfficer || false,
           officerTitle: a.officerTitle || null
@@ -495,15 +708,18 @@ export class XenomorphHorde {
               this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
             }
 
-            if (Math.random() < 0.15 && a.type !== 'crusher' && !a.isOfficer) {
+            // Fauna has no xenomorph biology: no chestburster, acid pool or globule (spec 002).
+            if (!a.isFauna && Math.random() < 0.15 && a.type !== 'crusher' && !a.isOfficer) {
               this.spawnChestburster(a.mesh.position);
             }
 
-            this.spawnAcidPool(a.mesh.position);
-            // Spawn 1-2 Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
-            const globCount = Math.floor(1 + Math.random() * 2);
-            for (let g = 0; g < globCount; g++) {
-              this.spawnZeroGAcidGlobule(a.mesh.position);
+            if (!a.isFauna) {
+              this.spawnAcidPool(a.mesh.position);
+              // Spawn 1-2 Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
+              const globCount = Math.floor(1 + Math.random() * 2);
+              for (let g = 0; g < globCount; g++) {
+                this.spawnZeroGAcidGlobule(a.mesh.position);
+              }
             }
             this.defeatAlien(a, { cause: attack.type ?? 'melee', killerFaction: attackingFaction });
           }
@@ -514,6 +730,7 @@ export class XenomorphHorde {
 
     for (let i = this.eggs.length - 1; i >= 0; i--) {
       const egg = this.eggs[i];
+      if (attack.targetOnly && egg !== attack.targetOnly) continue;
       if (egg.mesh.position.distanceTo(attack.origin) <= attack.radius + 1.0) {
         this.spawnAcidPool(egg.mesh.position);
         const event = recordCombatDeath(this, egg, { kind: 'ovimorph', cause: attack.type ?? 'melee', objectiveCredit: false });
@@ -529,6 +746,7 @@ export class XenomorphHorde {
 
     for (let i = this.chestbursters.length - 1; i >= 0; i--) {
       const cb = this.chestbursters[i];
+      if (attack.targetOnly && cb !== attack.targetOnly) continue;
       if (cb.mesh.position.distanceTo(attack.origin) > attack.radius + 0.5) continue;
       cb.hp -= attack.damage;
       const killed = cb.hp <= 0;
@@ -601,6 +819,14 @@ export class XenomorphHorde {
     this.acidPools.push({ mesh: pool, life: 10 });
   }
 
+  removeAcidPool(pool) {
+    const index = this.acidPools.indexOf(pool);
+    if (index < 0) return false;
+    disposeObject(pool.mesh, this.sharedResources);
+    this.acidPools.splice(index, 1);
+    return true;
+  }
+
 
   spawnZeroGAcidGlobule(pos) {
     this.limitHazards(this.zeroGAcidGlobules, 80);
@@ -635,7 +861,10 @@ export class XenomorphHorde {
     if (!Number.isFinite(delta) || delta < 0) return;
     this._livingPlayers = [player, secondaryPlayer].filter(p => p && p.hp !== 0);
     // Environmental, ally, support and legacy weapon damage all converge here.
-    for (const actor of [...this.getActiveCombatants()]) if (actor.hp <= 0) this.defeatAlien(actor, { cause: 'combat', killerFaction: actor.lastDamageFaction, deferEffects:delta===0 });
+    for (const actor of [...this.getActiveCombatants()]) {
+      this.syncBattleRavager(actor, { cause: actor.lastDamageType ?? 'combat', killerFaction: actor.lastDamageFaction });
+      if (actor.hp <= 0) this.defeatAlien(actor, { cause: 'combat', killerFaction: actor.lastDamageFaction, deferEffects:delta===0 });
+    }
     for(const actor of [...this.aliens])if(actor.isLatched) {
       if(actor.battleUnitId && this.battleSimulation)recordCombatDeath(this,actor,{kind:actor.type,cause:'parasite-consumed',objectiveCredit:false});
       this.combatDirector?.release(actor);this._clearAttackCue(actor);
@@ -647,6 +876,8 @@ export class XenomorphHorde {
     for(const actor of this.pendingBoilerDetonations ?? []){actor._boilerQueued=false;this.detonateBoiler(actor,null,{cause:'deferred-boiler-explosion',killerFaction:actor.lastDamageFaction});}
     this.pendingBoilerDetonations=[];
     const livingPlayers = this._livingPlayers;
+    for (const actor of this.aliens)
+      actor._controlLockedThisUpdate = this._advanceControlLocks(actor, delta);
     if (!livingPlayers.length) return;
     player = livingPlayers[0];
     if (!this.battleSimulation && this.pendingSpawns.length && !this.combatDirector?.isInGrace) {
@@ -668,7 +899,7 @@ export class XenomorphHorde {
         if (alien.type === 'boiler') this.detonateBoiler(alien, player);
         else {
           this.goreEngine?.spawnDismemberment(alien.mesh.position);
-          this.spawnAcidPool(alien.mesh.position);
+          if (!alien.isFauna) this.spawnAcidPool(alien.mesh.position);
           disposeObject(alien.mesh, this.sharedResources);
           this.aliens.splice(i, 1);
           this.recordDefeat(alien);
@@ -703,7 +934,8 @@ export class XenomorphHorde {
     // 2. Chestbursters
     for (let i = this.chestbursters.length - 1; i >= 0; i--) {
       const cb = this.chestbursters[i];
-      const targetPlayer = this._nearestPlayer(cb.mesh.position, livingPlayers);
+      const targetPlayer = this._pursuitTarget(cb, livingPlayers);
+      if (!targetPlayer) { moveBattleOrder(this, cb, delta, cb.speed); continue; }
       const dir = targetPlayer.position.clone().sub(cb.mesh.position);
       dir.y = 0;
       if (dir.length() > 1.0) {
@@ -724,8 +956,7 @@ export class XenomorphHorde {
         this._hazardDamage(pool, targetPlayer, 15 * delta);
       }
       if (pool.life <= 0) {
-        disposeObject(pool.mesh, this.sharedResources);
-        this.acidPools.splice(i, 1);
+        this.removeAcidPool(pool);
       }
     }
 
@@ -795,15 +1026,31 @@ export class XenomorphHorde {
       }
     }
 
-    this._updateExtraActors(delta, livingPlayers);
+    const supportTargets = this._supportTargets();
+    this._updateExtraActors(delta, livingPlayers, supportTargets);
 
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
+      this.syncBattleRavager(a, { cause: a.lastDamageType ?? 'combat', killerFaction: a.lastDamageFaction });
+      const controlLocked = a._controlLockedThisUpdate;
+      if (a.ravagerCatalepsy) return;
       this._showAttackCue(a);
+      // The allocated Facehugger is a REAL airborne actor, not a spawned
+      // particle. It can neither attack nor latch until landing on safe floor.
+      if(advanceCarrierFacehuggerFlight(a,delta))return;
+      if (this._advanceAirborneActor(a, delta) || controlLocked || a.hp <= 0) return;
+      if (a.isFauna) { this._updateFauna(a, delta, livingPlayers); return; }
+      const sourceTarget=a.type==='carrier'?
+        this._pursuitTarget(a,livingPlayers,supportTargets):null;
+      if(a.type==='carrier'){
+        a.carrierLaunchCooldown=Math.max(0,(a.carrierLaunchCooldown??0)-delta);
+        if(sourceTarget&&a.carrierLaunchCooldown<=0&&!a.isStunned&&!a.isNetEntangled){
+          const attempt=this.carrierCargoLaunch?.(a,sourceTarget);
+          if(attempt?.accepted)a.carrierLaunchCooldown=3.25;
+        }
+      }
       if(!a.isAirborne && !a.isLeaping && !a.isLatched && maintainBattleFormation(this,a,delta,a.speed))return;
-      const targetPlayer = a.battleUnitId && this.battleSimulation
-        ? selectBattleTarget(this, a, livingPlayers)
-        : this._nearestPlayer(a.mesh.position, livingPlayers);
+      const targetPlayer = sourceTarget??this._pursuitTarget(a, livingPlayers, supportTargets);
       if (!targetPlayer) { this.combatDirector?.release(a); this._clearAttackCue(a); moveBattleOrder(this, a, delta, a.speed); return; }
       if (a.isFeared) { a.fearTimer -= delta; if (a.fearTimer <= 0) a.isFeared = false; else { a.mesh.position.addScaledVector(a.fearDir, a.speed * delta * .7); this.environment?.resolveMovement?.(a.mesh.position, a.radius); return; } }
       if (a.regenActive && a.hp > 0) a.hp = Math.min(a.maxHp, a.hp + 35 * delta);
@@ -811,59 +1058,7 @@ export class XenomorphHorde {
 
       if (a.isLatched) return;
       a.visualPhase = (a.visualPhase || 0) + delta * Math.max(3, (a.speed || 10) * 0.8);
-      animateCreatureModel(a.mesh, a.visualPhase, !a.isStunned && !a.isNetEntangled);
-
-      // Airborne Juggling Physics (Dynasty Warriors Musou C2/C5 Launchers)
-      if (a.isAirborne) {
-        this.combatDirector?.release(a); this._clearAttackCue(a);
-        a.airborneVelY -= 36.0 * delta; // Gravity
-        a.mesh.position.y += a.airborneVelY * delta;
-        if (a.airborneVelHoriz) {
-          a.mesh.position.addScaledVector(a.airborneVelHoriz, delta);
-        }
-        // Ragdoll spin in mid-air
-        a.mesh.rotation.x += 8.0 * delta;
-        a.mesh.rotation.z += 5.0 * delta;
-
-        // Ground impact
-        if (a.mesh.position.y <= 0) {
-          a.mesh.position.y = 0;
-          a.isAirborne = false;
-          a.airborneVelY = 0;
-          a.mesh.rotation.x = 0;
-          a.mesh.rotation.z = 0;
-        }
-        return; // Helpless while airborne in juggle arc
-      }
-
-      // Netgun Entangled State
-      if (a.isNetEntangled) {
-        this.combatDirector?.release(a); this._clearAttackCue(a);
-        if (a.isNetgunImmune) {
-          // Grid Alien (Nethead) has already melted and broken Celtic's net in AVP 2004!
-          a.isNetEntangled = false;
-        } else {
-          a.netTimer -= delta;
-          a.hp -= 25 * delta; // Razor wire cuts deep!
-          a.mesh.rotation.y += Math.sin(this.time * 50) * delta * 3;
-          if (a.netTimer <= 0) {
-            a.isNetEntangled = false;
-          }
-          return; // Completely immobilized
-        }
-      }
-
-      // Stunned State (Crusher or Praetorian)
-      if (a.isStunned) {
-        this.combatDirector?.release(a); this._clearAttackCue(a);
-        a.stunTimer -= delta;
-        a.mesh.rotation.z = Math.sin(this.time * 20) * 0.1;
-        if (a.stunTimer <= 0) {
-          a.isStunned = false;
-          a.mesh.rotation.z = 0;
-        }
-        return;
-      }
+      animateCreatureModel(a.ravagerVisual ?? a.mesh, a.visualPhase, !a.isStunned && !a.isNetEntangled);
 
       const dir = targetPlayer.position.clone().sub(a.mesh.position);
       dir.y = 0;
@@ -1065,26 +1260,47 @@ export class XenomorphHorde {
       // Hive rivalry uses the same prepared faction-targeted strike as every
       // other NPC engagement. Color never adds a second per-frame damage loop.
 
-      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(a.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), targetPlayer.position.clone().add(new THREE.Vector3(0,1.6,0)));
-      if (dist > (a.radius || 1.2) + (this.combatDirector ? 1.2 : 0) || covered) {
-        dir.normalize();
-        a.mesh.position.addScaledVector(dir, a.speed * delta);
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(a.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), targetPlayer.position.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: targetPlayer.isSupport ? targetPlayer.collisionOwner : undefined });
+      const access = !a.isCharging && this.environment?.getVerticalNavigationTarget?.(a.mesh.position, targetPlayer.position);
+      const attackRange = (a.radius || 1.2) + (this.combatDirector ? 1.2 : 0) + (targetPlayer.isSupport ? targetPlayer.radius ?? 0 : 0);
+      if (access || a.mesh.position.distanceTo(targetPlayer.position) > attackRange || covered) {
+        const previous = a.mesh.position.clone();
+        const movement = (access ?? targetPlayer.position).clone().sub(previous).setY(0), step = Math.min(a.speed * delta, movement.length());
+        movement.normalize();
+        a.mesh.position.addScaledVector(movement, step);
         // Only normal ground pursuit skirts solid scenery. Juggles, ceiling
         // ambushes, pounces and active Crusher dashes keep their own movement.
-        if (!a.isCharging && a.mesh.position.y <= 0.2) {
+        if (!a.isCharging) {
           const navigationRadius = Math.max(0.5, Math.min(a.radius || 0.65, 1.2));
-          this.environment?.resolveAgentMovement(a.mesh.position, targetPlayer.position, a.speed * delta, navigationRadius);
+          this.environment?.resolveAgentMovement(a.mesh.position, targetPlayer.position, step, navigationRadius, previous);
         }
-        a.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+        this.combatDirector?.release(a); this._clearAttackCue(a); a._npcPreparation = 0;
+        a.mesh.rotation.y = Math.atan2(movement.x, movement.z);
       } else {
-        const granted = this._requestAttack(a, targetPlayer, { windup: a.type === 'facehugger' ? 1 : 0.7, recovery: 1.6 });
+        const sourceElite = a.type === 'ravager';
+        const granted = this._requestAttack(a, targetPlayer, {
+          windup: sourceElite ? 1.15 : a.type === 'facehugger' ? 1 : .7,
+          recovery: sourceElite ? 2.1 : a.type === 'carrier' ? 2 : 1.6
+        });
         if (!granted) return;
-        if (a.type === 'facehugger' && !targetPlayer.isFacehuggerLatched) {
-          targetPlayer.triggerFacehuggerLatch();
-          a.isLatched = true;
-          disposeObject(a.mesh, this.sharedResources);
+        if (a.type === 'facehugger' && this._canParasitize(targetPlayer) && !targetPlayer.isFacehuggerLatched) {
+          // The battle simulation may refuse the implantation (armor, faction,
+          // already infected or distance). Never consume a finite Facehugger
+          // or detach its mesh when the target rejects the attempt.
+          const accepted = targetPlayer.triggerFacehuggerLatch();
+          if (accepted !== false) {
+            a.isLatched = true;
+            disposeObject(a.mesh, this.sharedResources);
+            a._combatDisposed = true; // Avoid orphaned parasite mesh after latch.
+          }
         } else {
-          targetPlayer.takeDamage(a.damage, false, a, { attackKind: 'melee', blockable: !['crusher','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type), parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type) }); a.revealTimer = 2;
+          if (targetPlayer.isSupport) targetPlayer.takeDamage(a.damage, a);
+          else targetPlayer.takeDamage(a.damage, false, a, {
+            attackKind: a.type==='ravager'?'ravager-blade':
+              a.type==='carrier'?'carrier-defense':'melee',
+            blockable: !['crusher','ravager','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type),
+            parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type)
+          }); a.revealTimer = 2;
         }
       }
     });
@@ -1123,9 +1339,12 @@ export class XenomorphHorde {
 
 
   clearWave() {
+    // A menu cleanup also removes players. Do not keep their disposed visual
+    // graphs alive through the target list from the last simulation frame.
+    this._livingPlayers = [];
     this.pendingBoilerDetonations=[];
     for (const key of ['microSwarms','mantaSwarmers','royalFacehuggers','biomechanicalEggs','cyberSpineDarts','spitterMortars']) {
-      for (const actor of this[key] ?? []) { this.combatDirector?.release(actor); this._clearAttackCue(actor); disposeObject(actor.mesh ?? actor.group, this.sharedResources); if (actor.indicatorMesh) disposeObject(actor.indicatorMesh); }
+      for (const actor of this[key] ?? []) { this._releaseRoyalHold(actor); this.combatDirector?.release(actor); this._clearAttackCue(actor); disposeObject(actor.mesh ?? actor.group, this.sharedResources); if (actor.indicatorMesh) disposeObject(actor.indicatorMesh); }
       this[key] = [];
     }
     this.pendingSpawns = [];
@@ -1137,8 +1356,7 @@ export class XenomorphHorde {
     this.eggs = [];
     this.chestbursters.forEach(c => disposeObject(c.mesh, this.sharedResources));
     this.chestbursters = [];
-    this.acidPools.forEach(p => disposeObject(p.mesh, this.sharedResources));
-    this.acidPools = [];
+    for (const pool of [...this.acidPools]) this.removeAcidPool(pool);
     this.acidSplashes.forEach(s => disposeObject(s.mesh, this.sharedResources));
     this.acidSplashes = [];
     this.zeroGAcidGlobules.forEach(g => disposeObject(g.mesh, this.sharedResources));
@@ -1929,7 +2147,7 @@ export class XenomorphHorde {
   struggleRoyalFacehugger(player) {
     for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
       const rf = this.royalFacehuggers[i];
-      if (rf.isLatched) {
+      if (rf.isLatched && rf.latchedTo === player) {
         rf.struggleCount++;
         if (globalThis.gameInstance && globalThis.gameInstance.ui) {
           globalThis.gameInstance.ui.showAnnouncement(`⚠️ LUTTE CONTRE LE PARASITE ROYAL : [ESPACE] (${rf.struggleCount}/${rf.struggleMax}) !`);
@@ -1943,15 +2161,13 @@ export class XenomorphHorde {
             this.goreEngine.spawnDismemberment(rf.mesh.position, 'heavy');
           }
           this.spawnAcidPool(player.position);
-          this.scene.remove(rf.mesh);
-          this.royalFacehuggers.splice(i, 1);
-          player.isRoyalFacehuggerLatched = false;
+          this.defeatAlien(rf, { cause: 'parasite-struggle', scoreValue: 350,
+            killerFaction: this.battleSimulation?.config.playerFaction ?? 'player_clan' });
 
           if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
             this.audioEngine.playHeavySlamImpact();
           }
           if (globalThis.gameInstance) {
-            globalThis.gameInstance.score += 350;
             if (globalThis.gameInstance.ui) {
               globalThis.gameInstance.ui.showAnnouncement('⚔️ PARASITE ROYAL ARRACHÉ DU BIO-MASQUE ET BROYÉ (+350 PTS) !');
             }
@@ -2274,14 +2490,36 @@ export class XenomorphHorde {
     const existing = this.aliens.find(actor => actor.battleUnitId === unit.id);
     if (existing) return existing;
     const type = unit.actorType === 'xenomorph' ? 'warrior' : unit.actorType;
-    const allowed = new Set(['warrior','runner','spitter','boiler','neomorph','praetomorph','red_warrior','facehugger','officer','crusher','praetorian','grid_alien','cyber_xeno','cryo_xeno']);
+    const allowed = new Set(['warrior','runner','spitter','boiler','neomorph','praetomorph','red_warrior','facehugger','officer','crusher','praetorian','grid_alien','cyber_xeno','cryo_xeno','carrier','ravager']);
+    if(EXTINCTION_CASTE_PROFILES[type] &&
+      !validExtinctionCasteUnit(unit,this.battleSimulation?.config?.id))
+      throw new RangeError('Extinction caste requires source-profile and LV-742 scenario');
     if (!allowed.has(type)) throw new RangeError(`Unsupported detailed xenomorph profile: ${type}`);
-    const mesh = ['officer','crusher','praetorian','grid_alien'].includes(type) ? createCreatureModel(type, this.sharedResources) : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
-    const actor = { mesh, type, pressureId: this.spawnSequence++, speed: type === 'runner' ? 16 : 10,
-      damage: unit.officer ? 38 : 25, radius: type === 'facehugger' ? .6 : 1.1, isLatched: false, isWallStalker: false,
+    const sourceVisual = sourceUnitVisualKind(unit);
+    const modelKind = sourceVisual === 'drone' ? 'drone' : type;
+    // A source-role visual is not a new strategic caste. In particular, saved
+    // GRP-58/59 Drone IDs still retain actorType "warrior" in BattleSimulation.
+    const model = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien','carrier','ravager'].includes(type)
+      ? createCreatureModel(modelKind, this.sharedResources)
+      : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
+    // A separate visual pivot lets this one actor fall without rotating its
+    // navigation/collision root or any other cached creature instance.
+    const mesh = type === 'ravager' ? new THREE.Group() : model;
+    if (mesh !== model) { mesh.name = 'ravager-collision-root'; mesh.userData = { ...model.userData }; mesh.add(model); }
+    const actor = { mesh, type: modelKind, sourceVisualKind: sourceVisual, visualFidelity1to1Verified: false,
+      ...(type === 'ravager' ? { ravagerVisual: model, _ravagerSyncedHp: unit.hp } : {}),
+      pressureId: this.spawnSequence++,
+      speed: type === 'runner' ? 16 : type === 'ravager' ? 9 :
+        type === 'carrier' ? 7.5 : sourceVisual === 'drone' ? 11.5 : 10,
+      damage: type === 'ravager' ? 52 : type === 'carrier' ? 12 : unit.officer ? 38 : 25,
+      radius: type === 'facehugger' ? .6 : type === 'ravager' ? 1.7 :
+        type === 'carrier' ? 1.6 : 1.1,
+      isLatched: false, isWallStalker: false,
+      extinctionCasteSource: EXTINCTION_CASTE_PROFILES[type]?.origin ?? null,
       leapCooldown: 3, spitCooldown: 3.5, frostBreathCooldown: 4, cyberDartCooldown: 4, isLeaping: false, leapVelY: 0,
       isAirborne: false, airborneVelY: 0, airborneVelHoriz: new THREE.Vector3() };
     this.aliens.push(applyBattleUnit(this, actor, unit, group));
+    this.syncBattleRavager(actor);
     return actor;
   }
 
@@ -2294,11 +2532,19 @@ export class XenomorphHorde {
     return actors;
   }
 
-  _updateExtraActors(delta, livingPlayers) {
+  _updateExtraActors(delta, livingPlayers, supportTargets = []) {
     for (const actor of [...this.mantaSwarmers, ...this.microSwarms, ...this.royalFacehuggers]) {
       actor.mesh ??= actor.group; actor.combatManager = this;
       if (actor.hp <= 0) { this.defeatAlien(actor); continue; }
-      const target = actor.battleUnitId && this.battleSimulation ? selectBattleTarget(this, actor, livingPlayers) : this._nearestPlayer(actor.mesh.position, livingPlayers);
+      // A latched parasite owns its existing victim. Its deadline must advance
+      // even when no new target is available or the victim changes faction.
+      if (this.royalFacehuggers.includes(actor) && actor.isLatched) {
+        actor.latchTimer = Math.max(0, (actor.latchTimer ?? 5) - delta);
+        if (actor.latchedTo) actor.latchedTo.royalFacehuggerHoldTimer = actor.latchTimer;
+        if (actor.latchTimer <= 0 || !(actor.latchedTo?.hp > 0)) this.defeatAlien(actor, { cause: 'released-parasite', objectiveCredit: false });
+        continue;
+      }
+      const target = this._pursuitTarget(actor, livingPlayers, supportTargets);
       if (!target) { moveBattleOrder(this, actor, delta, actor.speed ?? 10); continue; }
       const position = actor.mesh.position, direction = target.position.clone().sub(position), distance = direction.length();
       if (this.mantaSwarmers.includes(actor)) {
@@ -2308,7 +2554,13 @@ export class XenomorphHorde {
         if (actor.divePhase === 'diving') {
           const descent = actor.diveTarget.clone().sub(position), gap = descent.length(), step = actor.diveSpeed * delta;
           position.addScaledVector(descent.normalize(), Math.min(step, gap));
-          if (gap <= step + .1) { if (target.position.distanceTo(actor.diveTarget) <= 2) target.takeDamage(actor.damage, false, actor, { attackKind: 'dive', blockable: false, parryable: false }); actor.divePhase = 'ascending'; actor.diveCooldown = 5; }
+          if (gap <= step + .1) {
+            if (target.position.distanceTo(actor.diveTarget) <= 2) {
+              if (target.isSupport) target.takeDamage(actor.damage, actor);
+              else target.takeDamage(actor.damage, false, actor, { attackKind: 'dive', blockable: false, parryable: false });
+            }
+            actor.divePhase = 'ascending'; actor.diveCooldown = 5;
+          }
         } else if (actor.divePhase === 'ascending') { position.y = Math.min(actor.cruiseAltitude, position.y + 12 * delta); if (position.y >= actor.cruiseAltitude) actor.divePhase = 'cruising'; }
         else {
           position.y = actor.cruiseAltitude + Math.sin(actor.flutterPhase * .4) * .3;
@@ -2317,9 +2569,11 @@ export class XenomorphHorde {
         }
       } else if (this.royalFacehuggers.includes(actor)) {
         actor.type ??= 'royal_facehugger';
-        if (actor.isLatched) { actor.latchTimer -= delta; if (actor.latchTimer <= 0) { if (actor.latchedTo) actor.latchedTo.isRoyalFacehuggerLatched = false; this.defeatAlien(actor, { cause: 'released-parasite', objectiveCredit: false }); } continue; }
         if (distance > 1.2) position.addScaledVector(direction.normalize(), Math.min((actor.glideSpeed ?? 15) * delta, distance - 1.2));
-        else if (this._requestAttack(actor, target, { windup: 1.1, recovery: 2 })) { actor.isLatched = true; actor.latchedTo = target; actor.latchTimer = 5; target.isRoyalFacehuggerLatched = true; }
+        else if (!target.isRoyalFacehuggerLatched && !(target.executionProtectionTimer > 0) && this._requestAttack(actor, target, { windup: 1.1, recovery: 2 })) {
+          actor.isLatched = true; actor.latchedTo = target; actor.latchTimer = 5;
+          target.isRoyalFacehuggerLatched = true; target.royalFacehuggerHoldTimer = 5;
+        }
       } else {
         actor.type ??= 'micro_swarm';
         actor.orbitAngle += (actor.orbitSpeed ?? 3.5) * delta;

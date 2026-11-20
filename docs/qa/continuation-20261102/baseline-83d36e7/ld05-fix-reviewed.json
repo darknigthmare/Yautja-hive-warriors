@@ -1,0 +1,45 @@
+{
+  "status": "passed_isolated_minimal_fix",
+  "reviewedAt": "2026-11-02T04:46:38.414631+00:00",
+  "baseSourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "applicationOwner": "root",
+  "originalUntouchedDuringThisReview": true,
+  "isolatedWorktree": "/tmp/yautja-worldfix-20261102",
+  "originalWorktree": "/workspace/Yautja-continue-20261102",
+  "changedFile": "js/entities/ReferenceEnvironmentMechanisms.js",
+  "beforeSourceSha256": "67328c46def27697b65c5435ade36cda029ecec80c1439c886d76c2ec50d842d",
+  "afterSourceSha256": "505f283bd1053ba125adc36c1877116ae832f8d84b0439ce3229629ef626f813",
+  "patch": {
+    "path": "/workspace/qa/continuation-20261102/ld05-fix.patch",
+    "sha256": "5f458eab01a54ec478adc10418f08a71dadfe67b32d56c806204a44d4b94ddc7"
+  },
+  "change": "Only the legacy canopy elevation query now selects the highest finite actual bough contact at overlap instead of the first contact. Placement policy, mesh geometry, callbacks, strategic routes and existing strict tests are unchanged.",
+  "before": {
+    "queriedY": 6.660045484691142,
+    "resolvedY": 6.92737810749828,
+    "displacement": 0.267332622807138,
+    "placement": 0
+  },
+  "after": {
+    "queriedY": 6.92737810749828,
+    "resolvedY": 6.92737810749828,
+    "displacement": 0,
+    "placement": 0
+  },
+  "verification": {
+    "passed": 45,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 82257.064359,
+    "log": "/workspace/qa/continuation-20261102/ld05-fix-targeted.txt",
+    "logSha256": "c982a4a2e3f9bb8e06a91018378908e86fba58b4c7696a4825e5a82cfa12090d",
+    "scope": "Entire battlefield-map-variants suite including all34physical maps, four world/weather regressions, five reference-walk-surface checks."
+  },
+  "buildRun": false,
+  "browserRun": false,
+  "gitMutationByAgent": false,
+  "testsWeakened": false,
+  "humanReviewers": 0,
+  "fidelity1to1Verified": false
+}

@@ -76,7 +76,11 @@ const reactionTriggers = ['register', 'launch', 'jammer', 'false_alarm', 'terms'
 
 export function createOperationObjectiveSpec(operation, config) {
   const plan = plans[operation.id]; if (!plan) throw new Error(`Unknown narrative operation ${operation.id}`);
-  const tasks = plan.tasks.map((task, index) => {
+  // The LV-742 brood (HW-DEC-90) adds an optional burn task; configurations rebuilt for older
+  // checkpoints have no brood and keep their historical task list and digest.
+  const brood = config.groups?.find(group => group.brood === true);
+  const planTasks = brood ? [...plan.tasks, cut('brood', 'Brûler le couvoir de la Reine', brood.frontId.replace('front_', '').toUpperCase(), { disableSource: false, burnsBroodGroupId: brood.id })] : plan.tasks;
+  const tasks = planTasks.map((task, index) => {
     const frontId = `front_${task.front.toLowerCase()}`, front = config.fronts.find(front => front.id === frontId);
     if (!front) throw new Error(`Narrative ${operation.id}/${task.id} requires physical front ${frontId}`);
     const offset = [6 + index % 2 * 4, -5 + Math.floor(index / 2) * 4];

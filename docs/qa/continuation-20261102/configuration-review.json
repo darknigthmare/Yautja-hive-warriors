@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_configuration_checks_only",
+  "checkedAt": "2026-11-02T04:15:29.763653+00:00",
+  "releaseProfile": "continuation-20261102",
+  "worktree": "/workspace/Yautja-continue-20261102",
+  "scope": "Allowlisted new release profile and public verifier preparation. This does not certify a final game build or publication.",
+  "originalProfilesAndDefaultPreserved": 4,
+  "newProfileUsesIndependentPaths": true,
+  "targetedNodeTests": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "environmentProfile": "continuation-20261102",
+    "durationMs": 4902.384101
+  },
+  "helperPreflightCasesPassed": 9,
+  "browserLaunched": false,
+  "publicSmokeExecuted": false,
+  "networkAccessedDuringConfigurationChecks": false,
+  "deploymentSubmitted": false,
+  "applicationRuntimeEditedByThisTask": false,
+  "actualPinsOrFinalQaCreatedByThisTask": false,
+  "frozenStageCreatedByThisTask": false,
+  "wrapperDelegatesWithoutReadingSecrets": true,
+  "coordinatorOwnsBuildAndReleaseFreeze": true,
+  "files": [
+    {
+      "path": "scripts/publication-pr3-lib.mjs",
+      "sha256": "9d1ec57ab06f6e4cb0a5f2578106e319c3127d239b07727bfbd4357e9ed7d13d"
+    },
+    {
+      "path": "tests/pr3-release-profiles.test.mjs",
+      "sha256": "fb6ddca76c58629bda7b9c1bff06b8aa0adff90e2c489deb1a5829a9765aff90"
+    },
+    {
+      "path": "tests/pr3-publication.test.mjs",
+      "sha256": "e239dd3f65607d32f0c1b1b297c50ff06c5cb6a4e84d4b9989d5654e4b8601ae"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/verify-public.mjs",
+      "sha256": "5842e8fa67406acd53f7cd5d60f7b1dc5f3d424a9e99b729e634879e192992a9"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/public-helper-preflight.json",
+      "sha256": "7905c13a63e818775099fe87c1420ca1312599fbdb9435db5aa4204e9a87d482"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/publication-targeted-tests.txt",
+      "sha256": "8e0977757c52202c457fb1a4b991bd7e52bcde080088c2747bc02665712b3789"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/vercel-cli-wrapper.sh",
+      "sha256": "c3e42f692a5032dc4a09aa16d2803fce9defd56d71581e12c0a525527d7f2933"
+    }
+  ]
+}

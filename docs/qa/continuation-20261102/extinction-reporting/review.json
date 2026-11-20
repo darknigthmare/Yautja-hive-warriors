@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_reporting_scope_final_release_qa_pending",
+  "reviewedAt": "2026-11-02T04:32:22.775865+00:00",
+  "reviewer": "AI agent integration_audit_nov02",
+  "baselineMergedCommit": "51856cbb570ab1b9f92174a85f184bc41db03303",
+  "centralProgressEdited": false,
+  "centralStatusesChanged": false,
+  "excelWriterRunByReviewer": false,
+  "runtimeEditedByReviewer": false,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "newlyClosedCriteria": [],
+  "sourceProfiles": 29,
+  "historicalFindingsPreserved": true,
+  "visualCertifications": "all29remainnon",
+  "rowParserFix": "Actual quoted CSV rows are checked separately; literal-backslash CRLF whole-file matching removed.",
+  "filesEdited": [
+    {
+      "path": "scripts/export-extinction-fidelity-gaps.mjs",
+      "sha256": "91d0519be60066b1aae758f1ecfacb44f7371e3447005c54665c4a78db2446a5"
+    },
+    {
+      "path": "tests/extinction-profile-coverage.test.js",
+      "sha256": "d4bce8699f74e0cdcd1be29a2e3fc967880d4b02c79c4de65bea25d4def8c457"
+    },
+    {
+      "path": "docs/audits/2026-11-01/Extinction_29_Profils_Manquants_1to1.csv",
+      "sha256": "7e57f89329e5f4f62fcf940679744baeab78c19b0761f3470a3f03f456276061"
+    },
+    {
+      "path": "docs/audits/2026-11-01/EXTINCTION-READINESS.md",
+      "sha256": "1b86d727769126879eaa31cb58d53064617f6ec93600d7a20856fa61c27fe8c4"
+    },
+    {
+      "path": "docs/qa/extinction-carrier-ravager-20261101/README.md",
+      "sha256": "4510f066e842120cb702916c784c7bd3b542dd6a21c5d9eb760bec9de3e46630"
+    },
+    {
+      "path": "docs/qa/extinction-lv742-caste-variant-20261101/README.md",
+      "sha256": "e34230db5e7893ee60c98282019e11615a7d753faa85066f3fb7045da18e2deb"
+    },
+    {
+      "path": "docs/qa/extinction-ravager-regenesis-20261101/README.md",
+      "sha256": "6f2ef9d285145557616cc70cc9ebb02dbbd65025a2f9b78c04245d6fb829f9aa"
+    }
+  ],
+  "tests": [
+    {
+      "scope": "finite Carrier cargo6/12, fire, identity and checkpoint",
+      "command": "node --test --test-concurrency=1 tests/extinction-carrier-cargo.test.js",
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "docs/qa/continuation-20261102/extinction-reporting/carrier-cargo-baseline.txt",
+      "sha256": "abd984917485989fb9906f10fe04951151cc1a3d93685e33e1da1b153fb28009"
+    },
+    {
+      "scope": "physical Carrier launch admission, finite actor budget and existing identity",
+      "command": "node --test --test-concurrency=1 tests/extinction-carrier-live-launch.test.js",
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "docs/qa/continuation-20261102/extinction-reporting/carrier-flight-baseline.txt",
+      "sha256": "b504f4fd1e14c1f3748b0ab5d6be987582b763b45e855c277a9833c36c8122c6"
+    },
+    {
+      "scope": "per-profile CSV identity, historical finding and unverified visual certificate",
+      "command": "node --test --test-concurrency=1 tests/extinction-profile-coverage.test.js",
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "docs/qa/continuation-20261102/extinction-reporting/csv-coverage-final.txt",
+      "sha256": "041e1c2cc6c21303b8d53658b2c5240ae4953c04eb85fd6b7ef8df36e98f3046"
+    }
+  ],
+  "independentlyReviewedProvidedEvidence": [
+    {
+      "path": "docs/qa/continuation-20261102/ravager-detailed/verification.json",
+      "sha256": "948bd89d281e2b570089a5e8da95af265664cfda4f4e52a9fbd8a9154ff9a911",
+      "scope": "All8 source hashes and log hash match.47targeted passes include7 detailed Ravager cases plus old cargo and NPC/owner routing regressions. Component fixtures; no browser, human or film-fidelity certification."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/evolved-variant/review.json",
+      "sha256": "2b67e2fd769a35f5f683eac3ff53b69f84363949d456933ca19976f004ad014d",
+      "scope": "8development cases preserveIDs/budgets/HP, six cargo occupants, capacity12, distinct configuration/checkpoint signatures and source-continuity exclusion."
+    }
+  ],
+  "limits": [
+    "The Carrier6/12 and physical release mechanics predate this pass; merging them is consolidation.",
+    "Near Ravager phase and opt-in enhanced scenario are current additions, using original Musou parameters.",
+    "The scenarios do not implement Queen purchase/economy or a new parasite allocation.",
+    "Full frozen-source CPU and rendered mission/coop checks remain the release gate.",
+    "AUD047 awaits current strategic calibration and real browser outcome proof; AUD091 remains partial and open."
+  ]
+}

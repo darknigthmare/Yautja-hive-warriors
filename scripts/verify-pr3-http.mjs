@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, rm, stat, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { QA, STAGE, ORIGIN, DEFAULT_PINS, assertHttpHeaders, hashFile, readPins, say, validateLocal, validateQa } from './publication-pr3-lib.mjs';
+import { QA, STAGE, ORIGIN, RELEASE, DEFAULT_PINS, assertHttpHeaders, hashFile, readPins, say, validateLocal, validateQa } from './publication-pr3-lib.mjs';
 
 const headerNames = ['content-type', 'content-security-policy', 'content-disposition', 'cache-control', 'x-content-type-options', 'x-frame-options', 'referrer-policy', 'permissions-policy'];
 async function candidateFile(pins, deploymentId, file, directory, index, rules) {
@@ -46,7 +46,7 @@ export async function verifyHttp({ pins, artifact, mode, deploymentId = null, ru
   if (mode === 'candidate' || deploymentId !== null && deploymentId !== undefined) assert.match(deploymentId ?? '', /^dpl_[A-Za-z0-9]+$/);
   const directory = `${QA}/http-${mode}-${runId}`; await mkdir(directory);
   const reportPath = directory + '/report.json', latestPath = `${QA}/vercel-${mode}-verification.json`;
-  const report = { status: 'running', mode, deploymentId, origin: mode === 'public' ? ORIGIN : null, unauthenticated: mode === 'public',
+  const report = { status: 'running', releaseProfile: RELEASE.name, mode, deploymentId, origin: mode === 'public' ? ORIGIN : null, unauthenticated: mode === 'public',
     redirectsAllowed: false, index_sha256: pins.indexSha256, build_info_sha256: pins.buildInfoSha256, sourceCommit: pins.sourceCommit,
     artifactManifestSha256: pins.artifactManifestSha256, expectedFiles: artifact.allFiles.length, checkedAt: new Date().toISOString(), files: [] };
   const save = async () => { const text = JSON.stringify(report, null, 2) + '\n'; await writeFile(reportPath, text); await writeFile(latestPath, text); };

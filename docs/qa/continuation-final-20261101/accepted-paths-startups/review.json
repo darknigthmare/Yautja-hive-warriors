@@ -1,0 +1,620 @@
+{
+  "schemaVersion": 1,
+  "status": "partial_final_evidence_verified_waiting_all_qa_gate",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "runtimeEdited": false,
+  "centralProgressEdited": false,
+  "reviewer": "AI agent audit_remaining_nov01",
+  "humanReviewers": 0,
+  "criteria": [
+    {
+      "id": "AUD-115",
+      "acceptanceUnchanged": "Un rapport récent relie chaque carte au SHA et prouve au moins une victoire et une défaite cohérentes.",
+      "acceptanceEvidenceSatisfied": true,
+      "recommendation": "eligible_for_closure_after_all_qa_gate",
+      "scope": "11 cartes réellement sélectionnées et parcourues jusqu’au boss et à la victoire assistée, puis11défaites contrôlées cohérentes, toutes sur e524. Six étapes physiques et cinq portes/objectifs pour chaque victoire ; état rendu/nettoyage vérifiés.",
+      "limitations": "Combats raccourcis par dégâts des vrais gestionnaires, marche assistée avec collisions, HP joueur misà0 pour la défaite. Aucune victoire naturelle, difficulté humaine, phase/caméra exhaustive ou fidélité1:1 certifiée.",
+      "evidence": {
+        "path": "docs/qa/continuation-final-20261101/accepted-paths-startups/complete-contexts-report.json",
+        "sha256": "2445ebca825b2a478a302140ce4aab58fb74e5608b3764f6e8dd72c222d07f83"
+      }
+    },
+    {
+      "id": "AUD-118",
+      "acceptanceUnchanged": "Une sauvegarde ancienne, partielle ou invalide ne bloque pas le lancement et n’efface pas silencieusement des trophées valides.",
+      "acceptanceEvidenceSatisfied": true,
+      "recommendation": "eligible_for_closure_after_all_qa_gate",
+      "scope": "5démarrages réels : compteurs historiques, registre v1partiel, version future, solde invalide, checkpoint malformé. Tous lancent une insertion visible à1000PV. Les4cas avec trophée conservent son nom et les octets ; le checkpoint refusé reste intact et renvoie au menu.",
+      "limitations": "Formats reconnus et repli protecteur exercés, sans promettre une conversion de tout ancien format inconnu ou une réparation silencieuse des données rejetées.",
+      "evidence": {
+        "path": "docs/qa/continuation-final-20261101/accepted-paths-startups/save-startup-report.json",
+        "sha256": "a48dd23c6f2b2511da5df435f1688cfb4ea78e3a836fdf7ed99488acbe180e61"
+      }
+    }
+  ],
+  "checksVerified": 207,
+  "checks": [
+    "paths_passed",
+    "paths_e524_build",
+    "paths_clean_build",
+    "paths_zero_errors",
+    "paths_dist_helpers_unchanged",
+    "paths_helper_pins",
+    "paths_helper_snapshot_0",
+    "paths_helper_snapshot_1",
+    "paths_helper_snapshot_2",
+    "paths_all_cases_passed",
+    "startups_passed",
+    "startups_e524_build",
+    "startups_clean_build",
+    "startups_zero_errors",
+    "startups_dist_helpers_unchanged",
+    "startups_helper_pins",
+    "startups_helper_snapshot_0",
+    "startups_helper_snapshot_1",
+    "startups_all_cases_passed",
+    "paths_22",
+    "paths_all_11_pairs",
+    "gunnison_forest_victory_correct_context",
+    "gunnison_forest_victory_actual_insertion",
+    "gunnison_forest_victory_real_cleanup",
+    "gunnison_forest_six_physical_stages",
+    "gunnison_forest_earned_route",
+    "gunnison_forest_height_steps",
+    "gunnison_forest_live_expected_boss",
+    "gunnison_forest_victory",
+    "gunnison_forest_victory_screenshot_exists",
+    "gunnison_forest_defeat_correct_context",
+    "gunnison_forest_defeat_actual_insertion",
+    "gunnison_forest_defeat_real_cleanup",
+    "gunnison_forest_defeat",
+    "gunnison_forest_defeat_screenshot_exists",
+    "xenomorph_prime_victory_correct_context",
+    "xenomorph_prime_victory_actual_insertion",
+    "xenomorph_prime_victory_real_cleanup",
+    "xenomorph_prime_six_physical_stages",
+    "xenomorph_prime_earned_route",
+    "xenomorph_prime_height_steps",
+    "xenomorph_prime_live_expected_boss",
+    "xenomorph_prime_victory",
+    "xenomorph_prime_victory_screenshot_exists",
+    "xenomorph_prime_defeat_correct_context",
+    "xenomorph_prime_defeat_actual_insertion",
+    "xenomorph_prime_defeat_real_cleanup",
+    "xenomorph_prime_defeat",
+    "xenomorph_prime_defeat_screenshot_exists",
+    "antarctic_pyramid_victory_correct_context",
+    "antarctic_pyramid_victory_actual_insertion",
+    "antarctic_pyramid_victory_real_cleanup",
+    "antarctic_pyramid_six_physical_stages",
+    "antarctic_pyramid_earned_route",
+    "antarctic_pyramid_height_steps",
+    "antarctic_pyramid_live_expected_boss",
+    "antarctic_pyramid_victory",
+    "antarctic_pyramid_victory_screenshot_exists",
+    "antarctic_pyramid_defeat_correct_context",
+    "antarctic_pyramid_defeat_actual_insertion",
+    "antarctic_pyramid_defeat_real_cleanup",
+    "antarctic_pyramid_defeat",
+    "antarctic_pyramid_defeat_screenshot_exists",
+    "la_rooftops_victory_correct_context",
+    "la_rooftops_victory_actual_insertion",
+    "la_rooftops_victory_real_cleanup",
+    "la_rooftops_six_physical_stages",
+    "la_rooftops_earned_route",
+    "la_rooftops_height_steps",
+    "la_rooftops_live_expected_boss",
+    "la_rooftops_victory",
+    "la_rooftops_victory_screenshot_exists",
+    "la_rooftops_defeat_correct_context",
+    "la_rooftops_defeat_actual_insertion",
+    "la_rooftops_defeat_real_cleanup",
+    "la_rooftops_defeat",
+    "la_rooftops_defeat_screenshot_exists",
+    "val_verde_jungle_victory_correct_context",
+    "val_verde_jungle_victory_actual_insertion",
+    "val_verde_jungle_victory_real_cleanup",
+    "val_verde_jungle_six_physical_stages",
+    "val_verde_jungle_earned_route",
+    "val_verde_jungle_height_steps",
+    "val_verde_jungle_live_expected_boss",
+    "val_verde_jungle_victory",
+    "val_verde_jungle_victory_screenshot_exists",
+    "val_verde_jungle_defeat_correct_context",
+    "val_verde_jungle_defeat_actual_insertion",
+    "val_verde_jungle_defeat_real_cleanup",
+    "val_verde_jungle_defeat",
+    "val_verde_jungle_defeat_screenshot_exists",
+    "romulus_station_victory_correct_context",
+    "romulus_station_victory_actual_insertion",
+    "romulus_station_victory_real_cleanup",
+    "romulus_station_six_physical_stages",
+    "romulus_station_earned_route",
+    "romulus_station_height_steps",
+    "romulus_station_live_expected_boss",
+    "romulus_station_victory",
+    "romulus_station_victory_screenshot_exists",
+    "romulus_station_defeat_correct_context",
+    "romulus_station_defeat_actual_insertion",
+    "romulus_station_defeat_real_cleanup",
+    "romulus_station_defeat",
+    "romulus_station_defeat_screenshot_exists",
+    "charon_rogue_base_victory_correct_context",
+    "charon_rogue_base_victory_actual_insertion",
+    "charon_rogue_base_victory_real_cleanup",
+    "charon_rogue_base_six_physical_stages",
+    "charon_rogue_base_earned_route",
+    "charon_rogue_base_height_steps",
+    "charon_rogue_base_live_expected_boss",
+    "charon_rogue_base_victory",
+    "charon_rogue_base_victory_screenshot_exists",
+    "charon_rogue_base_defeat_correct_context",
+    "charon_rogue_base_defeat_actual_insertion",
+    "charon_rogue_base_defeat_real_cleanup",
+    "charon_rogue_base_defeat",
+    "charon_rogue_base_defeat_screenshot_exists",
+    "game_preserve_planet_victory_correct_context",
+    "game_preserve_planet_victory_actual_insertion",
+    "game_preserve_planet_victory_real_cleanup",
+    "game_preserve_planet_six_physical_stages",
+    "game_preserve_planet_earned_route",
+    "game_preserve_planet_height_steps",
+    "game_preserve_planet_live_expected_boss",
+    "game_preserve_planet_victory",
+    "game_preserve_planet_victory_screenshot_exists",
+    "game_preserve_planet_defeat_correct_context",
+    "game_preserve_planet_defeat_actual_insertion",
+    "game_preserve_planet_defeat_real_cleanup",
+    "game_preserve_planet_defeat",
+    "game_preserve_planet_defeat_screenshot_exists",
+    "stargazer_facility_victory_correct_context",
+    "stargazer_facility_victory_actual_insertion",
+    "stargazer_facility_victory_real_cleanup",
+    "stargazer_facility_six_physical_stages",
+    "stargazer_facility_earned_route",
+    "stargazer_facility_height_steps",
+    "stargazer_facility_live_expected_boss",
+    "stargazer_facility_victory",
+    "stargazer_facility_victory_screenshot_exists",
+    "stargazer_facility_defeat_correct_context",
+    "stargazer_facility_defeat_actual_insertion",
+    "stargazer_facility_defeat_real_cleanup",
+    "stargazer_facility_defeat",
+    "stargazer_facility_defeat_screenshot_exists",
+    "prey_comanche_territory_victory_correct_context",
+    "prey_comanche_territory_victory_actual_insertion",
+    "prey_comanche_territory_victory_real_cleanup",
+    "prey_comanche_territory_six_physical_stages",
+    "prey_comanche_territory_earned_route",
+    "prey_comanche_territory_height_steps",
+    "prey_comanche_territory_live_expected_boss",
+    "prey_comanche_territory_victory",
+    "prey_comanche_territory_victory_screenshot_exists",
+    "prey_comanche_territory_defeat_correct_context",
+    "prey_comanche_territory_defeat_actual_insertion",
+    "prey_comanche_territory_defeat_real_cleanup",
+    "prey_comanche_territory_defeat",
+    "prey_comanche_territory_defeat_screenshot_exists",
+    "killer_of_killers_arena_victory_correct_context",
+    "killer_of_killers_arena_victory_actual_insertion",
+    "killer_of_killers_arena_victory_real_cleanup",
+    "killer_of_killers_arena_six_physical_stages",
+    "killer_of_killers_arena_earned_route",
+    "killer_of_killers_arena_height_steps",
+    "killer_of_killers_arena_live_expected_boss",
+    "killer_of_killers_arena_victory",
+    "killer_of_killers_arena_victory_screenshot_exists",
+    "killer_of_killers_arena_defeat_correct_context",
+    "killer_of_killers_arena_defeat_actual_insertion",
+    "killer_of_killers_arena_defeat_real_cleanup",
+    "killer_of_killers_arena_defeat",
+    "killer_of_killers_arena_defeat_screenshot_exists",
+    "five_exact_startups",
+    "legacy-counter-migration_playable_after_load",
+    "legacy-counter-migration_honor_raw_preserved_during_start",
+    "legacy-counter-migration_read_only_matches",
+    "legacy_balance",
+    "legacy-counter-migration_screenshot_exists",
+    "partial-version-one_playable_after_load",
+    "partial-version-one_honor_raw_preserved_during_start",
+    "partial-version-one_read_only_matches",
+    "partial-version-one_valid_trophy_retained",
+    "partial-version-one_partial_fields",
+    "partial-version-one_screenshot_exists",
+    "future-version-preserved_playable_after_load",
+    "future-version-preserved_honor_raw_preserved_during_start",
+    "future-version-preserved_read_only_matches",
+    "future-version-preserved_valid_trophy_retained",
+    "future-version-preserved_screenshot_exists",
+    "invalid-balance-preserved_playable_after_load",
+    "invalid-balance-preserved_honor_raw_preserved_during_start",
+    "invalid-balance-preserved_read_only_matches",
+    "invalid-balance-preserved_valid_trophy_retained",
+    "invalid-balance-preserved_screenshot_exists",
+    "malformed-operation-checkpoint_playable_after_load",
+    "malformed-operation-checkpoint_honor_raw_preserved_during_start",
+    "malformed-operation-checkpoint_read_only_matches",
+    "malformed-operation-checkpoint_valid_trophy_retained",
+    "malformed-operation-checkpoint_partial_fields",
+    "malformed-operation-checkpoint_safe_menu_raw_retained",
+    "malformed-operation-checkpoint_screenshot_exists",
+    "startup_manifest_integrity",
+    "repro_30_exact",
+    "repro_index_matches"
+  ],
+  "paths": [
+    {
+      "levelId": "gunnison_forest",
+      "expectedBoss": "predalien_queen",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "gunnison_forest",
+      "expectedBoss": "predalien_queen",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "xenomorph_prime",
+      "expectedBoss": "empress_matriarch",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "xenomorph_prime",
+      "expectedBoss": "empress_matriarch",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "antarctic_pyramid",
+      "expectedBoss": "xenomorph_queen",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "antarctic_pyramid",
+      "expectedBoss": "xenomorph_queen",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "la_rooftops",
+      "expectedBoss": "city_hunter_boss",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "la_rooftops",
+      "expectedBoss": "city_hunter_boss",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "expectedBoss": "jungle_hunter_boss",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "expectedBoss": "jungle_hunter_boss",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "romulus_station",
+      "expectedBoss": "the_offspring",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "romulus_station",
+      "expectedBoss": "the_offspring",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "charon_rogue_base",
+      "expectedBoss": "rogue_king_prime",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "charon_rogue_base",
+      "expectedBoss": "rogue_king_prime",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "game_preserve_planet",
+      "expectedBoss": "berserker_super_predator",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "game_preserve_planet",
+      "expectedBoss": "berserker_super_predator",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "stargazer_facility",
+      "expectedBoss": "ultimate_upgrade_predator",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "stargazer_facility",
+      "expectedBoss": "ultimate_upgrade_predator",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "prey_comanche_territory",
+      "expectedBoss": "feral_predator_boss",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "prey_comanche_territory",
+      "expectedBoss": "feral_predator_boss",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "killer_of_killers_arena",
+      "expectedBoss": "apex_gladiator_predator",
+      "outcome": "victory",
+      "status": "verified",
+      "physicalSectors": 6,
+      "displayedTitle": "VICTOIRE GLORIEUSE !",
+      "cleanupEmpty": true
+    },
+    {
+      "levelId": "killer_of_killers_arena",
+      "expectedBoss": "apex_gladiator_predator",
+      "outcome": "defeat",
+      "status": "verified",
+      "physicalSectors": null,
+      "displayedTitle": "CHASSE TERMINÉE",
+      "cleanupEmpty": true
+    }
+  ],
+  "startups": [
+    {
+      "id": "legacy-counter-migration",
+      "status": "verified",
+      "playableHp": 1000,
+      "protectedReadOnly": false,
+      "rawUnchangedDuringStart": true,
+      "validTrophyRetained": false
+    },
+    {
+      "id": "partial-version-one",
+      "status": "verified",
+      "playableHp": 1000,
+      "protectedReadOnly": false,
+      "rawUnchangedDuringStart": true,
+      "validTrophyRetained": true
+    },
+    {
+      "id": "future-version-preserved",
+      "status": "verified",
+      "playableHp": 1000,
+      "protectedReadOnly": true,
+      "rawUnchangedDuringStart": true,
+      "validTrophyRetained": true
+    },
+    {
+      "id": "invalid-balance-preserved",
+      "status": "verified",
+      "playableHp": 1000,
+      "protectedReadOnly": true,
+      "rawUnchangedDuringStart": true,
+      "validTrophyRetained": true
+    },
+    {
+      "id": "malformed-operation-checkpoint",
+      "status": "verified",
+      "playableHp": 1000,
+      "protectedReadOnly": false,
+      "rawUnchangedDuringStart": true,
+      "validTrophyRetained": true
+    }
+  ],
+  "reproducibility": {
+    "path": "docs/qa/continuation-final-20261101/reproducibility.json",
+    "sha256": "3c5ebb2165c4fba0b573b4ee4addbed60c2f130778fbaf375cab03ab6679797c",
+    "matchedFiles": 30
+  },
+  "originalReports": [
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/report.json",
+      "sha256": "2445ebca825b2a478a302140ce4aab58fb74e5608b3764f6e8dd72c222d07f83"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/save-startup-e524c2b/report.json",
+      "sha256": "a48dd23c6f2b2511da5df435f1688cfb4ea78e3a836fdf7ed99488acbe180e61"
+    }
+  ],
+  "screenshotFilesExistAndPinned": [
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/gunnison_forest-victory.png",
+      "sha256": "b0a135c57da124f5031febe0d8f1e64937ebf45fe075982d20f2581c6c2fdb14"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/gunnison_forest-defeat.png",
+      "sha256": "a4962be9e14b026d3a567cadeb12114219e4661f44c6a045cfc618b9ee613da5"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/xenomorph_prime-victory.png",
+      "sha256": "919cc07fd5dacc5f612d850d7b3d44e461880913ed0506391daa882ed2b18296"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/xenomorph_prime-defeat.png",
+      "sha256": "073b09a65988da7b5c06476ccdf772c3c214a162556954c208acefac968112fb"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/antarctic_pyramid-victory.png",
+      "sha256": "b0e9ff48d40066fd7e3d3099b9a081b31a4590c1edb92dc3116a300f9bdf80f1"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/antarctic_pyramid-defeat.png",
+      "sha256": "a988aecdc4dea3e51160b72273dba48d50e69b9e9a5e0279863f818accbeb994"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/la_rooftops-victory.png",
+      "sha256": "c928026c6126439c37dc7a638a1ed1a1d5cc06193e8260206e5a25205c106f2c"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/la_rooftops-defeat.png",
+      "sha256": "0e7de463e652593506f75a1c1dfac7c3f4e15ba650c194396c956e24795a5859"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/val_verde_jungle-victory.png",
+      "sha256": "138ff7906f53901dac3e96ec07bbb4207a50ebc400a37b240d636df11caa79ea"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/val_verde_jungle-defeat.png",
+      "sha256": "2f46f40bf5422e50687a3b7b579b14720367b70ae478a09114eda53607341a6e"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/romulus_station-victory.png",
+      "sha256": "e8eba3562fd138ca2e3e96609cbaa85917b879a327c4f76004a46509b9bb10f4"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/romulus_station-defeat.png",
+      "sha256": "d4b38d03857983b1d38c009b5fecc19e9623425dea790f010579e7d9888385ef"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/charon_rogue_base-victory.png",
+      "sha256": "9c93f15342cdecf5c0f75e10c411ad7dbb76222f5d20049e0aed646c127ec0cd"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/charon_rogue_base-defeat.png",
+      "sha256": "774db544a6a46c115cf7f81a64dc5629b00b3309187dad386ef559f312fc825c"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/game_preserve_planet-victory.png",
+      "sha256": "247e20f7803784f50be06bbca62fdde59395ff1a3c52f1fbea0b17fa97ef84fd"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/game_preserve_planet-defeat.png",
+      "sha256": "a6deda23c50b739b62d71a155cf6188ea8809ec5a52d09e487b3025f7e271061"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/stargazer_facility-victory.png",
+      "sha256": "006deb1afd7cf2e76cd5ef244b11ae3f5c308b1018e6094fd1292db4b3db8e50"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/stargazer_facility-defeat.png",
+      "sha256": "4de42e685d1788bd3e2efeca1c15899d75debb78748d5f5716bbb730d3820ee0"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/prey_comanche_territory-victory.png",
+      "sha256": "189cead00d1838c2f8a32132e7fbc35d250e5957d6318c56400606d99436236f"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/prey_comanche_territory-defeat.png",
+      "sha256": "a6c3142196fbdf3b55d79faebe668f28fa66e66fcbf5789b71628bd9356140ec"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/killer_of_killers_arena-victory.png",
+      "sha256": "fb76d50347fefcd9dec09c79138f3888fa49d48bf29be1d671c2bdf172074f79"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/complete-contexts-e524c2b/killer_of_killers_arena-defeat.png",
+      "sha256": "c1f7711d65b68b1a30363e8390ce0687e7f5a07b7e3cd871b6843757ff5f17cf"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/save-startup-e524c2b/legacy-counter-migration.png",
+      "sha256": "58d01e95e2910a13ae5b76f39f24e0b3f34381ad1d5869f7f72da166c8186828"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/save-startup-e524c2b/partial-version-one.png",
+      "sha256": "0dd97c99af10e04dc5e47072cd10d0eee37cc6f72eb6dd5c0ee1c2a8d4f18f58"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/save-startup-e524c2b/future-version-preserved.png",
+      "sha256": "fd55ee1bd763f93d30f8fa53675f3b611f1b4ea22831f30599d3c3c619d8643d"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/save-startup-e524c2b/invalid-balance-preserved.png",
+      "sha256": "0e7f1a3d7f4565d5044ee161e63aadea3986bd9c026c0d7a8e320cd1dbe18785"
+    },
+    {
+      "sourcePath": "/workspace/qa/continuation-final-20261101/save-startup-e524c2b/malformed-operation-checkpoint.png",
+      "sha256": "6dbc9344d0206d3261df417e4d49a3fa8c253a3960c00271506ce03937ad53c9"
+    }
+  ],
+  "visualScreenshotReview": "Not performed by this integrity review; screenshots are pinned as artifacts, not described as visually inspected.",
+  "errors": {
+    "javascript": 0,
+    "failedRequests": 0,
+    "externalRequests": 0
+  },
+  "scopeOfGate": "Streaming/UI/factions browser and final CPU suite remain separate pending proofs; this partial review authorizes no central status mutation by itself."
+}

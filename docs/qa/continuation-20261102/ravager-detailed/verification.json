@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_targeted_cpu_working_tree",
+  "testedAt": "2026-11-02T04:28:17.509916+00:00",
+  "baseCommit": "51856cb",
+  "gitHeadObservedAtArchive": "51856cbb570ab1b9f92174a85f184bc41db03303",
+  "sourceTreeDirtyDuringTargetedRun": true,
+  "testsPassed": 47,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "durationMs": 21074.19513,
+  "command": "node --test --test-concurrency=1 tests/extinction-ravager-detailed.test.js tests/extinction-carrier-cargo.test.js tests/sniper-plasma-cover.test.js tests/source-specialist-combat.test.js tests/hunter-combat-routing.test.js",
+  "log": "docs/qa/continuation-20261102/ravager-detailed/targeted-tests.txt",
+  "logSha256": "4d8a7aa66f126c488b66a923d947a55d7add017935ea3eef29958b8745bc831b",
+  "sources": [
+    {
+      "path": "js/battlefield/ExtinctionRavagerRegenesis.js",
+      "sha256": "4a722042b0bf8d70c160c3c5c2dcac88ed0fb8c725c43395bac1184b160126b2"
+    },
+    {
+      "path": "js/battlefield/BattleSimulation.js",
+      "sha256": "a906eccecf25338af15b8ec9c5a2d0beee916df606228ee1636b8a0a62a5c3cb"
+    },
+    {
+      "path": "js/battlefield/BattleActorBridge.js",
+      "sha256": "37235a45a47e5fc7572e332ee0dcc8c52430db56d6c0ac3a2469ed1ff26cdd44"
+    },
+    {
+      "path": "js/engine/BattleActorSupport.js",
+      "sha256": "a56c12ff61875532110dfa78d252e41449d512a3cf5d83f58fcf266a8f1887b3"
+    },
+    {
+      "path": "js/entities/XenomorphHorde.js",
+      "sha256": "29540a3b4d7622b08e51ba03bfe15464c352d958bd7f296058c65de56923414a"
+    },
+    {
+      "path": "js/graphics/RavagerCatalepsyPose.js",
+      "sha256": "9aaae9e50151576e35f26bcc61f16a85bd62eb9eb97a04598d0d6eb19937f1f5"
+    },
+    {
+      "path": "js/battlefield/ExtinctionBattleVariant.js",
+      "sha256": "2f88f1f85852686e6818afca4560cde9a1606c8ceb50f97ffd3f5a95bd6e1ae8"
+    },
+    {
+      "path": "tests/extinction-ravager-detailed.test.js",
+      "sha256": "6b2424da16413d6ae92368ec8e6b45e7797559d9a1b523a25a7274a7e476ad42"
+    }
+  ],
+  "verified": [
+    "Real signed detailed Ravager shares the existing strategic twelve-second catalepsy and one spent-upgrade flag.",
+    "Real Horde melee and NPC targetView route damage through the same owner. Typed fire finishes an existing phase once; excessive damage and unsigned profiles do not receive a free recovery.",
+    "Same allocated ID and collision root persist; no actor, soldier or cargo added. Local visual pivot falls onto the collision-root floor and its get-up returns to rest.",
+    "An active phase may save as active, then restores distant with the same original deadline and spent state. Invalid premature healed catalepsy HP is rejected.",
+    "Pause, delta0, dematerialization and cleanup preserve owner state; legacy direct HP loss is settled before death.",
+    "Net and stun clocks advance independently of acquisition; net damage uses only the remaining entanglement duration.",
+    "Existing Carrier cargo9 tests, Sniper17, source specialists9 and P1/P2 combat routing5 all pass."
+  ],
+  "limits": [
+    "CPU/component fixtures, not a rendered browser run or human playtest.",
+    "The fixture isolates an actually allocated survivor after seven recorded prior group casualties; other groups remain in the real simulation but refuse new detail projections.",
+    "Component navigation and line-of-sight are explicit unobstructed fixture stubs; real terrain and HUD checks belong to the root browser QA.",
+    "Colossal Resilience is available only in an explicitly signed scenario profile; Queen purchase/economy is not implemented.",
+    "Pose is original procedural fall/get-up animation, not source capture or fidelity1:1.",
+    "The scenario keeps six preallocated Carrier passengers even where the signed upgraded maximum capacity is twelve."
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false
+}

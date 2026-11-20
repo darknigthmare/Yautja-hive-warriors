@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: consumed pickups and cauldron survive a reconstructed scene without refunds, inventory gains or replayed damage
+ok 1 - consumed pickups and cauldron survive a reconstructed scene without refunds, inventory gains or replayed damage
+  ---
+  duration_ms: 4.93755
+  type: 'test'
+  ...
+# Subtest: powder fire restores only its remaining lifetime and damage, never the blast or an exhausted fire
+ok 2 - powder fire restores only its remaining lifetime and damage, never the blast or an exhausted fire
+  ---
+  duration_ms: 7.146638
+  type: 'test'
+  ...
+# Subtest: Sarii keeps the second owner, order, wounds and cooldown without healing, recruiting again or transferring ownership
+ok 3 - Sarii keeps the second owner, order, wounds and cooldown without healing, recruiting again or transferring ownership
+  ---
+  duration_ms: 0.761979
+  type: 'test'
+  ...
+# Subtest: expired camouflage is not refreshed while either restored player remains inside the same mud entry
+ok 4 - expired camouflage is not refreshed while either restored player remains inside the same mud entry
+  ---
+  duration_ms: 0.763608
+  type: 'test'
+  ...
+# Subtest: profile, props, ownership and numeric checkpoint defects are rejected atomically before consuming or creating anything
+ok 5 - profile, props, ownership and numeric checkpoint defects are rejected atomically before consuming or creating anything
+  ---
+  duration_ms: 1.123613
+  type: 'test'
+  ...
+# Subtest: checkpoint cancels transient laser guidance like discarded boss projectiles without arming a shot or awarding stock
+ok 6 - checkpoint cancels transient laser guidance like discarded boss projectiles without arming a shot or awarding stock
+  ---
+  duration_ms: 0.340779
+  type: 'test'
+  ...
+# Subtest: Adolini uses facing, finite range and the real cover ray; a consumed miss cannot hit a distant boss later
+ok 7 - Adolini uses facing, finite range and the real cover ray; a consumed miss cannot hit a distant boss later
+  ---
+  duration_ms: 6.748287
+  type: 'test'
+  ...
+# Subtest: Adolini selects the first visible hostile body and routes NPC/boss deaths once through actual managers
+ok 8 - Adolini selects the first visible hostile body and routes NPC/boss deaths once through actual managers
+  ---
+  duration_ms: 2.747823
+  type: 'test'
+  ...
+# Subtest: bow and axe pickups equip their own resource, clamp stocks and preserve refused pickups
+ok 9 - bow and axe pickups equip their own resource, clamp stocks and preserve refused pickups
+  ---
+  duration_ms: 1.941575
+  type: 'test'
+  ...
+# Subtest: flower, grizzly, medicine and Feral rack announce observed bounded resources without score/plasma substitutes
+ok 10 - flower, grizzly, medicine and Feral rack announce observed bounded resources without score/plasma substitutes
+  ---
+  duration_ms: 3.193587
+  type: 'test'
+  ...
+# Subtest: powder blast and fire use distinct radii, actual NPC/boss damage, cover, diplomacy and one ignition
+ok 11 - powder blast and fire use distinct radii, actual NPC/boss damage, cover, diplomacy and one ignition
+  ---
+  duration_ms: 3.966916
+  type: 'test'
+  ...
+# Subtest: powder fire damage clips the last timestep at expiration at30/60/120Hz and frees its owned mesh
+ok 12 - powder fire damage clips the last timestep at expiration at30/60/120Hz and frees its owned mesh
+  ---
+  duration_ms: 15.510754
+  type: 'test'
+  ...
+# Subtest: the cauldron hits actual Horde actor shape and manager death ledger, within7.5U and behind no cover
+ok 13 - the cauldron hits actual Horde actor shape and manager death ledger, within7.5U and behind no cover
+  ---
+  duration_ms: 0.958579
+  type: 'test'
+  ...
+# Subtest: mud is once per actual-volume entry per cooperative player, and pause/zero delta cannot consume or age interactions
+ok 14 - mud is once per actual-volume entry per cooperative player, and pause/zero delta cannot consume or age interactions
+  ---
+  duration_ms: 0.795946
+  type: 'test'
+  ...
+# Subtest: Sarii joins once without futuristic loot, accepts explicit orders and cannot be stolen by the second player
+ok 15 - Sarii joins once without futuristic loot, accepts explicit orders and cannot be stolen by the second player
+  ---
+  duration_ms: 1.644458
+  type: 'test'
+  ...
+# Subtest: wounds force a persistent retreat without repeated withdrawal events or unlimited automatic healing
+ok 16 - wounds force a persistent retreat without repeated withdrawal events or unlimited automatic healing
+  ---
+  duration_ms: 6.245762
+  type: 'test'
+  ...
+# Subtest: guard bites one hostile target on a finite cadence at30/60/120fps, while following and allied actors receive no free damage
+ok 17 - guard bites one hostile target on a finite cadence at30/60/120fps, while following and allied actors receive no free damage
+  ---
+  duration_ms: 3.500894
+  type: 'test'
+  ...
+# Subtest: the three-laser bone mask arms a real projectile trap and never applies instant boss damage
+ok 18 - the three-laser bone mask arms a real projectile trap and never applies instant boss damage
+  ---
+  duration_ms: 1.505114
+  type: 'test'
+  ...
+# Subtest: the origin of another biome cannot grant Prey mud camouflage without an actual mud basin
+ok 19 - the origin of another biome cannot grant Prey mud camouflage without an actual mud basin
+  ---
+  duration_ms: 1.355943
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 477.129534

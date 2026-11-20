@@ -1,0 +1,99 @@
+{
+  "baseCommit": "03f37b4",
+  "scope": [
+    "AUD-053",
+    "AUD-094",
+    "AUD-099",
+    "AUD-103"
+  ],
+  "status": "implemented_cpu_verified_browser_pending",
+  "tests": {
+    "command": "node --test --test-concurrency=1 tests/tactical-presentation.test.js tests/accessibility-preferences.test.js tests/command-map-coop-selection.test.js tests/hive-coordination-feedback.test.js tests/battle-debrief.test.js tests/clan-recognition.test.js tests/battle-campaign-record.test.js",
+    "passed": 35,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "proof": "docs/qa/continuation-20261101/ui/tests-hud.txt"
+  },
+  "guides": [
+    {
+      "id": "input-systems",
+      "sourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9"
+    },
+    {
+      "id": "game-ui-ux",
+      "sourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9"
+    }
+  ],
+  "files": [
+    {
+      "path": "js/ui/TacticalPresentation.js",
+      "sha256": "39640f6277ea6cd24c1cfd0ce7459c20293b72336688af0c45f9c4e7f2ad7c5c"
+    },
+    {
+      "path": "js/ui/CommandMap.js",
+      "sha256": "5ee733572a292b64878c1bf9913520c60e6174638ca83f05e9e5536d78b27a5e"
+    },
+    {
+      "path": "js/ui/AccessibilityPreferences.js",
+      "sha256": "b63041f64e429c1e1bc50b71e171cffbec475b6a7f35cbdadc6ccfe1ece58cde"
+    },
+    {
+      "path": "js/ui/OperationPanel.js",
+      "sha256": "bc8acdd4c38a4d6b532a84ccdc98fc3e69deaeb66e1e90126fa73b3ed942b627"
+    },
+    {
+      "path": "js/ui/OperationBriefing.js",
+      "sha256": "a69450f6e5fce082b42d685a0bd0856476d484bdfafce1c9d4a3ebbeb6a7b332"
+    },
+    {
+      "path": "js/ui/UIManager.js",
+      "sha256": "ef509b15eadabb47424fd65bfb98487ae3fca666d2e7df6db7a0b944f2e908bf"
+    },
+    {
+      "path": "css/styles.css",
+      "sha256": "369cfbc07c60147ea44a2929db49f45a635b2931cc76ad65344edaa1c787b86d"
+    },
+    {
+      "path": "index.html",
+      "sha256": "35a518abde3ff5b40f83ae6c3809ec9e775c3cfc50531670cbbbda64e94e8060"
+    },
+    {
+      "path": "tests/tactical-presentation.test.js",
+      "sha256": "2455fa7c160499bf5d93da034c90d0570fd19962b01f672389b6e15a56d640f0"
+    },
+    {
+      "path": "tests/command-map-coop-selection.test.js",
+      "sha256": "8a9f0879c7622c15d8dd313cd45632d2b7bae3ab0433ee1098261c0cd7de8a60"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/ui/tests.txt",
+      "sha256": "7a9f6e1e698bc4d1c082019dc59f00b095c91156c5f3498bd530b32cb1599e07"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/ui/tests-hud.txt",
+      "sha256": "2e36aea02bed8353c29bd2af194de5f382ab553a38d2c650616277f43f46ce42"
+    },
+    {
+      "path": "tests/operation-minimap-accessibility.test.js",
+      "sha256": "4b9d865d3e5106e63e6d2915c7ca356f719aa84a7768e372bd13a8970d9b4e9a"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/ui/tests-minimap.txt",
+      "sha256": "354df2fd6a49b443f7794b94a2870b6837b2847cb0e6000850ed7c2ca396276e"
+    }
+  ],
+  "limitations": [
+    "No browser or build executed by this agent; integrated validation belongs to coordinator.",
+    "No human reading or color-vision profile test claimed.",
+    "Route duration is theoretical front-to-front route travelSeconds, not a guarantee of actor arrival during combat.",
+    "Uncertainty halo is screen-space presentation, not a predicted precise world-space position.",
+    "No source audit/Excel criteria or completion status changed."
+  ],
+  "minimapRegression": {
+    "passed": 13,
+    "failed": 0,
+    "proof": "docs/qa/continuation-20261101/ui/tests-minimap.txt",
+    "command": "node --test tests/operation-minimap-accessibility.test.js tests/accessibility-preferences.test.js tests/battlefield-hud.test.js"
+  }
+}

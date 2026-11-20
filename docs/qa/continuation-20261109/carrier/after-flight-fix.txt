@@ -1,0 +1,14 @@
+✔ Carrier autonomously reaches its defended front and launches one of its six existing IDs (2789.061421ms)
+✔ the full Horde→Bridge synchronization preserves the real airborne arc until safe-floor contact (33.091214ms)
+✔ a nearby hunter outside the defend/formation radius is not acquired just to force a Carrier launch (18.888603ms)
+✔ real physical cover rejects autonomous launch without spending any of the allocated cargo (49.725948ms)
+✔ autonomous enhanced Carrier still consumes six original payload IDs rather than filling capacity twelve (58.747299ms)
+✔ Bridge cleanup restores the borrowed Carrier callback and removes the launched projection without a death (24.891186ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3155.26588

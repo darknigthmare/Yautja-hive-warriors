@@ -1,0 +1,5 @@
+{"stage":"case_start","id":"carrier-autonomous-main-update-flight","at":"2026-11-09T04:46:04.487Z"}
+{"stage":"case_complete","id":"carrier-autonomous-main-update-flight","status":"passed","at":"2026-11-09T04:46:43.410Z"}
+{"stage":"case_start","id":"ravager-checkpoint-phase-recovery-fire","at":"2026-11-09T04:46:43.412Z"}
+{"stage":"case_complete","id":"ravager-checkpoint-phase-recovery-fire","status":"failed","at":"2026-11-09T04:50:08.003Z"}
+{"status":"failed","cases":[{"id":"carrier-autonomous-main-update-flight","status":"passed"},{"id":"ravager-checkpoint-phase-recovery-fire","status":"failed"}],"errors":0,"failedRequests":0,"distUnchanged":true,"helperSourcesUnchanged":true,"browserClosed":true,"report":"/workspace/qa/continuation-20261109/runtime-94630d8-r4/report.json"}

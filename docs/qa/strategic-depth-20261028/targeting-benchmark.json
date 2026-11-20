@@ -1,0 +1,345 @@
+{
+  "version": 2,
+  "startedAt": "2026-10-28T08:31:27.886Z",
+  "scope": "CPU strategic ticks and real detailed manager updates; procedural meshes, no WebGL, GPU timing, FPS or human certification",
+  "seed": 20528,
+  "hardwareCertified": false,
+  "node": "v24.19.0",
+  "remote": [
+    {
+      "units": 512,
+      "fixedTicks": 240,
+      "runs": [
+        {
+          "totalMs": 95.02753499999997,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": {
+            "groupVisits": 64,
+            "attackerVisits": 512,
+            "targetCandidateEntries": 512,
+            "attacksResolved": 512,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 56.93661700000007,
+          "remoteCombatShare": 0.5991591489771895
+        },
+        {
+          "totalMs": 60.29592100000002,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": {
+            "groupVisits": 64,
+            "attackerVisits": 512,
+            "targetCandidateEntries": 512,
+            "attacksResolved": 512,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 35.803074999999126,
+          "remoteCombatShare": 0.5937893377563486
+        },
+        {
+          "totalMs": 65.97249499999998,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": {
+            "groupVisits": 64,
+            "attackerVisits": 512,
+            "targetCandidateEntries": 512,
+            "attacksResolved": 512,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 40.85428999999999,
+          "remoteCombatShare": 0.6192624668810843
+        },
+        {
+          "totalMs": 59.01941099999999,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": {
+            "groupVisits": 64,
+            "attackerVisits": 512,
+            "targetCandidateEntries": 512,
+            "attacksResolved": 512,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 36.459953999999925,
+          "remoteCombatShare": 0.6177620783101331
+        },
+        {
+          "totalMs": 59.78962299999995,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": {
+            "groupVisits": 64,
+            "attackerVisits": 512,
+            "targetCandidateEntries": 512,
+            "attacksResolved": 512,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 37.30573199999981,
+          "remoteCombatShare": 0.6239499452940159
+        }
+      ],
+      "medianMs": 60.29592100000002,
+      "medianRemoteCombatShare": 0.6177620783101331
+    },
+    {
+      "units": 1024,
+      "fixedTicks": 240,
+      "runs": [
+        {
+          "totalMs": 123.10907300000008,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": {
+            "groupVisits": 128,
+            "attackerVisits": 1024,
+            "targetCandidateEntries": 1024,
+            "attacksResolved": 1024,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 76.57906400000161,
+          "remoteCombatShare": 0.6220424062489818
+        },
+        {
+          "totalMs": 106.73089100000016,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": {
+            "groupVisits": 128,
+            "attackerVisits": 1024,
+            "targetCandidateEntries": 1024,
+            "attacksResolved": 1024,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 68.50342199999955,
+          "remoteCombatShare": 0.6418331315157806
+        },
+        {
+          "totalMs": 109.13488299999995,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": {
+            "groupVisits": 128,
+            "attackerVisits": 1024,
+            "targetCandidateEntries": 1024,
+            "attacksResolved": 1024,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 68.11451200000147,
+          "remoteCombatShare": 0.624131442922805
+        },
+        {
+          "totalMs": 104.78984600000013,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": {
+            "groupVisits": 128,
+            "attackerVisits": 1024,
+            "targetCandidateEntries": 1024,
+            "attacksResolved": 1024,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 66.84044000000108,
+          "remoteCombatShare": 0.6378522590824401
+        },
+        {
+          "totalMs": 118.9055400000002,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": {
+            "groupVisits": 128,
+            "attackerVisits": 1024,
+            "targetCandidateEntries": 1024,
+            "attacksResolved": 1024,
+            "scope": "last fixed strategic tick; operation counts, not hardware frame time"
+          },
+          "remoteCombatMs": 75.80476300000169,
+          "remoteCombatShare": 0.6375208674045091
+        }
+      ],
+      "medianMs": 109.13488299999995,
+      "medianRemoteCombatShare": 0.6375208674045091
+    }
+  ],
+  "detailed": [
+    {
+      "actors": 16,
+      "runs": [
+        {
+          "actors": 16,
+          "detailedCap": 32,
+          "frames": 2400,
+          "managersMs": 104.12301300000036,
+          "targetSearch": {
+            "sampledMicroseconds": 56369,
+            "totalSampledMicroseconds": 168469,
+            "share": 0.33459568229169756,
+            "selectedSamples": 326,
+            "samples": 612
+          },
+          "targetSelectionHash": "17964fb8c255b8ba5e02dd36d05c0fa2f253b7307b3eefe1d2b95fe6be298472",
+          "stateHash": "c7b76ffbe2ba1a1066fbd5a221661951d77888967576839c9893be3d65bf7335",
+          "actorsStillAlive": 16
+        },
+        {
+          "actors": 16,
+          "detailedCap": 32,
+          "frames": 2400,
+          "managersMs": 103.28393300000062,
+          "targetSearch": {
+            "sampledMicroseconds": 47681,
+            "totalSampledMicroseconds": 155265,
+            "share": 0.30709432260973174,
+            "selectedSamples": 259,
+            "samples": 579
+          },
+          "targetSelectionHash": "17964fb8c255b8ba5e02dd36d05c0fa2f253b7307b3eefe1d2b95fe6be298472",
+          "stateHash": "c7b76ffbe2ba1a1066fbd5a221661951d77888967576839c9893be3d65bf7335",
+          "actorsStillAlive": 16
+        }
+      ],
+      "medianManagersMs": 104.12301300000036,
+      "maximumTargetSearchShare": 0.33459568229169756
+    },
+    {
+      "actors": 32,
+      "runs": [
+        {
+          "actors": 32,
+          "detailedCap": 32,
+          "frames": 2400,
+          "managersMs": 187.69378000000142,
+          "targetSearch": {
+            "sampledMicroseconds": 103524,
+            "totalSampledMicroseconds": 242955,
+            "share": 0.42610359943199355,
+            "selectedSamples": 610,
+            "samples": 1112
+          },
+          "targetSelectionHash": "41f5367745c3c3b3d8f6bcd2533fa33643fdc3bbb8898884c0c07927d0c2722a",
+          "stateHash": "ff72cc25f1849d39e7d9c6049ca31572522959ba49e0f8cbf81edf0466608acd",
+          "actorsStillAlive": 32
+        },
+        {
+          "actors": 32,
+          "detailedCap": 32,
+          "frames": 2400,
+          "managersMs": 176.14673200000107,
+          "targetSearch": {
+            "sampledMicroseconds": 96040,
+            "totalSampledMicroseconds": 275216,
+            "share": 0.3489622696354863,
+            "selectedSamples": 560,
+            "samples": 1002
+          },
+          "targetSelectionHash": "41f5367745c3c3b3d8f6bcd2533fa33643fdc3bbb8898884c0c07927d0c2722a",
+          "stateHash": "ff72cc25f1849d39e7d9c6049ca31572522959ba49e0f8cbf81edf0466608acd",
+          "actorsStillAlive": 32
+        }
+      ],
+      "medianManagersMs": 187.69378000000142,
+      "maximumTargetSearchShare": 0.42610359943199355
+    }
+  ],
+  "baseline": [
+    {
+      "units": 512,
+      "runs": [
+        {
+          "totalMs": 118.40439400000002,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": null,
+          "remoteCombatMs": 91.85999900000058,
+          "remoteCombatShare": 0.7758157944712809
+        },
+        {
+          "totalMs": 101.85502599999995,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": null,
+          "remoteCombatMs": 80.90862700000014,
+          "remoteCombatShare": 0.7943508551065529
+        },
+        {
+          "totalMs": 89.05852200000004,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": null,
+          "remoteCombatMs": 71.92436199999906,
+          "remoteCombatShare": 0.8076078558770494
+        },
+        {
+          "totalMs": 97.91374600000006,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": null,
+          "remoteCombatMs": 77.21988999999996,
+          "remoteCombatShare": 0.7886521878143639
+        },
+        {
+          "totalMs": 96.71519999999998,
+          "hash": "47da91da71639243f37b2e9647d77a4e7f0fe344a3b7dd3f15a92eb17ba54b3a",
+          "counters": null,
+          "remoteCombatMs": 76.45064500000092,
+          "remoteCombatShare": 0.790471869985286
+        }
+      ],
+      "medianMs": 97.91374600000006
+    },
+    {
+      "units": 1024,
+      "runs": [
+        {
+          "totalMs": 200.863922,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": null,
+          "remoteCombatMs": 162.52710799999818,
+          "remoteCombatShare": 0.8091403691699208
+        },
+        {
+          "totalMs": 178.14359799999988,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": null,
+          "remoteCombatMs": 143.22585800000138,
+          "remoteCombatShare": 0.803991047716469
+        },
+        {
+          "totalMs": 177.38337899999988,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": null,
+          "remoteCombatMs": 144.01328000000012,
+          "remoteCombatShare": 0.8118758409715502
+        },
+        {
+          "totalMs": 189.9108339999998,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": null,
+          "remoteCombatMs": 155.7290130000015,
+          "remoteCombatShare": 0.8200112111560821
+        },
+        {
+          "totalMs": 179.72578900000008,
+          "hash": "50d22d67e48fded1574726a0c1e2595768abbef1f5ca4cfcfedf951a1368f97d",
+          "counters": null,
+          "remoteCombatMs": 145.402159999996,
+          "remoteCombatShare": 0.8090222377601911
+        }
+      ],
+      "medianMs": 179.72578900000008
+    }
+  ],
+  "baselineSourceSha256": "39ee580b46dfbc457b053c34fc791bdb5a9a86596acaa08045f1fd3b25f87393",
+  "sourceHashesBefore": {
+    "js/battlefield/BattleSimulation.js": "ea83d6368d93efde22826dcc1113b84526806198a9adf8652fee27f02ff4a487",
+    "js/battlefield/BattleIntel.js": "14c6d2cf718e80b35fa843618fc883a1704250bba0b35b158ef9109b132f7ec8",
+    "js/engine/BattleActorSupport.js": "9e83d1dcc1b004ba04170d845c8b362712d008b1bdb37b89e721065b908d7370",
+    "js/entities/XenomorphHorde.js": "847f24a0f77d48331ed05c42f198622617b5188fbbd383852729dc2cddbf60cc",
+    "js/entities/ColonialMarines.js": "a5f07ca6f95caa22ad0babcefda7ce96bbfac575907f057a1d4aefb5b73bc395"
+  },
+  "remoteDoublingRatio": 1.8099878265397076,
+  "detailedDoublingRatio": 1.8026157195431982,
+  "sourceHashesAfter": {
+    "js/battlefield/BattleSimulation.js": "ea83d6368d93efde22826dcc1113b84526806198a9adf8652fee27f02ff4a487",
+    "js/battlefield/BattleIntel.js": "14c6d2cf718e80b35fa843618fc883a1704250bba0b35b158ef9109b132f7ec8",
+    "js/engine/BattleActorSupport.js": "9e83d1dcc1b004ba04170d845c8b362712d008b1bdb37b89e721065b908d7370",
+    "js/entities/XenomorphHorde.js": "847f24a0f77d48331ed05c42f198622617b5188fbbd383852729dc2cddbf60cc",
+    "js/entities/ColonialMarines.js": "a5f07ca6f95caa22ad0babcefda7ce96bbfac575907f057a1d4aefb5b73bc395"
+  },
+  "sourceUnchangedDuringMeasurement": true,
+  "status": "passed",
+  "completedAt": "2026-10-28T08:31:38.427Z",
+  "detailedTargetSearchBelowHalfInMeasuredRuns": true,
+  "measurementScope": {
+    "remoteCombat": "entire _remoteCombat phase including target selection, damage, HP and death updates",
+    "detailedTargetSearch": "inspector inclusive selectBattleTarget share of actual Horde/Marine manager updates"
+  }
+}

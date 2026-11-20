@@ -1,0 +1,28 @@
+{
+  "status": "passed_local_integrity_and_final_qa",
+  "releaseProfile": "continuation-20261102",
+  "startedAt": "2026-11-02T06:09:46.806Z",
+  "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "index_sha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+  "build_info_sha256": "0e70fd73c5d5cefa8e3499834d70975b024834b2be83345edf4eecbdd351a5bc",
+  "stage": "/workspace/qa/continuation-20261102/vercel-static-prebuilt",
+  "promotion_executed": false,
+  "deployment_id": null,
+  "submission_attempted": false,
+  "remoteActionsExecuted": false,
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "globalQa": {
+    "passed": true,
+    "cpuPassed": 1390,
+    "regressionPassed": 15,
+    "runtimeChecksPassed": 33,
+    "path": "/workspace/Yautja-continue-20261102/docs/qa/continuation-20261102-validation.json",
+    "sha256": "c5d4091639d4cdc6f48d550c3c691e030ac80b96e01b732c5ba7be1635fd0ceb"
+  },
+  "sourceCommitIsAncestorOfRelease": true,
+  "localFilesVerified": 30,
+  "localModelsVerified": 12,
+  "localBundlesVerified": 5,
+  "updatedAt": "2026-11-02T06:09:48.055Z"
+}

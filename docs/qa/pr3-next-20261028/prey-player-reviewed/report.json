@@ -1,0 +1,61 @@
+{
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "--test",
+    "--test-concurrency=1",
+    "tests/prey-player-equipment.test.js",
+    "tests/prey-reference-interactions.test.js",
+    "tests/prey-interaction-contracts.test.js",
+    "tests/hunter-reference-combat.test.js",
+    "tests/operation-player-state.test.js",
+    "tests/player-laser-grounding.test.js"
+  ],
+  "exitCode": 0,
+  "durationSeconds": 27.115,
+  "stableSources": true,
+  "hashesBefore": {
+    "js/entities/Player.js": "5c694b9306085aea146b6c1f7377a3fe8962021ce2c057df99197b54064851c8",
+    "js/graphics/PreyEquipment.js": "0a5b1ece5cc834b543e9095f33102ce060a966a69945def2c856f1eb7c47ee94",
+    "js/entities/ReferenceEnvironmentMechanisms.js": "c3c86679657565a942c950f325e93dd8275b162204563be0c261e7e970b21fc1",
+    "js/entities/Environment.js": "7282849b2ed0c54aed9855d7c25ab6f90cb0dba708912f93ffedacfd1a55fbe9",
+    "js/entities/ReferenceWalkSurfaces.js": "7c3236b91aa5658db7a086762c2978f3cdd114b7551ee2b6f9de84e41b94e489",
+    "js/entities/Bosses.js": "24e50d8194073db556b11c6de31ee81607f5dceb0bf641d2d7691f4a18ab12b4",
+    "js/entities/XenomorphHorde.js": "847f24a0f77d48331ed05c42f198622617b5188fbbd383852729dc2cddbf60cc",
+    "js/engine/BattleActorSupport.js": "9e83d1dcc1b004ba04170d845c8b362712d008b1bdb37b89e721065b908d7370",
+    "js/battlefield/OperationPlayerState.js": "9d0d6f67dfd6e9c3e97c1c631faeb246265c2efdb9d776bed5091a57a54bb5de",
+    "tests/prey-player-equipment.test.js": "a2910a61e84345975f7e12b5c4c32048d06a7babcdabe653c84c190726c45190",
+    "tests/prey-reference-interactions.test.js": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095",
+    "tests/prey-interaction-contracts.test.js": "cef43f5e5d27ebcb23c31726eaae3fbbdcbe3847c151a9d0213f3ebe7ca06d4f",
+    "tests/hunter-reference-combat.test.js": "884319a160be6e4075319ef977cea24b9f967fb750298fb641966174659647be",
+    "tests/operation-player-state.test.js": "e23f422b8475e9a3c60047f542a3608bf99a2dfd13f33024528d9a4ae8454dfe",
+    "tests/player-laser-grounding.test.js": "62c121cc3d73a91c81a87866ba0673d46e0866441f414a2be4fdbd7c9aa4e83b"
+  },
+  "hashesAfter": {
+    "js/entities/Player.js": "5c694b9306085aea146b6c1f7377a3fe8962021ce2c057df99197b54064851c8",
+    "js/graphics/PreyEquipment.js": "0a5b1ece5cc834b543e9095f33102ce060a966a69945def2c856f1eb7c47ee94",
+    "js/entities/ReferenceEnvironmentMechanisms.js": "c3c86679657565a942c950f325e93dd8275b162204563be0c261e7e970b21fc1",
+    "js/entities/Environment.js": "7282849b2ed0c54aed9855d7c25ab6f90cb0dba708912f93ffedacfd1a55fbe9",
+    "js/entities/ReferenceWalkSurfaces.js": "7c3236b91aa5658db7a086762c2978f3cdd114b7551ee2b6f9de84e41b94e489",
+    "js/entities/Bosses.js": "24e50d8194073db556b11c6de31ee81607f5dceb0bf641d2d7691f4a18ab12b4",
+    "js/entities/XenomorphHorde.js": "847f24a0f77d48331ed05c42f198622617b5188fbbd383852729dc2cddbf60cc",
+    "js/engine/BattleActorSupport.js": "9e83d1dcc1b004ba04170d845c8b362712d008b1bdb37b89e721065b908d7370",
+    "js/battlefield/OperationPlayerState.js": "9d0d6f67dfd6e9c3e97c1c631faeb246265c2efdb9d776bed5091a57a54bb5de",
+    "tests/prey-player-equipment.test.js": "a2910a61e84345975f7e12b5c4c32048d06a7babcdabe653c84c190726c45190",
+    "tests/prey-reference-interactions.test.js": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095",
+    "tests/prey-interaction-contracts.test.js": "cef43f5e5d27ebcb23c31726eaae3fbbdcbe3847c151a9d0213f3ebe7ca06d4f",
+    "tests/hunter-reference-combat.test.js": "884319a160be6e4075319ef977cea24b9f967fb750298fb641966174659647be",
+    "tests/operation-player-state.test.js": "e23f422b8475e9a3c60047f542a3608bf99a2dfd13f33024528d9a4ae8454dfe",
+    "tests/player-laser-grounding.test.js": "62c121cc3d73a91c81a87866ba0673d46e0866441f414a2be4fdbd7c9aa4e83b"
+  },
+  "changed": [],
+  "reviewFinding": {
+    "severity": "medium",
+    "issue": "Grizzly and Feral rack awarded shield which Player never consumed or checkpointed",
+    "resolution": "Interaction owner replaced fictitious protection by bounded HP recovery:150/100; real Player+damage+checkpoint regression added"
+  },
+  "limitations": [
+    "CPU integration validation; no human visual review",
+    "main/UI projectile and wheel integration belongs to root and is outside this test run"
+  ]
+}

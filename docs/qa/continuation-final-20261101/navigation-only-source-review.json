@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "baselineSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "finalSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "runtimeFilesChanged": [
+    "js/engine/BattlefieldNavigation.js"
+  ],
+  "allOtherRuntimeFilesIdentical": true,
+  "baselineEvidenceRetained": [
+    {
+      "path": "docs/qa/continuation-final-20261101/save-startup-e524c2b/report.json",
+      "scope": "Five startup/migration cases remain explicitly attributed to e524. Storage, honour ledger, player checkpoints and main startup code are identical; the final UI checkpoint case is run again on the corrected navigation build."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/world-streaming-e524c2b/report.json",
+      "scope": "Functional rendered eviction/restoration and world-state preservation remain attributed to e524; streaming/geometry ownership code is identical. AUD112 remains open; no new all-map timing claim."
+    }
+  ],
+  "finalChecksRequired": [
+    "clean fullCPU on a800",
+    "22complete paths on a800",
+    "8gameplay browser regressions on a800",
+    "6integrated UI cases on a800",
+    "2rendered NPC component cases on a800"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_with_scoped_visual_observations",
+  "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "indexSha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad",
+  "buildInfoSha256": "ef4f97ac9f04bc5a57d14a00286f2741938eb06984e05dc1a1b7fbc3501bfd58",
+  "browserFixture": {
+    "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+    "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6",
+    "passed": 6,
+    "failed": 0,
+    "durationSeconds": 73.682,
+    "javascriptErrors": 0,
+    "failedRequests": 0,
+    "externalRequests": 0,
+    "distUnchanged": true
+  },
+  "archiveManifest": {
+    "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/archive-manifest.json",
+    "sha256": "5fcd3cbba0dbf0fa35c7f70105bfcbab56fbf9bb78c5cbecf2eb1362adc54d79"
+  },
+  "visualReview": [
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/map-front-comparison-detail.png",
+      "observation": "All three fronts, supply/report unknown states, report age and reported counts are readable after scrolling; commandable group and target use actual simulation identities."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/fronts-minimap-monochrome-detail.png",
+      "observation": "Small fronts map and large command map both use monochrome role shapes and glyphs; the canvas contains none of the old marker RGB values checked by the fixture."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/map-tactic-feedback.png",
+      "observation": "Actual accepted hold_line tactic owns a20s effect and30s repeat interval, displayed in feedback; same group/run/order/tactic survive save/reload."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/codex-engineers.png",
+      "observation": "The scoped technologies tab is visibly active and uniquely aria-pressed; scoped Engineer, synthetic and Feral sources remain readable."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/combat-readability-real-cloak.png",
+      "observation": "Real F input changes actual concealment and HUD wording; light/heavy costs remain visible. Nearby chevrons are planar rather than stretched across the previously reported deck-to-floor gap. A tall translucent triangular form remains visible in the foreground; WeatherSystem SteamVents is a possible source per code review, not confirmed by a scene query. No general absence of spikes or film fidelity is certified."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/controlled-defeat-character-debrief.png",
+      "observation": "Actual controlled defeat followed by teardown keeps the selected hunter identity, operation time, survivors and delegation in the debrief."
+    }
+  ],
+  "assistances": [
+    "Insertion advanced by the existing actual game.update helper at1/60",
+    "strategic and rendering updates paused between input steps to preserve comparable state",
+    "controlled public update at1/60 after cloak key input",
+    "controlled player HP=0 followed by actual game.update to capture a real defeat debrief",
+    "finite CSS transitions completed only for static screenshot capture"
+  ],
+  "scopeLimitations": [
+    "Desktop assisted UI checks, zero human testers, no natural victory/hardware FPS/1to1 fidelity claim.",
+    "Only the fronts minimap is certified by this targeted palette run; historical hunt/survival paths are not universally certified.",
+    "The e524 initial timeout and successful r2 remain historical separate proofs; this complete6case execution is directly on a80070c."
+  ],
+  "runtimeEditsDuringFinalBrowserRun": false,
+  "chromeClosed": true
+}

@@ -1,0 +1,36 @@
+✔ two real insertion cameras retain body sightlines past the relocated camp structures throughout opening and exit (9999.722729ms)
+✔ moved walls and timber posts retain real collision, culling-independent cover and clear insertion/cardinal routes (642.650336ms)
+✔ profiled roof and botanical silhouettes have bounded, finite geometry with non-tropical branches preserved (17.14047ms)
+✔ relocated deck, timber ladder treads and corrugated roof use their visible upper triangles with no old phantom floors (208.993329ms)
+✖ removing either field structure immediately removes its floors and vertical route, then a seeded saved-world rebuild restores fresh measured surfaces (412.547649ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11437.479895
+
+✖ failing tests:
+
+test at tests/val-verde-world-fidelity.test.js:191:1
+✖ removing either field structure immediately removes its floors and vertical route, then a seeded saved-world rebuild restores fresh measured surfaces (412.547649ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  7 !== 3
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-fidelity-20261109/tests/val-verde-world-fidelity.test.js:198:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 7,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

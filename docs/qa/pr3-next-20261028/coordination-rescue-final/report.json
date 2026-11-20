@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "label": "coordination-rescue-final",
+  "startedAt": "2026-10-28T09:42:12.025Z",
+  "scope": "Explicit automated CPU suite. No browser, human playtest, hardware performance or visual fidelity certification.",
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "tests/hive-coordination-feedback.test.js",
+    "tests/ally-rescue.test.js",
+    "tests/operation-alerts.test.js"
+  ],
+  "cwd": "/workspace/Yautja-next-20261028",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceHeadBefore": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "sourceBefore": {
+    "sha256": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "files": 150
+  },
+  "testsBefore": [
+    {
+      "path": "tests/hive-coordination-feedback.test.js",
+      "sha256": "a3c2265af103965372074e8050bf3368d7354918d070fff0f67402c3046b705e"
+    },
+    {
+      "path": "tests/ally-rescue.test.js",
+      "sha256": "4109c601402a9528b8dab6596f3cf1b9b8c1dd7ff77effacf3c1ed931335ddc9"
+    },
+    {
+      "path": "tests/operation-alerts.test.js",
+      "sha256": "dcb62e354843f73aa8d1836ea62634697fc640e2954d4e4a4cabe12d753198e1"
+    }
+  ],
+  "rawOutput": "output.txt",
+  "humanTesters": 0,
+  "browserSessions": 0,
+  "fidelity1to1Verified": false,
+  "exitCode": 0,
+  "signal": null,
+  "rawBytes": 6507,
+  "summaryParserReadsTailBytes": 6507,
+  "result": {
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceHeadAfter": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "sourceAfter": {
+    "sha256": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "files": 150
+  },
+  "testsAfter": [
+    {
+      "path": "tests/hive-coordination-feedback.test.js",
+      "sha256": "a3c2265af103965372074e8050bf3368d7354918d070fff0f67402c3046b705e"
+    },
+    {
+      "path": "tests/ally-rescue.test.js",
+      "sha256": "4109c601402a9528b8dab6596f3cf1b9b8c1dd7ff77effacf3c1ed931335ddc9"
+    },
+    {
+      "path": "tests/operation-alerts.test.js",
+      "sha256": "dcb62e354843f73aa8d1836ea62634697fc640e2954d4e4a4cabe12d753198e1"
+    }
+  ],
+  "runtimeSourceUnchanged": true,
+  "testsUnchanged": true,
+  "rawSha256": "447472401a501c4d4f1a7802d06f07fcbd546dcf1c306aec081408860d211364",
+  "endedAt": "2026-10-28T09:42:22.664Z",
+  "durationSeconds": 10.639
+}

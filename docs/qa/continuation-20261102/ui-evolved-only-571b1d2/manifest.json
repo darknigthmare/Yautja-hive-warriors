@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "basic-caste-briefing.png",
+      "sha256": "80b37e86e5459e550314b8e277e9ccfeba43fc1f8e1ba792f1aeb4196f3eddf5"
+    },
+    {
+      "path": "evolved-caste-briefing.png",
+      "sha256": "2a42ed43829629510d7f34667845a7f330170c172f7cbb70e2c60a9b1021a1bd"
+    },
+    {
+      "path": "evolved-caste-menu-briefing-checkpoint-identity.png",
+      "sha256": "21f58aa6b024c06c0fa0ab02367a3d6c54edfe5495d01670c69f907d4460b66d"
+    },
+    {
+      "path": "evolved-caste-selection.png",
+      "sha256": "97db248c9070060390099a380cbb2fc6e775a277ab0237f74f57947ed0d4ad43"
+    },
+    {
+      "path": "harness-source.mjs",
+      "sha256": "60551276a7990317fad3cd2439d7c9db374d4841f83c5edfabe18d19380bc4d4"
+    },
+    {
+      "path": "insertion-helper-source.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "report.json",
+      "sha256": "835aaa1b321b9ba6edc2c21b59d01e5af9aee1a33718afbcb4e0369e24f001fa"
+    }
+  ]
+}

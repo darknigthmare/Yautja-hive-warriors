@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-09",
+  "baseCommit": "a8f9c75",
+  "scope": "Node model/animation, real APC collision, support lifecycle, medical and Ravager ownership regressions",
+  "command": "node --test --test-concurrency=1 tests/clan-hunter-visual.test.js tests/clan-hunter-apc-integration.test.js tests/support-visual.test.js tests/ally-rescue.test.js tests/ally-rescue-ravager-checkpoint.test.js tests/battle-actor-bridge.test.js",
+  "tests": 58,
+  "passed": 58,
+  "failed": 0,
+  "yautjaNewVisualTestsPassed": 7,
+  "realAPCCollisionTestsPassed": 1,
+  "allyRescueTestsPassed": 17,
+  "ravagerMedicalOwnershipTestsPassed": 8,
+  "supportVisualTestsPassed": 18,
+  "battleActorBridgeTestsPassed": 7,
+  "log": "node-tests.txt",
+  "sourceHashes": "source-sha256.txt",
+  "intermediateRun": "validation-before-integration.json",
+  "browser": "Central QA owns same-camera before/after captures and the gameplay scenario.",
+  "hardwarePerformanceMeasured": false,
+  "filmPropReplicaCertified": false
+}

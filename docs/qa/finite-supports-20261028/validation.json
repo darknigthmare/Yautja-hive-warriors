@@ -1,0 +1,34 @@
+{
+  "status": "passed_components_waiting_root_integration",
+  "regression": {
+    "passed": 73,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "regression-73-tests.txt"
+  },
+  "latest_policy_checks": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "policy-collisionowner-10-tests.txt"
+  },
+  "limits": [
+    "CPU component tests; no integrated browser, hardware, human or fidelity1:1 claim.",
+    "The root caller must bind scenario permission, persistent checkpoint ID, physical sky/cover queries and target provider.",
+    "In-flight Cheyenne work is cancelled on restore without ammunition refunds."
+  ],
+  "scope": {
+    "apc_hp": 2500,
+    "apc_rounds": 48,
+    "apc_max_twin_bursts": 24,
+    "cheyenne_hp": 1800,
+    "cheyenne_sorties": 2,
+    "cheyenne_rockets": 12,
+    "cheyenne_napalm": 6
+  },
+  "integration_metadata": {
+    "collisionOwner": "apc or cheyenne, matching only the support body collider for line-of-sight target exclusion"
+  }
+}

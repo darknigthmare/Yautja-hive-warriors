@@ -1,0 +1,600 @@
+{
+  "schemaVersion": 1,
+  "status": "diagnostic_complete",
+  "generatedAt": "2026-11-09T04:44:13.205Z",
+  "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "renderedReport": "/workspace/qa/continuation-20261109/runtime-94630d8-r3/report.json",
+  "renderedReportSha256": "faa6dbf60c5f8a587497f4438ddbda8bb1605b8aba208c23011538ecb0a72282",
+  "scope": "Authoritative BattleSimulation selection only; synthetic spawn callbacks record selected groups and do not certify physical nav, combat, collision or final rendered behavior.",
+  "r3Evidence": {
+    "startPlayer": [
+      63.22836140246614,
+      0,
+      1.1480502970952697
+    ],
+    "observationPlayer": [
+      -2.5,
+      0,
+      0
+    ],
+    "playerAfterPhysics": [
+      -2.96518872205614,
+      0,
+      0.26216808713308065
+    ],
+    "startCarrierPosition": [
+      36.121320343559645,
+      0,
+      2.1213203435596424
+    ],
+    "orderTarget": [
+      -7.5,
+      0
+    ],
+    "frames": 480,
+    "attempts": 14,
+    "gapFirst": 39.130699432147146,
+    "gapLast": 37.505700389726925,
+    "everyReason": [
+      "target_outside_carrier_arc"
+    ],
+    "attemptTimesRecorded": false,
+    "activeBefore": 18,
+    "cap": 32,
+    "carrierStateAfterObservationRecorded": false
+  },
+  "selectedPositionReplay": {
+    "playerPosition": [
+      -2.5,
+      0,
+      0
+    ],
+    "before": {
+      "time": 0.25,
+      "carrierState": "active",
+      "materialized": true,
+      "groupPosition": [
+        34,
+        0
+      ],
+      "active": 18,
+      "activeGroups": [
+        "AFF-27:hive:0",
+        "AFF-27:human_force:3",
+        "AFF-27:hive:21"
+      ],
+      "carrierHP": 400,
+      "cargo": 6
+    },
+    "checkpoints": [
+      {
+        "frame": 1,
+        "time": 0.25,
+        "carrierState": "active",
+        "materialized": true,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 18,
+        "activeGroups": [
+          "AFF-27:hive:0",
+          "AFF-27:human_force:3",
+          "AFF-27:hive:21"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 14,
+        "time": 0.25,
+        "carrierState": "active",
+        "materialized": true,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 18,
+        "activeGroups": [
+          "AFF-27:hive:0",
+          "AFF-27:human_force:3",
+          "AFF-27:hive:21"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 15,
+        "time": 0.5,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 16,
+        "time": 0.5,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 60,
+        "time": 1.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 120,
+        "time": 2.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 180,
+        "time": 3.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 240,
+        "time": 4.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 300,
+        "time": 5.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 360,
+        "time": 6.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 420,
+        "time": 7.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:4",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 480,
+        "time": 8.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 23,
+        "activeGroups": [
+          "AFF-27:hive:25",
+          "AFF-27:hive:22",
+          "AFF-27:human_force:33",
+          "AFF-27:human_force:30"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      }
+    ],
+    "carrierSelectionEvents": [
+      {
+        "type": "materialize",
+        "time": 0.25,
+        "groupId": "AFF-27:hive:0",
+        "count": 2
+      },
+      {
+        "type": "dematerialize",
+        "time": 0.5,
+        "groupId": "AFF-27:hive:0",
+        "count": 2
+      }
+    ],
+    "conserved": true,
+    "final": {
+      "time": 8.25,
+      "carrierState": "distant",
+      "materialized": false,
+      "groupPosition": [
+        34,
+        0
+      ],
+      "active": 23,
+      "activeGroups": [
+        "AFF-27:hive:25",
+        "AFF-27:hive:22",
+        "AFF-27:human_force:33",
+        "AFF-27:human_force:30"
+      ],
+      "carrierHP": 386.995,
+      "cargo": 6
+    }
+  },
+  "physicalPositionReplay": {
+    "playerPosition": [
+      -2.96518872205614,
+      0,
+      0.26216808713308065
+    ],
+    "before": {
+      "time": 0.25,
+      "carrierState": "active",
+      "materialized": true,
+      "groupPosition": [
+        34,
+        0
+      ],
+      "active": 18,
+      "activeGroups": [
+        "AFF-27:hive:0",
+        "AFF-27:human_force:3",
+        "AFF-27:hive:21"
+      ],
+      "carrierHP": 400,
+      "cargo": 6
+    },
+    "checkpoints": [
+      {
+        "frame": 1,
+        "time": 0.25,
+        "carrierState": "active",
+        "materialized": true,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 18,
+        "activeGroups": [
+          "AFF-27:hive:0",
+          "AFF-27:human_force:3",
+          "AFF-27:hive:21"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 14,
+        "time": 0.25,
+        "carrierState": "active",
+        "materialized": true,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 18,
+        "activeGroups": [
+          "AFF-27:hive:0",
+          "AFF-27:human_force:3",
+          "AFF-27:hive:21"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 15,
+        "time": 0.5,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 16,
+        "time": 0.5,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 60,
+        "time": 1.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 400,
+        "cargo": 6
+      },
+      {
+        "frame": 120,
+        "time": 2.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 180,
+        "time": 3.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 240,
+        "time": 4.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 300,
+        "time": 5.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 360,
+        "time": 6.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 420,
+        "time": 7.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      },
+      {
+        "frame": 480,
+        "time": 8.25,
+        "carrierState": "distant",
+        "materialized": false,
+        "groupPosition": [
+          34,
+          0
+        ],
+        "active": 24,
+        "activeGroups": [
+          "AFF-27:human_force:30",
+          "AFF-27:hive:25",
+          "AFF-27:hive:22"
+        ],
+        "carrierHP": 386.995,
+        "cargo": 6
+      }
+    ],
+    "carrierSelectionEvents": [
+      {
+        "type": "materialize",
+        "time": 0.25,
+        "groupId": "AFF-27:hive:0",
+        "count": 2
+      },
+      {
+        "type": "dematerialize",
+        "time": 0.5,
+        "groupId": "AFF-27:hive:0",
+        "count": 2
+      }
+    ],
+    "conserved": true,
+    "final": {
+      "time": 8.25,
+      "carrierState": "distant",
+      "materialized": false,
+      "groupPosition": [
+        34,
+        0
+      ],
+      "active": 24,
+      "activeGroups": [
+        "AFF-27:human_force:30",
+        "AFF-27:hive:25",
+        "AFF-27:hive:22"
+      ],
+      "carrierHP": 386.995,
+      "cargo": 6
+    }
+  },
+  "browserLaunched": false,
+  "runtimeModified": false,
+  "fidelity1to1Verified": false,
+  "humanTesters": 0
+}

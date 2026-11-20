@@ -1,0 +1,16 @@
+✔ creature geometry has finite positions/normals/UVs and bounded fused draw calls (3787.439288ms)
+✔ creatures have meaningful anatomical silhouette and independent articulated poses (1.716869ms)
+✔ wave cleanup retains cached creature geometry, while actors are removed (1.966461ms)
+✔ boss cleanup retains its sculpted geometry for a fresh encounter (17.117565ms)
+✔ egg petals remain separate and visibly open when the gameplay hatch triggers (2.80465ms)
+✔ distance LOD reduces triangles while preserving anatomical parts, pivots and proportions (226.757975ms)
+✔ one coherent LOD uses the nearest co-op camera and preserves moving-part poses (1.232992ms)
+✔ all cached LOD buffers survive cleanup and distant hordes have a bounded polygon cost (10.715409ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4211.190228

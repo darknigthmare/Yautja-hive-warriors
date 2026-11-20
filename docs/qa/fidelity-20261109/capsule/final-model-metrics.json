@@ -1,0 +1,221 @@
+{
+  "status": "measured_model_cpu_pass_browser_review_required",
+  "sourceCommit": "a8f9c759a30bc97c5400ce48709f6ad10856003d",
+  "sourceSha256": "fd9327955b91c2b4895814ee4ffb7689b826d285a42463e1335520a201582e10",
+  "triangles": 63808,
+  "meshCount": 14,
+  "meshes": [
+    {
+      "name": "orbital-capsule-hull-capsule-armor",
+      "triangles": 19256,
+      "vertices": 57768,
+      "material": "capsule-armor",
+      "metalness": 0.08,
+      "roughness": 0.82,
+      "envMapIntensity": 0.45
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-dark",
+      "triangles": 14096,
+      "vertices": 42288,
+      "material": "capsule-dark",
+      "metalness": 0.12,
+      "roughness": 0.91,
+      "envMapIntensity": 0.35
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-trim",
+      "triangles": 5800,
+      "vertices": 17400,
+      "material": "capsule-trim",
+      "metalness": 0.88,
+      "roughness": 0.52,
+      "envMapIntensity": 0.72
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-cradle",
+      "triangles": 8592,
+      "vertices": 25776,
+      "material": "capsule-cradle",
+      "metalness": 0.08,
+      "roughness": 0.88,
+      "envMapIntensity": 0.35
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-indicator",
+      "triangles": 72,
+      "vertices": 216,
+      "material": "capsule-indicator",
+      "metalness": 0.05,
+      "roughness": 0.56,
+      "envMapIntensity": 1
+    },
+    {
+      "name": "capsule-left-leaf-capsule-armor",
+      "triangles": 252,
+      "vertices": 756,
+      "material": "capsule-armor",
+      "metalness": 0.08,
+      "roughness": 0.82,
+      "envMapIntensity": 0.45
+    },
+    {
+      "name": "capsule-left-leaf-capsule-dark",
+      "triangles": 2632,
+      "vertices": 7896,
+      "material": "capsule-dark",
+      "metalness": 0.12,
+      "roughness": 0.91,
+      "envMapIntensity": 0.35
+    },
+    {
+      "name": "capsule-left-leaf-capsule-trim",
+      "triangles": 4416,
+      "vertices": 13248,
+      "material": "capsule-trim",
+      "metalness": 0.88,
+      "roughness": 0.52,
+      "envMapIntensity": 0.72
+    },
+    {
+      "name": "capsule-left-leaf-capsule-cradle",
+      "triangles": 504,
+      "vertices": 1512,
+      "material": "capsule-cradle",
+      "metalness": 0.08,
+      "roughness": 0.88,
+      "envMapIntensity": 0.35
+    },
+    {
+      "name": "capsule-right-leaf-capsule-armor",
+      "triangles": 252,
+      "vertices": 756,
+      "material": "capsule-armor",
+      "metalness": 0.08,
+      "roughness": 0.82,
+      "envMapIntensity": 0.45
+    },
+    {
+      "name": "capsule-right-leaf-capsule-dark",
+      "triangles": 2632,
+      "vertices": 7896,
+      "material": "capsule-dark",
+      "metalness": 0.12,
+      "roughness": 0.91,
+      "envMapIntensity": 0.35
+    },
+    {
+      "name": "capsule-right-leaf-capsule-trim",
+      "triangles": 4416,
+      "vertices": 13248,
+      "material": "capsule-trim",
+      "metalness": 0.88,
+      "roughness": 0.52,
+      "envMapIntensity": 0.72
+    },
+    {
+      "name": "capsule-right-leaf-capsule-cradle",
+      "triangles": 504,
+      "vertices": 1512,
+      "material": "capsule-cradle",
+      "metalness": 0.08,
+      "roughness": 0.88,
+      "envMapIntensity": 0.35
+    },
+    {
+      "name": "capsule-telescopic-actuators",
+      "triangles": 384,
+      "vertices": 1152,
+      "material": "capsule-actuator-metal",
+      "metalness": 0.88,
+      "roughness": 0.52,
+      "envMapIntensity": 0.72
+    }
+  ],
+  "closed": {
+    "min": [
+      -2.141730308532715,
+      -0.14000000059604645,
+      -1.9241671562194824
+    ],
+    "max": [
+      2.141730308532715,
+      6.840000152587891,
+      1.785067400932312
+    ]
+  },
+  "opened": {
+    "min": [
+      -2.374655904262261,
+      -0.14000000059604645,
+      -1.9241671562194824
+    ],
+    "max": [
+      2.374655904262261,
+      6.840000152587891,
+      2.937743014463399
+    ]
+  },
+  "collisionProfile": {
+    "shellRadiusX": 2.06,
+    "shellRadiusZ": 1.85,
+    "shellOpeningAngle": 0.895353906273091,
+    "hingeX": 1.55,
+    "hingeZ": 1.46,
+    "doorLength": 1.53,
+    "maxOpeningAngle": 1.9634954084936207
+  },
+  "seat": [
+    0,
+    0,
+    0
+  ],
+  "exit": [
+    0,
+    0,
+    4.2
+  ],
+  "version": 3,
+  "detail": {
+    "crownPanels": 9,
+    "independentHatchLeaves": 2,
+    "telescopicActuators": 2,
+    "actuatorSections": 8,
+    "pressureHullClosed": true,
+    "filmPropFidelity1to1Verified": false
+  },
+  "actuators": {
+    "geometryBuffers": 1,
+    "sections": 8,
+    "cullingBounds": {
+      "isBox3": true,
+      "min": {
+        "x": -2.03,
+        "y": 4.16,
+        "z": 0.2
+      },
+      "max": {
+        "x": 2.03,
+        "y": 4.5,
+        "z": 1.78
+      }
+    },
+    "sampledOpeningPoses": 1001,
+    "allVerticesInsideCullingBounds": true,
+    "cpuUpdateMsPerPod": {
+      "warmupUpdates": 200,
+      "batches": 5,
+      "updatesPerBatch": 1000,
+      "measurements": [
+        0.3112927199999999,
+        0.309174947,
+        0.30747318900000026,
+        0.337037452,
+        0.3111749530000002
+      ],
+      "note": "Node CPU buffer updates only; no WebGL, raster, GPU upload or frame-time claim."
+    }
+  },
+  "newMeshyCreditsSpent": 0,
+  "fidelity1to1Verified": false
+}

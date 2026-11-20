@@ -1,0 +1,9 @@
+Ces preuves concernent les scripts de publication et leurs fixtures locales, pas le build final du jeu. Aucun build, staging du candidat, navigateur, accès à des identifiants, appel Vercel ou autre requête distante n’a été exécuté pour ces contrôles. Les imports Node enfants servent uniquement à isoler les deux environnements de profil.
+
+Le défaut reste `pr3-20261026`. Le second profil autorisé est `pr3-next-20261028`, sélectionné par `YAUTJA_RELEASE_PROFILE` pour chaque commande. Les chemins QA/stage/pins/rapport/wrapper sont strictement liés à cette sélection et des pins croisés échouent. Les mêmes validations de tous les fichiers, du projet, du build-info, du fingerprint de source et du rapport QA final restent en place, ainsi que le candidat unique et le verrou de soumission. Les templates NEXT sont livrés sans résultats de build ou de QA et le coordinateur doit les renseigner sur la version finale.
+
+Après promotion, une boucle de propagation attend au maximum 60 secondes, avec des pauses de deux secondes maximum. Elle tolère uniquement l’index précédent épinglé jusqu’au nouvel index attendu, refuse immédiatement tout autre hash et conserve le même ID de déploiement pour une reprise. Les tests de cette boucle utilisent une horloge et des réponses simulées, sans attente réelle ni requête.
+
+Résultats : 13 tests réussis sous le profil par défaut et les mêmes 13 sous NEXT ; zéro échec, omission ou annulation. La syntaxe des quatre scripts, de vite.config.js, de la suite des profils et du wrapper shell a été vérifiée. Une seconde revue IA en lecture seule n’a trouvé aucun défaut bloquant ; ce n’est pas une certification humaine.
+
+Le wrapper local `/workspace/qa/pr3-next-20261028/vercel-cli.sh` délègue uniquement à `/workspace/qa/fidelity-20261025/vercel-cli.sh` et n’a pas été exécuté. Le lot original et ses pins restent intacts. Les compteurs de tests de ces fixtures ne remplacent aucun résultat CPU, navigateur ou runtime du jeu.

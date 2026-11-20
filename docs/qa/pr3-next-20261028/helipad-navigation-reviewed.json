@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent CPU evidence and source review of the real NPC defect revealed by first production attempt; new frozen-build victory routes still pending.",
+  "baselineSourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "baselineNegativeRuntime": "docs/qa/pr3-next-20261028/complete-contexts-initial/report.json",
+  "review": "Le joueur manuel réel sortait de la rampe ; le Joe réel suivant un but au sol restait au pied car la navigation renvoyait vers le centre sous la plateforme. Le correctif de cinq lignes ne retire ce premier centre que lorsque le segment vers le point suivant possède un sol continu et est dégagé. Le Joe atteint maintenant sa portée de mêlée par pas ordinaires ; porte fermée, mur et angle sans sol diagonal restent bloquants.25tests ciblés et45régressions passent. Le helper accéléré reçoit une projection mesurée du but/pied avant navigation et du prochain pas avant collision ; il garde les portes, la navigation réelle et la capsule.",
+  "runtimeFile": {
+    "path": "js/engine/BattlefieldNavigation.js",
+    "sha256": "0a1708885c6b7926a915058bc2610731f80f7f14d2756c497f6332d13be29225"
+  },
+  "proofs": [
+    {
+      "path": "docs/qa/pr3-next-20261028/helipad-navigation-fix/manifest.json",
+      "sha256": "ada8e0b54cc5f847c1767940b690149a260eb667ec6ec2e26de970e836b57d0d"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/helipad-navigation-fix/baseline-and-proposed-real-npc.jsonl",
+      "sha256": "9e4fc0de5bb664f240992e63cd2f647efab4a0b7750a371201952785c77a9f53"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/helipad-navigation-fix/baseline-player-and-assisted-travel.json",
+      "sha256": "2ed80428288a417c453e424fbcbe8fac8a7fbbb767f72652aed834152ac646ce"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/helipad-navigation-fix/targeted-tests.txt",
+      "sha256": "f49e6894cd0e1c778b7f9b7edece6354de64fe87c8c40d0ec5739e2c03c17482"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/helipad-navigation-fix/level-and-pressure-regressions.txt",
+      "sha256": "bb27487d2b83dd52d20f6fee769a2e8b17eca99e896c92dcc2d380f963f260e1"
+    }
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false
+}

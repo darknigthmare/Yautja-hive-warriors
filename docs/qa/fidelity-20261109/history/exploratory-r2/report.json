@@ -1,0 +1,1000 @@
+{
+  "status": "captured_exploratory_only",
+  "releasePass": false,
+  "scope": "Exploratory unfrozen source studio only; no production gameplay or final release claim.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "before": {
+    "sourceRoot": "/workspace/Yautja-fidelity-20261109",
+    "sourceCommit": "a8f9c759a30bc97c5400ce48709f6ad10856003d",
+    "source": {
+      "sha256": "8251e83dee2c7d5ef4027f4300b5facd3f7d5252e4a6706faff3b921b0aa5b61",
+      "files": 197
+    },
+    "sourceTreeDirty": true,
+    "fixtureSha256": "e272d30a756f6bebe9798e9bcabb01e0c565469f9a5c8768d7c781a8b2e021ae"
+  },
+  "captures": [
+    {
+      "path": "honor-guard-front.png",
+      "sha256": "3e4ff8d6a2cd886a6e4b668521036b40c22f0b721160e80f1b839c6301f570ce",
+      "data": {
+        "kind": "honor-guard",
+        "view": "front",
+        "opening": 0,
+        "model": {
+          "triangles": 46616,
+          "vertices": 28549,
+          "meshes": 9,
+          "meshInstances": 39,
+          "uniqueGeometryBytes": 1198700,
+          "geometries": 9,
+          "materials": 7,
+          "malformed": 0,
+          "bounds": {
+            "min": [
+              -1.023563003540039,
+              0.005975856073200702,
+              -0.78
+            ],
+            "max": [
+              1.023563003540039,
+              4.100039863586425,
+              1.2405086070299147
+            ],
+            "size": [
+              2.047126007080078,
+              4.094064007513224,
+              2.0205086070299147
+            ]
+          },
+          "anatomy": {
+            "headHeight": 0.64,
+            "standingHeight": 4.1,
+            "headsTall": 6.41,
+            "species": "yautja",
+            "silhouette": "original-clan-honor-guard"
+          },
+          "weaponKind": null,
+          "visualSource": null
+        },
+        "framing": {
+          "position": [
+            0,
+            1.95,
+            10
+          ],
+          "quaternion": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "left": -3.1999999999999997,
+          "right": 3.1999999999999997,
+          "top": 2.4,
+          "bottom": -2.4,
+          "near": 0.05,
+          "far": 80,
+          "exposure": 1.12,
+          "toneMapping": 4,
+          "outputColorSpace": "srgb"
+        },
+        "render": {
+          "frame": 36,
+          "calls": 10,
+          "triangles": 46618,
+          "points": 0,
+          "lines": 0
+        },
+        "surfaces": {
+          "types": [
+            "skin",
+            "armor",
+            "metal",
+            "leather",
+            "bone"
+          ],
+          "textureViews": 15,
+          "sharedImageSources": 15,
+          "sourceBytes": 119537664,
+          "resolutions": {
+            "skin": 2048,
+            "armor": 2048,
+            "metal": 1024,
+            "leather": 512,
+            "bone": 512
+          },
+          "anisotropy": 1
+        }
+      }
+    },
+    {
+      "path": "honor-guard-face-native-crop.png",
+      "sha256": "1a8734b56976d46bea1886f152a58ea1a805e66f46303707b6f82e171a35f45c",
+      "nativeCrop": {
+        "x": 500,
+        "y": 20,
+        "width": 280,
+        "height": 300
+      },
+      "cameraChanged": false,
+      "resized": false
+    },
+    {
+      "path": "honor-guard-quarter.png",
+      "sha256": "f11d794dd33cda5c77e73ac384c929548782c72a0ad1d99bf1327689cbb241f7",
+      "data": {
+        "kind": "honor-guard",
+        "view": "quarter",
+        "opening": 0,
+        "model": {
+          "triangles": 46616,
+          "vertices": 28549,
+          "meshes": 9,
+          "meshInstances": 39,
+          "uniqueGeometryBytes": 1198700,
+          "geometries": 9,
+          "materials": 7,
+          "malformed": 0,
+          "bounds": {
+            "min": [
+              -1.023563003540039,
+              0.005975856073200702,
+              -0.78
+            ],
+            "max": [
+              1.023563003540039,
+              4.100039863586425,
+              1.2405086070299147
+            ],
+            "size": [
+              2.047126007080078,
+              4.094064007513224,
+              2.0205086070299147
+            ]
+          },
+          "anatomy": {
+            "headHeight": 0.64,
+            "standingHeight": 4.1,
+            "headsTall": 6.41,
+            "species": "yautja",
+            "silhouette": "original-clan-honor-guard"
+          },
+          "weaponKind": null,
+          "visualSource": null
+        },
+        "framing": {
+          "position": [
+            7,
+            3.15,
+            10
+          ],
+          "quaternion": [
+            -0.046711103622080766,
+            0.30027859135229445,
+            0.014724378287774462,
+            0.9525933198684146
+          ],
+          "left": -3.1999999999999997,
+          "right": 3.1999999999999997,
+          "top": 2.4,
+          "bottom": -2.4,
+          "near": 0.05,
+          "far": 80,
+          "exposure": 1.12,
+          "toneMapping": 4,
+          "outputColorSpace": "srgb"
+        },
+        "render": {
+          "frame": 37,
+          "calls": 10,
+          "triangles": 46618,
+          "points": 0,
+          "lines": 0
+        },
+        "surfaces": {
+          "types": [
+            "skin",
+            "armor",
+            "metal",
+            "leather",
+            "bone"
+          ],
+          "textureViews": 15,
+          "sharedImageSources": 15,
+          "sourceBytes": 119537664,
+          "resolutions": {
+            "skin": 2048,
+            "armor": 2048,
+            "metal": 1024,
+            "leather": 512,
+            "bone": 512
+          },
+          "anisotropy": 1
+        }
+      }
+    },
+    {
+      "path": "marine-marine-front.png",
+      "sha256": "5e2c7c5fa0fcf0d4545ebe403c86b2b1db5a0b483453e7bf5209100e8fb08213",
+      "data": {
+        "kind": "marine:marine",
+        "view": "front",
+        "opening": 0,
+        "model": {
+          "triangles": 40928,
+          "vertices": 122784,
+          "meshes": 7,
+          "meshInstances": 7,
+          "uniqueGeometryBytes": 4033920,
+          "geometries": 7,
+          "materials": 7,
+          "malformed": 0,
+          "bounds": {
+            "min": [
+              -0.6885606646537781,
+              0,
+              -0.2872615158557892
+            ],
+            "max": [
+              0.6878793835639954,
+              3.444999933242798,
+              1.7450000047683716
+            ],
+            "size": [
+              1.3764400482177734,
+              3.444999933242798,
+              2.0322615206241608
+            ]
+          },
+          "anatomy": {
+            "headHeight": 0.46,
+            "standingHeight": 3.445,
+            "headsTall": 7.489130434782608
+          },
+          "weaponKind": "marine",
+          "visualSource": "procedural-role-study"
+        },
+        "framing": {
+          "position": [
+            0,
+            1.95,
+            10
+          ],
+          "quaternion": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "left": -3.1999999999999997,
+          "right": 3.1999999999999997,
+          "top": 2.4,
+          "bottom": -2.4,
+          "near": 0.05,
+          "far": 80,
+          "exposure": 1.12,
+          "toneMapping": 4,
+          "outputColorSpace": "srgb"
+        },
+        "render": {
+          "frame": 38,
+          "calls": 8,
+          "triangles": 40930,
+          "points": 0,
+          "lines": 0
+        },
+        "surfaces": {
+          "types": [
+            "skin",
+            "armor",
+            "metal",
+            "leather",
+            "bone",
+            "fabric",
+            "humanSkin"
+          ],
+          "textureViews": 21,
+          "sharedImageSources": 21,
+          "sourceBytes": 135266304,
+          "resolutions": {
+            "skin": 2048,
+            "armor": 2048,
+            "metal": 1024,
+            "leather": 512,
+            "bone": 512,
+            "fabric": 512,
+            "humanSkin": 1024
+          },
+          "anisotropy": 1
+        }
+      }
+    },
+    {
+      "path": "marine-marine-face-native-crop.png",
+      "sha256": "1c84a6c6fbb3692ce76e3d02aa982eb313cf483261419d2c642129298338dc53",
+      "nativeCrop": {
+        "x": 520,
+        "y": 145,
+        "width": 240,
+        "height": 240
+      },
+      "cameraChanged": false,
+      "resized": false
+    },
+    {
+      "path": "marine-marine-quarter.png",
+      "sha256": "2aba0a197c2d3efbd2cc8cb47dfb719df744bcb7fda6bd5b084ff40138610b70",
+      "data": {
+        "kind": "marine:marine",
+        "view": "quarter",
+        "opening": 0,
+        "model": {
+          "triangles": 40928,
+          "vertices": 122784,
+          "meshes": 7,
+          "meshInstances": 7,
+          "uniqueGeometryBytes": 4033920,
+          "geometries": 7,
+          "materials": 7,
+          "malformed": 0,
+          "bounds": {
+            "min": [
+              -0.6885606646537781,
+              0,
+              -0.2872615158557892
+            ],
+            "max": [
+              0.6878793835639954,
+              3.444999933242798,
+              1.7450000047683716
+            ],
+            "size": [
+              1.3764400482177734,
+              3.444999933242798,
+              2.0322615206241608
+            ]
+          },
+          "anatomy": {
+            "headHeight": 0.46,
+            "standingHeight": 3.445,
+            "headsTall": 7.489130434782608
+          },
+          "weaponKind": "marine",
+          "visualSource": "procedural-role-study"
+        },
+        "framing": {
+          "position": [
+            7,
+            3.15,
+            10
+          ],
+          "quaternion": [
+            -0.046711103622080766,
+            0.30027859135229445,
+            0.014724378287774462,
+            0.9525933198684146
+          ],
+          "left": -3.1999999999999997,
+          "right": 3.1999999999999997,
+          "top": 2.4,
+          "bottom": -2.4,
+          "near": 0.05,
+          "far": 80,
+          "exposure": 1.12,
+          "toneMapping": 4,
+          "outputColorSpace": "srgb"
+        },
+        "render": {
+          "frame": 39,
+          "calls": 8,
+          "triangles": 40930,
+          "points": 0,
+          "lines": 0
+        },
+        "surfaces": {
+          "types": [
+            "skin",
+            "armor",
+            "metal",
+            "leather",
+            "bone",
+            "fabric",
+            "humanSkin"
+          ],
+          "textureViews": 21,
+          "sharedImageSources": 21,
+          "sourceBytes": 135266304,
+          "resolutions": {
+            "skin": 2048,
+            "armor": 2048,
+            "metal": 1024,
+            "leather": 512,
+            "bone": 512,
+            "fabric": 512,
+            "humanSkin": 1024
+          },
+          "anisotropy": 1
+        }
+      }
+    },
+    {
+      "path": "roleSheet.png",
+      "sha256": "8f99d7436f877b4c71a848d83f9ac8bbf501026c427e977954aad068de4a856b",
+      "data": {
+        "title": "Eight preserved human equipment roles",
+        "columns": 4,
+        "rows": 2,
+        "assets": [
+          {
+            "kind": "marine:marine",
+            "model": {
+              "triangles": 40928,
+              "vertices": 122784,
+              "meshes": 7,
+              "meshInstances": 7,
+              "uniqueGeometryBytes": 4033920,
+              "geometries": 7,
+              "materials": 7,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.6885606646537781,
+                  0,
+                  -0.2872615158557892
+                ],
+                "max": [
+                  0.6878793835639954,
+                  3.444999933242798,
+                  1.7450000047683716
+                ],
+                "size": [
+                  1.3764400482177734,
+                  3.444999933242798,
+                  2.0322615206241608
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "marine",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 40,
+              "calls": 8,
+              "triangles": 40930,
+              "points": 0,
+              "lines": 0
+            }
+          },
+          {
+            "kind": "marine:smartgunner",
+            "model": {
+              "triangles": 41120,
+              "vertices": 123360,
+              "meshes": 7,
+              "meshInstances": 7,
+              "uniqueGeometryBytes": 4052352,
+              "geometries": 7,
+              "materials": 7,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.6885873675346375,
+                  0,
+                  -0.2872615158557892
+                ],
+                "max": [
+                  0.6878793835639954,
+                  3.444999933242798,
+                  1.7450000047683716
+                ],
+                "size": [
+                  1.3764667510986328,
+                  3.444999933242798,
+                  2.0322615206241608
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "smartgunner",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 41,
+              "calls": 8,
+              "triangles": 41122,
+              "points": 0,
+              "lines": 0
+            }
+          },
+          {
+            "kind": "marine:flametrooper",
+            "model": {
+              "triangles": 40400,
+              "vertices": 121200,
+              "meshes": 7,
+              "meshInstances": 7,
+              "uniqueGeometryBytes": 3983232,
+              "geometries": 7,
+              "materials": 7,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.6884346604347229,
+                  0,
+                  -0.7699999809265137
+                ],
+                "max": [
+                  0.6879903078079224,
+                  3.444999933242798,
+                  1.752500057220459
+                ],
+                "size": [
+                  1.3764249682426453,
+                  3.444999933242798,
+                  2.5225000381469727
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "flametrooper",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 42,
+              "calls": 8,
+              "triangles": 40402,
+              "points": 0,
+              "lines": 0
+            }
+          },
+          {
+            "kind": "marine:medic",
+            "model": {
+              "triangles": 42452,
+              "vertices": 127356,
+              "meshes": 8,
+              "meshInstances": 8,
+              "uniqueGeometryBytes": 4180224,
+              "geometries": 8,
+              "materials": 8,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.6977666616439819,
+                  0,
+                  -0.675000011920929
+                ],
+                "max": [
+                  0.6883119940757751,
+                  3.444999933242798,
+                  1.0299999713897705
+                ],
+                "size": [
+                  1.386078655719757,
+                  3.444999933242798,
+                  1.7049999833106995
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "medic",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 43,
+              "calls": 9,
+              "triangles": 42454,
+              "points": 0,
+              "lines": 0
+            }
+          },
+          {
+            "kind": "marine:commtech",
+            "model": {
+              "triangles": 42348,
+              "vertices": 127044,
+              "meshes": 8,
+              "meshInstances": 8,
+              "uniqueGeometryBytes": 4170240,
+              "geometries": 8,
+              "materials": 8,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.6970292925834656,
+                  0,
+                  -0.6050000190734863
+                ],
+                "max": [
+                  0.6900370121002197,
+                  3.6503841876983643,
+                  1.2649999856948853
+                ],
+                "size": [
+                  1.3870663046836853,
+                  3.6503841876983643,
+                  1.8700000047683716
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "commtech",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 44,
+              "calls": 9,
+              "triangles": 42350,
+              "points": 0,
+              "lines": 0
+            }
+          },
+          {
+            "kind": "marine:sniper",
+            "model": {
+              "triangles": 41408,
+              "vertices": 124224,
+              "meshes": 7,
+              "meshInstances": 7,
+              "uniqueGeometryBytes": 4080000,
+              "geometries": 7,
+              "materials": 7,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.6885606646537781,
+                  0,
+                  -0.2872615158557892
+                ],
+                "max": [
+                  0.6878793835639954,
+                  3.444999933242798,
+                  2.3450000286102295
+                ],
+                "size": [
+                  1.3764400482177734,
+                  3.444999933242798,
+                  2.6322615444660187
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "sniper",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 45,
+              "calls": 8,
+              "triangles": 41410,
+              "points": 0,
+              "lines": 0
+            }
+          },
+          {
+            "kind": "marine:sadar",
+            "model": {
+              "triangles": 38416,
+              "vertices": 115248,
+              "meshes": 7,
+              "meshInstances": 7,
+              "uniqueGeometryBytes": 3792768,
+              "geometries": 7,
+              "materials": 7,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.7852014899253845,
+                  0,
+                  -0.4000000059604645
+                ],
+                "max": [
+                  0.6832188963890076,
+                  3.444999933242798,
+                  1.7350000143051147
+                ],
+                "size": [
+                  1.468420386314392,
+                  3.444999933242798,
+                  2.1350000202655792
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "sadar",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 46,
+              "calls": 8,
+              "triangles": 38418,
+              "points": 0,
+              "lines": 0
+            }
+          },
+          {
+            "kind": "marine:exosuit",
+            "model": {
+              "triangles": 43676,
+              "vertices": 131028,
+              "meshes": 7,
+              "meshInstances": 7,
+              "uniqueGeometryBytes": 4297728,
+              "geometries": 7,
+              "materials": 7,
+              "malformed": 0,
+              "bounds": {
+                "min": [
+                  -0.9350000023841858,
+                  0,
+                  -0.6650000214576721
+                ],
+                "max": [
+                  0.9350000023841858,
+                  3.444999933242798,
+                  1.8450000286102295
+                ],
+                "size": [
+                  1.8700000047683716,
+                  3.444999933242798,
+                  2.5100000500679016
+                ]
+              },
+              "anatomy": {
+                "headHeight": 0.46,
+                "standingHeight": 3.445,
+                "headsTall": 7.489130434782608
+              },
+              "weaponKind": "exosuit",
+              "visualSource": "procedural-role-study"
+            },
+            "framing": {
+              "position": [
+                7,
+                3.15,
+                10
+              ],
+              "quaternion": [
+                -0.046711103622080766,
+                0.30027859135229445,
+                0.014724378287774462,
+                0.9525933198684146
+              ],
+              "left": -1.5999999999999999,
+              "right": 1.5999999999999999,
+              "top": 2.4,
+              "bottom": -2.4,
+              "near": 0.05,
+              "far": 80,
+              "exposure": 1.12,
+              "toneMapping": 4,
+              "outputColorSpace": "srgb"
+            },
+            "render": {
+              "frame": 47,
+              "calls": 8,
+              "triangles": 43678,
+              "points": 0,
+              "lines": 0
+            }
+          }
+        ],
+        "surfaces": {
+          "types": [
+            "skin",
+            "armor",
+            "metal",
+            "leather",
+            "bone",
+            "fabric",
+            "humanSkin"
+          ],
+          "textureViews": 21,
+          "sharedImageSources": 21,
+          "sourceBytes": 135266304,
+          "resolutions": {
+            "skin": 2048,
+            "armor": 2048,
+            "metal": 1024,
+            "leather": 512,
+            "bone": 512,
+            "fabric": 512,
+            "humanSkin": 1024
+          },
+          "anisotropy": 1
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "helperSha256": "c8af50669fa17f3931534e646a9687364927a509c4a6aa441ff54cb2bb2f1493",
+  "after": {
+    "sourceRoot": "/workspace/Yautja-fidelity-20261109",
+    "sourceCommit": "a8f9c759a30bc97c5400ce48709f6ad10856003d",
+    "source": {
+      "sha256": "8251e83dee2c7d5ef4027f4300b5facd3f7d5252e4a6706faff3b921b0aa5b61",
+      "files": 197
+    },
+    "sourceTreeDirty": true,
+    "fixtureSha256": "e272d30a756f6bebe9798e9bcabb01e0c565469f9a5c8768d7c781a8b2e021ae"
+  },
+  "sourceChangedDuringInspection": false
+}

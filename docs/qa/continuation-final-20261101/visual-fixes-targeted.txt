@@ -1,0 +1,14 @@
+✔ the actual fronts minimap draws monochrome role shapes, stale hollow reports and dashed closed routes (4.041986ms)
+✔ ahead-of-view buffer restoration obeys its byte budget while visible terrain and both players always take priority (2.716774ms)
+✔ three real sectors and a return preserve destruction, objectives, contacts and the same CPU buffers (4572.77015ms)
+ℹ {"measurement":"Node CPU buffer preparation; no rendered GPU frame or actual VRAM measurement","budgetBytes":2097152,"measurements":[{"sector":"insertion","preparationCpuMs":0.08450099999936356,"aheadPreparedBytes":0,"mandatoryPreparedBytes":0,"pendingBytes":0,"eligibleGpuBytes":5049828},{"sector":"area-6","preparationCpuMs":0.28343500000028143,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1107448,"pendingBytes":0,"eligibleGpuBytes":5149152},{"sector":"nest","preparationCpuMs":0.09524099999998725,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1296248,"pendingBytes":0,"eligibleGpuBytes":5337952},{"sector":"insertion","preparationCpuMs":0.12566599999991013,"aheadPreparedBytes":0,"mandatoryPreparedBytes":1008124,"pendingBytes":0,"eligibleGpuBytes":5049828}]}
+✔ main and flank trails are actual upward-facing world geometry linked to physical exits, independently of the HUD (346.033646ms)
+✔ route markings at the Val Verde insertion do not stretch from an access deck onto its roof (221.487189ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5431.827765

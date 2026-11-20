@@ -1,0 +1,34 @@
+✔ Carrier autonomously reaches its defended front and launches one of its six existing IDs (3074.904428ms)
+✖ the full Horde→Bridge synchronization preserves the real airborne arc until safe-floor contact (28.11494ms)
+✔ a nearby hunter outside the defend/formation radius is not acquired just to force a Carrier launch (20.044725ms)
+✔ real physical cover rejects autonomous launch without spending any of the allocated cargo (41.801371ms)
+✔ autonomous enhanced Carrier still consumes six original payload IDs rather than filling capacity twelve (50.608644ms)
+✔ Bridge cleanup restores the borrowed Carrier callback and removes the launched projection without a death (20.344903ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3456.808663
+
+✖ failing tests:
+
+test at tests/extinction-carrier-autonomy.test.js:86:1
+✖ the full Horde→Bridge synchronization preserves the real airborne arc until safe-floor contact (28.11494ms)
+  AssertionError [ERR_ASSERTION]: post-Horde Bridge.sync must not snap an airborne allocated parasite to the ground
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/extinction-carrier-autonomy.test.js:92:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

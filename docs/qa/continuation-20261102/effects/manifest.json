@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "9d2d23c5eb90f612c2d0888c7b815e9c3a2d9a839479159f56c7b8266b7d9015"
+    },
+    {
+      "path": "before.txt",
+      "sha256": "cbd95011a54cf557144ac1b8adb73605484de6272bd49f2deb5e78bd2ccbc014"
+    },
+    {
+      "path": "cryo-14-source-0.txt",
+      "sha256": "b295ae21c5d527cc351d9cf7ae160da1093f6c718556743ad4db8f49fbcdd49c"
+    },
+    {
+      "path": "cryo-14-source-1.txt",
+      "sha256": "46688c848aef740f13a6801e66c3318177d95addde3a56b83e0201527f9fc4e7"
+    },
+    {
+      "path": "cryo-before.txt",
+      "sha256": "fa7055c34dc6e33142b3eb3086147659f923edf38dff73801482a7b6ca36651e"
+    },
+    {
+      "path": "cryo-targeted.txt",
+      "sha256": "78d0ae78d140210c33d214524b8c07135625c99bf862c492a36f11cb0278c63d"
+    },
+    {
+      "path": "ownership-4-source-0.txt",
+      "sha256": "823f8bc7d87a9d190aebc9ad8ecfdc876e2573fac0b84867098f7f09dc6e5f50"
+    },
+    {
+      "path": "ownership-complement.txt",
+      "sha256": "891ae7e4afb2946cf28d4abd3f90c90aa5a4395e6b139a6d273649f035a649b7"
+    },
+    {
+      "path": "review.json",
+      "sha256": "489ac1741bc43f2b08935ac2b3a2a0036de93dc9fb31e9358040c78e0db72383"
+    },
+    {
+      "path": "targeted-32-source-0.txt",
+      "sha256": "c6110f7af81cda1165be49e8c6588558061c74bf454b77a08541577234bcd5ae"
+    },
+    {
+      "path": "targeted-32-source-1.txt",
+      "sha256": "da72fb9c2f717e8ca9eedfdbfdf0ebc0a847b4f9d4866ca423a92d6720d5efb9"
+    },
+    {
+      "path": "targeted-32-source-2.txt",
+      "sha256": "d1986e5bec760569e5c57a856724fb237fc27c84182b8b18e91bf6106591a43d"
+    },
+    {
+      "path": "targeted-32-source-3.txt",
+      "sha256": "29fbb14256c027e8b0dc06abcfb09f98b38f56f18f43330b03a3191e0fd410c9"
+    },
+    {
+      "path": "targeted.txt",
+      "sha256": "086eb0442139a378887bc018fb7d98c568a5763ac71c14a541139594b50b913f"
+    }
+  ]
+}

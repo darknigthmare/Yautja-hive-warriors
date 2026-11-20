@@ -1,0 +1,19 @@
+{
+  "createdAt": "2026-10-28T09:30:42.073735+00:00",
+  "sourceFrozen": true,
+  "command": "node --test tests/actor-vertical-support-targets.test.js tests/combat-director.test.js tests/hostile-pressure.test.js tests/formation-companions.test.js tests/combat-identity.test.js tests/horde-player-cache-release.test.js tests/finite-supports.test.js",
+  "tests": 49,
+  "passed": 49,
+  "failed": 0,
+  "durationMs": 10379.678501,
+  "proof": "6 new actual-manager tests plus 43 regressions; CPU simulation only. Separate from the earlier frozen world 133-test lot.",
+  "sourceSha256": {
+    "js/entities/XenomorphHorde.js": "5af607ac1ea5d76abd775b3a7505cafd9777dcb675afde470368ba1ba22380ef",
+    "js/entities/Synthetics.js": "e2f8ce352e999590c891be066aeeb7682c79a117f9660dbf0eb98e58beb95790",
+    "tests/actor-vertical-support-targets.test.js": "df88024d10e23e4d9aa48d69ce4994444b4612265535540ce847fb1205017555",
+    "docs/ACTOR-TARGETING.md": "5d706a328ff9f3625b16647e61d1b3b50de6ff5393cf4e289bb836e3a61e3f46"
+  },
+  "sharedDependencySha256": {
+    "js/engine/FiniteSupportPolicy.js": "7c379b2c0dafcbc86985c5b38365eda1d1589c4d3fd69a9b0d336874a0cdcd90"
+  }
+}

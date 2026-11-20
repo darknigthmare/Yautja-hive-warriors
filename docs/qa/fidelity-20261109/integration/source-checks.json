@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-11-09T05:59:46.523853+00:00",
+  "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+  "checks": [
+    {
+      "check": "catalog",
+      "command": [
+        "node",
+        "scripts/sync-battle-catalog.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "docs/qa/fidelity-20261109/integration/catalog.txt",
+      "sha256": "6e5ffb5d9f10f43086718411fc937bc17ec012ed790d134c5e7d1f35da51d631"
+    },
+    {
+      "check": "musou-csv",
+      "command": [
+        "node",
+        "scripts/export-musou-fidelity-gaps.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "docs/qa/fidelity-20261109/integration/musou-csv.txt",
+      "sha256": "e65e34550f3b1ff9b36d8905fac4c236ab94e69f9079ba4f34dfb8244c8f66e0"
+    },
+    {
+      "check": "extinction-csv",
+      "command": [
+        "node",
+        "scripts/export-extinction-fidelity-gaps.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "docs/qa/fidelity-20261109/integration/extinction-csv.txt",
+      "sha256": "316fbc038e9d91b61651b5124a7e7313144c6d67c072264b71dc04047a6f3d31"
+    },
+    {
+      "check": "excel-preservation",
+      "command": [
+        "python3",
+        "scripts/update-audit-progress.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "docs/qa/fidelity-20261109/integration/excel-preservation.txt",
+      "sha256": "dd76dc0e2099864be0534ccbfcdb69d8cebb3b945d7ad10a1fd2653eb8e6282c"
+    }
+  ]
+}

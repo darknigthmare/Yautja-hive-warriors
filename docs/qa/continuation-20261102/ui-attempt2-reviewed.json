@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "status": "failed_browser_action_timeout_preserved",
+  "reviewedAt": "2026-11-02T04:50:39.078820+00:00",
+  "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "report": "docs/qa/continuation-20261102/ui-final-83d36e7-r2-fixture-timeout/report.json",
+  "reportSha256": "6aa50e83e52f3cabd6e89e22eb6e7908836f4edf9e8980ebab2a14e7e36d132e",
+  "casesPassed": 4,
+  "caseFailed": "pause-save-reload-command-identity",
+  "casesNotExecuted": [
+    6,
+    7,
+    8
+  ],
+  "javascriptErrors": 0,
+  "failedRequests": 0,
+  "distUnchanged": true,
+  "helpersUnchanged": true,
+  "observed": "The actual Resume button was visible/enabled/stable and the click action completed. Playwright then reached its default30s action deadline while waiting for scheduled navigations to finish. No subsequent insertion/state assertion ran in this attempt. The same checkpoint case passed in the prior attempt.",
+  "failureScreenshotAvailable": false,
+  "diagnosisScope": "Browser action timing failure during actual SPA restore, not a demonstrated semantic checkpoint failure. This attempt is not accepted as passed and does not certify a resumed operation.",
+  "proposedHelperOnlyChange": "Give the three actual Resume clicks the same bounded180s load/start timeout already used for Deploy and ready. Keep real click and all identity/state assertions; no force-click or bypass.",
+  "browserClosed": true,
+  "runtimeEdited": false,
+  "humanTesters": 0
+}

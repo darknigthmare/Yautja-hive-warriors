@@ -14,8 +14,11 @@ function nearby(position, bounds, margin) {
 }
 
 export class WorldGeometryStreaming {
-  constructor(environment) {
+  constructor(environment, { restoreBudgetBytes = 2 * 1024 * 1024 } = {}) {
+    if (!Number.isSafeInteger(restoreBudgetBytes) || restoreBudgetBytes < 0) throw new RangeError('Streaming restore budget must be nonnegative bytes');
     this.environment = environment; this.zones = []; this.geometries = new Map(); this.instances = new Map();
+    this.restoreBudgetBytes = restoreBudgetBytes; this.pendingResources = 0; this.pendingBytes = 0;
+    this.lastRestoredBytes = 0; this.lastMandatoryRestoredBytes = 0; this.lastAheadRestoredBytes = 0; this.lastUpdateCpuMs = 0; this.maxUpdateCpuMs = 0;
     this.evictions = 0; this.restorations = 0; this.disposed = false;
     const layout = environment.battlefieldLayout, owners = new Map();
     if (!layout) return;
@@ -48,31 +51,46 @@ export class WorldGeometryStreaming {
 
   update(players) {
     if (this.disposed) return;
+    const startedAt = performance.now();
     const positions = (Array.isArray(players) ? players : [players]).map(p => p?.position ?? p).filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.z));
     if (!positions.length) return;
+    this.lastRestoredBytes = 0; this.lastMandatoryRestoredBytes = 0; this.lastAheadRestoredBytes = 0;
     for (const zone of this.zones) {
       // An entire next room is retained ahead of its visible detail. Geometry
       // restoration is synchronous CPU bookkeeping; uploads occur on rendering.
       zone.resident = positions.some(p => nearby(p, zone.bounds, 160));
+      zone.mustDraw = positions.some(p => nearby(p, zone.bounds, 120));
+      zone.distance = Math.min(...positions.map(p => Math.hypot(p.x - Math.max(zone.bounds.minX, Math.min(zone.bounds.maxX, p.x)), p.z - Math.max(zone.bounds.minZ, Math.min(zone.bounds.maxZ, p.z)))));
       if (zone.controlsVisibility) zone.root.visible = positions.some(p => nearby(p, zone.bounds, 120));
     }
+    const queue = [];
     for (const record of this.geometries.values()) {
       const wanted = record.global || [...record.zones].some(zone => zone.resident);
       if (wanted === record.resident) continue;
-      record.resident = wanted;
-      if (!wanted) { record.geometry.dispose(); this.evictions++; }
-      else {
-        for (const attribute of Object.values(record.geometry.attributes)) attribute.needsUpdate = true;
-        if (record.geometry.index) record.geometry.index.needsUpdate = true;
-        this.restorations++;
-      }
+      if (!wanted) { record.resident = false; record.geometry.dispose(); this.evictions++; }
+      else queue.push({ record, mandatory: record.global || [...record.zones].some(zone => zone.mustDraw), distance: Math.min(...[...record.zones].map(zone => zone.distance)) });
     }
     for (const record of this.instances.values()) {
       if (record.resident === record.zone.resident) continue;
-      record.resident = record.zone.resident;
-      if (!record.resident) { record.mesh.dispose(); this.evictions++; }
-      else { record.mesh.instanceMatrix.needsUpdate = true; if (record.mesh.instanceColor) record.mesh.instanceColor.needsUpdate = true; this.restorations++; }
+      if (!record.zone.resident) { record.resident = false; record.mesh.dispose(); this.evictions++; }
+      else queue.push({ record, mandatory: record.zone.mustDraw, distance: record.zone.distance });
     }
+    queue.sort((a, b) => Number(b.mandatory) - Number(a.mandatory) || a.distance - b.distance);
+    this.pendingResources = 0; this.pendingBytes = 0;
+    for (const item of queue) {
+      const { record, mandatory } = item;
+      // Ahead-of-view work is bounded. A teleport or the second camera may
+      // demand immediate visible terrain: report that overage explicitly and
+      // restore it now rather than rendering an absent floor.
+      if (!mandatory && this.lastAheadRestoredBytes + record.bytes > this.restoreBudgetBytes) { this.pendingResources++; this.pendingBytes += record.bytes; continue; }
+      if (record.geometry) {
+        for (const attribute of Object.values(record.geometry.attributes)) attribute.needsUpdate = true;
+        if (record.geometry.index) record.geometry.index.needsUpdate = true;
+      } else { record.mesh.instanceMatrix.needsUpdate = true; if (record.mesh.instanceColor) record.mesh.instanceColor.needsUpdate = true; }
+      record.resident = true; this.restorations++; this.lastRestoredBytes += record.bytes;
+      if (mandatory) this.lastMandatoryRestoredBytes += record.bytes; else this.lastAheadRestoredBytes += record.bytes;
+    }
+    this.lastUpdateCpuMs = performance.now() - startedAt; this.maxUpdateCpuMs = Math.max(this.maxUpdateCpuMs, this.lastUpdateCpuMs);
   }
 
   getStats() {
@@ -81,8 +99,11 @@ export class WorldGeometryStreaming {
     for (const record of this.instances.values()) { templateBytes += record.bytes; if (record.resident) { eligibleGpuBytes += record.bytes; residentInstanceCount++; } }
     return { zones: this.zones.length, residentZones: this.zones.filter(zone => zone.resident).length,
       residentGeometryCount, residentInstanceCount, templateBytes, eligibleGpuBytes, evictions: this.evictions, restorations: this.restorations,
+      restoreBudgetBytes: this.restoreBudgetBytes, pendingResources: this.pendingResources, pendingBytes: this.pendingBytes,
+      lastRestoredBytes: this.lastRestoredBytes, lastMandatoryRestoredBytes: this.lastMandatoryRestoredBytes, lastAheadRestoredBytes: this.lastAheadRestoredBytes,
+      lastUpdateCpuMs: this.lastUpdateCpuMs, maxUpdateCpuMs: this.maxUpdateCpuMs,
       metric: 'CPU buffer byte sizes eligible for GPU upload; actual driver memory requires renderer/hardware measurement' };
   }
 
-  dispose() { this.disposed = true; this.zones.length = 0; this.geometries.clear(); this.instances.clear(); this.environment = null; }
+  dispose() { this.disposed = true; this.zones.length = 0; this.geometries.clear(); this.instances.clear(); this.pendingResources = 0; this.pendingBytes = 0; this.environment = null; }
 }

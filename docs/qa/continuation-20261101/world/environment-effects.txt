@@ -1,0 +1,20 @@
+✔ nitrogen stops actual horde locomotion, expires after leaving, and cannot recolor shared creature materials (3186.031318ms)
+✔ environment freeze respects pause and clear restores the current base while another hunter slow remains owned (1.307756ms)
+✔ steam contacts do not compound per-frame speed and transformer recovery never guesses a species default (1.285255ms)
+✔ cooling tower motor freeze has a finite exit and leaves actor materials untouched (0.798655ms)
+✔ stasis: leaving a damaging coolant volume releases its actual slow without stale frozen flags (1.120399ms)
+✔ ammonia: leaving a damaging coolant volume releases its actual slow without stale frozen flags (1.324147ms)
+✔ freon: leaving a damaging coolant volume releases its actual slow without stale frozen flags (2.034942ms)
+✔ tar: leaving a damaging coolant volume releases its actual slow without stale frozen flags (0.848895ms)
+✔ actual inhibitor, locker and tar interactions use finite current-base effects rather than legacy speed fields (0.832486ms)
+✔ a zero-speed environmental hold expires to the other hunter slow, then to the exact base speed (1.14631ms)
+✔ disposing either overlapping owner preserves the remaining zero-speed hold or slow (0.307705ms)
+✔ a phase speed authored during a zero-speed hold becomes the restored base, without divide-by-zero (0.236405ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3498.881106

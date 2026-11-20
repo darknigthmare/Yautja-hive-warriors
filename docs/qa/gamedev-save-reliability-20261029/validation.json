@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-29T13:05:11.383852+00:00",
+  "repository": "darknigthmare/Yautja-hive-warriors",
+  "pullRequest": 5,
+  "baseCommit": "23649bf92d2132ca0d1b59f0b10e83feb6c809f5",
+  "baseTree": "3b04f4870ce83b44690e0c6c5d64dc73adf98761",
+  "guidesSourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guides": [
+    {
+      "id": "save-systems",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/save-systems/SKILL.md",
+      "gitBlobSha": "dbfa017473dd69f28217a620bb1fb73621913d36",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/save-systems/SKILL.md",
+      "purpose": "Versionnement, rechargement et continuité des identités."
+    },
+    {
+      "id": "game-ui-ux",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/game-ui-ux/SKILL.md",
+      "gitBlobSha": "c7088f7d340dd3d68848f7d0d9a954577fde86b3",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/game-ui-ux/SKILL.md",
+      "purpose": "HUD des fronts, commandes et informations de bataille."
+    }
+  ],
+  "runtime": {
+    "node": "v24.22.1",
+    "threeLockedVersion": "0.160.1",
+    "threeTestBuildRevision": "160",
+    "threeTestBuildGitBlobSha": "0bcc7a286da2c115853ceec9deea19923e10ddc1",
+    "threeTestBuildSha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495",
+    "dependencyInstallation": "Test-only local descriptor and official Three core bytes; not npm ci. No package or lock change."
+  },
+  "targetedTests": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/honor-ledger.test.js",
+      "tests/battle-simulation.test.js",
+      "tests/battle-strategy-depth.test.js",
+      "tests/forge-ledger-integration.test.js",
+      "tests/honor-save-recovery-ui.test.js",
+      "tests/clan-forge-recovery.test.js"
+    ],
+    "exitCode": 0,
+    "summary": {
+      "tests": 72,
+      "pass": 72,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "files": [
+      "tests/honor-ledger.test.js",
+      "tests/battle-simulation.test.js",
+      "tests/battle-strategy-depth.test.js",
+      "tests/forge-ledger-integration.test.js",
+      "tests/honor-save-recovery-ui.test.js",
+      "tests/clan-forge-recovery.test.js"
+    ],
+    "log": "docs/qa/gamedev-save-reliability-20261029/targeted-tests.txt"
+  },
+  "syntaxChecks": {
+    "passed": 12,
+    "log": "docs/qa/gamedev-save-reliability-20261029/syntax-checks.txt"
+  },
+  "validationScope": {
+    "cpuContracts": true,
+    "realMenuMethodsWithSimulatedDOM": true,
+    "realPlayerPersistenceMethodsWithoutWebGLConstructor": true,
+    "fullBrowserGameplay": false,
+    "localProductionBuild": false,
+    "humanTesters": 0,
+    "hardwarePerformanceMeasurement": false,
+    "fidelity1to1Verified": false,
+    "auditAction": "AUD-118",
+    "auditStatus": "À valider",
+    "acceptanceVerified": false
+  },
+  "baselineReproductions": [
+    {
+      "system": "HonorLedger",
+      "failedNewCases": 18,
+      "basis": "Agent tool execution against pinned baseline, in two rounds (15 then 3). Raw baseline logs not retained."
+    },
+    {
+      "system": "BattleSimulation",
+      "failedNewCases": 5,
+      "basis": "Agent tool execution against pinned baseline; current consolidated log covers corrected implementation."
+    },
+    {
+      "system": "Player clan forge",
+      "failedNewCases": 5,
+      "baselinePassingCases": 1,
+      "basis": "Six new tests run before modification; production-method fixtures, not a browser session."
+    }
+  ],
+  "limitations": [
+    "Pending honor is held in memory until a successful write; closing the tab first can lose these uncommitted rewards.",
+    "The retry action re-reads/retries storage; it does not repair malformed or unsupported-version bytes.",
+    "Previously generated terminal battle checkpoints with accumulator > step remain rejected.",
+    "The long-delta terminal regression exercises the simulation API; the current main loop caps delta at 0.1.",
+    "Local npm ci, a Vite production build and browser gameplay were not executed for this report. Post-push deployment checks must be tied to the exact commit separately.",
+    "AUD-118 covers more saves and migrations than these scoped checks."
+  ],
+  "files": [
+    {
+      "path": "js/engine/HonorLedger.js",
+      "baseGitBlobSha": "9af78f5adf82ceae58ac4d2f285dc43106c19d56",
+      "testedGitBlobSha": "3caf5e8bea6ab5f9417f38639bcbbb169b129317",
+      "sha256": "7e904e47e138b3464c7fe5fbc82808630c9e8c36736128008e69739155b63f59"
+    },
+    {
+      "path": "js/battlefield/BattleSimulation.js",
+      "baseGitBlobSha": "fd091b66278637d03f11766e4e4a8db5cb8378d9",
+      "testedGitBlobSha": "4551f513d4fd135b35a7b973f722657dd6a0fc51",
+      "sha256": "846cfccf95e5d45d6c55b1e02f88f895bdb93331d10553f246f6a86beb83683b"
+    },
+    {
+      "path": "js/entities/Player.js",
+      "baseGitBlobSha": "100b5fe88bb3282dce02c57a08aebfa4493b17d5",
+      "testedGitBlobSha": "566c3d0979ce57349be3fb3512793269ea282326",
+      "sha256": "5422a11a3af9bf6be242f2cb2928710ec7838db6cb0c7ff76d14575f70f1f335"
+    },
+    {
+      "path": "js/ui/ForgeShop.js",
+      "baseGitBlobSha": "b18f7140abe78129ac15b9f788886c955ca5718e",
+      "testedGitBlobSha": "5bc9ca6f5a3d9ea9d1e3416bea0460029579393d",
+      "sha256": "b0dff832caf2d9a835c3b206e000a4496696bdfa1622ed4be93229d8b124e610"
+    },
+    {
+      "path": "js/ui/HonorSaveNotice.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "dd6bfca5ff2e7439a2327d47a19677c9245c1a9e",
+      "sha256": "d17242c63fb91cc31e87e31cb150f9a6199f0c4e11987cd211f5e0426150306a"
+    },
+    {
+      "path": "js/main.js",
+      "baseGitBlobSha": "c5f86da83286c4505a45fa9812bdc9480c3fa709",
+      "testedGitBlobSha": "d1d90e00ddd84dc0a28ea89de5d4d85ab4d3e930",
+      "sha256": "e113ac4805b0ad3d9ac83077ab632ff56e69c881c68279f8c431083a7e2887c9"
+    },
+    {
+      "path": "index.html",
+      "baseGitBlobSha": "52ad98ad269e22aa6e3038041c2aaf063bbd2d8b",
+      "testedGitBlobSha": "61efa84e14a60f92fbd81dc60638e2323db9b8de",
+      "sha256": "95d7ebae1453ba2dbbc57e8a9d1f1c2d4d714e105707a1e5ccc1a7b58c62047a"
+    },
+    {
+      "path": "css/styles.css",
+      "baseGitBlobSha": "d7239cf85f6a1a4026419ffbece963cc92151ad2",
+      "testedGitBlobSha": "e1b6a05e6b6c735315da0f6e90e31f8afa288635",
+      "sha256": "209c0a1cd28f9509056f8f3e29a59c68043003b5540565769292b82f0ba0ef14"
+    },
+    {
+      "path": "tests/honor-ledger.test.js",
+      "baseGitBlobSha": "8acf4156a004a044c48a1b224509bdfc6ae580e5",
+      "testedGitBlobSha": "5266354fcbf5177800e7138e1b3ed0d2a9064c9f",
+      "sha256": "128a5edc352f0fecbf5c1bb9db60f8cdcbf3d36ce4fa7c15e78123537f289051"
+    },
+    {
+      "path": "tests/battle-simulation.test.js",
+      "baseGitBlobSha": "131a31657a6075eeb4004b0f9ef1b465161f2c2e",
+      "testedGitBlobSha": "641c90bcf539708cbea7a75557f636168894e375",
+      "sha256": "3b2546cdd66ab4a37e698bb3c87a1a18d14a8a8264194f731dd92c7195e876fa"
+    },
+    {
+      "path": "tests/battle-strategy-depth.test.js",
+      "baseGitBlobSha": "2f854a16a4dea714ac7fca2b8b0f5c132d76e8dd",
+      "testedGitBlobSha": "2f854a16a4dea714ac7fca2b8b0f5c132d76e8dd",
+      "sha256": "85c297bcc737c09ce19b2c29c77e97ef8f8a56ec4dd9617ddb2a813b26ac10f4"
+    },
+    {
+      "path": "tests/forge-ledger-integration.test.js",
+      "baseGitBlobSha": "2cdbb8a92977a0dacf6b2054564e8d21ac3d679e",
+      "testedGitBlobSha": "2cdbb8a92977a0dacf6b2054564e8d21ac3d679e",
+      "sha256": "61e11276f2bf4014a296f92ad58ab6e112652d8818c00ec96c676f187f2abf77"
+    },
+    {
+      "path": "tests/honor-save-recovery-ui.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "34ca1875617428535028c6196f647f4c8518873f",
+      "sha256": "0af3cdf0eca56948cf8f48d0d43627cf8d37fc737b2b48ac497211f3ee5e19f8"
+    },
+    {
+      "path": "tests/clan-forge-recovery.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "40fbe2bbded731b3e5a712dbd96fa457b336a1a1",
+      "sha256": "3db58f04d7466eebfc472d424aa7af4244e5b0b53ae58f6918c716b842844c2e"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/qa/gamedev-save-reliability-20261029/targeted-tests.txt",
+      "sha256": "a8838ef920e88bea8e026fd28330992d3dd7cda37c0dcdc2837c778e12ffe3da"
+    },
+    {
+      "path": "docs/qa/gamedev-save-reliability-20261029/syntax-checks.txt",
+      "sha256": "23a82defe4e38f74165b4a9d068423fb458db7de8c94a079a300b25f44160362"
+    }
+  ]
+}

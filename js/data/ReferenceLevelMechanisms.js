@@ -3,6 +3,7 @@
  * These sets preserve implementations, not a certificate of screen accuracy. */
 import { buildReferenceContacts, buildReferenceInterest } from '../graphics/ReferenceWorldContacts.js';
 import { batchReferenceLandmarks } from '../graphics/ReferenceLandmarkBatching.js';
+import { ASCENSION_TERRAINS } from './AscensionWorlds.js';
 
 const PROFILE_DEFINITIONS = {
   gunnison_forest: ['buildCrashedScoutShipProps', 'buildGunnisonForestExpansionProps'],
@@ -49,6 +50,8 @@ const MAP_BUILDERS = {
 };
 
 export function referenceLevelProfile(id, mapId = null) {
+  if (typeof mapId === 'string' && mapId.startsWith('ASC-') && ASCENSION_TERRAINS[mapId.slice(4)])
+    return Object.freeze({ id: mapId, builders: ASCENSION_TERRAINS[mapId.slice(4)].builders, fidelity: 'Ascension terrain variant; no installation of another setting' });
   if (MAP_BUILDERS[mapId]) return Object.freeze({ id: mapId, builders: MAP_BUILDERS[mapId],
     fidelity: 'original interpreted variant; generic compatible assets, no borrowed named scene' });
   return REFERENCE_LEVEL_MECHANISMS[id] ?? null;

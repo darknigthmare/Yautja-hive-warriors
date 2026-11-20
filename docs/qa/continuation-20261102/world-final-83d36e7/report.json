@@ -1,0 +1,677 @@
+{
+  "status": "captured",
+  "startedAt": "2026-11-02T04:30:33.903Z",
+  "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "scope": "Val Verde fronts/pilot insertion and scene inspection; real menus, imported player, actual world geometry and two rendered camera views. No natural victory or all-map fidelity claim.",
+  "assistances": [
+    "Insertion advanced by actual game.update at 1/60",
+    "Simulation paused for comparable inspection",
+    "Second capture uses an explicit inspection camera; first capture retains the actual gameplay camera"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "distBefore": [
+    {
+      "path": "assets/confetti-CAXNRs-2.js",
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+    },
+    {
+      "path": "assets/engine-Ej7zsK31.js",
+      "sha256": "855a9c70aa4a63f0217279ffd398163a242ed2cfc186f2e6b1b5e8e86a579754"
+    },
+    {
+      "path": "assets/index-CQmDKfZq.js",
+      "sha256": "19af360d8618223bc90720cabd8345427a9ca3e31900aba414f185f3d529e540"
+    },
+    {
+      "path": "assets/index-Y-bmw2ji.css",
+      "sha256": "3ffd25494cf9b138ed151930bcec6da89c6d083e0df31cd0b4aca0a7c6a7f2a8"
+    },
+    {
+      "path": "assets/orbitron-latin-600-normal-75H6acHo.woff",
+      "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937"
+    },
+    {
+      "path": "assets/orbitron-latin-600-normal-mazHmDYu.woff2",
+      "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6"
+    },
+    {
+      "path": "assets/orbitron-latin-800-normal-CQafOXEd.woff2",
+      "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc"
+    },
+    {
+      "path": "assets/orbitron-latin-800-normal-P4cBi4I7.woff",
+      "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61"
+    },
+    {
+      "path": "assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc"
+    },
+    {
+      "path": "assets/rajdhani-latin-500-normal-DfvNI-Td.woff",
+      "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625"
+    },
+    {
+      "path": "assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601"
+    },
+    {
+      "path": "assets/rajdhani-latin-600-normal-Dx02qI2_.woff",
+      "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a"
+    },
+    {
+      "path": "assets/rajdhani-latin-700-normal-BPDUZo87.woff2",
+      "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f"
+    },
+    {
+      "path": "assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff",
+      "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31"
+    },
+    {
+      "path": "assets/visual-effects-ZRMFH9Ew.js",
+      "sha256": "6f5e4325e97806d17644cd2150d946ff86298917d87106a5ce5400719734a6e6"
+    },
+    {
+      "path": "build-info.json",
+      "sha256": "56191fea9d53d314a2709e4f3da3fb7a403fde4177c0d2502bfbf7d167539e3f"
+    },
+    {
+      "path": "favicon.svg",
+      "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6"
+    },
+    {
+      "path": "index.html",
+      "sha256": "af055276cabe4892baa8d6a53472c3e6c6927adb9fa8396c3620b2455460267b"
+    },
+    {
+      "path": "models/big-chap-rigged.glb",
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+    },
+    {
+      "path": "models/big-chap-run.glb",
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+    },
+    {
+      "path": "models/big-chap-walk.glb",
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+    },
+    {
+      "path": "models/city-hunter-biomask.glb",
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    {
+      "path": "models/city-hunter-body-corrected.glb",
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+    },
+    {
+      "path": "models/city-hunter-rigged.glb",
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    {
+      "path": "models/city-hunter-run.glb",
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    },
+    {
+      "path": "models/city-hunter-walk.glb",
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    {
+      "path": "models/jungle-hunter-biomask.glb",
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+    },
+    {
+      "path": "models/jungle-hunter-rigged.glb",
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+    },
+    {
+      "path": "models/jungle-hunter-run.glb",
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+    },
+    {
+      "path": "models/jungle-hunter-walk.glb",
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+    }
+  ],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v68-continuation-20261102",
+    "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+    "sourceBranch": "codex/continuation-20261102",
+    "sourceFingerprint": "8c803291f3bb3d20b14457eaa9776b14071a4239524326ead7fb67bf26f9452a",
+    "sourceFiles": 190,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793593784,
+    "reproducibleBuildDate": "2026-11-02T04:29:44.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/continuation-20261102/docs/qa/continuation-20261102-validation.json"
+  },
+  "harnessSha256": "262bdc0329a3fa6f5cf93073f817c2b86059a321c1fc66a34eaa00b4bacdaf90",
+  "insertion": {
+    "simulated": 4.24999999999999,
+    "phase": "complete",
+    "visible": true
+  },
+  "scene": {
+    "levelId": "val_verde_jungle",
+    "seed": 1,
+    "player": {
+      "position": [
+        0,
+        0,
+        4.2
+      ],
+      "hp": 1000,
+      "visible": true
+    },
+    "weather": {
+      "type": "pollen",
+      "vents": 0,
+      "ventGeometry": []
+    },
+    "camera": {
+      "position": [
+        8,
+        7.300001614373034,
+        17.913594055139914
+      ],
+      "quaternion": [
+        -0.14597506805283847,
+        0.2564018098655698,
+        0.03920507756723107,
+        0.95467918867941
+      ]
+    },
+    "marks": [
+      {
+        "vertices": 1974,
+        "insertionVertices": 84,
+        "insertionHeightMin": 0.04500000178813934,
+        "insertionHeightMax": 0.04500000178813934,
+        "insertionVerticesAboveOne": 0,
+        "cues": [
+          {
+            "sectorId": "insertion",
+            "gateId": "gate-insertion-approach",
+            "targetSectorId": "approach",
+            "kind": "main",
+            "symbol": "single-chevron",
+            "samples": [
+              [
+                -6,
+                0.045,
+                0
+              ],
+              [
+                -16,
+                0.045,
+                0
+              ],
+              [
+                -26,
+                0.045,
+                0
+              ],
+              [
+                -36,
+                0.045,
+                0
+              ],
+              [
+                -46,
+                0.045,
+                0
+              ],
+              [
+                -56,
+                0.045,
+                0
+              ],
+              [
+                -66,
+                0.045,
+                0
+              ],
+              [
+                -76,
+                0.045,
+                0
+              ]
+            ]
+          },
+          {
+            "sectorId": "insertion",
+            "gateId": "gate-route-insertion-relay-flank",
+            "targetSectorId": "relay",
+            "kind": "flank",
+            "symbol": "paired-chevrons",
+            "samples": [
+              [
+                0,
+                0.045,
+                6
+              ],
+              [
+                0,
+                0.045,
+                16
+              ],
+              [
+                0,
+                0.045,
+                26
+              ],
+              [
+                0,
+                0.045,
+                36
+              ],
+              [
+                0,
+                0.045,
+                46
+              ],
+              [
+                0,
+                0.045,
+                56
+              ],
+              [
+                0,
+                0.045,
+                66
+              ],
+              [
+                0,
+                0.045,
+                76
+              ],
+              [
+                0,
+                0.045,
+                86
+              ]
+            ]
+          },
+          {
+            "sectorId": "approach",
+            "gateId": "gate-approach-relay",
+            "targetSectorId": "relay",
+            "kind": "main",
+            "symbol": "single-chevron",
+            "samples": [
+              [
+                -170,
+                0.045,
+                -6
+              ],
+              [
+                -170,
+                0.045,
+                -16
+              ],
+              [
+                -170,
+                0.045,
+                -26
+              ],
+              [
+                -170,
+                0.045,
+                -36
+              ],
+              [
+                -170,
+                0.045,
+                -46
+              ],
+              [
+                -170,
+                0.045,
+                -56
+              ],
+              [
+                -170,
+                0.045,
+                -66
+              ],
+              [
+                -170,
+                0.045,
+                -76
+              ]
+            ]
+          },
+          {
+            "sectorId": "relay",
+            "gateId": "gate-relay-foundry",
+            "targetSectorId": "foundry",
+            "kind": "main",
+            "symbol": "single-chevron",
+            "samples": [
+              [
+                -176,
+                0.045,
+                -170
+              ],
+              [
+                -186,
+                0.045,
+                -170
+              ],
+              [
+                -196,
+                0.045,
+                -170
+              ],
+              [
+                -206,
+                0.045,
+                -170
+              ],
+              [
+                -216,
+                0.045,
+                -170
+              ],
+              [
+                -226,
+                0.045,
+                -170
+              ],
+              [
+                -236,
+                0.045,
+                -170
+              ],
+              [
+                -246,
+                0.045,
+                -170
+              ]
+            ]
+          },
+          {
+            "sectorId": "relay",
+            "gateId": "gate-route-relay-nest-outer",
+            "targetSectorId": "nest",
+            "kind": "flank",
+            "symbol": "paired-chevrons",
+            "samples": [
+              [
+                -164,
+                0.045,
+                -170
+              ],
+              [
+                -154,
+                0.045,
+                -170
+              ],
+              [
+                -144,
+                0.045,
+                -170
+              ],
+              [
+                -134,
+                0.045,
+                -170
+              ],
+              [
+                -124,
+                0.045,
+                -170
+              ],
+              [
+                -114,
+                0.045,
+                -170
+              ],
+              [
+                -104,
+                0.045,
+                -170
+              ],
+              [
+                -94,
+                0.045,
+                -170
+              ],
+              [
+                -84,
+                0.045,
+                -170
+              ],
+              [
+                -74,
+                0.045,
+                -170
+              ]
+            ]
+          },
+          {
+            "sectorId": "foundry",
+            "gateId": "gate-foundry-command",
+            "targetSectorId": "command",
+            "kind": "main",
+            "symbol": "single-chevron",
+            "samples": [
+              [
+                -340,
+                0.045,
+                -164
+              ],
+              [
+                -340,
+                0.045,
+                -154
+              ],
+              [
+                -340,
+                0.045,
+                -144
+              ],
+              [
+                -340,
+                0.045,
+                -134
+              ],
+              [
+                -340,
+                0.045,
+                -124
+              ],
+              [
+                -340,
+                0.045,
+                -114
+              ],
+              [
+                -340,
+                0.045,
+                -104
+              ],
+              [
+                -340,
+                0.045,
+                -94
+              ]
+            ]
+          },
+          {
+            "sectorId": "command",
+            "gateId": "gate-command-nest",
+            "targetSectorId": "nest",
+            "kind": "main",
+            "symbol": "single-chevron",
+            "samples": [
+              [
+                -346,
+                0.045,
+                0
+              ],
+              [
+                -356,
+                0.045,
+                0
+              ],
+              [
+                -366,
+                0.045,
+                0
+              ],
+              [
+                -376,
+                0.045,
+                0
+              ],
+              [
+                -386,
+                0.045,
+                0
+              ],
+              [
+                -396,
+                0.045,
+                0
+              ],
+              [
+                -406,
+                0.045,
+                0
+              ],
+              [
+                -416,
+                0.045,
+                0
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "canopy": [
+      {
+        "name": "val-verde-canopy-west-north",
+        "position": [
+          -10,
+          6.025,
+          -18
+        ],
+        "geometry": "CylinderGeometry"
+      },
+      {
+        "name": "val-verde-canopy-north-east",
+        "position": [
+          10,
+          6.025,
+          -18
+        ],
+        "geometry": "CylinderGeometry"
+      },
+      {
+        "name": "val-verde-canopy-east-south",
+        "position": [
+          10,
+          6.025,
+          18
+        ],
+        "geometry": "CylinderGeometry"
+      },
+      {
+        "name": "val-verde-canopy-south-west",
+        "position": [
+          -10,
+          6.025,
+          18
+        ],
+        "geometry": "CylinderGeometry"
+      }
+    ],
+    "cones": [
+      {
+        "name": "",
+        "position": [
+          0,
+          0.5,
+          0
+        ],
+        "height": 1.1,
+        "opacity": 1
+      },
+      {
+        "name": "",
+        "position": [
+          0,
+          1.2,
+          0
+        ],
+        "height": 1.8,
+        "opacity": 1
+      },
+      {
+        "name": "",
+        "position": [
+          0.8,
+          3.1,
+          0.4
+        ],
+        "height": 0.5,
+        "opacity": 1
+      },
+      {
+        "name": "",
+        "position": [
+          0,
+          2.6,
+          0
+        ],
+        "height": 0.6,
+        "opacity": 1
+      },
+      {
+        "name": "reference-shared-instances-3",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "height": 1,
+        "opacity": 1
+      },
+      {
+        "name": "reference-shared-instances-21",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "height": 1,
+        "opacity": 1
+      }
+    ],
+    "finite": {
+      "allocated": 132,
+      "units": 132,
+      "conserved": true
+    }
+  },
+  "inspectionCamera": {
+    "position": [
+      16,
+      14,
+      20
+    ],
+    "quaternion": [
+      -0.22302439610575728,
+      0.37136585056309385,
+      0.09237972960707394,
+      0.8965564730316413
+    ]
+  },
+  "distUnchanged": true,
+  "finishedAt": "2026-11-02T04:31:45.821Z"
+}

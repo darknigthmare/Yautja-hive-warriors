@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "carrier-real-cargo-flight-failure.png",
+      "sha256": "6f144647169c810f7c533078b0811fc1fd823c1be359ca08cf65bbc0fa64f540"
+    },
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "e71d02f99b66b8f2b244cc015d1e48dcd5ae7490071b410c0d454485efb70d35"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "report.json",
+      "sha256": "0366d3450ee99f81a54ddc8eefacf415f9edda5af6fbdcbd7f0e2b2ae827ac17"
+    }
+  ]
+}

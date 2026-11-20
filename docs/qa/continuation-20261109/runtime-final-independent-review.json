@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_scoped_final_source_acceptance_review",
+  "reviewedAt": "2026-11-09T05:10:40.848830+00:00",
+  "reviewer": "bible_excel_alignment_nov09",
+  "scope": "Independent review of recorded source, artifact, CPU and rendered functional evidence for the final 4ecac29 code. Read-only hash/data/code checks and inspection of existing images; no new application tests, browser run, Git operation, deployment or Excel/source mutation.",
+  "runtimeSource": {
+    "sourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+    "indexSha256": "70067415028edf40bac7085f72b56a43037f55deae2de7b332524e8f7012795a",
+    "buildInfoSha256": "14d4e808f5252c27667699aa220ed60afd1c2422c38579d44cc4ad819b5d02ba",
+    "sourceFingerprint": "a214c05a3ad459495d24cd3028e058106b57632aad6a24811b3b8456053f92f5",
+    "sourceFiles": 193,
+    "sourceTreeDirty": false,
+    "sourceFingerprintIndependentlyRecomputed": true,
+    "staticFilesIndependentlyHashed": 30,
+    "buildProof": {
+      "path": "docs/qa/continuation-20261109/integration-rescue-fix/frozen-build.json",
+      "sha256": "996446e4e07c3f97cb06208d76637fce5a5ddcea93171b4c596eb7bf74f3b581"
+    }
+  },
+  "cpu": {
+    "status": "passed",
+    "tests": 300,
+    "passed": 300,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "testFiles": 39,
+    "allCommandPathsDistinct": true,
+    "logSuccessLinesIndependentlyCounted": 300,
+    "scope": "Selected 39-file regression, including original 37 plus allied rescue and Ravager/medical checkpoint composition; not the full repository suite.",
+    "report": {
+      "path": "docs/qa/continuation-20261109/integration-rescue-fix/cpu-regression.json",
+      "sha256": "230676cd145151a972adf43254a300307e2fc3271531260cc78d8bda365eb339"
+    },
+    "log": {
+      "path": "docs/qa/continuation-20261109/integration-rescue-fix/cpu-regression.txt",
+      "sha256": "b1410ccd99e4501feea6389fb766e6f29736635ffc2c6119d90a24cb19d057be"
+    },
+    "independentReviewerExecutedTests": false
+  },
+  "browser": {
+    "status": "passed",
+    "acceptedRun": {
+      "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/report.json",
+      "sha256": "9341074dd35f9b2cd5c2a5d8a56dfa8142ec0364e090a6911a233f05c1b1715c"
+    },
+    "manifest": {
+      "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/manifest.json",
+      "sha256": "27f1c9d10b47b013f690bdf6c8a214e840d3abaf870d6253885860d40d0ddf60"
+    },
+    "sourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+    "durationSeconds": 179.928,
+    "expectedCases": [
+      "source-menu-coop-insertion-command-checkpoint",
+      "carrier-autonomous-main-update-flight",
+      "ravager-checkpoint-phase-recovery-fire"
+    ],
+    "casesPassed": 3,
+    "casesFailed": 0,
+    "actualAcceptedExecutions": 1,
+    "fullThreeCasesInOneCleanRun": true,
+    "usesHistoricalComposite": false,
+    "requestedCaseIds": [
+      "source-menu-coop-insertion-command-checkpoint",
+      "carrier-autonomous-main-update-flight",
+      "ravager-checkpoint-phase-recovery-fire"
+    ],
+    "notRequestedCaseIds": [],
+    "pngFiles": 21,
+    "manifestFilesHashed": 25,
+    "externalAndArchivedFilesByteIdentical": true,
+    "helperSnapshots": [
+      {
+        "path": "docs/qa/continuation-20261109/verify-evolved-combat.mjs",
+        "sha256": "6096de6443a23357d8261fba099bb3fd6cfe0a6728b96ef85f1bbc7f3f2d116b",
+        "snapshot": "helper-source-0.mjs"
+      },
+      {
+        "path": "docs/qa/continuation-20261109/ui-coop-smoke.mjs",
+        "sha256": "e5f48d56a61007a897c045d0f52bd243ace25a90744ed41173def25ac806315a",
+        "snapshot": "helper-source-1.mjs"
+      },
+      {
+        "path": "tests/helpers/finish-insertion.mjs",
+        "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+        "snapshot": "helper-source-2.mjs"
+      }
+    ],
+    "allHelperSnapshotsAndCurrentFilesMatch": true,
+    "helperHashesUnchangedFromFailed946R4": true,
+    "distUnchanged": true,
+    "browserClosed": true,
+    "javascriptErrors": 0,
+    "failedRequests": 0,
+    "externalRequests": 0,
+    "independentReviewerLaunchedBrowser": false
+  },
+  "acceptedCaseReview": [
+    {
+      "id": "source-menu-coop-insertion-command-checkpoint",
+      "status": "passed",
+      "checks": {
+        "actualCoopMenu": true,
+        "sourceTerrainTruthAtBothSizes": true,
+        "standardSixAndEnhancedCapacityTwelve": true,
+        "completeNonoverlappingKeyboardLegendsAtBothSizes": true,
+        "pilotReleasesTerrainCards": true,
+        "bothHuntersHiddenDuringArrival": true,
+        "realOpeningAndExitCamerasAvoidCanopyAtCapturedStages": true,
+        "cooperativeFinitePilotHasNonzeroActorsAndFrontsHud": true,
+        "realReloadPreservesCoopCheckpointIdentitiesOrderResourcesAndClock": true
+      },
+      "viewports": [
+        {
+          "width": 800,
+          "height": 600
+        },
+        {
+          "width": 1280,
+          "height": 720
+        }
+      ],
+      "observations": [
+        "AFF-27 terrain cards show and lock the actual bound Xenomorph Prime map; pilot mode releases manual terrain selection.",
+        "Standard briefing retains six original cargo identities/capacity 6; enhanced briefing declares the same six/capacity 12. Full source front descriptions remain in keyboard-scrollable legends with stable numeric keys.",
+        "Actual co-op menu creates both players and independent split-screen cameras; both hunters remain hidden during arrival. The real 1/60 insertion updates and renderer preserve distinct cameras and clear physical traces at opening/exiting capture times.",
+        "The finite co-op pilot has132 allocated IDs and8 detailed actors, not952 simultaneously drawn units. An actual defend command and true page-reload checkpoint round trip preserve IDs, resources, order, scene and strategic time 3 s. Insertion replay may move player positions and is not claimed to preserve them."
+      ],
+      "pilotAllocatedIds": 132,
+      "pilotDetailedActors": 8,
+      "cap": 32,
+      "checkpointTime": 3,
+      "cleanupPassed": true
+    },
+    {
+      "id": "carrier-autonomous-main-update-flight",
+      "status": "passed",
+      "launchMode": "autonomous-normal-horde-selector-through-Game.update",
+      "fullGameUpdateTicksToLaunch": 63,
+      "cargoBefore": 6,
+      "cargoAfter": 5,
+      "releasedExistingUid": "AFF-27:hive:0:2",
+      "heightStart": 2.05,
+      "heightMidair": 3.225,
+      "heightLanded": 0,
+      "landingDistanceFromDeclaredEnd": 0,
+      "allocatedIds": 952,
+      "cap": 32,
+      "observations": [
+        "Only player inspection placement is assisted; no source actor/group coordinate, target override, phase, HP or clock is patched.",
+        "A transparent observer returns the original callback result. The existing selector acquires a target inside the unchanged defend/formation policy and the full Game.update chain naturally accepts one launch.",
+        "The one original cargo UID stays owned, active and unique through the post-Horde Bridge sync, pause, apex and exact declared landing. The other five remain carried and unrendered; no new soldier is allocated."
+      ],
+      "pausePreservedClockAndFlight": true,
+      "cleanupPassed": true
+    },
+    {
+      "id": "ravager-checkpoint-phase-recovery-fire",
+      "status": "passed",
+      "ravagerUid": "AFF-27:hive:13:1",
+      "hpDuringSavedPhase": 50,
+      "savedTime": 1,
+      "phaseStartedAt": 0.25,
+      "absoluteRecoveryDeadline": 12.25,
+      "remainingAfterReload": 11.25,
+      "rematerializedAt": 1.25,
+      "hpAfterRecovery": 500,
+      "recoveredAt": 12.25,
+      "fireDeathEventCount": 1,
+      "allocatedIds": 952,
+      "cap": 32,
+      "observations": [
+        "Damage is explicit through the actual Horde.applyDamage API and declared raw/fire causes; this is not a natural player combat encounter.",
+        "The genuine saveOperation and browser reload/menu resume preserve UID, 50 HP, spent upgrade, signed variant/digest, strategic time and absolute phase deadline. Pause preserves the remaining 11.25 s.",
+        "Budget-owned rematerialization creates a new mesh for the same saved UID, with the correct prone visual child and no medical HP 1 overwrite. Recovery at 12.25 s restores 500 HP on that same new mesh; the finite get-up finishes normally.",
+        "The spent upgrade does not trigger again. Typed fire kills once; the repeat is rejected and the same UID is absent from the Horde/projection and remains dead in the simulation."
+      ],
+      "sameMeshWithinPostReloadRecovery": true,
+      "newMeshAcrossActualPageReloadExpected": true,
+      "cleanupPassed": true
+    }
+  ],
+  "rescueOwnerFixReview": {
+    "status": "no_blocker_found_in_scoped_code_review",
+    "files": [
+      {
+        "path": "js/battlefield/AllyRescueSystem.js",
+        "sha256": "92b77e6995d8a4651ae2c87916627b2b1852c50353e12e1241c76167dc1a0570"
+      },
+      {
+        "path": "js/battlefield/ExtinctionRavagerRegenesis.js",
+        "sha256": "7e146c2797019601ab231277a5181faf7c786bedf71affe21fdc37ba9f1d21f7"
+      },
+      {
+        "path": "tests/ally-rescue-ravager-checkpoint.test.js",
+        "sha256": "38c78351321d21379cbcb610b54f2e116302e2d516974171ceb9421ee38660e2"
+      }
+    ],
+    "ownerEvidence": {
+      "path": "docs/qa/continuation-20261109/rescue-phase/validation.json",
+      "sha256": "5d06f524bba16a52350633d6b0fe7a9bef2b6d23a7813fd64d47c26e758ae70f"
+    },
+    "checks": [
+      "The exemption requires an actually allocated configured upgraded Ravager and validates both canonical and cloned phase state through the existing source-specific validator.",
+      "onMaterialize returns before any HP/pose/timer mutation for that owner. Medical restore rejects even a legal one-HP Ravager phase hidden behind a forged rescue record, and malformed phase records remain rejected.",
+      "Genuine allied orphan incapacity, unphased/unsigned/wrong-continuity or malformed phases remain refused. No broad current-alliance guard invalidates unrelated medical history.",
+      "An elapsed deadline is retained until its own recovery step; no new future-deadline restriction changes checkpoint admission. Pause, spent upgrade, one recovery and one final death keep their existing owner."
+    ]
+  },
+  "historicalNegativeExecutions": {
+    "runtimeSourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "allFourRunsRemainFailed": true,
+    "records": [
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-94630d8-r1/report.json",
+        "sha256": "88cc0925401ffe8366d4440899581391893bf1751e6e94075091e69d66898a18",
+        "run": 1,
+        "status": "failed",
+        "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+        "cases": [
+          {
+            "id": "source-menu-coop-insertion-command-checkpoint",
+            "status": "failed"
+          }
+        ],
+        "browserClosed": true,
+        "distUnchanged": true
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-94630d8-r2/report.json",
+        "sha256": "58dfe4d0e38784897f99b4498c3a09aefdf535fb31ec8031e29479ed6b4f4ab0",
+        "run": 2,
+        "status": "failed",
+        "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+        "cases": [
+          {
+            "id": "source-menu-coop-insertion-command-checkpoint",
+            "status": "failed"
+          }
+        ],
+        "browserClosed": true,
+        "distUnchanged": true
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-94630d8-r3/report.json",
+        "sha256": "faa6dbf60c5f8a587497f4438ddbda8bb1605b8aba208c23011538ecb0a72282",
+        "run": 3,
+        "status": "failed",
+        "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+        "cases": [
+          {
+            "id": "source-menu-coop-insertion-command-checkpoint",
+            "status": "passed"
+          },
+          {
+            "id": "carrier-autonomous-main-update-flight",
+            "status": "failed"
+          }
+        ],
+        "browserClosed": true,
+        "distUnchanged": true
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-94630d8-r4/report.json",
+        "sha256": "826502ad8a9bdf64a0f0957e8ac982babb80106fda17504e597f0da3aab7aef7",
+        "run": 4,
+        "status": "failed",
+        "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+        "cases": [
+          {
+            "id": "carrier-autonomous-main-update-flight",
+            "status": "passed"
+          },
+          {
+            "id": "ravager-checkpoint-phase-recovery-fire",
+            "status": "failed"
+          }
+        ],
+        "browserClosed": true,
+        "distUnchanged": true
+      }
+    ],
+    "reasons": [
+      "R1: native End-key scroll completion was checked too early; fixture failure preserved.",
+      "R2: map-close returned to pause, while the fixture tried the HUD pause control without resuming; failure preserved.",
+      "R3: UI case passed, but Carrier observation placement did not yield a launch within the bound; failed run preserved. Later placement chooses a nearer navigation-safe point within unchanged tactical filters.",
+      "R4: Carrier case passed, but genuine Ravager page reload exposed the application bug: medical restore rejected an incapacitated source-owned phase without a rescue timer. This was not relabeled as a fixture failure; the runtime changed before final R5."
+    ],
+    "historicalPartialPassesNotUsedToCertifyFinalCode": true,
+    "newSourceRequiresAndHasItsOwnThreeCaseExecution": true
+  },
+  "visualReview": {
+    "existingImagesActuallyOpened": [
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/ravager-restored-cataleptic.png",
+        "sha256": "6d9d2fcff71cf7936dc999f516120bec157858a69570e610acdd4a4dc06cd27b"
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/ravager-recovered.png",
+        "sha256": "972def814b22e62c3359ef88a9facf0275e5c1bb7e4e7f6a36e9ce0103c12edd"
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/carrier-autonomous-midair-post-sync.png",
+        "sha256": "560672f36bb3ed2aa50d25842eef855bf1517da8ee56b7fd437d4973fa10c329"
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/source-menu-coop-insertion-command-checkpoint-val-verde-real-coop-exiting.png",
+        "sha256": "7c598290d8d0c6b6154af594191edb996a542725b0c3b69cbe39f0057b892827"
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/source-menu-coop-insertion-command-checkpoint-aff27-enhanced-legend-1280x720.png",
+        "sha256": "6b4e542b788dcdf4ad04ad5355545b8d1a518c68a520f62760898a7e72c53175"
+      },
+      {
+        "path": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/ravager-fire-cleanup.png",
+        "sha256": "c08be6762eaad76b11b845d4518d494824df8ade6e2c42f15afcdba7d7298f3f"
+      }
+    ],
+    "observations": [
+      "The enhanced briefing separates numeric map keys and source paragraphs into a clearly focused scrollable DOM legend; its native End-key capture shows the lower rows rather than every row simultaneously.",
+      "The pale launched parasite is visible airborne above the Carrier after the full gameplay/sync update.",
+      "The recovered Ravager is visibly standing. Its restored prone-state closeup is partly obscured by the player, capsule and neighboring actors; recorded owner pose and rotation support the mechanical phase assertion, not a complete silhouette inspection.",
+      "The Val Verde foreground roof still obscures part of a co-op view. Target/move prompts overlap combat information in crowded closeups. Procedural and asynchronously loaded imported silhouettes coexist."
+    ],
+    "unresolved": [
+      "Universal player/danger visibility and camera framing",
+      "All prompt/HUD overlap and readability in natural crowd combat",
+      "Complete caste/model/animation source fidelity and all silhouettes",
+      "Human comprehension/difficulty and hardware performance"
+    ]
+  },
+  "sourcePreservation": {
+    "workbooksRehashedUnchangedFromInitialAlignment": [
+      {
+        "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.source.xlsx",
+        "sha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5"
+      },
+      {
+        "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx",
+        "sha256": "5dfca4a6eb8c8e79d8033e9730f672f82124e4ab6ee298c7eee7acebea4d1fe5"
+      },
+      {
+        "path": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx",
+        "sha256": "d751c28585c8f9c467c19f74fd91c199525f7b72a3ecd5b0967fd67312fcba6d"
+      }
+    ],
+    "auditIds": 126,
+    "currentStatuses": {
+      "Terminé": 78,
+      "À valider": 36,
+      "En cours": 12
+    },
+    "statusClosuresByThisReview": 0,
+    "primaryDesignContract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+    "independentReviewDoesNotAdmitExternalReferenceRowsAsRuntimeUnits": true
+  },
+  "assistancesAndScopeLimits": [
+    "Global RAF gameplay is frozen between actual UI inputs; explicit game.update steps advance insertion, the pilot allocator and the entire Carrier gameplay chain deterministically at1/60.",
+    "Carrier and Ravager inspection relocates only the player to navigation-safe positions; no allocated actor/group coordinate, profile, signature, HP, phase, result or clock is assigned.",
+    "Carrier acquisition is observed for at most480 full Game.update ticks (8 simulated seconds). A transparent callback observer calls the original and returns its unchanged result; no explicit Bridge launch or target override is used.",
+    "Carrier flight captures follow full Game.update, including the production post-update Bridge.sync; all combat managers advance normally during these bounded ticks.",
+    "Ravager phase isolation advances the real Simulation/Bridge owners in .25s steps while other gameplay stays paused. Damage uses the actual Horde.applyDamage API with signed player faction.",
+    "Ravager saveOperation writes the genuine phase checkpoint; page reload and normal menu resume preserve its finite UID, HP, spent upgrade, signature, strategic time and absolute deadline before owner-driven rematerialization.",
+    "Actor closeups use a recorded inspection camera and normal environment visibility refresh. Co-op insertion evidence keeps both genuine game cameras unchanged.",
+    "Pilot command/checkpoint controls use real DOM clicks. Pause is observed without strategic time advancement; insertion replay does not spend resources. No save data is patched.",
+    "The initial paused AFF-27 HUD receives a normal zero-delta update after insertion; unchanged strategic time, finite UID set and Carrier cargo are asserted before checking its accessible legend.",
+    "Three bounded functional cases do not certify all scenarios/operations, all maps/bosses/power combinations or a natural complete mission victory.",
+    "Carrier curved-flight collision and insertion visibility remain scoped to the observed scenario and captures; no universal geometry or camera guarantee follows.",
+    "No remote production deployment, GitHub CI completion, human playtest, 1:1 visual certification or target-hardware FPS claim follows from these local artifacts."
+  ],
+  "independentReviewerActions": {
+    "applicationTestsExecuted": 0,
+    "browserRunsExecuted": 0,
+    "gitCommandsExecuted": 0,
+    "applicationCodeChanged": false,
+    "workbooksChanged": false,
+    "centralFollowupChanged": false,
+    "remoteActionsExecuted": false,
+    "newEvidenceFilesWritten": [
+      "docs/qa/continuation-20261109/runtime-final-independent-review.json"
+    ]
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "globalAuditClosure": false
+}

@@ -1,0 +1,29 @@
+{
+  "measuredAt": "2026-11-09T05:47:44.054Z",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "kind": "Synchronous CPU-side construction in the cloud Node process; excludes rendering and GPU.",
+  "beforeWarmObservedMs": [
+    253.1187500000001,
+    226.76125599999978
+  ],
+  "beforeNote": "Two observations of the uncached indexed/morph authoring path in this same workspace before optimization, not an FPS benchmark.",
+  "afterColdMs": 3639.7205409999997,
+  "afterWarmMs": [
+    1.8089749999999185,
+    1.9737199999999575,
+    2.1164630000002944,
+    2.0148920000001453,
+    2.0257379999998193,
+    2.838999999999942,
+    5.456881000000067,
+    1.1172449999999117,
+    1.200648000000001
+  ],
+  "afterWarmMedianMs": 2.0148920000001453,
+  "constantCpuTemplate": {
+    "geometries": 9,
+    "ownedBufferBytes": 2401628,
+    "renderObjects": 0
+  }
+}

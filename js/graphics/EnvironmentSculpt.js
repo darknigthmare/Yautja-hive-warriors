@@ -77,20 +77,21 @@ function leafBuilder() {
 
 // A petiole, curled blade and raised midrib. Small leaves are attached to branch
 // positions; a crown is no longer a few giant triangular cards around a pole.
-function addLeaf(data, origin, direction, length, width, roll = 0, distant = false, tint = 0) {
+function addLeaf(data, origin, direction, length, width, roll = 0, distant = false, tint = 0, detailedBroadleaf = false) {
   const forward = direction.clone().normalize();
   const side = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
   if (side.lengthSq() < 0.1) side.set(1, 0, 0);
   const up = new THREE.Vector3().crossVectors(side, forward).normalize();
   const rotatedSide = side.clone().multiplyScalar(Math.cos(roll)).addScaledVector(up, Math.sin(roll));
   const rotatedUp = up.clone().multiplyScalar(Math.cos(roll)).addScaledVector(side, -Math.sin(roll));
-  const samples = distant ? [0, 0.5, 1] : [0, 0.25, 0.64, 1];
+  const samples = distant ? [0, 0.5, 1] : detailedBroadleaf ? [0, .19, .45, .73, 1] : [0, 0.25, 0.64, 1];
   const offset = data.positions.length / 3;
   for (const t of samples) {
-    const span = Math.sin(Math.PI * t) ** 0.85 * width;
+    const span = Math.sin(Math.PI * t) ** (detailedBroadleaf ? .72 : .85) * width;
     const curl = Math.sin(Math.PI * t) * length * 0.14 - t * t * length * 0.11;
     for (let across = -1; across <= 1; across++) {
-      const point = origin.clone().addScaledVector(forward, t * length).addScaledVector(rotatedSide, span * across).addScaledVector(rotatedUp, curl + (across === 0 ? span * 0.13 : 0));
+      const edgeAsymmetry = detailedBroadleaf && across !== 0 ? 1 + across * Math.sin(t * 7.1 + roll) * .065 : 1;
+      const point = origin.clone().addScaledVector(forward, t * length).addScaledVector(rotatedSide, span * across * edgeAsymmetry).addScaledVector(rotatedUp, curl + (across === 0 ? span * (detailedBroadleaf ? .21 : .13) : 0));
       data.positions.push(point.x, point.y, point.z);
       data.uvs.push((across + 1) / 2, t);
       data.colors.push(0.64 + tint * 0.17, 0.74 + tint * 0.18, 0.59 + tint * 0.16);
@@ -128,7 +129,7 @@ export function sculptedTreeCrownGeometry(tropical = false, distant = false) {
       const angle = branch.angle + side * (0.55 + 0.18 * Math.sin(pair * 3));
       const direction = new THREE.Vector3(Math.sin(angle), tropical ? 0.22 - pair % 3 * 0.14 : -0.12, Math.cos(angle));
       const distanceScale = distant ? 1.5 : 1;
-      addLeaf(data, origin, direction, (tropical ? 1.05 : 0.74) * (0.7 + t * 0.4) * distanceScale, (tropical ? 0.24 : 0.19) * distanceScale, side * (0.5 + pair % 4 * 0.32), distant, pair % 5 / 5);
+      addLeaf(data, origin, direction, (tropical ? 1.05 : 0.74) * (0.7 + t * 0.4) * distanceScale, (tropical ? 0.24 : 0.19) * distanceScale, side * (0.5 + pair % 4 * 0.32), distant, pair % 5 / 5, tropical && !distant);
     }
   }
   return finishLeaves(data, tropical ? 'broadleaf-branch-crown' : 'layered-evergreen-sprays');
@@ -136,7 +137,8 @@ export function sculptedTreeCrownGeometry(tropical = false, distant = false) {
 
 export function sculptedFernGeometry(tropical = false) {
   const data = leafBuilder();
-  for (let frond = 0; frond < 5; frond++) {
+  const frondCount = tropical ? 7 : 5, pinnaePairs = tropical ? 7 : 5;
+  for (let frond = 0; frond < frondCount; frond++) {
     const angle = frond * 2.399963;
     const reach = (tropical ? 0.95 : 0.72) * (0.8 + frond % 3 * 0.09);
     const stemOffset = data.positions.length / 3;
@@ -152,8 +154,8 @@ export function sculptedFernGeometry(tropical = false) {
       }
     }
 
-    for (let pair = 0; pair < 5; pair++) for (const side of [-1, 1]) {
-      const t = 0.16 + pair * 0.17;
+    for (let pair = 0; pair < pinnaePairs; pair++) for (const side of [-1, 1]) {
+      const t = tropical ? 0.14 + pair / pinnaePairs * .85 : 0.16 + pair * .17;
       const rise = Math.sin(t * Math.PI * 0.75) * 0.65;
       const origin = new THREE.Vector3(Math.sin(angle) * t * reach, rise, Math.cos(angle) * t * reach);
       const leafAngle = angle + side * (0.85 - t * 0.3);

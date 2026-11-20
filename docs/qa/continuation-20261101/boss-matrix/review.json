@@ -1,0 +1,149 @@
+{
+  "status": "passed_component_review",
+  "validatedRuntimeSource": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "criteriaCandidate": [
+    "AUD-076"
+  ],
+  "counts": {
+    "registeredEncounters": 18,
+    "distinctCounterplayRows": 18,
+    "newTests": 19,
+    "allTargetedTests": 43,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "sourcePinsMatchValidatedCommit": true,
+  "testSourceAndInputsUnchangedDuringRun": true,
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "tests/boss-counterplay-matrix-20261101.test.js",
+    "tests/boss-counterplay-depth.test.js",
+    "tests/boss-registry.test.js",
+    "tests/boss-engine-checkpoint.test.js"
+  ],
+  "scope": "Lectures/réponses exécutées par le vrai BossManager avec effets mesurés et témoins, plus normalisation des18constructeurs réels dans la suite existante. Chaque boss reste une interprétation de jeu.",
+  "limitations": [
+    "Les maillages sont remplacés dans les19nouveauxtests de combat pour isoler les règles ; les18constructeurs réels sont vérifiés séparément dans boss-registry.",
+    "Pas de recette navigateur des18phases/caméras, de playtest humain, de mesure matérielle ni de comparaison filmique1:1.",
+    "Ces résultats ne clôturent pas AUD-066, AUD-079 ou AUD-104."
+  ],
+  "regressionFoundAndFixed": {
+    "boss": "apex_gladiator_predator",
+    "before": "Le sélecteur préférait toujours charge quand charge etleap étaient autorisés ; son onde de réception annoncée restait inaccessible.",
+    "diagnosticResult": "18/19, seul Apex en échec avec charge!=leap dans le vrai sélecteur.",
+    "fix": "Le pattern landing-aftershock sélectionne le bond prioritairement. Aucun état charge forcé dans le test final.",
+    "beforeEvidence": {
+      "path": "docs/qa/continuation-20261101/boss-matrix/before-apex-fix.txt",
+      "sha256": "6eebc8d5a1f17c6844ee5cae280635de2040563b0a15d3a1ab52d28151f36834"
+    }
+  },
+  "evidence": [
+    {
+      "path": "docs/qa/continuation-20261101/boss-matrix/sealed-targeted-tests.txt",
+      "sha256": "7dffee2a3594e7fa8046803911fbb88e4556846a7ce41ea6c8e4b4182c300dea"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/boss-matrix/sealed-inputs.json",
+      "sha256": "be3bc38152aa88f28b7fa75c37da50675c76d31ee1759935a3078f8d8cf5f3d8"
+    },
+    {
+      "path": "tests/boss-counterplay-matrix-20261101.test.js",
+      "sha256": "45735033d714d5008ada7e2bc4e52cf67a93445195e94bef1a2213b2f2a5d6fb"
+    }
+  ],
+  "matrix": [
+    {
+      "bossId": "xenomorph_queen",
+      "mechanic": "circular-tail",
+      "verifiedAssertions": "100 dégâts au sol ; aucun à hauteur de saut1,3u."
+    },
+    {
+      "bossId": "praetorian",
+      "mechanic": "frontal-carapace",
+      "verifiedAssertions": "100 dégâts deviennent45 de face et restent100 depuis le flanc."
+    },
+    {
+      "bossId": "predalien",
+      "mechanic": "frontal-tail-pounce",
+      "verifiedAssertions": "Visée préparée de face :100 dégâts ; déplacement latéral :0."
+    },
+    {
+      "bossId": "predalien_queen",
+      "mechanic": "interruptible-brood",
+      "verifiedAssertions": "Frappe légère :1 naissance et réserve6→5 ; lourde pendant préparation :0naissance et réserve6conservée."
+    },
+    {
+      "bossId": "imperial_queen",
+      "mechanic": "annular-aftershock",
+      "verifiedAssertions": "Couronne extérieure65 dégâts après0,85s ; retour dans le rayon intérieur :0."
+    },
+    {
+      "bossId": "empress_matriarch",
+      "mechanic": "directional-gale",
+      "verifiedAssertions": "Souffle préparé65 dégâts de face ; déplacement hors cône :0."
+    },
+    {
+      "bossId": "the_offspring",
+      "mechanic": "focused-shriek",
+      "verifiedAssertions": "Cri dans cône :60PV et énergie100→75 ; sortie latérale :0PV et énergie100."
+    },
+    {
+      "bossId": "predalien_abomination",
+      "mechanic": "brood-pounce",
+      "verifiedAssertions": "Bond réel verrouillé :70 dégâts ; esquive latérale :0 ; maximum6naissances pour réserve6."
+    },
+    {
+      "bossId": "predalien_matriarch_titan",
+      "mechanic": "three-seismic-pulses",
+      "verifiedAssertions": "Trois impulsions si on reste ; évacuer après première limite les impacts à1."
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "mechanic": "wall-stagger",
+      "verifiedAssertions": "Charge sans obstacle avance ; mur réel de déplacement provoque stun et fenêtre de récupération."
+    },
+    {
+      "bossId": "awakened_engineer",
+      "mechanic": "heavy-shield-overload",
+      "verifiedAssertions": "Impact100 réduit bouclier de60 léger/120 lourd ; couvert bloque le déplacement du vortex."
+    },
+    {
+      "bossId": "trilobite_prime",
+      "mechanic": "low-constriction",
+      "verifiedAssertions": "Saisie basse65 dégâts ; saut1,3u ou distance6u :0."
+    },
+    {
+      "bossId": "berserker_super_predator",
+      "mechanic": "shared-plasma-burst",
+      "verifiedAssertions": "Trois projectiles réels partagent un maximum1impact60 ; esquive latérale évite les3."
+    },
+    {
+      "bossId": "ultimate_upgrade_predator",
+      "mechanic": "heavy-charge-interrupt",
+      "verifiedAssertions": "Frappe légère laisse partir la charge ; frappe lourde pendant préparation l’annule et étourdit."
+    },
+    {
+      "bossId": "feral_predator_boss",
+      "mechanic": "mask-guided-bolt",
+      "verifiedAssertions": "Le signal masque seul ne blesse pas ; bolt redirigé réel inflige1200 au Feral ; bolt normal vise le joueur."
+    },
+    {
+      "bossId": "apex_gladiator_predator",
+      "mechanic": "landing-aftershock",
+      "verifiedAssertions": "Le vrai sélecteur choisit maintenant le bond ; esquive de réception puis saut évite l’onde55."
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "mechanic": "laser-committed-plasma",
+      "verifiedAssertions": "Laser et cible de préparation restent verrouillés ; esquive latérale évite le plasma."
+    },
+    {
+      "bossId": "city_hunter_boss",
+      "mechanic": "returning-disc",
+      "verifiedAssertions": "Disque revient réellement, inflige au plus1impact puis disparaît ; esquive latérale évite aller/retour."
+    }
+  ]
+}

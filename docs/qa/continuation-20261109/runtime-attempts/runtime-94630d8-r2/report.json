@@ -1,0 +1,1212 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-11-09T04:35:31.603Z",
+  "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "indexSha256": "8632fe71abb813f1b4242b5c74d446622533d93f91e4e643e80b1eb57d032022",
+  "buildInfoSha256": "e1a40930bd6b2c1aa0aeb36f9f430888ab8da32cc62144b4dab1f0d5d8265ad3",
+  "nodeVersion": "v24.19.0",
+  "browserExecutable": "/usr/bin/chromium",
+  "browserVersion": "154.0.8037.57",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "expectedCases": [
+    "source-menu-coop-insertion-command-checkpoint",
+    "carrier-autonomous-main-update-flight",
+    "ravager-checkpoint-phase-recovery-fire"
+  ],
+  "scope": "Three scoped rendered cases: AFF-27 source menus and accessible map legends, genuine Val Verde seed1 co-op insertion cameras plus a real command/pause/checkpoint round trip; natural Carrier acquisition and finite flight through the full Game.update chain; Ravager catalepsy reloaded through the actual checkpoint menu before rematerialization, recovery and typed lethal fire. No natural mission victory, exhaustive AI policy, hardware FPS, human comprehension or source-film visual fidelity claim.",
+  "assistances": [
+    "Global RAF gameplay is frozen between actual UI inputs; explicit game.update steps advance insertion, the pilot allocator and the entire Carrier gameplay chain deterministically at1/60.",
+    "Carrier and Ravager inspection relocates only the player to navigation-safe positions; no allocated actor/group coordinate, profile, signature, HP, phase, result or clock is assigned.",
+    "Carrier acquisition is observed for at most480 full Game.update ticks (8 simulated seconds). A transparent callback observer calls the original and returns its unchanged result; no explicit Bridge launch or target override is used.",
+    "Carrier flight captures follow full Game.update, including the production post-update Bridge.sync; all combat managers advance normally during these bounded ticks.",
+    "Ravager phase isolation advances the real Simulation/Bridge owners in .25s steps while other gameplay stays paused. Damage uses the actual Horde.applyDamage API with signed player faction.",
+    "Ravager saveOperation writes the genuine phase checkpoint; page reload and normal menu resume preserve its finite UID, HP, spent upgrade, signature, strategic time and absolute deadline before owner-driven rematerialization.",
+    "Actor closeups use a recorded inspection camera and normal environment visibility refresh. Co-op insertion evidence keeps both genuine game cameras unchanged.",
+    "Pilot command/checkpoint controls use real DOM clicks. Pause is observed without strategic time advancement; insertion replay does not spend resources. No save data is patched.",
+    "The initial paused AFF-27 HUD receives a normal zero-delta update after insertion; unchanged strategic time, finite UID set and Carrier cargo are asserted before checking its accessible legend."
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "cases": [
+    {
+      "id": "source-menu-coop-insertion-command-checkpoint",
+      "status": "failed",
+      "launch": {
+        "freshBrowserContext": true,
+        "viewport": {
+          "width": 1000,
+          "height": 700
+        },
+        "renderer": {
+          "requested": "balanced",
+          "effective": "low",
+          "softwareRenderer": true,
+          "postprocessing": false,
+          "ambientOcclusion": false,
+          "shadowSize": 512,
+          "maxPixelRatio": 1.25,
+          "splitScreen": false
+        }
+      },
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#btn-pause-game')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"btn-pause-game\" class=\"hud-pause-button\" aria-label=\"Mettre la partie en pause\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    48 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at verifyUiCoopSmoke (/workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/ui-coop-smoke.mjs:192:41)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:339:14\n    at async run (/workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:328:40)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:336:3",
+      "ui": {
+        "status": "failed",
+        "scope": "Source menus, small-map legends, real co-op insertion cameras, finite pilot command and actual checkpoint reload.",
+        "assistance": [
+          "Pause global gameplay between real UI inputs.",
+          "Advance actual GameApp.update in 1/60 steps for insertion and three seconds of pilot gameplay.",
+          "Render through EngineRenderer.render without changing either game camera.",
+          "Read physical canopy traces at the two captured insertion stages; CPU tests separately cover the complete sequence.",
+          "Checkpoint replay repeats the normal insertion exit; player position is recorded rather than claimed unchanged. No save, actor, resource, phase or simulation clock is patched."
+        ],
+        "captures": [
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-aff27-linked-terrain-800x600.png",
+            "sha256": "9154a05c1d499d888cee785cdbb32a7a739138a5e55a76dc30d62e84762f7556"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-aff27-linked-terrain-1280x720.png",
+            "sha256": "b4c04c2915d0e8b4e66baa32deb370e415371a85a3d1f3953da8369ee76446dc"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-aff27-standard-legend-800x600.png",
+            "sha256": "802f1e4714308f445aec8816c7d2eb1747fa9b1cbb246ae623463d71395a7b64"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-aff27-standard-legend-1280x720.png",
+            "sha256": "cfaaa5fc916a1782acdcd46a9f5a4f6e4b3cddc5f47b228e48e8f8fb1153663d"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-aff27-enhanced-legend-800x600.png",
+            "sha256": "1982363c9ddfef8dfbad801aab5c9b82e7a7c9908ac928065ca0030eb66a1815"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-aff27-enhanced-legend-1280x720.png",
+            "sha256": "b45d48381e3ca7a3da1f71d49558fc275e550fdbf50b83c597fd7d7a062e17bd"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-val-verde-real-coop-opening.png",
+            "sha256": "da133dd8950a25cccb08d0a7d0efe1d7897bb0ff9d82cc8375add4e265719aa8"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-val-verde-real-coop-exiting.png",
+            "sha256": "a171e373af38bed11085138fc63ae0f047c46e346559f9b1bcb9fef50562e7ee"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-val-verde-coop-after-insertion.png",
+            "sha256": "f4996cbd70953d8d1c574ce0b0e822521e8b727fa11f0b52d8e4907f18c2fea1"
+          },
+          {
+            "path": "source-menu-coop-insertion-command-checkpoint-pilot-coop-real-defend-order.png",
+            "sha256": "6e643618202692a099d00a2ffc45fe438d0c799a92b072f7ef9a0034c443713b"
+          }
+        ],
+        "checks": {
+          "actualCoopMenu": true,
+          "sourceTerrainTruthAtBothSizes": true,
+          "standardSixAndEnhancedCapacityTwelve": true,
+          "completeNonoverlappingKeyboardLegendsAtBothSizes": true,
+          "pilotReleasesTerrainCards": true,
+          "bothHuntersHiddenDuringArrival": true,
+          "realOpeningAndExitCamerasAvoidCanopyAtCapturedStages": true,
+          "cooperativeFinitePilotHasNonzeroActorsAndFrontsHud": true
+        },
+        "selections": [
+          {
+            "viewport": {
+              "width": 800,
+              "height": 600
+            },
+            "level": "xenomorph_prime",
+            "bound": true,
+            "cards": [
+              {
+                "id": "gunnison_forest",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "xenomorph_prime",
+                "selected": true,
+                "pressed": "true",
+                "disabled": true
+              },
+              {
+                "id": "antarctic_pyramid",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "la_rooftops",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "val_verde_jungle",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "romulus_station",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "charon_rogue_base",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "game_preserve_planet",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "stargazer_facility",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "prey_comanche_territory",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "killer_of_killers_arena",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              }
+            ],
+            "notice": "Terrain de cette opération : MONDE-RUCHE XENOMORPH PRIME. Pour choisir un autre terrain, sélectionnez « Trois fronts — terrain sélectionné » ou le mode Chasse.",
+            "noticeHidden": false,
+            "horizontalOverflow": false
+          },
+          {
+            "viewport": {
+              "width": 1280,
+              "height": 720
+            },
+            "level": "xenomorph_prime",
+            "bound": true,
+            "cards": [
+              {
+                "id": "gunnison_forest",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "xenomorph_prime",
+                "selected": true,
+                "pressed": "true",
+                "disabled": true
+              },
+              {
+                "id": "antarctic_pyramid",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "la_rooftops",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "val_verde_jungle",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "romulus_station",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "charon_rogue_base",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "game_preserve_planet",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "stargazer_facility",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "prey_comanche_territory",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              },
+              {
+                "id": "killer_of_killers_arena",
+                "selected": false,
+                "pressed": "false",
+                "disabled": true
+              }
+            ],
+            "notice": "Terrain de cette opération : MONDE-RUCHE XENOMORPH PRIME. Pour choisir un autre terrain, sélectionnez « Trois fronts — terrain sélectionné » ou le mode Chasse.",
+            "noticeHidden": false,
+            "horizontalOverflow": false
+          }
+        ],
+        "briefings": [
+          {
+            "enhanced": false,
+            "variant": "carrier-ravager",
+            "summary": "LV-742 : les quatre fronts de la ruche des faillesLV-742 — bassin atmosphérique et ruche des failles · 16 secteurs · 4 fronts · positions en unités de jeu.Forces alliées : 24 combattants alloués. Forces adverses : présence signalée ; réserves à confirmer par reconnaissance.Plafond de proximité : 32 combattants. Les forces distantes restent actives ; leur position est connue par rapports, avec incertitude.Commandement adverse : Équilibré. Les effectifs, PV et dégâts restent identiques ; les décisions et prises de risque changent.Front essentiel perdu : 599 s au minimum pour revenir et le reprendre, selon les voies ouvertes.Plafond provisoire : 32 combattants proches ; proposition source : 136. Les unités excédentaires restent simulées à distance. Performances sur matériel non mesurées.Chasseur déployé : JUNGLE HUNTER (1987) · Chasseur déployé pour cette opération.Opération indépendante ; aucune chronologie générale imposée au personnage.Aucun service confirmé · 0 mission(s) confirmée(s) pour ce chasseur · statut narratif inchangé.Variante optionnelle — Carrier et Ravager : 6 parasites déjà alloués au Carrier, capacité 6.Objectifs : Neutraliser la logistique de la ruche → Neutraliser l’appui des Marines → Vaincre la reine des failles → Assurer la route de retour du clan → Extraire le contingent de LV-742Échecs : joueurs vaincus ; front allié perdu durablement.Choisissez votre équipement et une première route. Les passages alternatifs autorisent une approche de flanc ; les noms de lieux désignent une adaptation.",
+            "layouts": [
+              {
+                "viewport": {
+                  "width": 800,
+                  "height": 600
+                },
+                "canvas": {
+                  "x": 220,
+                  "y": 107.1875,
+                  "width": 360,
+                  "height": 220,
+                  "bottom": 327.1875,
+                  "right": 580
+                },
+                "list": {
+                  "x": 220,
+                  "y": 361.1875,
+                  "width": 360,
+                  "height": 240,
+                  "bottom": 601.1875,
+                  "right": 580
+                },
+                "describedBy": "operation-briefing-fronts",
+                "captionId": "operation-briefing-fronts",
+                "focused": true,
+                "outlineStyle": "solid",
+                "outlineWidth": "3px",
+                "scrollTop": 6,
+                "scrollHeight": 324,
+                "clientHeight": 238,
+                "listOverflow": false,
+                "pageOverflow": false,
+                "entries": [
+                  {
+                    "id": "front_a",
+                    "key": "1",
+                    "text": "A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "accessible": "1 — A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "rect": {
+                      "x": 227,
+                      "y": 362.1875,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 440.5625,
+                      "right": 558
+                    }
+                  },
+                  {
+                    "id": "front_b",
+                    "key": "2",
+                    "text": "B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "accessible": "2 — B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "rect": {
+                      "x": 227,
+                      "y": 446.5625,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 524.9375,
+                      "right": 558
+                    }
+                  },
+                  {
+                    "id": "front_c",
+                    "key": "3",
+                    "text": "C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "accessible": "3 — C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "rect": {
+                      "x": 227,
+                      "y": 530.9375,
+                      "width": 331,
+                      "height": 58.78125,
+                      "bottom": 589.71875,
+                      "right": 558
+                    }
+                  },
+                  {
+                    "id": "front_d",
+                    "key": "4",
+                    "text": "D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "accessible": "4 — D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "rect": {
+                      "x": 227,
+                      "y": 595.71875,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 674.09375,
+                      "right": 558
+                    }
+                  }
+                ]
+              },
+              {
+                "viewport": {
+                  "width": 1280,
+                  "height": 720
+                },
+                "canvas": {
+                  "x": 109,
+                  "y": 133.984375,
+                  "width": 360,
+                  "height": 220,
+                  "bottom": 353.984375,
+                  "right": 469
+                },
+                "list": {
+                  "x": 109,
+                  "y": 387.984375,
+                  "width": 360,
+                  "height": 240,
+                  "bottom": 627.984375,
+                  "right": 469
+                },
+                "describedBy": "operation-briefing-fronts",
+                "captionId": "operation-briefing-fronts",
+                "focused": true,
+                "outlineStyle": "solid",
+                "outlineWidth": "3px",
+                "scrollTop": 6,
+                "scrollHeight": 324,
+                "clientHeight": 238,
+                "listOverflow": false,
+                "pageOverflow": false,
+                "entries": [
+                  {
+                    "id": "front_a",
+                    "key": "1",
+                    "text": "A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "accessible": "1 — A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "rect": {
+                      "x": 116,
+                      "y": 388.984375,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 467.359375,
+                      "right": 447
+                    }
+                  },
+                  {
+                    "id": "front_b",
+                    "key": "2",
+                    "text": "B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "accessible": "2 — B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "rect": {
+                      "x": 116,
+                      "y": 473.359375,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 551.734375,
+                      "right": 447
+                    }
+                  },
+                  {
+                    "id": "front_c",
+                    "key": "3",
+                    "text": "C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "accessible": "3 — C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "rect": {
+                      "x": 116,
+                      "y": 557.734375,
+                      "width": 331,
+                      "height": 58.78125,
+                      "bottom": 616.515625,
+                      "right": 447
+                    }
+                  },
+                  {
+                    "id": "front_d",
+                    "key": "4",
+                    "text": "D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "accessible": "4 — D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "rect": {
+                      "x": 116,
+                      "y": 622.515625,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 700.890625,
+                      "right": 447
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "enhanced": true,
+            "variant": "carrier-ravager-enhanced",
+            "summary": "LV-742 : les quatre fronts de la ruche des faillesLV-742 — bassin atmosphérique et ruche des failles · 16 secteurs · 4 fronts · positions en unités de jeu.Forces alliées : 24 combattants alloués. Forces adverses : présence signalée ; réserves à confirmer par reconnaissance.Plafond de proximité : 32 combattants. Les forces distantes restent actives ; leur position est connue par rapports, avec incertitude.Commandement adverse : Équilibré. Les effectifs, PV et dégâts restent identiques ; les décisions et prises de risque changent.Front essentiel perdu : 599 s au minimum pour revenir et le reprendre, selon les voies ouvertes.Plafond provisoire : 32 combattants proches ; proposition source : 136. Les unités excédentaires restent simulées à distance. Performances sur matériel non mesurées.Chasseur déployé : JUNGLE HUNTER (1987) · Chasseur déployé pour cette opération.Opération indépendante ; aucune chronologie générale imposée au personnage.Aucun service confirmé · 0 mission(s) confirmée(s) pour ce chasseur · statut narratif inchangé.Variante évoluée — Supercarrier : 6 parasites déjà alloués, capacité 12. Ravager : Résilience colossale ; le feu ou des dégâts excessifs empêchent son retour après catalepsie.Objectifs : Neutraliser la logistique de la ruche → Neutraliser l’appui des Marines → Vaincre la reine des failles → Assurer la route de retour du clan → Extraire le contingent de LV-742Échecs : joueurs vaincus ; front allié perdu durablement.Choisissez votre équipement et une première route. Les passages alternatifs autorisent une approche de flanc ; les noms de lieux désignent une adaptation.",
+            "layouts": [
+              {
+                "viewport": {
+                  "width": 800,
+                  "height": 600
+                },
+                "canvas": {
+                  "x": 220,
+                  "y": 107.1875,
+                  "width": 360,
+                  "height": 220,
+                  "bottom": 327.1875,
+                  "right": 580
+                },
+                "list": {
+                  "x": 220,
+                  "y": 361.1875,
+                  "width": 360,
+                  "height": 240,
+                  "bottom": 601.1875,
+                  "right": 580
+                },
+                "describedBy": "operation-briefing-fronts",
+                "captionId": "operation-briefing-fronts",
+                "focused": true,
+                "outlineStyle": "solid",
+                "outlineWidth": "3px",
+                "scrollTop": 2,
+                "scrollHeight": 324,
+                "clientHeight": 238,
+                "listOverflow": false,
+                "pageOverflow": false,
+                "entries": [
+                  {
+                    "id": "front_a",
+                    "key": "1",
+                    "text": "A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "accessible": "1 — A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "rect": {
+                      "x": 227,
+                      "y": 366.1875,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 444.5625,
+                      "right": 558
+                    }
+                  },
+                  {
+                    "id": "front_b",
+                    "key": "2",
+                    "text": "B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "accessible": "2 — B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "rect": {
+                      "x": 227,
+                      "y": 450.5625,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 528.9375,
+                      "right": 558
+                    }
+                  },
+                  {
+                    "id": "front_c",
+                    "key": "3",
+                    "text": "C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "accessible": "3 — C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "rect": {
+                      "x": 227,
+                      "y": 534.9375,
+                      "width": 331,
+                      "height": 58.78125,
+                      "bottom": 593.71875,
+                      "right": 558
+                    }
+                  },
+                  {
+                    "id": "front_d",
+                    "key": "4",
+                    "text": "D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "accessible": "4 — D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "rect": {
+                      "x": 227,
+                      "y": 599.71875,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 678.09375,
+                      "right": 558
+                    }
+                  }
+                ]
+              },
+              {
+                "viewport": {
+                  "width": 1280,
+                  "height": 720
+                },
+                "canvas": {
+                  "x": 109,
+                  "y": 133.984375,
+                  "width": 360,
+                  "height": 220,
+                  "bottom": 353.984375,
+                  "right": 469
+                },
+                "list": {
+                  "x": 109,
+                  "y": 387.984375,
+                  "width": 360,
+                  "height": 240,
+                  "bottom": 627.984375,
+                  "right": 469
+                },
+                "describedBy": "operation-briefing-fronts",
+                "captionId": "operation-briefing-fronts",
+                "focused": true,
+                "outlineStyle": "solid",
+                "outlineWidth": "3px",
+                "scrollTop": 5,
+                "scrollHeight": 324,
+                "clientHeight": 238,
+                "listOverflow": false,
+                "pageOverflow": false,
+                "entries": [
+                  {
+                    "id": "front_a",
+                    "key": "1",
+                    "text": "A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "accessible": "1 — A — Atmos et zone d’atterrissage : les Marines réparent leurs installations et cherchent à sécuriser les accès ; le joueur coupe leur liaison sans transformer tous les humains en alliés.",
+                    "rect": {
+                      "x": 116,
+                      "y": 389.984375,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 468.359375,
+                      "right": 447
+                    }
+                  },
+                  {
+                    "id": "front_b",
+                    "key": "2",
+                    "text": "B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "accessible": "2 — B — Col des convois : Xénomorphes, Marines et petites équipes Yautja se disputent les routes. Tenir un passage détourne effectivement les renforts vers une route plus longue.",
+                    "rect": {
+                      "x": 116,
+                      "y": 474.359375,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 552.734375,
+                      "right": 447
+                    }
+                  },
+                  {
+                    "id": "front_c",
+                    "key": "3",
+                    "text": "C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "accessible": "3 — C — Ruche des failles : les groupes de garde couvrent les nurseries ; neutraliser les conduits puis la reine limite la disponibilité des réserves biologiques.",
+                    "rect": {
+                      "x": 116,
+                      "y": 558.734375,
+                      "width": 331,
+                      "height": 58.78125,
+                      "bottom": 617.515625,
+                      "right": 447
+                    }
+                  },
+                  {
+                    "id": "front_d",
+                    "key": "4",
+                    "text": "D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "accessible": "4 — D — Sanctuaire et extraction : préserver le point de repli du clan, faire parvenir les équipes restantes et protéger la récupération de données prises aux deux adversaires.",
+                    "rect": {
+                      "x": 116,
+                      "y": 623.515625,
+                      "width": 331,
+                      "height": 78.375,
+                      "bottom": 701.890625,
+                      "right": 447
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "freeSelection": {
+          "level": "xenomorph_prime",
+          "bound": false,
+          "cards": [
+            {
+              "id": "gunnison_forest",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "xenomorph_prime",
+              "selected": true,
+              "pressed": "true",
+              "disabled": false
+            },
+            {
+              "id": "antarctic_pyramid",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "la_rooftops",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "val_verde_jungle",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "romulus_station",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "charon_rogue_base",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "game_preserve_planet",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "stargazer_facility",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "prey_comanche_territory",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            },
+            {
+              "id": "killer_of_killers_arena",
+              "selected": false,
+              "pressed": "false",
+              "disabled": false
+            }
+          ],
+          "notice": "",
+          "noticeHidden": true,
+          "horizontalOverflow": false
+        },
+        "initialInsertion": {
+          "coop": true,
+          "splitScreen": true,
+          "phase": "descending",
+          "elapsed": 0.406,
+          "active": true,
+          "level": "val_verde_jungle",
+          "mapSeed": 1,
+          "before": [
+            {
+              "visible": false,
+              "hp": 1000,
+              "position": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "visible": false,
+              "hp": 1150,
+              "position": [
+                6,
+                0,
+                0
+              ]
+            }
+          ],
+          "afterImports": [
+            {
+              "visible": false,
+              "hp": 1000,
+              "visual": "imported",
+              "position": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "visible": false,
+              "hp": 1150,
+              "visual": "procedural",
+              "position": [
+                6,
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        "insertionStages": [
+          {
+            "target": 1.8,
+            "ticks": 84,
+            "phase": "opening",
+            "elapsed": 1.8059999999999987,
+            "openingProgress": 0.11480958399278272,
+            "players": [
+              {
+                "hp": 1000,
+                "visible": true,
+                "position": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "hp": 1150,
+                "visible": true,
+                "position": [
+                  6,
+                  0,
+                  0
+                ]
+              }
+            ],
+            "splitScreen": true,
+            "cameras": [
+              {
+                "player": 1,
+                "focus": [
+                  0,
+                  2.5147704386915817,
+                  0
+                ],
+                "camera": [
+                  8,
+                  7.610875626182694,
+                  14
+                ],
+                "radius": 0.25,
+                "near": 0.15,
+                "fov": 56,
+                "aspect": 0.8888888888888888,
+                "zoom": 1,
+                "canopyOwners": [
+                  "val-verde-canopy-west-north",
+                  "val-verde-canopy-north-east",
+                  "val-verde-canopy-east-south",
+                  "val-verde-canopy-south-west"
+                ],
+                "canopyHits": [],
+                "allPhysicalHit": null
+              },
+              {
+                "player": 2,
+                "focus": [
+                  6,
+                  2.5147704386915817,
+                  0
+                ],
+                "camera": [
+                  12.698525533742757,
+                  6.774847908793992,
+                  11.722419684049829
+                ],
+                "radius": 0.25,
+                "near": 0.15,
+                "fov": 56,
+                "aspect": 0.8888888888888888,
+                "zoom": 1,
+                "canopyOwners": [
+                  "val-verde-canopy-west-north",
+                  "val-verde-canopy-north-east",
+                  "val-verde-canopy-east-south",
+                  "val-verde-canopy-south-west"
+                ],
+                "canopyHits": [],
+                "allPhysicalHit": null
+              }
+            ],
+            "cameraPositionsAfterRender": [
+              [
+                8,
+                7.610875626182694,
+                14
+              ],
+              [
+                12.698525533742757,
+                6.774847908793992,
+                11.722419684049829
+              ]
+            ],
+            "beforeRender": [
+              [
+                8,
+                7.610875626182694,
+                14
+              ],
+              [
+                12.698525533742757,
+                6.774847908793992,
+                11.722419684049829
+              ]
+            ]
+          },
+          {
+            "target": 3.25,
+            "ticks": 87,
+            "phase": "exiting",
+            "elapsed": 3.2559999999999936,
+            "openingProgress": 1,
+            "players": [
+              {
+                "hp": 1000,
+                "visible": true,
+                "position": [
+                  0,
+                  0,
+                  0.32287079999998697
+                ]
+              },
+              {
+                "hp": 1150,
+                "visible": true,
+                "position": [
+                  6,
+                  0,
+                  0.32287079999998697
+                ]
+              }
+            ],
+            "splitScreen": true,
+            "cameras": [
+              {
+                "player": 1,
+                "focus": [
+                  0,
+                  2.315878921842552,
+                  0.17173058511365777
+                ],
+                "camera": [
+                  8,
+                  7.35354110105103,
+                  14.082811647786645
+                ],
+                "radius": 0.25,
+                "near": 0.15,
+                "fov": 56,
+                "aspect": 0.8888888888888888,
+                "zoom": 1,
+                "canopyOwners": [
+                  "val-verde-canopy-west-north",
+                  "val-verde-canopy-north-east",
+                  "val-verde-canopy-east-south",
+                  "val-verde-canopy-south-west"
+                ],
+                "canopyHits": [],
+                "allPhysicalHit": null
+              },
+              {
+                "player": 2,
+                "focus": [
+                  6,
+                  2.315878921842552,
+                  0.17173058511365777
+                ],
+                "camera": [
+                  12.504022515333155,
+                  6.409592034445626,
+                  11.474618987782756
+                ],
+                "radius": 0.25,
+                "near": 0.15,
+                "fov": 56,
+                "aspect": 0.8888888888888888,
+                "zoom": 1,
+                "canopyOwners": [
+                  "val-verde-canopy-west-north",
+                  "val-verde-canopy-north-east",
+                  "val-verde-canopy-east-south",
+                  "val-verde-canopy-south-west"
+                ],
+                "canopyHits": [],
+                "allPhysicalHit": null
+              }
+            ],
+            "cameraPositionsAfterRender": [
+              [
+                8,
+                7.35354110105103,
+                14.082811647786645
+              ],
+              [
+                12.504022515333155,
+                6.409592034445626,
+                11.474618987782756
+              ]
+            ],
+            "beforeRender": [
+              [
+                8,
+                7.35354110105103,
+                14.082811647786645
+              ],
+              [
+                12.504022515333155,
+                6.409592034445626,
+                11.474618987782756
+              ]
+            ]
+          }
+        ],
+        "insertionComplete": {
+          "simulated": 1.4999999999999996,
+          "phase": "complete",
+          "visible": true
+        },
+        "pilot": {
+          "operation": "pilot",
+          "coop": true,
+          "splitScreen": true,
+          "ids": [
+            "val_verde_jungle:hive:0:0",
+            "val_verde_jungle:hive:0:1",
+            "val_verde_jungle:hive:0:2",
+            "val_verde_jungle:hive:0:3",
+            "val_verde_jungle:hive:10:0",
+            "val_verde_jungle:hive:10:1",
+            "val_verde_jungle:hive:10:2",
+            "val_verde_jungle:hive:10:3",
+            "val_verde_jungle:hive:11:0",
+            "val_verde_jungle:hive:11:1",
+            "val_verde_jungle:hive:11:2",
+            "val_verde_jungle:hive:11:3",
+            "val_verde_jungle:hive:12:0",
+            "val_verde_jungle:hive:12:1",
+            "val_verde_jungle:hive:12:2",
+            "val_verde_jungle:hive:12:3",
+            "val_verde_jungle:hive:13:0",
+            "val_verde_jungle:hive:13:1",
+            "val_verde_jungle:hive:13:2",
+            "val_verde_jungle:hive:13:3",
+            "val_verde_jungle:hive:14:0",
+            "val_verde_jungle:hive:14:1",
+            "val_verde_jungle:hive:14:2",
+            "val_verde_jungle:hive:14:3",
+            "val_verde_jungle:hive:15:0",
+            "val_verde_jungle:hive:15:1",
+            "val_verde_jungle:hive:15:2",
+            "val_verde_jungle:hive:15:3",
+            "val_verde_jungle:hive:1:0",
+            "val_verde_jungle:hive:1:1",
+            "val_verde_jungle:hive:1:2",
+            "val_verde_jungle:hive:1:3",
+            "val_verde_jungle:hive:2:0",
+            "val_verde_jungle:hive:2:1",
+            "val_verde_jungle:hive:2:2",
+            "val_verde_jungle:hive:2:3",
+            "val_verde_jungle:hive:3:0",
+            "val_verde_jungle:hive:3:1",
+            "val_verde_jungle:hive:3:2",
+            "val_verde_jungle:hive:3:3",
+            "val_verde_jungle:hive:4:0",
+            "val_verde_jungle:hive:4:1",
+            "val_verde_jungle:hive:4:2",
+            "val_verde_jungle:hive:4:3",
+            "val_verde_jungle:hive:5:0",
+            "val_verde_jungle:hive:5:1",
+            "val_verde_jungle:hive:5:2",
+            "val_verde_jungle:hive:5:3",
+            "val_verde_jungle:hive:6:0",
+            "val_verde_jungle:hive:6:1",
+            "val_verde_jungle:hive:6:2",
+            "val_verde_jungle:hive:6:3",
+            "val_verde_jungle:hive:7:0",
+            "val_verde_jungle:hive:7:1",
+            "val_verde_jungle:hive:7:2",
+            "val_verde_jungle:hive:7:3",
+            "val_verde_jungle:hive:8:0",
+            "val_verde_jungle:hive:8:1",
+            "val_verde_jungle:hive:8:2",
+            "val_verde_jungle:hive:8:3",
+            "val_verde_jungle:hive:9:0",
+            "val_verde_jungle:hive:9:1",
+            "val_verde_jungle:hive:9:2",
+            "val_verde_jungle:hive:9:3",
+            "val_verde_jungle:human_force:0:0",
+            "val_verde_jungle:human_force:0:1",
+            "val_verde_jungle:human_force:0:2",
+            "val_verde_jungle:human_force:0:3",
+            "val_verde_jungle:human_force:10:0",
+            "val_verde_jungle:human_force:10:1",
+            "val_verde_jungle:human_force:10:2",
+            "val_verde_jungle:human_force:10:3",
+            "val_verde_jungle:human_force:11:0",
+            "val_verde_jungle:human_force:11:1",
+            "val_verde_jungle:human_force:11:2",
+            "val_verde_jungle:human_force:11:3",
+            "val_verde_jungle:human_force:1:0",
+            "val_verde_jungle:human_force:1:1",
+            "val_verde_jungle:human_force:1:2",
+            "val_verde_jungle:human_force:1:3",
+            "val_verde_jungle:human_force:2:0",
+            "val_verde_jungle:human_force:2:1",
+            "val_verde_jungle:human_force:2:2",
+            "val_verde_jungle:human_force:2:3",
+            "val_verde_jungle:human_force:3:0",
+            "val_verde_jungle:human_force:3:1",
+            "val_verde_jungle:human_force:3:2",
+            "val_verde_jungle:human_force:3:3",
+            "val_verde_jungle:human_force:4:0",
+            "val_verde_jungle:human_force:4:1",
+            "val_verde_jungle:human_force:4:2",
+            "val_verde_jungle:human_force:4:3",
+            "val_verde_jungle:human_force:5:0",
+            "val_verde_jungle:human_force:5:1",
+            "val_verde_jungle:human_force:5:2",
+            "val_verde_jungle:human_force:5:3",
+            "val_verde_jungle:human_force:6:0",
+            "val_verde_jungle:human_force:6:1",
+            "val_verde_jungle:human_force:6:2",
+            "val_verde_jungle:human_force:6:3",
+            "val_verde_jungle:human_force:7:0",
+            "val_verde_jungle:human_force:7:1",
+            "val_verde_jungle:human_force:7:2",
+            "val_verde_jungle:human_force:7:3",
+            "val_verde_jungle:human_force:8:0",
+            "val_verde_jungle:human_force:8:1",
+            "val_verde_jungle:human_force:8:2",
+            "val_verde_jungle:human_force:8:3",
+            "val_verde_jungle:human_force:9:0",
+            "val_verde_jungle:human_force:9:1",
+            "val_verde_jungle:human_force:9:2",
+            "val_verde_jungle:human_force:9:3",
+            "val_verde_jungle:player_clan:0:0",
+            "val_verde_jungle:player_clan:0:1",
+            "val_verde_jungle:player_clan:0:2",
+            "val_verde_jungle:player_clan:0:3",
+            "val_verde_jungle:player_clan:1:0",
+            "val_verde_jungle:player_clan:1:1",
+            "val_verde_jungle:player_clan:1:2",
+            "val_verde_jungle:player_clan:1:3",
+            "val_verde_jungle:player_clan:2:0",
+            "val_verde_jungle:player_clan:2:1",
+            "val_verde_jungle:player_clan:2:2",
+            "val_verde_jungle:player_clan:2:3",
+            "val_verde_jungle:player_clan:3:0",
+            "val_verde_jungle:player_clan:3:1",
+            "val_verde_jungle:player_clan:3:2",
+            "val_verde_jungle:player_clan:3:3",
+            "val_verde_jungle:player_clan:4:0",
+            "val_verde_jungle:player_clan:4:1",
+            "val_verde_jungle:player_clan:4:2",
+            "val_verde_jungle:player_clan:4:3"
+          ],
+          "allocated": 132,
+          "digest": "9e35d1cb",
+          "run": "mission-39a280ec-49c5-4f3f-a622-7797b0bec0a0",
+          "time": 3,
+          "actors": 8,
+          "active": 8,
+          "cap": 32,
+          "conserved": true,
+          "players": [
+            {
+              "hp": 1000,
+              "visible": true
+            },
+            {
+              "hp": 1150,
+              "visible": true
+            }
+          ],
+          "hud": "3 FRONTS · RÉSERVES FINIES"
+        },
+        "selection": {
+          "groupId": "val_verde_jungle:player_clan:0",
+          "frontId": "insertion"
+        },
+        "order": {
+          "type": "defend",
+          "frontId": "insertion",
+          "issuer": "player1",
+          "issuedAt": 3,
+          "sequence": 3,
+          "paused": true,
+          "feedback": "ORDRE ACCEPTÉ · player_clan 1 vers Zone d’insertion · défense · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément."
+        },
+        "failure": {
+          "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#btn-pause-game')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"btn-pause-game\" class=\"hud-pause-button\" aria-label=\"Mettre la partie en pause\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    48 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+          "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#btn-pause-game')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"btn-pause-game\" class=\"hud-pause-button\" aria-label=\"Mettre la partie en pause\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    48 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at verifyUiCoopSmoke (/workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/ui-coop-smoke.mjs:192:41)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:339:14\n    at async run (/workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:328:40)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:336:3"
+        }
+      }
+    }
+  ],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v69-continuation-20261109",
+    "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "sourceBranch": "codex/continuation-20261109",
+    "sourceFingerprint": "41cdcb0f8823e4f17fbb0d6f68b119c3b75e4e01778ba7a7c523ffb569bdf6e9",
+    "sourceFiles": 193,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1794198339,
+    "reproducibleBuildDate": "2026-11-09T04:25:39.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/continuation-20261109/docs/qa/continuation-20261109-validation.json"
+  },
+  "helperSources": [
+    {
+      "path": "docs/qa/continuation-20261109/verify-evolved-combat.mjs",
+      "sha256": "8925583bc02e9a8dad15c8d3bce0c571ad23a25886f5955f0ec365b734f22a24",
+      "snapshot": "helper-source-0.mjs"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/ui-coop-smoke.mjs",
+      "sha256": "322266b02ad3caa507e1e1b9fbf28103620d9e7c9a2b4535d8e1563e1948d66a",
+      "snapshot": "helper-source-1.mjs"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+      "snapshot": "helper-source-2.mjs"
+    }
+  ],
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#btn-pause-game')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"btn-pause-game\" class=\"hud-pause-button\" aria-label=\"Mettre la partie en pause\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    48 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at verifyUiCoopSmoke (/workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/ui-coop-smoke.mjs:192:41)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:339:14\n    at async run (/workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:328:40)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:336:3",
+  "browserClosed": true,
+  "distUnchanged": true,
+  "helperSourcesUnchanged": true,
+  "finishedAt": "2026-11-09T04:36:43.420Z",
+  "durationSeconds": 71.817
+}

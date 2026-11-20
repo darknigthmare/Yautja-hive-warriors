@@ -1,0 +1,355 @@
+Baseline commit: c6ebf48b772b8293cdad35ab1302406e73c957ec
+Expected failing behavior checks, before the source corrections.
+
+Legacy hitscan — Player.js baseline 566c3d0979ce57349be3fb3512793269ea282326
+
+✖ pistol cannot damage a boss through a real wall or report a target impact (3.066182ms)
+✔ pistol cannot damage a alien through a real wall or report a target impact (0.945946ms)
+✔ pistol retains damage and costs in open space, above low cover and with a wall beyond the target (0.911274ms)
+✔ pistol still respects its range and retains a shot cost when no target is reached (0.266381ms)
+✔ pistol still excludes an allied alien from the hit and its feedback (0.242195ms)
+✖ bolt cannot damage a boss through a real wall or report a target impact (2.687292ms)
+✔ bolt cannot damage a alien through a real wall or report a target impact (0.612804ms)
+✔ bolt retains damage and costs in open space, above low cover and with a wall beyond the target (3.015055ms)
+✔ bolt still respects its range and retains a shot cost when no target is reached (0.450369ms)
+✔ bolt still excludes an allied alien from the hit and its feedback (0.535256ms)
+✖ the pistol checks the real muzzle origin before all three cosmetic spark origins (0.394705ms)
+✖ the Seegson bolt uses its actual 2.3-high origin for a nearby overhead obstacle (0.407775ms)
+✖ each delayed pistol bolt reevaluates physical cover before applying its damage (1.008841ms)
+✖ pistol feedback remains safe when the real boss damage method clears a defeated boss (0.493935ms)
+✖ the pistol uses its supplied environment for boss and alien cover checks (0.32464ms)
+✖ a hidden boss does not consume a pistol hit that can reach a visible hostile alien (0.248134ms)
+✔ existing legacy alien callers retain their default origins, target offsets and absent-environment behavior (0.259952ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 9
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27.329028
+
+✖ failing tests:
+
+test at tests/legacy-hitscan-cover.test.js:64:5
+✖ pistol cannot damage a boss through a real wall or report a target impact (3.066182ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9715 !== 10000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:67:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9715,
+    expected: 10000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/legacy-hitscan-cover.test.js:64:5
+✖ bolt cannot damage a boss through a real wall or report a target impact (2.687292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9320 !== 10000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:67:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9320,
+    expected: 10000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/legacy-hitscan-cover.test.js:97:1
+✖ the pistol checks the real muzzle origin before all three cosmetic spark origins (0.394705ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9715 !== 10000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:101:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9715,
+    expected: 10000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/legacy-hitscan-cover.test.js:107:1
+✖ the Seegson bolt uses its actual 2.3-high origin for a nearby overhead obstacle (0.407775ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9320 !== 10000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:111:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9320,
+    expected: 10000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/legacy-hitscan-cover.test.js:116:1
+✖ each delayed pistol bolt reevaluates physical cover before applying its damage (1.008841ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  285 !== 95
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:120:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 285,
+    expected: 95,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/legacy-hitscan-cover.test.js:124:1
+✖ pistol feedback remains safe when the real boss damage method clears a defeated boss (0.493935ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Cannot read properties of null (reading 'mesh')"
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:126:40)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Cannot read properties of null (reading 'mesh')
+        at Object.fn (evalmachine.<anonymous>:43:93)
+        at flush (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:48:60)
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:126:40)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+        at Test.postRun (node:internal/test_runner/test:1542:19)
+        at Test.run (node:internal/test_runner/test:1467:12),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at tests/legacy-hitscan-cover.test.js:131:1
+✖ the pistol uses its supplied environment for boss and alien cover checks (0.32464ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9715 !== 10000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:136:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9715,
+    expected: 10000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/legacy-hitscan-cover.test.js:140:1
+✖ a hidden boss does not consume a pistol hit that can reach a visible hostile alien (0.248134ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9715 !== 10000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/legacy-hitscan-cover.test.js:144:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9715,
+    expected: 10000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+Projectile proximity — main.js baseline f307a7e48f5f4c5fb2c614a49219a0058d48a1c9
+
+✖ smart_disc cannot hit a nearby boss through solid or rotated cover before the projectile reaches that cover (4.642946ms)
+✖ smart_disc uses the projectile's actual low height when a low wall hides the boss (0.605864ms)
+✔ smart_disc retains damage and impact effects through clear space, above low cover and past a wall behind the projectile (2.139625ms)
+✔ smart_disc still stops on a crossed physical wall without spending a boss penetration (0.389417ms)
+✖ combistick cannot hit a nearby boss through solid or rotated cover before the projectile reaches that cover (0.452502ms)
+✖ combistick uses the projectile's actual low height when a low wall hides the boss (0.277319ms)
+✔ combistick retains damage and impact effects through clear space, above low cover and past a wall behind the projectile (0.783551ms)
+✔ combistick still stops on a crossed physical wall without spending a boss penetration (0.238519ms)
+✖ shuriken cannot hit a nearby boss through solid or rotated cover before the projectile reaches that cover (0.452322ms)
+✖ shuriken uses the projectile's actual low height when a low wall hides the boss (0.381405ms)
+✔ shuriken retains damage and impact effects through clear space, above low cover and past a wall behind the projectile (0.382236ms)
+✔ shuriken still stops on a crossed physical wall without spending a boss penetration (0.188625ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 6
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.979829
+
+✖ failing tests:
+
+test at tests/projectile-boss-cover.test.js:54:3
+✖ smart_disc cannot hit a nearby boss through solid or rotated cover before the projectile reaches that cover (4.642946ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  925 !== 1000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/projectile-boss-cover.test.js:58:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 925,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-boss-cover.test.js:65:3
+✖ smart_disc uses the projectile's actual low height when a low wall hides the boss (0.605864ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  925 !== 1000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/projectile-boss-cover.test.js:68:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 925,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-boss-cover.test.js:54:3
+✖ combistick cannot hit a nearby boss through solid or rotated cover before the projectile reaches that cover (0.452502ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  925 !== 1000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/projectile-boss-cover.test.js:58:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 925,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-boss-cover.test.js:65:3
+✖ combistick uses the projectile's actual low height when a low wall hides the boss (0.277319ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  925 !== 1000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/projectile-boss-cover.test.js:68:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 925,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-boss-cover.test.js:54:3
+✖ shuriken cannot hit a nearby boss through solid or rotated cover before the projectile reaches that cover (0.452322ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  925 !== 1000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/projectile-boss-cover.test.js:58:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 925,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/projectile-boss-cover.test.js:65:3
+✖ shuriken uses the projectile's actual low height when a low wall hides the boss (0.381405ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  925 !== 1000
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/projectile-boss-cover.test.js:68:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 925,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

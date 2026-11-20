@@ -1,0 +1,39 @@
+{
+  "measuredAt": "2026-11-09T05:47:47.681Z",
+  "engine": "160",
+  "triangles": 46616,
+  "drawMeshes": 9,
+  "materials": 7,
+  "ownedBufferBytes": 2403676,
+  "bounds": {
+    "min": [
+      -1.023563003540039,
+      0.005975856073200702,
+      -0.78
+    ],
+    "max": [
+      1.023563003540039,
+      4.100039863586425,
+      1.2405086070299147
+    ]
+  },
+  "anatomy": {
+    "headHeight": 0.64,
+    "standingHeight": 4.1,
+    "headsTall": 6.41,
+    "species": "yautja",
+    "silhouette": "original-clan-honor-guard"
+  },
+  "rig": {
+    "version": 1,
+    "strideTargets": 2,
+    "independentDreads": 16,
+    "rootMotion": false,
+    "filmPropReplica": false
+  },
+  "constantCpuTemplate": {
+    "geometries": 9,
+    "ownedBufferBytes": 2401628,
+    "renderObjects": 0
+  }
+}

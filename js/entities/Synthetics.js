@@ -6,6 +6,34 @@ import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createSyntheticModel } from '../graphics/SupportModels.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
+import { moveSquadActor, syntheticDuty, syntheticServiceAnchor, hasFriendlyFireLane } from '../engine/FactionSquadRoles.js';
+import { emitNPCShot, updateNPCShots, clearNPCShots } from '../graphics/NPCCombatFeedback.js';
+
+/** Real vehicle targets own an oriented collision hull. A Working Joe must
+ * approach that hull rather than the vehicle's internal centre point; treating
+ * the centre as an ordinary NPC can leave it stalled against an APC side.
+ * Returns the surface gap (not a free attack through another obstacle). */
+function supportSurfaceGap(environment, position, target, attackerRadius = 0) {
+  if (!target?.isSupport || !target.position?.isVector3) return null;
+  const hull = (environment?.colliders ?? []).find(c =>
+    c.owner === target.collisionOwner && c.enabled !== false && c.solid !== false &&
+    (!c.isCollisionActive || c.isCollisionActive()));
+  const differenceY = Math.abs(position.y - target.position.y);
+  if (!hull) return Math.max(0,Math.hypot(Math.max(0,
+    Math.hypot(position.x-target.position.x,position.z-target.position.z) -
+      (target.radius ?? 0)),differenceY)-attackerRadius);
+  const dx=position.x-hull.x, dz=position.z-hull.z;
+  if (hull.halfWidth != null && hull.halfDepth != null) {
+    const cosine=Math.cos(hull.rotation ?? 0),sine=Math.sin(hull.rotation ?? 0);
+    const x=dx*cosine-dz*sine,z=dx*sine+dz*cosine;
+    // A Working Joe's 0.9-unit capsule has reach BEFORE its centre reaches
+    // the APC plating. The grid stops at a legal cell outside the hull.
+    return Math.max(0,Math.hypot(Math.max(0,Math.abs(x)-hull.halfWidth),
+      Math.max(0,Math.abs(z)-hull.halfDepth),differenceY)-attackerRadius);
+  }
+  return Math.max(0,Math.hypot(Math.max(0,Math.hypot(dx,dz)-
+    (hull.radius??target.radius??0)),differenceY)-attackerRadius);
+}
 
 export class SyntheticsManager {
   constructor(scene, audioEngine, particles) {
@@ -164,6 +192,7 @@ export class SyntheticsManager {
   update(delta, player, horde) {
     if (!Number.isFinite(delta) || delta <= 0) return;
     this.time = (this.time ?? 0) + delta;
+    updateNPCShots(this, delta);
     for (let i = this.bloodDrops.length - 1; i >= 0; i--) {
       const drop = this.bloodDrops[i];
       drop.life -= delta;
@@ -207,11 +236,28 @@ export class SyntheticsManager {
         continue; // Fully disabled while rebooting circuits
       }
 
-      let targetPlayer = selectHostileTarget(this, syn.mesh.position, player), targetPos = null, isXeno = false, npcTarget = null;
-      if(maintainBattleFormation(this,syn,delta,syn.speed))continue;
+      let targetPlayer = selectHostileTarget(this, syn, player), targetPos = null, isXeno = false, npcTarget = null;
+      const serviceBound = syn.battleUnitId && this.battleSimulation && syn.syntheticDuty !== 'security';
+      if (serviceBound && syn.mesh.position.clone().setY(0).distanceToSquared(syn.serviceAnchor) > 48 ** 2) {
+        syn.mesh.userData.syntheticState = 'return-to-service';
+        releaseHostileAttack(this, syn); syn._npcPreparation = 0;
+        if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+        moveSquadActor(this, syn, syn.serviceAnchor.clone().setY(syn.mesh.position.y), delta, syn.speed, 2); continue;
+      }
+      const slot = syn.battleFormationTarget;
+      const serviceFormationValid = !serviceBound || syn.syntheticDuty === 'industrial' &&
+        Array.isArray(slot) && Math.hypot(slot[0] - syn.serviceAnchor.x, slot[1] - syn.serviceAnchor.z) <= 48;
+      if(serviceFormationValid && maintainBattleFormation(this,syn,delta,syn.speed))continue;
       if (syn.battleUnitId && this.battleSimulation) {
         const target = selectBattleTarget(this, syn, player, horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
-        if (!target) { releaseHostileAttack(this, syn); moveBattleOrder(this, syn, delta, syn.speed); continue; }
+        if (!target) {
+          releaseHostileAttack(this, syn); syn.intrusionTime = 0; syn.intrusionTarget = null;
+          if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+          syn.mesh.userData.syntheticState = serviceBound ? 'service' : 'security-patrol';
+          if (serviceBound) moveSquadActor(this, syn, syn.serviceAnchor.clone().setY(syn.mesh.position.y), delta, syn.speed, 3);
+          else moveBattleOrder(this, syn, delta, syn.speed);
+          continue;
+        }
         targetPlayer = target; targetPos = target.position; isXeno = target.isBattleNPC; npcTarget = target.isBattleNPC ? target : null;
       } else {
         let nearestDist = Infinity;
@@ -222,30 +268,62 @@ export class SyntheticsManager {
       if (isXeno && (this.combatDirector?.getAttackState(syn)?.phase === 'windup' || syn._localAttackPreparation)) releaseHostileAttack(this, syn);
       const dir = targetPos.clone().sub(syn.mesh.position);
       dir.y = 0;
-      const dist = dir.length();
+      const supportGap = supportSurfaceGap(this.environment,syn.mesh.position,npcTarget,syn.radius ?? .9);
+      const dist = supportGap ?? syn.mesh.position.distanceTo(targetPos);
 
-      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)));
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: npcTarget?.isSupport ? npcTarget.collisionOwner : undefined });
+      if (serviceBound) {
+        const outsideService = Math.hypot(targetPos.x - syn.serviceAnchor.x, targetPos.z - syn.serviceAnchor.z) > 48;
+        if (outsideService || covered || syn.syntheticDuty === 'civilian') {
+          releaseHostileAttack(this, syn); syn._npcPreparation = 0; syn.intrusionTime = 0; syn.intrusionTarget = null;
+          if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+          syn.mesh.userData.syntheticState = syn.syntheticDuty === 'civilian' ? 'avoid-intrusion' : 'service';
+          moveSquadActor(this, syn, syn.serviceAnchor.clone().setY(syn.mesh.position.y), delta, syn.speed, 3); continue;
+        }
+        if (syn.intrusionTarget !== (npcTarget?.actor ?? targetPlayer)) {
+          syn.intrusionTarget = npcTarget?.actor ?? targetPlayer; syn.intrusionTime = 0;
+        }
+        syn.intrusionTime = Math.min(1.5, (syn.intrusionTime ?? 0) + delta);
+        if (syn.intrusionTime < 1.5) {
+          releaseHostileAttack(this, syn); syn._npcPreparation = 0; syn.mesh.userData.syntheticState = 'intrusion-warning';
+          if (!syn.intrusionWarning) {
+            syn.intrusionWarning = new THREE.Mesh(new THREE.ConeGeometry(.22, .38, 3),
+              new THREE.MeshBasicMaterial({ color: 0xffc96c, toneMapped: false }));
+            syn.intrusionWarning.name = 'synthetic-intrusion-warning'; syn.intrusionWarning.position.y = 3.8;
+            syn.mesh.add(syn.intrusionWarning); this.audioEngine?.playSyntheticShortCircuit?.();
+          }
+          syn.intrusionWarning.visible = true; syn.intrusionWarning.rotation.y = this.time; continue;
+        }
+        if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+      }
+      syn.mesh.userData.syntheticState = serviceBound ? 'contain-intrusion' : 'security-engage';
       const joe = syn.type === 'working_joe';
       const stopDist = joe ? 2.1 : syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0);
       syn.shootCooldown = Math.max(0, (syn.shootCooldown ?? 2) - delta);
 
-      if (dist > stopDist + 1e-5 || covered) {
+      const access = this.environment?.getVerticalNavigationTarget?.(syn.mesh.position, targetPos);
+      if (access || dist > stopDist + 1e-5 || covered) {
+        const previous = syn.mesh.position.clone();
+        dir.copy(access ?? targetPos).sub(previous).setY(0);
+        const step = Math.min(syn.speed * delta, dir.length(), access || covered ? Infinity : Math.max(0, dist - stopDist));
         dir.normalize();
-        syn.mesh.position.addScaledVector(dir, covered ? syn.speed * delta : Math.min(syn.speed * delta, dist - stopDist));
-        this.environment?.resolveAgentMovement?.(syn.mesh.position, targetPos, syn.speed * delta, .9);
+        syn.mesh.position.addScaledVector(dir, step);
+        this.environment?.resolveAgentMovement?.(syn.mesh.position, targetPos, step, .9, previous);
         releaseHostileAttack(this, syn);
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+        if (!joe && !hasFriendlyFireLane(syn, targetPos, this.androids)) { releaseHostileAttack(this, syn); syn._npcPreparation = 0; continue; }
         // Shoot pulse weapon
         if (syn.shootCooldown <= 0 && (npcTarget ? requestNPCStrike(syn, npcTarget, delta, {windup: .9, recovery: 1.9}) : isXeno || requestHostileAttack(this, syn, targetPlayer, delta, { kind: joe ? 'melee' : 'ranged', windup: joe ? 1.1 : 0.9, recovery: 1.9, duration: 0.3 }))) {
           syn.shootCooldown = syn.isBisected ? 2.6 : 1.9;
           if (joe) this.audioEngine?.playSyntheticShortCircuit?.(); else this.audioEngine.playPulseRifleBurst();
           if (isXeno) {
-            if (npcTarget) npcTarget.takeDamage(syn.damage); else horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage, killerFaction: syn.factionId ?? 'weyland_yutani', type: 'synthetic-ballistic' });
+            if (npcTarget) npcTarget.takeDamage(syn.damage, syn); else horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage, killerFaction: syn.factionId ?? 'weyland_yutani', type: 'synthetic-ballistic' });
           } else {
             targetPlayer.takeDamage(syn.damage * .4, false, syn, { attackKind: joe ? 'grab' : 'ballistic', blockable: false, parryable: false });
           }
+          if (!joe) emitNPCShot(this, syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)));
         }
         syncHostileWarning(this, syn);
       }
@@ -259,6 +337,7 @@ export class SyntheticsManager {
     const faction = attack.killerFaction ?? this.battleSimulation?.config.playerFaction ?? 'player_clan';
     for (let i = this.androids.length - 1; i >= 0; i--) {
       const syn = this.androids[i];
+      if (attack.targetOnly && syn !== attack.targetOnly) continue;
       if (this.battleSimulation && syn.factionId && !this.battleSimulation.areHostile(faction, syn.factionId)) continue;
       if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(attack.origin.clone().add(new THREE.Vector3(0,1.2,0)), syn.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)))) continue;
       if (syn.mesh.position.distanceTo(attack.origin) <= attack.radius) {
@@ -286,6 +365,7 @@ export class SyntheticsManager {
 
 
   clearSquad() {
+    clearNPCShots(this);
     this.bloodDrops.forEach(drop => disposeObject(drop.mesh, this.sharedResources));
     this.bloodDrops = [];
     this.androids.forEach(s => { releaseHostileAttack(this, s); disposeObject(s.mesh, this.sharedResources); });
@@ -299,7 +379,13 @@ export class SyntheticsManager {
     const existing = this.androids.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
     if (!['synthetic','working_joe','weyland_combat'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed synthetic profile: ${unit.actorType}`);
     const joe = unit.actorType === 'working_joe';
-    const actor = { mesh: this.createSyntheticMesh(joe), type: joe ? 'working_joe' : 'weyland_combat', speed: joe ? 7.5 : 9, damage: joe ? 34 : 22,
+    const duty = syntheticDuty(unit), mesh = this.createSyntheticMesh(joe || duty === 'civilian');
+    if (duty === 'civilian') mesh.userData.syntheticProfile = 'civilian-service-adaptation';
+    // The Extinction squad synthetic belongs to the USCM, not to Weyland-Yutani (CTRL-086).
+    const uscm = unit.actorType === 'synthetic' && /_GRP-60_(?:H-LIGNE|H-APPUI)_7$/.test(unit.profileId ?? '');
+    if (uscm) mesh.userData.syntheticProfile = 'uscm_synthetic';
+    const actor = { mesh, type: joe ? 'working_joe' : uscm ? 'synthetic' : 'weyland_combat', affiliation: joe ? 'seegson' : uscm ? 'uscm' : 'weyland_yutani', speed: joe ? 7.5 : 9, damage: joe ? 34 : 22,
+      syntheticDuty: duty, serviceAnchor: syntheticServiceAnchor(this, unit, group),
       radius: .9, shootCooldown: 2, isBisected: false, crawlLife: 0, voiceCooldown: 0 };
     this.androids.push(applyBattleUnit(this, actor, unit, group)); return actor;
   }

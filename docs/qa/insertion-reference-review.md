@@ -38,3 +38,18 @@ La photo Prime 1 Studio City Hunter `mmpr-02uts_a08-01.jpg` et deux captures exi
 Les détails ci-dessus sont corroborés par [CITY-HUNTER.md](../meshy/CITY-HUNTER.md), [le manifeste actif](../../js/graphics/GeneratedAssetManifest.js), [CityHunterRig.js](../../js/graphics/CityHunterRig.js) et [GRAPHICS.md](../../GRAPHICS.md). Les captures historiques examinées ne remplacent pas les nouvelles captures de la séquence d'insertion.
 
 Aucune fidélité exacte « 1:1 » n'est validée par cette revue. Les nouveaux contrôles de fonctionnement et de rendu doivent être consignés avec leurs propres résultats.
+
+## Mise à jour du 15 novembre 2026 : références de films trouvées
+
+Cette revue a été réalisée par un agent IA. Les pages Fandom (`avp.fandom.com`, `weyland.fandom.com`) ont refusé la lecture (HTTP 402), et leur miroir BreezeWiki aussi. La page [AvP Galaxy — Yautja Spacecraft](https://www.avpgalaxy.net/predator/spacecrafts/) a été lue. Ses images ont été réellement ouvertes, sans être copiées dans le dépôt :
+
+- **`avp2004-bluray-271.jpg`, légende « Drop Pod »** : une capsule allongée et sombre à nervures longitudinales, trois pales courbes en queue disposées en pétales, trois feux rouges entre elles, une fine traînée. C'est la source de la silhouette de la capsule (version 4 du modèle).
+- **`avp2004-bluray-265.jpg` et `avp2004-bluray-154.jpg`** : la coque et l'intérieur du vaisseau-mère. Le faisceau bleu est décrit par le texte de la page (« a very powerful and accurate blue laser… to penetrate the ice »), sans être visible sur ces deux images.
+- **`avpr-bluray-0103.jpg`, `0235.jpg` et `0236.jpg`** : le vaisseau de Wolf. Les deux dernières montrent son propulseur arrière unique très lumineux et sa traînée orange d'entrée atmosphérique. La page le décrit avec des pointes avant « resembling petals on a flower ».
+
+**Écarts connus** :
+- **Capsule** : une seule image, prise en vol, ne montre ni l'intérieur, ni l'ouverture, ni la pose au sol.
+- **Vaisseau** : ses proportions sont estimées.
+- **Faisceau** : il ne transporte personne dans le film.
+
+Aucune fidélité « 1:1 » n'est validée.

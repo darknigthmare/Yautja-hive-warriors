@@ -1,9 +1,10 @@
+import { configureSupportFixture } from './helpers/finite-support-fixture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { createAPCModel } from '../js/graphics/SupportModels.js';
 import { APCVehicle } from '../js/entities/APCVehicle.js';
-import { APC_DEPLOYMENT_SECONDS, APC_ELEVATION } from '../js/graphics/APCModel.js';
+import { APC_DEPLOYMENT_SECONDS, APC_ELEVATION, APC_RUNNING_GEAR, APC_WEAPON_PROVENANCE } from '../js/graphics/APCModel.js';
 import { EnvironmentManager } from '../js/entities/Environment.js';
 import { disposeObject } from '../js/engine/SceneResources.js';
 
@@ -87,7 +88,7 @@ test('roof turret follows a continuous rear return, lowers behind the hull and p
 
 test('APC deploys before shooting, aims both axes from real muzzles, recoils and preserves damage and cooldown', () => {
   const scene = new THREE.Scene(), sparks = [], shots = [];
-  const apc = new APCVehicle(scene, audio, { emitSparks(position, count) { sparks.push({ position: position.clone(), count }); } });
+  const apc = configureSupportFixture(new APCVehicle(scene, audio, { emitSparks(position, count) { sparks.push({ position: position.clone(), count }); } }));
   apc.spawn(new THREE.Vector3(4, 0, 8)); apc.mesh.rotation.y = 0.8;
   const target = { mesh: new THREE.Group(), hp: 350 }; target.mesh.position.set(10, 0, 21);
   const horde = { aliens: [target], checkMeleeHits(attack) { shots.push(attack); return []; } };
@@ -98,7 +99,7 @@ test('APC deploys before shooting, aims both axes from real muzzles, recoils and
   assert.equal(shots.length, 1);
   assert.equal(apc.hp, 2500); assert.equal(apc.maxHp, 2500);
   assert.equal(shots[0].damage, 240); assert.equal(shots[0].radius, 3.5);
-  assert.equal(shots[0].type, 'heavy'); assert.equal(apc.fireCooldown, 1.1);
+  assert.equal(shots[0].type, 'plasma'); assert.equal(apc.fireCooldown, 1.1);
   assert.equal(apc.model.barrels.position.z, -0.15);
   assert.equal(apc.model.muzzleFlash.visible, true);
   const muzzleEffects = sparks.filter(spark => spark.count === 2);
@@ -118,7 +119,8 @@ test('APC deploys before shooting, aims both axes from real muzzles, recoils and
   apc.update(0.71, horde); assert.equal(shots.length, 2, 'the original 1.1 second cadence remains');
   const old = apc.mesh;
   apc.spawn(new THREE.Vector3());
-  assert.equal(old.parent, null); assert.equal(apc.fireCooldown, 0); assert.equal(apc.deployment, 0);
+  assert.equal(old.parent, null); assert.equal(apc.fireCooldown, 1.1, 'recalling the hull does not reset the gun cooldown'); assert.equal(apc.deployment, 0);
+  assert.equal(apc.policy.remaining.rounds, 44, 'legacy finite ammunition cannot refill when redeploying');
   assert.equal(apc.recoil, 0); assert.equal(apc.weaponFlash, 0);
   apc.clear(); assert.equal(scene.children.length, 0); assert.equal(apc.model, null);
 });
@@ -136,7 +138,7 @@ test('elevation follows high targets, respects physical stops and never fires at
   assert.equal(model.gun.rotation.x, -APC_ELEVATION.max);
   assert.equal(model.setTurretAim(new THREE.Vector3(NaN, 1, 1)), false);
   disposeObject(model.group);
-  const shots = [], apc = new APCVehicle(new THREE.Scene(), audio);
+  const shots = [], apc = configureSupportFixture(new APCVehicle(new THREE.Scene(), audio));
   apc.spawn(new THREE.Vector3());
   const dead = { mesh: new THREE.Group(), hp: 0 }; dead.mesh.position.set(8, 0, 14);
   apc.update(APC_DEPLOYMENT_SECONDS, { aliens: [dead], checkMeleeHits(attack) { shots.push(attack); } });
@@ -145,7 +147,7 @@ test('elevation follows high targets, respects physical stops and never fires at
 });
 
 test('an enemy below the depression stop cannot block a reachable target or redirect its damage', () => {
-  const apc = new APCVehicle(new THREE.Scene(), audio), shots = [];
+  const apc = configureSupportFixture(new APCVehicle(new THREE.Scene(), audio)), shots = [];
   apc.spawn(new THREE.Vector3());
   const enemy = (position, hp = 350) => { const mesh = new THREE.Group(); mesh.position.set(...position); return { mesh, hp }; };
   const close = enemy([3.5, 0, -3]), reachable = enemy([12, 0, 18]), farther = enemy([-15, 0, 20]), dead = enemy([1, 0, 4], 0);
@@ -167,7 +169,7 @@ test('APC surface detail remains finite within the existing mesh and triangle bu
   model.group.traverse(node => {
     if (!node.isMesh) return;
     meshes++;
-    triangles += (node.geometry.index?.count ?? node.geometry.attributes.position.count) / 3;
+    triangles += (node.geometry.index?.count ?? node.geometry.attributes.position.count) / 3 * (node.isInstancedMesh ? node.count : 1);
     for (const attribute of ['position', 'normal', 'uv']) assert.ok(node.geometry.attributes[attribute].array.every(Number.isFinite));
   });
   assert.ok(triangles >= 26000 && triangles <= 44000, `${triangles} triangles`);
@@ -176,7 +178,7 @@ test('APC surface detail remains finite within the existing mesh and triangle bu
 });
 
 test('carrier collision follows the hull, wheel shoulders and rotation without trapping distant or airborne actors', () => {
-  const apc = new APCVehicle(new THREE.Scene(), audio);
+  const apc = configureSupportFixture(new APCVehicle(new THREE.Scene(), audio));
   apc.spawn(new THREE.Vector3(10, 0, 20));
   const inside = new THREE.Vector3(10, 0, 20);
   assert.equal(apc.resolveMovement(inside, 0.75), inside, 'resolver mutates and returns the actor position');
@@ -198,7 +200,7 @@ test('carrier collision follows the hull, wheel shoulders and rotation without t
 });
 
 test('rear stowage blocks its real occupied height, clears after deployment and follows vehicle rotation', () => {
-  const apc = new APCVehicle(new THREE.Scene(), audio);
+  const apc = configureSupportFixture(new APCVehicle(new THREE.Scene(), audio));
   apc.spawn(new THREE.Vector3(10, 0, 20));
   const yAxis = new THREE.Vector3(0, 1, 0);
   for (const yaw of [0, Math.PI / 2, -Math.PI / 3]) {
@@ -239,7 +241,7 @@ test('rear stowage blocks its real occupied height, clears after deployment and 
 });
 
 test('navigation and spawn clearance enclose every stowage pose and all firing directions', () => {
-  const apc = new APCVehicle(new THREE.Scene(), audio);
+  const apc = configureSupportFixture(new APCVehicle(new THREE.Scene(), audio));
   assert.ok(apc.navigationRadius > 6.7, 'spawn clearance includes the rear return before a model exists');
   assert.equal(apc.getNavigationCollider(), null);
   apc.spawn(new THREE.Vector3(10, 0, 20));
@@ -274,7 +276,7 @@ test('navigation and spawn clearance enclose every stowage pose and all firing d
 test('deployment timing is independent of frame rate and rejects paused or invalid time steps', () => {
   const snapshots = [];
   for (const steps of [30, 120]) {
-    const apc = new APCVehicle(new THREE.Scene(), audio); apc.spawn(new THREE.Vector3());
+    const apc = configureSupportFixture(new APCVehicle(new THREE.Scene(), audio)); apc.spawn(new THREE.Vector3());
     for (let index = 0; index < steps; index++) apc.update(APC_DEPLOYMENT_SECONDS * 0.5 / steps, { aliens: [] });
     snapshots.push({ position: apc.model.carriage.position.toArray(), angle: apc.model.carriage.rotation.x });
     const before = apc.model.carriage.position.clone(), progress = apc.deployment;
@@ -288,7 +290,7 @@ test('deployment timing is independent of frame rate and rejects paused or inval
 
 test('environment delegates APC physics while retaining its conservative navigation outline', () => {
   const scene = new THREE.Scene(), env = new EnvironmentManager(scene);
-  const apc = new APCVehicle(scene, audio);
+  const apc = configureSupportFixture(new APCVehicle(scene, audio));
   apc.spawn(new THREE.Vector3(10, 0, 20));
   apc.model.setTurretDeployment(1);
   env.colliders.push(apc.getNavigationCollider());
@@ -320,4 +322,75 @@ test('environment delegates APC physics while retaining its conservative navigat
   }
   assert.equal(env.colliders[0].halfWidth, 2.52, 'navigation keeps the conservative wheel clearance');
   apc.clear();
+});
+
+test('four actual M577 wheels share ONE instanced multi-material geometry and roll only after admitted travel',()=>{
+  const model=createAPCModel();
+  try{
+    assert.equal(model.wheels.length,APC_RUNNING_GEAR.wheelCount);
+    assert.equal(model.wheelInstances.isInstancedMesh,true);
+    assert.equal(model.wheelInstances.count,4);
+    assert.equal(model.wheelInstances.material.length,4);
+    const before=new THREE.Matrix4(),after=new THREE.Matrix4();
+    model.wheelInstances.getMatrixAt(0,before);
+    assert.equal(model.setWheelMotion({distance:0}),true);
+    model.wheelInstances.getMatrixAt(0,after);
+    assert.ok(after.equals(before));
+    assert.equal(model.setWheelMotion({distance:0.8,heights:[0.08,-0.07,0.04,-0.06],steering:0.18}),true);
+    model.wheelInstances.getMatrixAt(0,after);
+    assert.ok(!after.equals(before));
+    for(let i=0;i<4;i++){
+      model.wheelInstances.getMatrixAt(i,after);
+      const position=new THREE.Vector3(),quaternion=new THREE.Quaternion(),scale=new THREE.Vector3();
+      after.decompose(position,quaternion,scale);
+      // InstancedMesh stores each matrix in Float32Array, not JS doubles.
+      // Verify a sub-millimetric geometric tolerance without relaxing any
+      // collision or actual world/strategic coordinate invariant.
+      const matrixTolerance=1e-5;
+      assert.ok(Math.abs(position.x-model.wheels[i].x)<matrixTolerance);
+      assert.ok(Math.abs(position.z-model.wheels[i].z)<matrixTolerance);
+      assert.ok(Math.abs(position.y-model.wheels[i].y)<=APC_RUNNING_GEAR.maxTravel+matrixTolerance);
+    }
+    const fixed=model.wheelInstances.instanceMatrix.array.slice();
+    for(const distance of [NaN,-2,Infinity,50])
+      assert.equal(model.setWheelMotion({distance}),false);
+    assert.deepEqual(model.wheelInstances.instanceMatrix.array,fixed);
+  }finally{disposeObject(model.group);}
+});
+
+test('visual M577 tire motion does not change damage, ammunition, support policy or save state',()=>{
+  const apc=configureSupportFixture(new APCVehicle(new THREE.Scene(),audio));
+  assert.equal(apc.updateRunningGear(1),false);
+  apc.spawn(new THREE.Vector3());
+  try{
+    const before=apc.serialize(),previous=new THREE.Matrix4(),after=new THREE.Matrix4();
+    apc.model.wheelInstances.getMatrixAt(2,previous);
+    assert.equal(apc.updateRunningGear(1,[0.05,-0.04,0.02,-0.02],.08),true);
+    apc.model.wheelInstances.getMatrixAt(2,after);
+    assert.ok(!after.equals(previous));
+    assert.deepEqual(apc.serialize(),before);
+  }finally{apc.clear();}
+  assert.equal(apc.updateRunningGear(1),false);
+});
+
+test('M577A roof plasma stays distinct from the unimplemented forward RE700 guns',()=>{
+  const apc=configureSupportFixture(new APCVehicle(new THREE.Scene(),audio));
+  assert.match(APC_WEAPON_PROVENANCE.roof,/plasma/i);
+  assert.match(APC_WEAPON_PROVENANCE.nose,/RE700/);
+  assert.equal(APC_WEAPON_PROVENANCE.frontWeaponImplemented,false);
+  assert.equal(APC_WEAPON_PROVENANCE.sourceVisualFidelity1to1Verified,false);
+  apc.spawn(new THREE.Vector3());
+  try{
+    const saved=apc.serialize(),state=apc.getSupportState();
+    assert.equal(state.roofWeapon,APC_WEAPON_PROVENANCE.roof);
+    assert.equal(state.frontWeaponImplemented,false);
+    assert.equal(saved.policy.remaining.rounds,48);
+    assert.equal(Object.hasOwn(saved.policy.remaining,'plasmaCharges'),false);
+    const enemy={hp:300,mesh:new THREE.Group()};enemy.mesh.position.set(8,0,15);
+    const events=[];
+    apc.update(APC_DEPLOYMENT_SECONDS,{aliens:[enemy],checkMeleeHits:e=>{events.push(e);return[];}});
+    assert.equal(events.length,1);
+    assert.equal(events[0].type,'plasma');
+    assert.equal(apc.policy.remaining.rounds,46);
+  }finally{apc.clear();}
 });

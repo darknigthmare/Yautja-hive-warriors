@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_component_tests_browser_pending",
+  "reviewedAt": "2026-11-02T04:21:42.556564+00:00",
+  "scope": "Briefing reads the signed AFF-27 optional variant and its allocated Carrier group; no profile, unit identity, budget, capacity or regenesis rule is modified.",
+  "files": [
+    {
+      "path": "js/ui/OperationBriefing.js",
+      "sha256": "31b4fcca700e9c0ed4d1ddaa1e20e3a585294d4e07264170bb3ceed04c61f4cd"
+    },
+    {
+      "path": "tests/extinction-evolved-variant.test.js",
+      "sha256": "c3666f0ef4553e037911bbc04f0debb87e0a4c900c6da074f4ddb8b64be64966"
+    }
+  ],
+  "tests": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 2222.444872,
+    "log": "debrief-evolved-targeted.txt"
+  },
+  "humanTesters": 0,
+  "browserRun": false
+}

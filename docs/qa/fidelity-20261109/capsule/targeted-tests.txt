@@ -1,0 +1,33 @@
+✔ the occupant stays invisible in flight and appears behind the landed opening doors (4.005499ms)
+✔ the exit walks the occupant out progressively without advancing combat state (0.678471ms)
+✔ late model attachment cannot reveal a hunter during descent or stabilization (0.564882ms)
+✔ co-op receives two separated cabins and two independent exits (0.752862ms)
+✔ sequence pose, opening and completion agree at different frame rates (6.932561ms)
+✔ cancelling insertion restores actor transforms, pose and prior visibility without completion (0.849255ms)
+✔ cleanup after handoff cannot restore an actor hidden by a later vehicle or photo mode (0.560535ms)
+✔ completion can synchronously replace the insertion without old time consuming the new one (0.614566ms)
+✔ the opened capsule lingers, fades, and disposes all its owned buffers once (1.571171ms)
+✔ invalid or stopped simulation time cannot advance the insertion (0.452354ms)
+✔ the hollow capsule blocks its rear and sides while leaving the forward exit clear (0.863547ms)
+✔ camera tracks the descending cabin independently from the hidden ground actor (0.499834ms)
+✔ real hunter wristblades stay behind the closed hatch in every procedural variant (7179.506734ms)
+✔ the cabin arm pose reaches imported sockets but preserves hidden or fused blades (0.624823ms)
+✔ actual co-op insertion camera resolves the Val Verde canopy during opening and exit (5017.672599ms)
+✔ pause and photo mode freeze both insertion cameras and the same capsule clock (0.888055ms)
+✔ an idle insertion cannot overwrite either ordinary or photo camera (0.324925ms)
+✔ capsule details preserve the measured exterior, cabin handoff and physical profile within the temporary cinematic budget (1867.556826ms)
+✔ segmented crown has an opaque pressure hull behind every armor seam (410.835399ms)
+✔ one dynamic actuator buffer keeps fixed barrels and telescopes to both real door sockets through reversal (66.91574ms)
+✔ two capsule animations own their changing buffers and release geometry/materials without disposing borrowed surface maps (123.041743ms)
+✔ closed capsule occludes the occupant and open leaves clear the standing exit corridor (2137.820479ms)
+✔ capsule hinges turn continuously around fixed sockets without replacing owned buffers (108.761972ms)
+✔ interior floor and threshold do not bury ground-height feet during the exit (96.203232ms)
+✔ six-unit co-op spacing keeps both capsule silhouettes and moving leaves apart (216.839258ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7351.53687

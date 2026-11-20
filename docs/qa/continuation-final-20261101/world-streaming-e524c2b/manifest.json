@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "final-return-insertion.png",
+      "sha256": "ee2cba6135fbf09c0318bfc5b30d123a9f670af78d45fe92eff09e76324162a1"
+    },
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "319207ebe6c4e442d5f78ee2e043e97d1aa4e05eec061bb32e447cdc5ca25d1b"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "helper-source-2.mjs",
+      "sha256": "8fcbdcf2876f1127c7afb77931fdcc3fbd85457ef1757029ce42b50f7e3fe98d"
+    },
+    {
+      "path": "outbound-approach.png",
+      "sha256": "0ec2ba6a255216c6314359f882df9c6608d2f27dc74263de6cd790087f87c8ca"
+    },
+    {
+      "path": "outbound-relay-far.png",
+      "sha256": "cef4e2bf76cfd5ac40fd71cf8f1013e7dbea4cf1703db858bbc404e83e32c694"
+    },
+    {
+      "path": "outbound-relay.png",
+      "sha256": "34186a824f3bad340c59f4e831a72ba522d40a756eb1b281e6c5e607820ff545"
+    },
+    {
+      "path": "relay-far-evicts-insertion.png",
+      "sha256": "534a0ee6d4b9e8886555802380cd0ece734bed0ee67bc53e31eb744d040956c9"
+    },
+    {
+      "path": "report.json",
+      "sha256": "408e63aa830eaf6589235b0fe286a9c180f2868bf77395d13827a408c11a86c6"
+    },
+    {
+      "path": "return-to-insertion.png",
+      "sha256": "3950b34800c6440654cc4550caa75813b1aa144662466731aba1d79ae43b356b"
+    }
+  ]
+}

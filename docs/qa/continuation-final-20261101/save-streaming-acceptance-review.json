@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "runtimeSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "browserClosed": true,
+  "evidence": [
+    {
+      "path": "docs/qa/continuation-final-20261101/save-startup-e524c2b/report.json",
+      "sha256": "a48dd23c6f2b2511da5df435f1688cfb4ea78e3a836fdf7ed99488acbe180e61"
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/save-startup-e524c2b/manifest.json",
+      "sha256": "4fce4ac79260b16f32c093f201a04ee6ab89ffa788e74a012067b59e72e2a0de"
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/world-streaming-e524c2b/report.json",
+      "sha256": "408e63aa830eaf6589235b0fe286a9c180f2868bf77395d13827a408c11a86c6"
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/world-streaming-e524c2b/manifest.json",
+      "sha256": "ac652fbf219668678c3d0c9eea403eb03c7e2f6aab6d586228c8a54e1769636e"
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/world-streaming-e524c2b-analysis.json",
+      "sha256": "9d7f902f520cfc600eaba6e8697023e485bd222d65e85d63d5b65a0597c94bf3"
+    }
+  ],
+  "criteria": {
+    "AUD-118": {
+      "recommendation": "eligible_for_completion_after_coordinator_review",
+      "scope": "Five real browser startup/insertion cases: historical KO/forge counters, known partial v1, future version, malformed balance with valid trophies, unreadable operation checkpoint. Invalid/future raw slots and valid trophy names survive; menu fallback allows a fresh mission; all five players are visible/alive at 1000HP after real insertion. Existing production migration/recovery regressions were independently rerun (78 tests including resources) before final freeze; coordinator full CPU run belongs to the final candidate.",
+      "limits": [
+        "Only the explicitly recognized save formats and rejected formats are assessed; no arbitrary JSON repair or recovery of physically missing bytes is claimed."
+      ]
+    },
+    "AUD-112": {
+      "recommendation": "retain_partial_validation",
+      "scope": "Six physical rendered legs across insertion/approach/relay and returns, 453 frames and 1807 collision-resolved steps. The insertion floor actually evicts twice and restores after being drawn; 180 resource evictions and 162 restorations; same CPU templates and geometry registry, preserved real blast-door destruction and earned objectives/open gates; 0 JS/network/external/WebGL errors.",
+      "limits": [
+        "Simulation is paused during traversal; gameplay difficulty, command input and natural traversal were not evaluated.",
+        "Per-frame gl.getError and software rendering produce diagnostic intervals around 1.3 s; these are not an unmodified game FPS benchmark.",
+        "No general absence of traversal stalls on target hardware or all34layouts is certified."
+      ]
+    },
+    "AUD-109": {
+      "recommendation": "retain_partial_validation",
+      "scope": "Strict decorative gore budgets and private/shared resource ownership are fixed and covered by three regressions.",
+      "limits": [
+        "No prolonged interactive-battle memory certificate follows."
+      ]
+    },
+    "AUD-119": {
+      "recommendation": "keep_open_for_human_playtesting",
+      "scope": "All current cases are automated and assisted; humanTesters=0."
+    }
+  }
+}

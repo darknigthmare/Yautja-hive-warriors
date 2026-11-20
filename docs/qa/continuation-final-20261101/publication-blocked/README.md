@@ -1,0 +1,7 @@
+La soumission de production du 1er novembre 2026 à 02:05 UTC est refusée par Vercel : `api-deployments-free-per-day`, plus de 100 déploiements gratuits par jour, nouvel essai conseillé dans un jour. Aucun ID de production n’est retourné, aucune promotion n’est exécutée.
+
+Le registre original et la réponse minimisée sont conservés ici. Les JSON bruts du CLI restent hors Git ; leurs empreintes sont référencées, sans auteur ni credentials. Les [pins et la QA réellement employés](../publication-submitted/) restent distincts du rapport courant, enrichi du refus. Le contrôle local d’intégrité repasse après cette actualisation.
+
+Le [contrôle HTTP après refus](public-unchanged.json) retrouve HTTP 200 et la source 48b5 sur le domaine canonique. Les 22 contrôles navigateur du nouveau build ne sont donc pas exécutés. Le relevé des vingt déploiements récents ne contient pas le SHA courant ; ces candidats antérieurs ne sont pas promus comme substituts.
+
+Le build prêt à publier reste dans son stage immuable ; ne pas reconstruire, effacer les preuves ou relancer aveuglément `--deploy`. Le registre porte déjà `submission_attempted:true` et `deployment_id:null` : le publieur bloque une seconde soumission automatique. Après vérification du quota et de l’état effectif, résoudre explicitement ce refus conservé avant une nouvelle tentative ; si un véritable candidat est retrouvé, réutiliser son ID et contrôler tous ses octets. L’heure réelle de réouverture du quota n’est pas établie.
