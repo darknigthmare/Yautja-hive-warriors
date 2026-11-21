@@ -35,7 +35,7 @@ function fixture() {
     operationTransport: { interact(target) { calls.push(['transport', target.id]); return false; } },
     operationObjectives: { interact(target) { calls.push(['objective', target.id]); return { accepted: false }; } },
     battlefield: { interact(target) { calls.push(['sector', target.id]); return false; } },
-    env: new Proxy({}, { get(target, key) { return target[key] ?? (() => false); } }),
+    env: new Proxy({ hasLineOfSight: () => true }, { get(target, key) { return target[key] ?? (() => false); } }), // open ground: no wall between P2 and the boss (AUD-090)
     sentryGun: { reloadSentry() { return { success: false, reason: 'not_near_sentry' }; } },
     bosses: { activeBoss: null }, horde: { aliens: [], struggleRoyalFacehugger(target) { calls.push(['royal-struggle', target.id]); return false; } },
     synthetics: { androids: [], checkHits() {} },
