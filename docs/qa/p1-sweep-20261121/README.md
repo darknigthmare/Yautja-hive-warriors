@@ -93,6 +93,45 @@ Une apparition à moins de 24 unités d'un joueur vivant est refusée. Les tests
 
 Rien à corriger. La vérification visuelle des arrivées reste à faire.
 
+## 5. Session navigateur prolongée (AUD-109)
+
+### Méthode
+
+- Le build de production est servi par `vite preview` dans Chromium headless (SwiftShader) en mode Survie sur le premier terrain.
+- Le jeu avance en accéléré : 30 mises à jour par seconde simulée et un rendu par seconde simulée.
+- Toutes les 3 s, les ennemis à moins de 45 unités et le boss sont tués, pour accumuler cadavres et effets.
+- Chaque minute simulée, après deux ramasse-miettes forcés, le banc relève :
+  - les objets de la scène ;
+  - les géométries, textures et programmes WebGL ;
+  - la mémoire JS.
+
+Ajustements de banc, qui ne sont pas du jeu normal :
+- les PV du chasseur sont restaurés à chaque image ;
+- le compte à rebours du réacteur, lancé à la vague 5, est maintenu. Sinon il termine la mission au bout de 180 s, comme prévu par le mode.
+
+### Résultat sur 15 minutes simulées (8 vagues, aucune erreur de page)
+
+| Minute | Objets de scène | Géométries | Textures | Mémoire JS (Mo) |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | 717 | 433 | 67 | 519 |
+| 4 | 731 | 520 | 67 | 637 |
+| 8 | 532 | 558 | 67 | 639 |
+| 12 | 532 | 558 | 67 | 637 |
+| 15 | 529 | 558 | 67 | 637 |
+
+Après la montée des premières vagues, objets, ressources GPU et mémoire restent stables pendant 11 minutes. Aucune fuite n'est visible à cette échelle.
+
+### Faux blocage écarté
+
+Les vagues de Survie s'arrêtaient dans le banc. La cause : un seul chestburster vivant, à 0,4 unité du joueur, qui le mordait.
+- Le banc ne tuait que les aliens ordinaires et restaurait les PV du joueur.
+- Un joueur réel le tue d'un coup (8 PV restants).
+- Ce n'est pas un blocage du jeu.
+
+### Limites
+
+Ces mesures viennent de SwiftShader, pas du matériel de l'auteur. La session interactive instrumentée de 60 minutes demandée par AUD-121 reste à faire.
+
 ## Vérification de cette passe
 
 - Nouveaux tests : `long-battle-invariants` (26), `boss-cover-reach` (2).
