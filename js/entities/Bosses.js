@@ -14,6 +14,29 @@ import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/HunterStealth.js';
 
+/** AUD-066: the body footprint that collides with scenery, measured on the normalized
+ * model. The 80th percentile of horizontal vertex distances ignores thin tails, crests
+ * and wings, which may overhang cover without moving the body through it. The floor
+ * keeps the 1.8 radius every boss used before; the ceiling fits an 18-unit corridor. Game units. */
+export const BOSS_FOOTPRINT_LIMITS = Object.freeze({ min: 1.8, max: 3.4, scale: 1.35 });
+export function measureBossFootprint(visualModel) {
+  const distances = [], vertex = new THREE.Vector3();
+  visualModel.updateMatrixWorld(true);
+  visualModel.traverse(object => {
+    const position = object.isMesh ? object.geometry?.attributes?.position : null;
+    if (!position) return;
+    const stride = Math.max(1, Math.floor(position.count / 4000));
+    for (let index = 0; index < position.count; index += stride) {
+      vertex.fromBufferAttribute(position, index).applyMatrix4(object.matrixWorld);
+      distances.push(Math.hypot(vertex.x, vertex.z));
+    }
+  });
+  if (!distances.length) return BOSS_FOOTPRINT_LIMITS.min;
+  distances.sort((a, b) => a - b);
+  const body = distances[Math.floor((distances.length - 1) * .8)] * BOSS_FOOTPRINT_LIMITS.scale;
+  return THREE.MathUtils.clamp(Number.isFinite(body) ? body : BOSS_FOOTPRINT_LIMITS.min, BOSS_FOOTPRINT_LIMITS.min, BOSS_FOOTPRINT_LIMITS.max);
+}
+
 export class BossManager {
   constructor(scene, audioEngine) {
     this.scene = scene;
@@ -50,11 +73,14 @@ export class BossManager {
     }
     // The actor's root is its feet. Keep visual normalization separate from
     // physical movement, so bridges/culls cannot sink a tall model again.
-    const mesh = new THREE.Group(); mesh.name = `boss-${type}`; mesh.add(visualModel); mesh.position.copy(spawnPos);
+    const footprintRadius = measureBossFootprint(visualModel);
+    const arenaPosition = this.findBossArenaPosition(spawnPos, footprintRadius, definition.height);
+    const mesh = new THREE.Group(); mesh.name = `boss-${type}`; mesh.add(visualModel); mesh.position.copy(arenaPosition);
     Object.assign(mesh.userData, visualModel.userData); mesh._bossHunterOwner = visualModel._bossHunterOwner;
     mesh.userData.encounterProfile = definition.id; mesh.userData.assetFidelity = definition.assetFidelity;
     this.clear(); this.scene.add(mesh);
     this.activeBoss = { type, definition, mesh, visualModel, hp: definition.hp, maxHp: definition.hp,
+      footprintRadius, arena: { requested: spawnPos.toArray(), placed: arenaPosition.toArray(), moved: arenaPosition.distanceTo(spawnPos) > .05 },
       phase: 1, isStunned: false, stunTimer: 0, hasEnteredStun: false,
       contactCooldown: 1.4, tailWhipCooldown: 3.5, spitCooldown: 4,
       regurgitateCooldown: 5, shriekCooldown: 4, specialCooldown: 5,
@@ -68,6 +94,28 @@ export class BossManager {
     this._updateAttackReadout(this.activeBoss);
     this.audioEngine?.[cue]?.();
     return this.activeBoss;
+  }
+
+  /** Keep the requested point when the body fits there; otherwise take the nearest
+   * free point on growing rings. The same collision resolver as movement decides. */
+  findBossArenaPosition(requested, radius, height) {
+    const environment = this.environment;
+    if (!environment?.resolveMovement) return requested.clone();
+    const margin = .6, fits = point => {
+      const probe = point.clone(); environment.resolveMovement(probe, radius + margin, height);
+      return Math.hypot(probe.x - point.x, probe.z - point.z) < .05;
+    };
+    if (fits(requested)) return requested.clone();
+    for (let ring = 1; ring <= 12; ring++) {
+      const distance = ring * Math.max(2, radius), samples = 8 + ring * 4;
+      for (let step = 0; step < samples; step++) {
+        const angle = step / samples * Math.PI * 2;
+        const point = requested.clone().add(new THREE.Vector3(Math.sin(angle) * distance, 0, Math.cos(angle) * distance));
+        if (fits(point)) return point;
+      }
+    }
+    // No free ring: let the resolver push the body out of the closest overlap.
+    const fallback = requested.clone(); environment.resolveMovement(fallback, radius, height); return fallback;
   }
 
   createBossMesh(type) {
@@ -288,7 +336,7 @@ export class BossManager {
       const before = boss.mesh.position.clone();
       boss.mesh.position.addScaledVector(charge.direction, charge.speed * delta);
       if (charge.kind === 'leap') boss.mesh.position.y = charge.startY + Math.sin(Math.PI * Math.min(1, 1 - charge.life / charge.duration)) * 2.4;
-      this.environment?.resolveMovement?.(boss.mesh.position, 2.0);
+      this.environment?.resolveMovement?.(boss.mesh.position, boss.footprintRadius ?? 2.0, boss.definition.height);
       if (charge.kind === 'charge' && boss.pattern?.mechanic === 'wall-stagger' &&
           Math.hypot(boss.mesh.position.x - before.x, boss.mesh.position.z - before.z) < charge.speed * delta * .25) {
         boss.charge = null; boss.isLeaping = false; boss.isStunned = true; boss.stunTimer = 2.6; boss.exposedUntil = this.time + 3.2;
@@ -313,7 +361,7 @@ export class BossManager {
         const toward = boss.lastKnownTarget.position.clone().sub(boss.mesh.position).setY(0), distance = toward.length();
         if (distance > 3) {
           const step = Math.min(7.5 * delta, distance - 3); boss.mesh.position.addScaledVector(toward.normalize(), step);
-          this.environment?.resolveAgentMovement?.(boss.mesh.position, boss.lastKnownTarget.position, step, 1.8);
+          this.environment?.resolveAgentMovement?.(boss.mesh.position, boss.lastKnownTarget.position, step, boss.footprintRadius ?? 1.8);
         }
       }
       this._updateAttackReadout(boss); return;
@@ -373,7 +421,7 @@ export class BossManager {
     const owner = boss.mesh._bossHunterOwner;
     if (owner) for (const [role, sign] of [['leftArm',-1],['rightArm',1],['leftLeg',1],['rightLeg',-1]]) if (owner[role]) owner[role].rotation.x = moving ? Math.sin(boss.visualPhase) * sign * .22 : 0;
     if (boss.tailSpinLife > 0) { boss.tailSpinLife = Math.max(0, boss.tailSpinLife - delta); boss.mesh.rotation.y += Math.PI * 2 * delta / .32; }
-    if (moving) { const speed = (boss.definition.species === 'yautja' ? 8.5 : boss.type === 'the_offspring' ? 10.5 : 7.5) * (boss.phase === 3 ? 1.15 : 1); boss.mesh.position.addScaledVector(dir.normalize(), Math.min(speed * delta, distance - 3.1)); this.environment?.resolveAgentMovement?.(boss.mesh.position, player.position, speed * delta, 1.8); if (!(boss.tailSpinLife > 0)) boss.mesh.rotation.y = Math.atan2(dir.x, dir.z); }
+    if (moving) { const speed = (boss.definition.species === 'yautja' ? 8.5 : boss.type === 'the_offspring' ? 10.5 : 7.5) * (boss.phase === 3 ? 1.15 : 1); boss.mesh.position.addScaledVector(dir.normalize(), Math.min(speed * delta, distance - 3.1)); this.environment?.resolveAgentMovement?.(boss.mesh.position, player.position, speed * delta, boss.footprintRadius ?? 1.8); if (!(boss.tailSpinLife > 0)) boss.mesh.rotation.y = Math.atan2(dir.x, dir.z); }
   }
 
   buildTrilobiteMesh(scale = 2.6) {

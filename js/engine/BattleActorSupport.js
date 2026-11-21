@@ -228,7 +228,7 @@ export function moveBattleOrder(manager, actor, delta, speed) {
   if (distance <= 1.3) return;
   const step = Math.min(speed * delta, distance - 1.3);
   actor.mesh.position.addScaledVector(direction.normalize(), step);
-  manager.environment?.resolveAgentMovement?.(actor.mesh.position, destination, step, Math.min(actor.radius ?? 1, 1.3));
+  manager.environment?.resolveAgentMovement?.(actor.mesh.position, destination, step, actor.footprintRadius ?? Math.min(actor.radius ?? 1, 1.3));
   actor.mesh.rotation.y = Math.atan2(direction.x, direction.z);
 }
 

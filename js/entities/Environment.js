@@ -330,7 +330,8 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
       ring.castShadow = false;
       if (sector.objective.type === 'interact') {
         this.relayVisuals.set(sector.id, buildBattlefieldRelay(this, sector, marker));
-      } else {
+      } else if (sector.objective.type !== 'boss') {
+        // A boss stands on its own objective; posts there would cut through its body (AUD-066).
         for (const side of [-1, 1]) this.box(this.trimMat, [side * 2.9, 1.8, 0], [0.16, 3.6, 0.16], marker);
       }
       this.root.add(marker); this.objectiveMarkers.set(sector.id, marker);
