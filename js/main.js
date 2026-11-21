@@ -3284,7 +3284,9 @@ class GameApp {
     if(player.executionProtectionTimer>0)return true;
     // 1. Boss Execution (Queen, The Offspring, Predalien)
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned && this.bosses.activeBoss.hp <= this.bosses.activeBoss.maxHp * .3 &&
-        this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= 8) {
+        this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= 8 &&
+        // AUD-090: an execution does not reach through a wall either.
+        this.env.hasLineOfSight?.(player.position.clone().setY(player.position.y + 1.2), this.bosses.activeBoss.mesh.position.clone().setY(this.bosses.activeBoss.mesh.position.y + 1.5)) !== false) {
       const victim = this.bosses.activeBoss;
       const death = this.bosses.executeBoss(victim, {player:player,range:8,killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
       if (!death) return false;

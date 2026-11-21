@@ -56,6 +56,18 @@ export class Player {
       (imported?.adapter.visualGroundOffsetY ?? this._proceduralMotionRoot?.position.y ?? 0)) * (this.mesh?.scale.y ?? 1);
   }
 
+  /** AUD-090: an area power reaches the boss only within its radius and when no
+   * physical cover stands between the impact origin and the boss body. */
+  bossInReach(bosses, origin, radius) {
+    const boss = bosses?.activeBoss;
+    if (!boss?.mesh || !origin || boss.mesh.position.distanceTo(origin) > radius) return false;
+    const environment = this.gameContext?.env;
+    if (typeof environment?.hasLineOfSight !== 'function') return true;
+    const from = origin.clone(); from.y += 1.2;
+    const to = boss.mesh.position.clone(); to.y += Math.min(2.5, (boss.definition?.height ?? 3) * .4);
+    return environment.hasLineOfSight(from, to) !== false;
+  }
+
   getCollisionHeight() { return Math.max(2.4, this.cameraEyeHeight + .35); }
 
   constructor(scene, charData, audioEngine, isPlayer2 = false, particles = null) {
@@ -760,7 +772,7 @@ export class Player {
 
     // 3. Stun/damage active boss
     if (bosses && bosses.activeBoss) {
-      if (bosses.activeBoss.mesh.position.distanceTo(this.position) <= 12.0) {
+      if (this.bossInReach(bosses, this.position, 12.0)) {
         bosses.takeDamage(550);
       }
     }
@@ -808,7 +820,7 @@ export class Player {
 
     // 3. Boss
     if (bosses && bosses.activeBoss) {
-      if (bosses.activeBoss.mesh.position.distanceTo(this.position) <= 10.5) {
+      if (this.bossInReach(bosses, this.position, 10.5)) {
         bosses.takeDamage(480);
       }
     }
@@ -1375,7 +1387,7 @@ export class Player {
     }
 
     if (bosses && bosses.activeBoss) {
-      if (bosses.activeBoss.mesh.position.distanceTo(this.position) <= cleaveRadius) {
+      if (this.bossInReach(bosses, this.position, cleaveRadius)) {
         bosses.takeDamage(cleaveDamage);
       }
     }
@@ -1527,7 +1539,7 @@ export class Player {
 
     const hits = horde.checkMeleeHits(strikeAttack);
     if (synthetics) synthetics.checkHits(strikeAttack);
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(midPoint) <= 6.0) {
+    if (bosses && bosses.activeBoss && this.bossInReach(bosses, midPoint, 6.0)) {
       bosses.takeDamage(420);
     }
 
@@ -2542,7 +2554,7 @@ export class Player {
     if (synthetics && synthetics.checkHits) {
       synthetics.checkHits(attack);
     }
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(this.position) <= 7.5) {
+    if (bosses && bosses.activeBoss && this.bossInReach(bosses, this.position, 7.5)) {
       bosses.takeDamage(550);
     }
 
@@ -3427,7 +3439,7 @@ export class Player {
 
       // Damage active boss
       if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-        if (bosses.activeBoss.mesh.position.distanceTo(slamCenter) <= radius) {
+        if (this.bossInReach(bosses, slamCenter, radius)) {
           bosses.activeBoss.hp -= 300;
           if (particles && particles.emitSparks) particles.emitSparks(bosses.activeBoss.mesh.position, 12);
         }
@@ -3668,8 +3680,7 @@ export class Player {
 
     // Cleave active boss if within range
     if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const bDist = bosses.activeBoss.mesh.position.distanceTo(this.position);
-      if (bDist <= (cleaveRadius + 1.5)) {
+      if (this.bossInReach(bosses, this.position, cleaveRadius + 1.5)) {
         bosses.takeDamage(cleaveDmg * 0.85, horde);
       }
     }
@@ -3825,7 +3836,7 @@ export class Player {
 
         // Blast damage to boss
         if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          if (bosses.activeBoss.mesh.position.distanceTo(detPos) <= g.radius) {
+          if (this.bossInReach(bosses, detPos, g.radius)) {
             bosses.takeDamage(g.damage * 0.9, horde);
           }
         }
@@ -3964,7 +3975,7 @@ export class Player {
 
     // Damage active boss
     if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      if (bosses.activeBoss.mesh.position.distanceTo(beam.pos) <= 4.5) {
+      if (this.bossInReach(bosses, beam.pos, 4.5)) {
         bosses.takeDamage(650 * delta, horde);
       }
     }
@@ -4256,7 +4267,7 @@ export class Player {
     }
 
     if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      if (bosses.activeBoss.mesh.position.distanceTo(slamPos) <= radius + 1.5) {
+      if (this.bossInReach(bosses, slamPos, radius + 1.5)) {
         bosses.takeDamage(damage * 0.85, horde);
         hitCount++;
       }
@@ -4364,7 +4375,7 @@ export class Player {
         }
 
         if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          if (bosses.activeBoss.mesh.position.distanceTo(trap.position) <= 10.5) {
+          if (this.bossInReach(bosses, trap.position, 10.5)) {
             bosses.takeDamage(420, horde);
           }
         }
@@ -4611,7 +4622,7 @@ export class Player {
         }
 
         if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          if (bosses.activeBoss.mesh.position.distanceTo(bombPos) <= 5.5 && canHitLegacyAirTarget(this.missionSupportContext, bosses.activeBoss)) {
+          if (this.bossInReach(bosses, bombPos, 5.5) && canHitLegacyAirTarget(this.missionSupportContext, bosses.activeBoss)) {
             bosses.takeDamage(380, horde);
           }
         }
@@ -4818,7 +4829,7 @@ export class Player {
         }
 
         if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          if (bosses.activeBoss.mesh.position.distanceTo(slamPos) <= slamRadius + 1.5) {
+          if (this.bossInReach(bosses, slamPos, slamRadius + 1.5)) {
             bosses.takeDamage(480, horde);
           }
         }
@@ -5382,7 +5393,7 @@ export class Player {
       }
     }
 
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(this.position) <= 5.5) {
+    if (bosses && bosses.activeBoss && this.bossInReach(bosses, this.position, 5.5)) {
       bosses.takeDamage(420);
     }
     if (synthetics) {
@@ -5538,7 +5549,7 @@ export class Player {
     if (horde) {
       horde.checkMeleeHits({ origin: impactPos, radius: blastRadius, damage: directDmg, type: 'plasma' });
     }
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(impactPos) <= blastRadius + 1.5) {
+    if (bosses && bosses.activeBoss && this.bossInReach(bosses, impactPos, blastRadius + 1.5)) {
       bosses.takeDamage(directDmg);
     }
     if (synthetics) {
