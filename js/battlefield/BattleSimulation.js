@@ -593,6 +593,27 @@ export class BattleSimulation {
     const rescuable = group => this.relationship(group.factionId, this.config.playerFaction) === 'allied' && woundedDistance(group) <= 65;
     const detailTier = group => named(group) || rescuable(group) ? 0 : group.materialized ? 1 : 2;
     candidates.sort((a, b) => detailTier(a) - detailTier(b));
+    // AUD-108: hunters on different fronts each keep a fair share of the detail budget,
+    // per faction and in total. Without it the slots kept by the first front (REC-005)
+    // left a second hunter alone on a contested front. The share only reorders who is
+    // considered first; the caps, the spawn distance and every identity are unchanged.
+    const detailSize = group => group.units.filter(unitId => { const unit = this.units.get(unitId);
+      return alive(unit) && unit.state !== 'reserve' && unit.carriedByCarrierId === undefined; }).length;
+    const occupiedFronts = [...new Set(livingPlayers.map(player => [...this.fronts.values()]
+      .filter(front => dist(player.position, front.position) <= front.radius * 1.5)
+      .sort((a, b) => dist(player.position, a.position) - dist(player.position, b.position) || a.id.localeCompare(b.id))[0]?.id).filter(Boolean))].sort();
+    if (occupiedFronts.length > 1) {
+      const reserved = [], perFront = new Map(), perFrontFaction = new Map(), globalShare = Math.floor(this.budgets.active / occupiedFronts.length);
+      for (const frontId of occupiedFronts) for (const group of candidates) {
+        if (group.frontId !== frontId) continue;
+        const size = detailSize(group), key = `${frontId}:${group.factionId}`;
+        const share = Math.floor((this.budgets.byFaction?.[group.factionId]?.active ?? this.budgets.active) / occupiedFronts.length);
+        if (!size || (perFrontFaction.get(key) ?? 0) + size > share || (perFront.get(frontId) ?? 0) + size > globalShare) continue;
+        reserved.push(group); perFrontFaction.set(key, (perFrontFaction.get(key) ?? 0) + size); perFront.set(frontId, (perFront.get(frontId) ?? 0) + size);
+      }
+      const rest = candidates.filter(group => !reserved.includes(group));
+      candidates.length = 0; candidates.push(...reserved, ...rest);
+    }
     const selected = new Set(), perFaction = new Map(); let count = 0;
     for (const group of candidates) {
       const units = group.units.map(unitId => this.units.get(unitId)).filter(unit =>
