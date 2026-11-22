@@ -53,6 +53,7 @@ test('the tribute display hangs a shared clone of each verified mask, and nothin
   const parent = new THREE.Group(), template = new THREE.Group(); template.add(new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1)));
   const mask = await attachTributeMask(parent, 'wolf_predator_biomask', new THREE.Vector3(1, .75, 0), { load: async () => ({ scene: template }), entry: { status: 'verified' } });
   assert.equal(parent.children.length, 1); assert.equal(mask.userData.sharedGeneratedClone, true);
-  assert.ok(Math.abs(new THREE.Box3().setFromObject(mask).getSize(new THREE.Vector3()).y - .7) < 1e-6);
+  const placed = new THREE.Box3().setFromObject(mask);
+  assert.ok(Math.abs(placed.max.y - placed.min.y - .7) < 1e-6); assert.ok(Math.abs(placed.min.y - .75) < 1e-6, 'rests on the display');
   assert.equal(attachTributeMask(new THREE.Group(), 'missing', new THREE.Vector3(), { entry: null }), null);
 });

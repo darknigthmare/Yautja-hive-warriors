@@ -16,7 +16,9 @@ export function attachTributeMask(parent, key, position, { load = loadGeneratedA
     const mask = gltf.scene.clone(); mask.name = `tribute-${key}`; mask.userData.sharedGeneratedClone = true;
     mask.updateMatrixWorld(true); const bounds = new THREE.Box3().setFromObject(mask), size = bounds.max.y - bounds.min.y;
     if (size > 0) mask.scale.multiplyScalar(height / size);
-    mask.position.copy(position); parent.add(mask); return mask;
+    // Rest it on the display: its lowest point at the given height.
+    mask.position.copy(position); mask.updateMatrixWorld(true); mask.position.y += position.y - new THREE.Box3().setFromObject(mask).min.y;
+    parent.add(mask); return mask;
   }).catch(() => null);
 }
 import { createFaunaModel } from '../graphics/FaunaModels.js';
@@ -62,7 +64,7 @@ export class AscensionShipHub {
     this._place('skulls', new THREE.Vector3(12, .5, 0), () => `MUR DES CRÂNES — ${this.progress.state.completed.length} GRANDE(S) PROIE(S)`, () => this.onLine(this.progress.state.completed.length ? 'KAEDH : « Je vois. »' : 'KAEDH : « Pas encore. »'), wall);
     // Mask display: the separate biomasks of four legendary hunters, a tribute aboard (not trophies taken).
     const display = new THREE.Group(); display.add(new THREE.Mesh(new THREE.BoxGeometry(5.2, .25, 1), metal));
-    TRIBUTE_MASKS.forEach((key, index) => attachTributeMask(display, key, new THREE.Vector3(-1.95 + index * 1.3, .75, 0)));
+    TRIBUTE_MASKS.forEach((key, index) => attachTributeMask(display, key, new THREE.Vector3(-1.95 + index * 1.3, .125, 0)));
     this._place('masks', new THREE.Vector3(-9, 1, -9), () => 'MASQUES DES CHASSEURS LÉGENDAIRES — Wolf, Alpha, Samurai, Viking', () => this.onLine('SAAR : « Regarde-les. Un jour, ton masque dira ta chasse. »'), display);
     // Bridge: closed to Unblooded; Kaedh stands there, back turned.
     const door = new THREE.Mesh(new THREE.BoxGeometry(4, 4, .4), metal);
