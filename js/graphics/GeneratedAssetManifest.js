@@ -7730,5 +7730,105 @@ export const GENERATED_ASSETS = Object.freeze({
       "fidelity_1_to_1_verified": false
     },
     "assembly_note": "Corps Meshy image-to-3d en pose A depuis une image isolée par IA (image-to-image nano-banana, tâche 01a1e2c6-ded4-772f-95e5-a9ac8c89b012) à partir de deux rendus officiels du DLC Viking Predator de Predator: Hunting Grounds (illustration de la fiche Steam et rendu de profil) ; hache retirée, vue de face reconstruite par l'IA. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée."
+  },
+  "pack_saar": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/pack-saar-rigged.glb",
+    "sha256": "e533d98e5cf11456fd8c6ac44a389a457c8ae654cf55a80315624498183fb2dd",
+    "resource": "rigging",
+    "task_id": "01a2020c-477e-728f-af47-fcdf71f2dc58",
+    "source_task_id": "01a20209-60f1-740f-8da3-a6f4d64435c2",
+    "image_task_id": "01a20205-e800-72be-aec2-b04cb7f5952c",
+    "animationUrls": {
+      "walk": "/models/pack-saar-walk.glb",
+      "run": "/models/pack-saar-run.glb"
+    },
+    "animationSha256": {
+      "walk": "be21a6f8aae8000261b51325b71f694a22ebdb91955579753f5534e12f756d32",
+      "run": "11fe3a9e887115d1064e1bb75897a3521c585cc8784a6a8c771fa38d9671f09f"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Saar, instructeur de cohorte (voie O6). Apparence créée pour Hive Warriors (la Bible V6 ne la décrit pas) : instructeur mûr, peau olive grisée, dreadlocks grisonnantes à anneaux de bronze, armure de cuir et de bronze, lance-filet. Image Meshy text-to-image (nano-banana), corps image-to-3d en pose A, rig meshyrig 2,2 m. Création originale ; aucune source officielle d'apparence."
+  },
+  "pack_harek": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/pack-harek-rigged.glb",
+    "sha256": "c28d6517bd54428c88534adb2bb7fc489db561fcbef88994bd69647b567d6230",
+    "resource": "rigging",
+    "task_id": "01a2020b-312c-7235-8a28-c18ec7983b48",
+    "source_task_id": "01a20209-66e3-71e4-a119-a69285abf981",
+    "image_task_id": "01a20205-e9e3-76b3-a7da-c4fd9d4c3f70",
+    "animationUrls": {
+      "walk": "/models/pack-harek-walk.glb",
+      "run": "/models/pack-harek-run.glb"
+    },
+    "animationSha256": {
+      "walk": "4ddb23e4d365d6ced93c195830400b4a44fbc2ee27ac3e1923dfd381b0dc593b",
+      "run": "71cff9e283c0541360949eef3529a3856e4f22f9ad5f2eb388fa1d96a1ea3d76"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Harek, rival de cohorte (voie O6). Apparence créée : peau brun-rouge, dreadlocks courtes, masque anguleux à pointes, armure légère, deux lames de poignet. Image Meshy text-to-image (nano-banana), corps image-to-3d en pose A, rig meshyrig 2,2 m. Création originale ; aucune source officielle d'apparence."
+  },
+  "pack_yena": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/pack-yena-rigged.glb",
+    "sha256": "6967c82dce136375337a29fac9a04bb5896732fa6f72a901417bfd1e9bd15606",
+    "resource": "rigging",
+    "task_id": "01a2020b-48e8-71c5-b402-28ed1c89efe5",
+    "source_task_id": "01a20209-6e90-7183-8b39-8ba10c7d29de",
+    "image_task_id": "01a20205-ebaf-77b8-9b22-3761595306d2",
+    "animationUrls": {
+      "walk": "/models/pack-yena-walk.glb",
+      "run": "/models/pack-yena-run.glb"
+    },
+    "animationSha256": {
+      "walk": "73a600358be26c06d849b7c7fe71666ec4bdf671cbc7e1c6bbefd0e10b68d895",
+      "run": "78d4e7a681089933b3678c4ced23c57ef010e48d611ed8c682f2507e52a34210"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Yena, camarade de cohorte (voie O6). Apparence créée : silhouette élancée, peau ocre tachetée, dreadlocks tressées, masque arrondi, combistick replié dans le dos. Image Meshy text-to-image (nano-banana), corps image-to-3d en pose A, rig meshyrig 2,2 m. Création originale ; aucune source officielle d'apparence."
+  },
+  "pack_tov": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/pack-tov-rigged.glb",
+    "sha256": "8822541fce99232227463a2d77eb0bbd8dded6d771d63cd806677e5d7d09ebc5",
+    "resource": "rigging",
+    "task_id": "01a2020b-b513-748b-997b-7951c6427480",
+    "source_task_id": "01a20209-767b-7348-9209-1663764c69a3",
+    "image_task_id": "01a20205-edba-76c8-a7a1-ff3ad6f542f4",
+    "animationUrls": {
+      "walk": "/models/pack-tov-walk.glb",
+      "run": "/models/pack-tov-run.glb"
+    },
+    "animationSha256": {
+      "walk": "121dcf48deeb663fa667b1cd5a624e8be6b438225be924c0a9c61139d6e64f98",
+      "run": "30074c2a20eb2bce215d73247edb9e21a114df167bcb93a65ab72a8945ea76d5"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Tov, camarade de cohorte (voie O6). Apparence créée : trapu, peau gris-vert, harnais de cordes, sangles, sacoches et petites mines, masque à capteurs. Image Meshy text-to-image (nano-banana), corps image-to-3d en pose A, rig meshyrig 2,2 m. Création originale ; aucune source officielle d'apparence."
   }
 });
