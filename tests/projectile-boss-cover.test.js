@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import * as THREE from 'three';
 import { traceCombatSegment, hasCombatLineOfSight } from '../js/engine/CombatGeometry.js';
+import * as greatPrey from '../js/battlefield/GreatPreyMechanics.js';
 
 // Run the production projectile loop and boss damage methods without starting
 // the unrelated WebGL, audio or model-loading services. No combat logic is copied.
@@ -18,7 +19,8 @@ const advanceProjectiles = vm.runInNewContext(`(function (delta) { ${source.slic
 const bossSource = readFileSync(new URL('../js/entities/Bosses.js', import.meta.url), 'utf8');
 const bossClassStart = bossSource.indexOf('export class BossManager');
 assert.ok(bossClassStart >= 0);
-const BossManager = vm.runInNewContext(`${bossSource.slice(bossClassStart).replace(/^export /, '')};BossManager`, { THREE });
+// The class also calls the great prey hooks (Ascension); provide them like its other import, THREE.
+const BossManager = vm.runInNewContext(`${bossSource.slice(bossClassStart).replace(/^export /, '')};BossManager`, { THREE, ...greatPrey });
 
 const wall = extra => ({ x: 2.5, z: 0, halfWidth: .1, halfDepth: 2, height: 4, ...extra });
 function fixture(kind, colliders = [], height = 1.5) {
