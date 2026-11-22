@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createHonorGuardModel } from '../graphics/SupportModels.js';
+import { decorateClanOfficer } from '../graphics/PackMarks.js';
 import { updateClanHunterVisual } from '../graphics/ClanHunterModel.js';
 import { releaseHostileAttack, requestHostileAttack } from '../engine/HostilePressure.js';
 import { disposeObject } from '../engine/SceneResources.js';
@@ -98,6 +99,7 @@ export class YautjaAlliesManager {
     if (!['yautja','honor_guard','clan_hunter','bad_blood'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed clan profile: ${unit.actorType}`);
     const actor = { mesh: createHonorGuardModel(this.allies.length), type: unit.actorType === 'bad_blood' ? 'bad_blood' : 'clan_hunter', moveSpeed: 12,
       damage: 55, radius: 1.3, attackTimer: 1, plasmaCooldown: 3 };
+    if (unit.officer === true) decorateClanOfficer(actor.mesh);
     this.allies.push(applyBattleUnit(this, actor, unit, group)); return actor;
   }
 

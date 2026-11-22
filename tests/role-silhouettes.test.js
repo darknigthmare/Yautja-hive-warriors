@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { createCreatureModel } from '../js/graphics/CreatureModels.js';
-import { createMarineModel } from '../js/graphics/SupportModels.js';
+import { createMarineModel, createHonorGuardModel } from '../js/graphics/SupportModels.js';
+import { decorateClanOfficer } from '../js/graphics/PackMarks.js';
 
 // AUD-031: leader, support, parasite and heavy roles read by silhouette alone. Each model's
 // triangles are rasterized in black and white (no material, no colour) from the front and the
@@ -38,6 +39,7 @@ const bestView = (a, b) => Math.min(overlap(a.front, b.front), overlap(a.side, b
 
 const FACTIONS = {
   xenomorph: { line: [createCreatureModel('warrior')], leader: [createCreatureModel('officer')], heavy: [createCreatureModel('crusher')], parasite: [createCreatureModel('facehugger')] },
+  yautja: { line: [createHonorGuardModel(0)], leader: [(() => { const model = createHonorGuardModel(1); decorateClanOfficer(model); return model; })()] },
   human: { line: [createMarineModel('marine')], support: [createMarineModel('medic'), createMarineModel('commtech')], heavy: [createMarineModel('smartgunner'), createMarineModel('exosuit')] }
 };
 const outlines = Object.fromEntries(Object.entries(FACTIONS).map(([faction, roles]) =>

@@ -21,3 +21,20 @@ export function decorateCompanion(mesh, name) {
   group.userData.visualFidelity1to1Verified = false;
   mesh.add(group); return true;
 }
+
+/** AUD-026/031: a clan cell leader reads without colour — a long cloak on the back and a trophy
+ * totem rising above the right shoulder. Visual only; added in world units under the model scale. */
+export function decorateClanOfficer(mesh) {
+  if (!mesh || mesh.getObjectByName('clan-officer-mark')) return false;
+  const scale = mesh.scale?.x || 1, group = new THREE.Group(); group.name = 'clan-officer-mark'; group.scale.setScalar(1 / scale);
+  const hide = new THREE.MeshStandardMaterial({ color: 0x3b2a20, roughness: .95 }), bone = new THREE.MeshStandardMaterial({ color: 0xc8b48a, roughness: .55 });
+  const cloak = new THREE.Mesh(new THREE.BoxGeometry(1.4, 2.7, .08), hide); cloak.position.set(0, 2.2, -.75); cloak.rotation.x = .28; group.add(cloak);
+  for (const side of [-1, 1]) {
+    const trophy = new THREE.Mesh(new THREE.ConeGeometry(.12, .9, 8), bone); trophy.position.set(side * .95, 3.35, 0); trophy.rotation.z = -side * 1.15; group.add(trophy);
+    const pauldron = new THREE.Mesh(new THREE.SphereGeometry(.26, 10, 8), bone); pauldron.scale.set(1.2, .7, 1); pauldron.position.set(side * .68, 3.2, 0); group.add(pauldron);
+  }
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 2.2, 8), bone); pole.position.set(.42, 3.7, -.42); group.add(pole);
+  const skull = new THREE.Mesh(new THREE.SphereGeometry(.22, 12, 10), bone); skull.scale.set(1, .85, 1.25); skull.position.set(.42, 4.85, -.42); group.add(skull);
+  for (const side of [-1, 1]) { const horn = new THREE.Mesh(new THREE.ConeGeometry(.06, .45, 8), bone); horn.position.set(.42 + side * .2, 5.05, -.42); horn.rotation.z = -side * .6; group.add(horn); }
+  mesh.add(group); return true;
+}
