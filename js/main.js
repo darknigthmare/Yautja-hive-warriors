@@ -82,6 +82,7 @@ import { FaunaEncounter } from './engine/FaunaEncounter.js';
 import { AscensionShipHub, SHIP_LEVEL } from './engine/AscensionShipHub.js';
 import { CloudSaves } from './engine/CloudSaves.js';
 import { decorateCompanion } from './graphics/PackMarks.js';
+import { PREY_1719_FAITHFUL, usesPrey1719Faithful } from './data/Prey1719Faithful.js';
 import { attachImportedCompanion, companionAssetKey } from './graphics/ImportedCompanion.js';
 import { MusicDirector } from './engine/MusicDirector.js';
 import { AmbientSoundscape, ambientBiomeFor } from './engine/AmbientSoundscape.js';
@@ -2274,8 +2275,10 @@ class GameApp {
     if (this.missionMode === 'fronts' && this.env.battlefieldLayout) {
       this.startBattleOperation(options.resumeOperation);
     } else if (!['sandbox', 'survival'].includes(this.missionMode) && this.env.battlefieldLayout) {
-      const world = this.missionMode === 'ascension' ? ascensionWorld(this.ascensionWorldId) : null;
-      
+      // AUD-123: the faithful 1719 Comanche Territory holds period wildlife, never the hive.
+      const faithfulPrey = usesPrey1719Faithful({ missionMode: this.missionMode, fidelityMode: this.activeLoadout?.fidelityMode, levelId: this.ui.selectedLevel?.id });
+      const world = this.missionMode === 'ascension' ? ascensionWorld(this.ascensionWorldId) : faithfulPrey ? PREY_1719_FAITHFUL : null;
+      if (faithfulPrey) this.ui.showAnnouncement(`${PREY_1719_FAITHFUL.title} : faune d'époque, ni ruche ni appui USCM.`);
       this.faunaEncounter = world ? new FaunaEncounter(this.horde, world, { onLine: line => this.ui.showAnnouncement(line) }) : null;
       this.battlefield = new BattlefieldMission({ environment: this.env, horde: this.horde,
         bosses: this.bosses, level: this.ui.selectedLevel,preparedEncounter:this.preparedBossEncounter, encounter: this.faunaEncounter,
