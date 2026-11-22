@@ -118,6 +118,13 @@ function addRifle(parts, mats, smartgun = false) {
   if (smartgun) {
     parts.cylinder(mats.dark, [x, y - 0.16, 0.92], [0.15, 0.15], 0.19, [0, 0, Math.PI / 2], 32);
     parts.tube(mats.steel, [[0.02, 1.66, 0.01], [0.12, 1.76, 0.2], [x, 1.92, 0.8]], 0.027, 12, 8);
+    // AUD-031: the heavy gunner reads without colour — back battery and harness, hip support
+    // arm, bulky receiver and cooling shroud (game interpretation, not a measured prop).
+    parts.box(mats.armor, [0, 2.0, -0.5], [0.56, 0.72, 0.36], true);
+    parts.box(mats.dark, [0, 2.42, -0.42], [0.36, 0.14, 0.18], true);
+    parts.tube(mats.steel, [[0.24, 1.32, 0.05], [0.5, 1.6, 0.22], [0.46, 1.86, 0.55], [x, y - 0.22, 0.78]], 0.05, 18, 10);
+    parts.box(mats.dark, [x, y + 0.05, 1.0], [0.3, 0.3, 0.8], true);
+    parts.cylinder(mats.steel, [x, y + 0.04, 1.52], [0.1, 0.1], 0.46, [Math.PI / 2, 0, 0], 24);
   } else parts.cylinder(mats.armor, [x, y - 0.14, 1.03], [0.08, 0.08], 0.4, [Math.PI / 2, 0, 0], 32);
 }
 
@@ -164,6 +171,8 @@ function addCommtechMP9(parts, mats) {
 }
 function addMedicalPack(parts, mats) {
   parts.box(mats.armor, [0, 2.25, -0.42], [0.64, 0.72, 0.31], true);
+  // AUD-031: a rolled stretcher across the top of the pack reads without colour.
+  parts.cylinder(mats.rubber, [0, 2.74, -0.44], [0.14, 0.14], 0.86, [0, 0, Math.PI / 2], 20);
   for (const x of [-0.20, 0.20]) {
     parts.box(mats.rubber, [x, 2.31, -0.60], [0.12, 0.46, 0.06], true);
     parts.cylinder(mats.steel, [x, 2.02, -0.62], [0.055, 0.055], 0.14, [0, 0, 0], 12);
@@ -180,6 +189,9 @@ function addCommtechPack(parts, mats) {
   parts.box(mats.dark, [0, 2.27, -0.43], [0.58, 0.75, 0.28], true);
   parts.box(mats.armor, [0.28, 2.46, -0.56], [0.17, 0.24, 0.06], true);
   parts.bone(mats.steel, [0.32, 2.56, -0.45], [0.35, 3.65, -0.42], 0.018, 0.01, 10);
+  // AUD-031: a mast thick enough to read at a distance, topped by a small relay dish.
+  parts.cylinder(mats.dark, [-0.2, 2.95, -0.5], [0.045, 0.05], 0.9, [0, 0, 0], 12);
+  parts.cylinder(mats.steel, [-0.2, 3.42, -0.5], [0.22, 0.05], 0.1, [0.5, 0, 0], 20);
   const signal = glow(0x76cbb5); signal.emissiveIntensity = 0.55;
   parts.box(signal, [0, 2.31, -0.595], [0.34, 0.09, 0.02]);
   parts.box(mats.dark, [-0.43, 1.99, 0.46], [0.34, 0.20, 0.08], true);
