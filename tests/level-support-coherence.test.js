@@ -46,7 +46,7 @@ test('actual future sector router preserves finite future support and its delaye
   assert.equal(fixture('stargazer_facility',1).marines,0);
 });
 
-test('all eleven location plans and unknown contexts are conservative; named self duels are explicitly alternative',()=>{
+test('every location plan and unknown contexts are conservative; named self duels are explicitly alternative',()=>{
   for(const level of LEVELS_DATA){
     const plan=sectorSupportPlan(level.id,0);assert.equal(plan.allies+plan.marines+plan.synthetics,0);assert.equal(Object.isFrozen(plan),true);
   }

@@ -24,7 +24,9 @@ const PALETTES = {
   temple: { horizon: 0x676960, zenith: 0x182b3e, key: 0xc7d9e1, ground: 0x333a2b, accent: 0x7fb8bc, clouds: .56, stars: .45, exposure: 1.12 },
   stargazer: { horizon: 0x9c906d, zenith: 0x3b6272, key: 0xffe0b3, ground: 0x49432c, accent: 0xd2ad68, clouds: .44, stars: 0, exposure: 1.10 },
   comanche_territory: { horizon: 0xa9af8b, zenith: 0x557b82, key: 0xffe5bc, ground: 0x42442a, accent: 0x9db6a7, clouds: .46, stars: 0, exposure: 1.10 },
-  killer_of_killers: { horizon: 0x2f4c5c, zenith: 0x061329, key: 0xb4d5e6, ground: 0x25323b, accent: 0x7bbac1, clouds: .3, stars: .8, exposure: 1.15 }
+  killer_of_killers: { horizon: 0x2f4c5c, zenith: 0x061329, key: 0xb4d5e6, ground: 0x25323b, accent: 0x7bbac1, clouds: .3, stars: .8, exposure: 1.15 },
+  // LV-223: silica storm sky, dark basalt, cold blue of the Engineer holograms (adaptation).
+  engineer_structures: { horizon: 0x5a4f45, zenith: 0x0d0b13, key: 0xa7b4c2, ground: 0x2a2622, accent: 0x6fa3b8, clouds: .78, stars: .15, exposure: 1.06 }
 };
 
 export class EngineRenderer {

@@ -16,7 +16,9 @@ const PROFILE_DEFINITIONS = {
   game_preserve_planet: ['buildGamePreserveProps', 'buildGamePreserveExpansionProps'],
   stargazer_facility: ['buildStargazerLabProps', 'buildStargazerFacilityExpansionProps'],
   prey_comanche_territory: ['buildPreyComancheProps', 'buildPreyTerritoryExpansionProps'],
-  killer_of_killers_arena: ['buildKillerOfKillersProps', 'buildKillerOfKillersExpansionProps']
+  killer_of_killers_arena: ['buildKillerOfKillersProps', 'buildKillerOfKillersExpansionProps'],
+  // The stasis crypt is left out: its proximity trigger spawns a boss, which would replace the hunt's final boss.
+  lv223_engineer_structures: ['buildEngineerCityRuins', 'buildEngineerUrnClusters']
 };
 
 export const REFERENCE_LEVEL_MECHANISMS = Object.freeze(Object.fromEntries(

@@ -18,7 +18,7 @@ export const AMBIENT_BEDS = Object.freeze({
 const LEVEL_BIOME = {
   gunnison_forest: 'rain', xenomorph_prime: 'hive', antarctic_pyramid: 'snow', la_rooftops: 'city', val_verde_jungle: 'jungle',
   romulus_station: 'station', charon_rogue_base: 'station', game_preserve_planet: 'jungle', stargazer_facility: 'plains',
-  prey_comanche_territory: 'plains', killer_of_killers_arena: 'arena'
+  prey_comanche_territory: 'plains', killer_of_killers_arena: 'arena', lv223_engineer_structures: 'arena'
 };
 
 export const ambientBiomeFor = levelId => LEVEL_BIOME[levelId] ?? 'plains';

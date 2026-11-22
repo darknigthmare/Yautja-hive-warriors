@@ -60,7 +60,7 @@ test('APC prioritizes an attainable boss through its real muzzle, preserves relo
   apc.clear(); assert.equal(scene.children.length, 0); assert.equal(apc.tracers.length, 0);
 });
 
-test('all eleven biome light palettes restore after vision and lightning instead of returning to the old generic sky', () => {
+test('every biome light palette restores after vision and lightning instead of returning to the old generic sky', () => {
   const renderer = Object.create(EngineRenderer.prototype);
   Object.assign(renderer, { scene: new THREE.Scene(), renderer: {}, ambientLight: new THREE.HemisphereLight(), dirLight: new THREE.DirectionalLight(), rimLight: new THREE.DirectionalLight(),
     flashDuration: .35, requestRender() {}, skyMaterial: { uniforms: { horizon: { value: new THREE.Color() }, zenith: { value: new THREE.Color() }, glow: { value: new THREE.Color() }, cloudCover: {}, stars: {} } } });
@@ -74,5 +74,5 @@ test('all eleven biome light palettes restore after vision and lightning instead
     renderer.triggerLightningFlash(); const paused = renderer.lightningFlashTimer; renderer.update(0); assert.equal(renderer.lightningFlashTimer, paused);
     renderer.update(1); assert.deepEqual([renderer.ambientLight.color.getHex(), renderer.dirLight.color.getHex(), renderer.renderer.toneMappingExposure], state);
   }
-  assert.equal(palettes.size, 11);
+  assert.equal(palettes.size, LEVELS_DATA.length);
 });

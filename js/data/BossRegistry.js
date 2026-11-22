@@ -24,7 +24,7 @@ export const BOSS_REGISTRY = Object.freeze({
   predalien_abomination: define('predalien_abomination', 'xenomorph', 'AVP: Requiem-inspired project encounter', 6500, 6.2, ['tail', 'embryos', 'leap', 'melee']),
   predalien_matriarch_titan: define('predalien_matriarch_titan', 'xenomorph', 'Original project titan inspired by AVP game roles', 10000, 8.0, ['tail', 'embryos', 'slam', 'melee'], [], { original: true }),
   rogue_king_prime: define('rogue_king_prime', 'xenomorph', 'Aliens: Rogue (1993), game adaptation of the King', 9500, 7.5, ['slam', 'charge', 'melee'], ['charon_rogue_base']),
-  awakened_engineer: define('awakened_engineer', 'engineer', 'Prometheus (2012), original shield/vortex encounter mechanics', 8500, 5.8, ['vortex', 'slam', 'melee'], [], { adaptedArsenal: ['phase-shield', 'gravity-vortex'] }),
+  awakened_engineer: define('awakened_engineer', 'engineer', 'Prometheus (2012), original shield/vortex encounter mechanics', 8500, 5.8, ['vortex', 'slam', 'melee'], ['lv223_engineer_structures'], { adaptedArsenal: ['phase-shield', 'gravity-vortex'] }),
   trilobite_prime: define('trilobite_prime', 'organism', 'Prometheus (2012), enlarged project encounter', 7000, 4.7, ['constrict', 'leap', 'melee']),
   berserker_super_predator: define('berserker_super_predator', 'yautja', 'Predators (2010), Berserker / Mr. Black', 8800, 5.2, ['plasma', 'charge', 'melee'], ['game_preserve_planet']),
   ultimate_upgrade_predator: define('ultimate_upgrade_predator', 'yautja', 'The Predator (2018), Upgrade Predator', 9200, 6.2, ['charge', 'slam', 'melee'], ['stargazer_facility']),

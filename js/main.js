@@ -2543,6 +2543,7 @@ class GameApp {
     if (this.env) {
       this.env.checkCraneCableHit(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkEggClusterHits(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
+      this.env.checkUrnDamage?.(this.player.position, 3.8, attack.damage, this.audio);
       this.env.checkSteamConduitHits(this.player.position, 3.8, attack.damage, this.audio, this.particles);
       this.env.checkOvipositorHit(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde, this.bosses);
       this.env.checkNitrogenTankHits(this.player.position, 3.8, attack.damage, this.audio, this.particles);
@@ -2633,6 +2634,7 @@ class GameApp {
     if (this.env) {
       this.env.checkCraneCableHit(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkEggClusterHits(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
+      this.env.checkUrnDamage?.(this.player.position, 4.8, attack.damage, this.audio);
       this.env.checkSteamConduitHits(this.player.position, 4.8, attack.damage, this.audio, this.particles);
       this.env.checkOvipositorHit(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde, this.bosses);
       this.env.checkNitrogenTankHits(this.player.position, 4.8, attack.damage, this.audio, this.particles);
@@ -4154,6 +4156,7 @@ class GameApp {
           this.env.checkBlastDoorHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
           this.env.checkCraneCableHit(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
           this.env.checkEggClusterHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
+          this.env.checkUrnDamage?.(p.mesh.position, 2.2, p.damage, this.audio);
           this.env.checkSteamConduitHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
           this.env.checkOvipositorHit(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde, this.bosses);
           this.env.checkNitrogenTankHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);

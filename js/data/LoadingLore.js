@@ -36,6 +36,9 @@ export const LOADING_LORE = Object.freeze({
   killer_of_killers_arena: { tag: 'ARÈNE YAUTJA · 2025 · ADAPTATION', lines: [
     'Trois époques de captifs, un seul colisée. Ici, on ne survit qu’en étant digne d’être chassé.',
     'L’arène réunit des époques différentes : ce mélange est assumé par sa source.'] },
+  lv223_engineer_structures: { tag: 'LV-223 · 2093 · ADAPTATION', lines: [
+    'Sous la tempête de silice, les galeries des Ingénieurs respirent encore. Ne touchez pas aux urnes.',
+    'Le film ne montre aucune ruche sur LV-223 : celle-ci est une adaptation de jeu, comme le bouclier de l’Ingénieur.'] },
   ascension_ship: { tag: 'LA LAME PATIENTE · CRÉATION', lines: [
     'Le vaisseau de l’Elite Kaedh dérive entre deux mondes. Saar attend vos ordres en silence.',
     'Le pont est interdit aux Unblooded. Le rite, lui, vous attend au bout des huit chasses.'] }

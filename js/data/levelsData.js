@@ -1,4 +1,4 @@
-/* Eleven v67 locations on the validated connected battlefield foundation.
+/* Eleven v67 locations plus LV-223 (22 Nov 2026, roadmap phase 8 batch 1, author's request) on the validated connected battlefield foundation.
  * Eras/works describe provenance; layouts and units are gameplay adaptations. */
 export const LEVELS_DATA = [
   {
@@ -374,5 +374,39 @@ export const LEVELS_DATA = [
     "referenceTheme": "killer_of_killers",
     "operationMode": "adaptation",
     "fidelity": "reference-inspired; no measured 1:1 reconstruction"
+  },
+  {
+    "id": "lv223_engineer_structures",
+    "name": "LV-223 — STRUCTURES DES INGÉNIEURS (PROMETHEUS 2012)",
+    "desc": "Lune balayée par les tempêtes de silice : galeries des Ingénieurs, urnes de mutagène noir et salle de pilotage.",
+    "description": "Lune balayée par les tempêtes de silice : galeries des Ingénieurs, urnes de mutagène noir et salle de pilotage. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu. La ruche qui peuple les secteurs est une adaptation : le film ne montre pas de Xénomorphes sur LV-223.",
+    "icon": "🗿",
+    "difficulty": "APEX",
+    "difficultyBadge": "hard",
+    "theme": "engineer_structures",
+    "environmentType": "temple",
+    "weather": "dust",
+    "floorColor": 2762274,
+    "wallColor": 3814446,
+    "fogColor": 1907231,
+    "skyColor": 920594,
+    "accentColor": 7316408,
+    "keyLightColor": 10990786,
+    "ambientColor": 6055024,
+    "fogDensity": 0.014,
+    "arenaHalfSize": 66,
+    "battlefield": true,
+    "seed": 2093,
+    "waves": 6,
+    "bossType": "awakened_engineer",
+    "weatherType": "dust",
+    "sourceWork": "Prometheus (2012)",
+    "sourceMedia": "film",
+    "era": "2093",
+    "continuity": "Alien",
+    "legacyBossType": "awakened_engineer",
+    "referenceTheme": "engineer_structures",
+    "operationMode": "adaptation",
+    "fidelity": "reference-inspired; no measured 1:1 reconstruction; xenomorph hive and boss shield/vortex mechanics are gameplay adaptations"
   }
 ];

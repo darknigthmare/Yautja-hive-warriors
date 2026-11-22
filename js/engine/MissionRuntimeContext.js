@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const KNOWN_MAPS = new Set(['gunnison_forest','xenomorph_prime','antarctic_pyramid','la_rooftops','val_verde_jungle','romulus_station','charon_rogue_base','game_preserve_planet','stargazer_facility','prey_comanche_territory','killer_of_killers_arena']);
+const KNOWN_MAPS = new Set(['gunnison_forest','xenomorph_prime','antarctic_pyramid','la_rooftops','val_verde_jungle','romulus_station','charon_rogue_base','game_preserve_planet','stargazer_facility','prey_comanche_territory','killer_of_killers_arena','lv223_engineer_structures']);
 const FUTURE_MAPS = new Set(['xenomorph_prime','romulus_station','charon_rogue_base']);
 const OUTDOOR_MAPS = new Set(['gunnison_forest','la_rooftops','val_verde_jungle','game_preserve_planet','stargazer_facility','prey_comanche_territory']);
 
