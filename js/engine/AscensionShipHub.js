@@ -4,6 +4,7 @@
  * the skull wall shows the great prey taken; the bridge stays closed to Unblooded. */
 import * as THREE from 'three';
 import { createHonorGuardModel } from '../graphics/SupportModels.js';
+import { attachImportedCompanion } from '../graphics/ImportedCompanion.js';
 import { createFaunaModel } from '../graphics/FaunaModels.js';
 import { ASCENSION_WORLDS } from '../data/AscensionWorlds.js';
 
@@ -51,7 +52,7 @@ export class AscensionShipHub {
     this._place('bridge', new THREE.Vector3(0, 2, 14), () => this.progress.riteOpen() && !this.progress.state.blooded ? `PASSERELLE — TRIADE : ${this.progress.triad().join(' ET ').toUpperCase()} · [E] CHANGER` : 'PASSERELLE — INTERDITE AUX UNBLOODED',
       () => { if (this.progress.riteOpen() && !this.progress.state.blooded) { const pair = this.progress.cycleTriad(); this.onLine(`KAEDH : « Il est à toi. » Triade : ${pair.join(' et ')}.`); } else this.onLine(this.progress.state.blooded ? 'KAEDH : « Je vois. »' : 'KAEDH : « Pas encore. »'); }, door);
     const kaedh = createHonorGuardModel(0); kaedh.position.set(0, 0, 12.2); kaedh.rotation.y = 0; kaedh.name = 'kaedh'; this.group.add(kaedh);
-    const saar = createHonorGuardModel(1); saar.position.set(-7, 0, -3); saar.rotation.y = Math.PI / 2; saar.name = 'saar'; this.group.add(saar);
+    const saar = createHonorGuardModel(1); saar.position.set(-7, 0, -3); saar.rotation.y = Math.PI / 2; saar.name = 'saar'; this.group.add(saar); attachImportedCompanion(saar, 'pack_saar');
     this.scene.add(this.group);
     this.onLine('SAAR : « Approche. » Kaedh vous attend à bord de La Lame Patiente.');
     return this;
@@ -88,6 +89,8 @@ export class AscensionShipHub {
 
   dispose() {
     this.scene.remove(this.group);
+    // Shared clones of cached generated models are detached, not disposed.
+    const shared = []; this.group.traverse(node => { if (node.userData?.sharedGeneratedClone) shared.push(node); }); shared.forEach(node => node.removeFromParent());
     this.group.traverse(node => { node.geometry?.dispose?.(); if (Array.isArray(node.material)) node.material.forEach(material => material.dispose?.()); else node.material?.dispose?.(); });
     this.places = [];
   }

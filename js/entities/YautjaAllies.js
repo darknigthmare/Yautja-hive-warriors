@@ -7,6 +7,7 @@ import { createHonorGuardModel } from '../graphics/SupportModels.js';
 import { updateClanHunterVisual } from '../graphics/ClanHunterModel.js';
 import { releaseHostileAttack, requestHostileAttack } from '../engine/HostilePressure.js';
 import { disposeObject } from '../engine/SceneResources.js';
+import { updateImportedCompanion } from '../graphics/ImportedCompanion.js';
 
 export class YautjaAlliesManager {
   constructor(scene, audioEngine) {
@@ -39,6 +40,7 @@ export class YautjaAlliesManager {
     if (!Number.isFinite(delta) || delta <= 0) return;
     this.time = (this.time ?? 0) + delta;
     for (const ally of [...this.allies]) {
+      updateImportedCompanion(ally.mesh, delta);
       if (ally.hp <= 0) { this.defeatCombatant(ally, { cause: 'combat', killerFaction: ally.lastDamageFaction }); continue; }
       if (ally.isDowned || ally.isRescueRecovering) { releaseHostileAttack(this, ally); ally._npcPreparation = 0; continue; }
       if(maintainBattleFormation(this,ally,delta,ally.moveSpeed))continue;

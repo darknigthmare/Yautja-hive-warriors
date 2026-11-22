@@ -2,6 +2,10 @@
 export function disposeObject(object, retained = new Set()) {
   if (!object) return;
   object.removeFromParent();
+  // A clone of a cached generated model shares its template's GPU resources: detach it, never dispose it.
+  const sharedClones = [];
+  object.traverse(child => { if (child !== object && child.userData?.sharedGeneratedClone) sharedClones.push(child); });
+  sharedClones.forEach(child => child.removeFromParent());
   const geometries = new Set();
   const materials = new Set();
   const instances = new Set();
