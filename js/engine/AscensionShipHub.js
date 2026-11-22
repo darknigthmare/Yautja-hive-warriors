@@ -5,6 +5,20 @@
 import * as THREE from 'three';
 import { createHonorGuardModel } from '../graphics/SupportModels.js';
 import { attachImportedCompanion } from '../graphics/ImportedCompanion.js';
+import { getGeneratedAssetEntry, loadGeneratedAsset } from '../graphics/GeneratedAssetLibrary.js';
+
+const TRIBUTE_MASKS = Object.freeze(['wolf_predator_biomask', 'alpha_predator_biomask', 'samurai_predator_biomask', 'viking_predator_biomask']);
+/** A shared clone of a verified mask on the display; nothing is shown if the asset is unavailable. */
+export function attachTributeMask(parent, key, position, { load = loadGeneratedAsset, entry = getGeneratedAssetEntry(key), height = .7 } = {}) {
+  if (!entry || typeof window === 'undefined' && load === loadGeneratedAsset) return null;
+  return Promise.resolve().then(() => load(key)).then(gltf => {
+    if (!gltf?.scene) return null;
+    const mask = gltf.scene.clone(); mask.name = `tribute-${key}`; mask.userData.sharedGeneratedClone = true;
+    mask.updateMatrixWorld(true); const bounds = new THREE.Box3().setFromObject(mask), size = bounds.max.y - bounds.min.y;
+    if (size > 0) mask.scale.multiplyScalar(height / size);
+    mask.position.copy(position); parent.add(mask); return mask;
+  }).catch(() => null);
+}
 import { createFaunaModel } from '../graphics/FaunaModels.js';
 import { ASCENSION_WORLDS } from '../data/AscensionWorlds.js';
 
@@ -46,6 +60,10 @@ export class AscensionShipHub {
       const head = createFaunaModel({ color: 0xd9d0b4, size: .45 }, { prey: true }); head.position.set(-.4, .6 + Math.floor(index / 4) * 1.1, -3 + (index % 4) * 2); head.rotation.y = -Math.PI / 2; head.name = `skull-${world.id}`; wall.add(head);
     });
     this._place('skulls', new THREE.Vector3(12, .5, 0), () => `MUR DES CRÂNES — ${this.progress.state.completed.length} GRANDE(S) PROIE(S)`, () => this.onLine(this.progress.state.completed.length ? 'KAEDH : « Je vois. »' : 'KAEDH : « Pas encore. »'), wall);
+    // Mask display: the separate biomasks of four legendary hunters, a tribute aboard (not trophies taken).
+    const display = new THREE.Group(); display.add(new THREE.Mesh(new THREE.BoxGeometry(5.2, .25, 1), metal));
+    TRIBUTE_MASKS.forEach((key, index) => attachTributeMask(display, key, new THREE.Vector3(-1.95 + index * 1.3, .75, 0)));
+    this._place('masks', new THREE.Vector3(-9, 1, -9), () => 'MASQUES DES CHASSEURS LÉGENDAIRES — Wolf, Alpha, Samurai, Viking', () => this.onLine('SAAR : « Regarde-les. Un jour, ton masque dira ta chasse. »'), display);
     // Bridge: closed to Unblooded; Kaedh stands there, back turned.
     const door = new THREE.Mesh(new THREE.BoxGeometry(4, 4, .4), metal);
     // The bridge opens once the eight worlds are hunted: there the hunter chooses the two companions of the rite.

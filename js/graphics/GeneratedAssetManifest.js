@@ -7006,11 +7006,11 @@ export const GENERATED_ASSETS = Object.freeze({
   "wolf_predator": {
     "status": "verified",
     "type": "character",
-    "url": "/models/wolf-predator-rigged.glb",
-    "sha256": "c91b638219453e1707b1d330ab35bc3922fff7950a65c58ea1a23ac0d6ca01d1",
+    "url": "/models/wolf-predator-unmasked-rigged.glb",
+    "sha256": "15ef5ef15001a142cf346be31e8c222b4490854f7d2303e4499533580cf6973e",
     "resource": "rigging",
-    "task_id": "01a1e289-300c-7443-8cb3-7acc3e19658b",
-    "source_task_id": "01a1e286-96f0-770f-87b0-585b909249a0",
+    "task_id": "01a20313-c624-7437-8bef-47cfb446f2f6",
+    "source_task_id": "01a20311-9489-7282-ac54-db1892f79f33",
     "characterRig": {
       "calibrated": true,
       "height": 4.31,
@@ -7167,15 +7167,42 @@ export const GENERATED_ASSETS = Object.freeze({
           0.372731
         ],
         "radius": 0.025
+      },
+      "biomask": {
+        "calibrated": true,
+        "assetKey": "wolf_predator_biomask",
+        "bone": "Head",
+        "position": [
+          -1.4319955179282955,
+          0.9228910395514731,
+          -6.786178086871283
+        ],
+        "quaternion": [
+          -0.038594128831259795,
+          0.024935939839377905,
+          0.024935945580102134,
+          0.9986325103570957
+        ],
+        "scale": [
+          48.90727557889437,
+          48.9072784768113,
+          48.907278476719696
+        ],
+        "tuning": {
+          "widthFactor": 1.12,
+          "raise": 0,
+          "forward": 0,
+          "method": "head-bone skin region (weight > 0.6) fit, bind pose, 22 Nov 2026"
+        }
       }
     },
     "animationUrls": {
-      "walk": "/models/wolf-predator-walk.glb",
-      "run": "/models/wolf-predator-run.glb"
+      "walk": "/models/wolf-predator-unmasked-walk.glb",
+      "run": "/models/wolf-predator-unmasked-run.glb"
     },
     "animationSha256": {
-      "walk": "f87701d14b2ccab3227e8cb6623c564f8ee424e72da31b71b204885482cadb9e",
-      "run": "fc65940b32091ff87a141e1c586580603060dd638cb1bba8dc6fb23dbc497fc9"
+      "walk": "945b83fdfa417ff3994436ad6f9b53aff415e43b6de80520f42c7b07feba79a6",
+      "run": "38689bb8dcfe878300306e38722c2e2b674f5a56756a9536f7e85438e04f5b73"
     },
     "validation": {
       "visually_inspected": true,
@@ -7183,16 +7210,32 @@ export const GENERATED_ASSETS = Object.freeze({
       "in_game_verified": true,
       "fidelity_1_to_1_verified": false
     },
-    "assembly_note": "Meshy image-to-3d (A-pose) from an image-to-image isolation (task 01a1e285-c553-76d0-aedb-cddec023a30c, AI-adapted input) of Prime 1 Studio REMAVP-01 photos a009 and a005; Meshy meshyrig rig. Socket, pose and eye calibration start from jungle_hunter (same 24-bone template) and are checked in game. See docs/meshy/HUNTERS-20261116.md."
+    "assembly_note": "Meshy image-to-3d (A-pose) from an image-to-image isolation (task 01a1e285-c553-76d0-aedb-cddec023a30c, AI-adapted input) of Prime 1 Studio REMAVP-01 photos a009 and a005; Meshy meshyrig rig. Socket, pose and eye calibration start from jungle_hunter (same 24-bone template) and are checked in game. See docs/meshy/HUNTERS-20261116.md. Le 22 novembre 2026 : corps sans masque (image Meshy adaptée par IA, image-to-3d, rig meshyrig) et masque séparé, rogné localement puis calibré sur l'os Head ; le masque peut être ôté en jeu.",
+    "image_task_id": "01a2030f-4fee-7714-be65-c0e5469877ee"
+  },
+  "wolf_predator_biomask": {
+    "status": "verified",
+    "type": "prop",
+    "url": "/models/wolf-predator-biomask.glb",
+    "sha256": "17c104cbb54b8d2c5570bf940c52d8566aebbbc435c9383c54cb4a17011e8706",
+    "resource": "image-to-3d",
+    "task_id": "01a20209-835b-757a-810a-043ce3758641",
+    "image_task_id": "01a20205-f23b-767c-840f-e2f73eb9bd5f",
+    "validation": {
+      "visually_inspected": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Masque isolé par IA (image-to-image) depuis l’entrée du chasseur, modèle Meshy rogné localement à sa coque avant (dreadlocks retirées)."
   },
   "alpha_predator": {
     "status": "verified",
     "type": "character",
-    "url": "/models/alpha-predator-rigged.glb",
-    "sha256": "d011a354d21ddb0dfdde36484d83ac4d7ead6d1867171657b3438d357b27be45",
+    "url": "/models/alpha-predator-unmasked-rigged.glb",
+    "sha256": "dd57a646b286300b98ad32bdbac09195cc16b17595f3ed8a0fbfa6c51b7fd48f",
     "resource": "rigging",
-    "task_id": "01a1e2c8-62f8-769f-bad6-156af81e2bd3",
-    "source_task_id": "01a1e2c4-b2cb-7415-a620-20688512a511",
+    "task_id": "01a20313-6e35-7343-b9c9-1618a21f1a94",
+    "source_task_id": "01a20311-9b39-768a-8810-48ea474d4645",
     "characterRig": {
       "calibrated": true,
       "height": 4.31,
@@ -7349,15 +7392,42 @@ export const GENERATED_ASSETS = Object.freeze({
           0.372731
         ],
         "radius": 0.025
+      },
+      "biomask": {
+        "calibrated": true,
+        "assetKey": "alpha_predator_biomask",
+        "bone": "Head",
+        "position": [
+          -0.00016909693066757825,
+          5.466764342860614,
+          3.663079710683194
+        ],
+        "quaternion": [
+          -0.04894425812576159,
+          0.03165133810625318,
+          0.031651316676557247,
+          0.9977979988660122
+        ],
+        "scale": [
+          45.31565127400702,
+          45.315643105648,
+          45.31565112203736
+        ],
+        "tuning": {
+          "widthFactor": 0.95,
+          "raise": 0,
+          "forward": 0.18,
+          "method": "head-bone skin region (weight > 0.6) fit, bind pose, 22 Nov 2026"
+        }
       }
     },
     "animationUrls": {
-      "walk": "/models/alpha-predator-walk.glb",
-      "run": "/models/alpha-predator-run.glb"
+      "walk": "/models/alpha-predator-unmasked-walk.glb",
+      "run": "/models/alpha-predator-unmasked-run.glb"
     },
     "animationSha256": {
-      "walk": "4b225e1f14e8acfeb19f21a7013e77dd74ca84c3ecd2b7888e3ba8d91b99881a",
-      "run": "680724ceac4f3ba9efcc2995758080762f8d0ea62626f6b5fbad05449fda61ef"
+      "walk": "dd5a6c0d73c5f6e0e46a8049325f04db617641c61c3bc4be235e997cf25c3bac",
+      "run": "14b5a4b2b93fbd563bd772cd9fd01f7d6e93c031b4b9aedab88b5c9480fef350"
     },
     "validation": {
       "visually_inspected": true,
@@ -7365,16 +7435,32 @@ export const GENERATED_ASSETS = Object.freeze({
       "in_game_verified": true,
       "fidelity_1_to_1_verified": false
     },
-    "assembly_note": "Corps Meshy image-to-3d en pose A depuis une image isolée par IA (image-to-image nano-banana, tâche 01a1e2c3-1733-7352-8050-7c7d23567a85) à partir de la photo officielle de face de la figurine NECA Ultimate Alpha Predator ; bâton d'os retiré, griffes réduites par l'IA. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée."
+    "assembly_note": "Corps Meshy image-to-3d en pose A depuis une image isolée par IA (image-to-image nano-banana, tâche 01a1e2c3-1733-7352-8050-7c7d23567a85) à partir de la photo officielle de face de la figurine NECA Ultimate Alpha Predator ; bâton d'os retiré, griffes réduites par l'IA. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée. Le 22 novembre 2026 : corps sans masque (image Meshy adaptée par IA, image-to-3d, rig meshyrig) et masque séparé, rogné localement puis calibré sur l'os Head ; le masque peut être ôté en jeu.",
+    "image_task_id": "01a2030f-55df-7323-b073-67f015087f73"
+  },
+  "alpha_predator_biomask": {
+    "status": "verified",
+    "type": "prop",
+    "url": "/models/alpha-predator-biomask.glb",
+    "sha256": "b2068fe109eb5104d8feb54d80aa389b3150a5cb9973456946d102f4c1ec05e1",
+    "resource": "image-to-3d",
+    "task_id": "01a20209-8954-7202-9f13-2c951283de42",
+    "image_task_id": "01a20205-f977-7706-aeed-0e04b71a3b8b",
+    "validation": {
+      "visually_inspected": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Masque isolé par IA (image-to-image) depuis l’entrée du chasseur, modèle Meshy rogné localement à sa coque avant (dreadlocks retirées)."
   },
   "samurai_predator": {
     "status": "verified",
     "type": "character",
-    "url": "/models/samurai-predator-rigged.glb",
-    "sha256": "1c3d45d2fb3d5797a29bea88255d216dd4cabb8bbd9e82b2e2ccc31cdfe823a6",
+    "url": "/models/samurai-predator-unmasked-rigged.glb",
+    "sha256": "fcca124df5dd731157bf3571fe33332c493e4b9d3cf42d92b7bd7e7e10180501",
     "resource": "rigging",
-    "task_id": "01a1e2c9-acc5-73ff-9d6c-e47f1fa951e3",
-    "source_task_id": "01a1e2c6-dade-70ed-a515-48e342b081ff",
+    "task_id": "01a20313-dbc2-7625-8132-0acc37cc1073",
+    "source_task_id": "01a20311-a1aa-7447-9cec-742e2d4bd9d1",
     "characterRig": {
       "calibrated": true,
       "height": 4.31,
@@ -7531,15 +7617,42 @@ export const GENERATED_ASSETS = Object.freeze({
           0.372731
         ],
         "radius": 0.025
+      },
+      "biomask": {
+        "calibrated": true,
+        "assetKey": "samurai_predator_biomask",
+        "bone": "Head",
+        "position": [
+          2.4516748164181514,
+          12.77306021774055,
+          -0.46058890644421524
+        ],
+        "quaternion": [
+          -0.06290027688386293,
+          0.03985474529786603,
+          0.03985472278058913,
+          0.9964269945822695
+        ],
+        "scale": [
+          48.23123764125737,
+          48.2312375112375,
+          48.231231913060626
+        ],
+        "tuning": {
+          "widthFactor": 1.22,
+          "raise": 0.42,
+          "forward": 0.06,
+          "method": "head-bone skin region (weight > 0.6) fit, bind pose, 22 Nov 2026"
+        }
       }
     },
     "animationUrls": {
-      "walk": "/models/samurai-predator-walk.glb",
-      "run": "/models/samurai-predator-run.glb"
+      "walk": "/models/samurai-predator-unmasked-walk.glb",
+      "run": "/models/samurai-predator-unmasked-run.glb"
     },
     "animationSha256": {
-      "walk": "dc64e5ea227ba06269101025cae15934d465ca0a66d3caea4ebefe61fa9e6561",
-      "run": "2aae6bc3c5792c1ed8b2109bfc7c0e1398dbc79405fd821b7435e2f5fbd04781"
+      "walk": "5dc88b00b22f9f329e2c3c50ee434aa771b3c5e29f1ef8935099b349c80e4e43",
+      "run": "c719bfaf7767318658c442eb6f2ec357938e9496a7c5d863ac6e7906b53da291"
     },
     "validation": {
       "visually_inspected": true,
@@ -7547,16 +7660,32 @@ export const GENERATED_ASSETS = Object.freeze({
       "in_game_verified": true,
       "fidelity_1_to_1_verified": false
     },
-    "assembly_note": "Corps Meshy image-to-3d en pose A directement depuis la photo officielle de face de la figurine NECA Ultimate Samurai Predator (Predator: Hunting Grounds), fond blanc, sans retouche. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée."
+    "assembly_note": "Corps Meshy image-to-3d en pose A directement depuis la photo officielle de face de la figurine NECA Ultimate Samurai Predator (Predator: Hunting Grounds), fond blanc, sans retouche. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée. Le 22 novembre 2026 : corps sans masque (image Meshy adaptée par IA, image-to-3d, rig meshyrig) et masque séparé, rogné localement puis calibré sur l'os Head ; le masque peut être ôté en jeu.",
+    "image_task_id": "01a2030f-5c5e-7615-b08b-b458fd4f9db8"
+  },
+  "samurai_predator_biomask": {
+    "status": "verified",
+    "type": "prop",
+    "url": "/models/samurai-predator-biomask.glb",
+    "sha256": "4d21c1fb969265914ecf0d3cdf885266ceb4690a615eda7a1d5b91cd8d318473",
+    "resource": "image-to-3d",
+    "task_id": "01a20209-8e61-76b8-a7ff-a6c53aeab836",
+    "image_task_id": "01a20205-ff1f-729c-a415-43cacbc05890",
+    "validation": {
+      "visually_inspected": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Masque isolé par IA (image-to-image) depuis l’entrée du chasseur, modèle Meshy rogné localement à sa coque avant (dreadlocks retirées)."
   },
   "viking_predator": {
     "status": "verified",
     "type": "character",
-    "url": "/models/viking-predator-rigged.glb",
-    "sha256": "c372736a5a096daec3cf3b507bdfa8a22fdda7edca20502dc102177f497d020a",
+    "url": "/models/viking-predator-unmasked-rigged.glb",
+    "sha256": "44b9faac2af373f439dd5a63c8fe9eb7f24b88aa7d44fa1385a72b5dbd9ae8e0",
     "resource": "rigging",
-    "task_id": "01a1e2cb-cc9b-74a0-8d46-0c6b845ae07f",
-    "source_task_id": "01a1e2c8-255e-718c-9812-5051b0cefa13",
+    "task_id": "01a20313-ee7f-76d0-9436-eb7399c4b535",
+    "source_task_id": "01a20311-a7db-75b0-bb8e-8306bc7ec496",
     "characterRig": {
       "calibrated": true,
       "height": 4.31,
@@ -7713,15 +7842,42 @@ export const GENERATED_ASSETS = Object.freeze({
           0.372731
         ],
         "radius": 0.025
+      },
+      "biomask": {
+        "calibrated": true,
+        "assetKey": "viking_predator_biomask",
+        "bone": "Head",
+        "position": [
+          -0.08216708660873451,
+          1.3909484479281957,
+          -4.881850995841207
+        ],
+        "quaternion": [
+          -0.05085399795620995,
+          0.03759915997355341,
+          0.03759914950704909,
+          0.9972895657842996
+        ],
+        "scale": [
+          40.33780373178805,
+          40.3378133263232,
+          40.33781093681368
+        ],
+        "tuning": {
+          "widthFactor": 1.12,
+          "raise": 0,
+          "forward": 0,
+          "method": "head-bone skin region (weight > 0.6) fit, bind pose, 22 Nov 2026"
+        }
       }
     },
     "animationUrls": {
-      "walk": "/models/viking-predator-walk.glb",
-      "run": "/models/viking-predator-run.glb"
+      "walk": "/models/viking-predator-unmasked-walk.glb",
+      "run": "/models/viking-predator-unmasked-run.glb"
     },
     "animationSha256": {
-      "walk": "4daa97a64858bb81bdf974ebcc1618855e4fdd007a790e17059d67bdfe58ec59",
-      "run": "16ad32daae995240be43d9ab0d04eefccb14591dabaceeb0d3155b389c3e007c"
+      "walk": "803a251cade20519e736871d08616748d7cfd7a0eb29de43e2000534b25d4d68",
+      "run": "35681b637f04ec261103160b7c9fe6630d69053cb0b2fa2c4546efbc22659cf4"
     },
     "validation": {
       "visually_inspected": true,
@@ -7729,7 +7885,23 @@ export const GENERATED_ASSETS = Object.freeze({
       "in_game_verified": true,
       "fidelity_1_to_1_verified": false
     },
-    "assembly_note": "Corps Meshy image-to-3d en pose A depuis une image isolée par IA (image-to-image nano-banana, tâche 01a1e2c6-ded4-772f-95e5-a9ac8c89b012) à partir de deux rendus officiels du DLC Viking Predator de Predator: Hunting Grounds (illustration de la fiche Steam et rendu de profil) ; hache retirée, vue de face reconstruite par l'IA. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée."
+    "assembly_note": "Corps Meshy image-to-3d en pose A depuis une image isolée par IA (image-to-image nano-banana, tâche 01a1e2c6-ded4-772f-95e5-a9ac8c89b012) à partir de deux rendus officiels du DLC Viking Predator de Predator: Hunting Grounds (illustration de la fiche Steam et rendu de profil) ; hache retirée, vue de face reconstruite par l'IA. Rig meshyrig 24 os, calibration reprise du Jungle Hunter. Adaptation : aucune fidélité 1:1 revendiquée. Le 22 novembre 2026 : corps sans masque (image Meshy adaptée par IA, image-to-3d, rig meshyrig) et masque séparé, rogné localement puis calibré sur l'os Head ; le masque peut être ôté en jeu.",
+    "image_task_id": "01a2030f-6133-7724-8209-9740d0af6e4e"
+  },
+  "viking_predator_biomask": {
+    "status": "verified",
+    "type": "prop",
+    "url": "/models/viking-predator-biomask.glb",
+    "sha256": "2df86a6a823b0c1cf1e381be014ad68bf99df2205b5534b591f2407835f89834",
+    "resource": "image-to-3d",
+    "task_id": "01a20209-92c6-7623-ac59-994827b919eb",
+    "image_task_id": "01a20206-036e-747e-8e3f-f80fe50976a7",
+    "validation": {
+      "visually_inspected": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Masque isolé par IA (image-to-image) depuis l’entrée du chasseur, modèle Meshy rogné localement à sa coque avant (dreadlocks retirées)."
   },
   "pack_saar": {
     "status": "verified",

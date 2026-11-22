@@ -2585,7 +2585,20 @@ export class Player {
     return true;
   }
 
+  /** Takes a separate biomask off for a few seconds (boss execution, roar), then puts it back.
+   * Only hunters whose body has no built-in mask can do this; returns false otherwise. */
+  unmaskFor(seconds = 3.5) {
+    const root = this._importedCharacter?.biomask?.root;
+    if (!root || !(seconds > 0)) return false;
+    root.visible = false; this.biomaskOffTimer = Math.max(this.biomaskOffTimer ?? 0, seconds); return true;
+  }
+
+  isUnmasked() { return this._importedCharacter?.biomask?.root?.visible === false; }
+
   update(delta, horde = null) {
+    if (this.biomaskOffTimer > 0 && (this.biomaskOffTimer -= delta) <= 0) {
+      this.biomaskOffTimer = 0; const root = this._importedCharacter?.biomask?.root; if (root) root.visible = true;
+    }
     if (this._disposed || !Number.isFinite(delta) || delta < 0) return;
     // A paused/photo frame still propagates explicit FPS visibility and pose
     // changes. It must not advance timers, attacks, cooldowns or resources.

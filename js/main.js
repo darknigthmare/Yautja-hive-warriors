@@ -3296,6 +3296,8 @@ class GameApp {
       const victim = this.bosses.activeBoss;
       const death = this.bosses.executeBoss(victim, {player:player,range:8,killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
       if (!death) return false;
+      // The hunter takes off its mask for the kill when its body allows it (separate biomask).
+      player.unmaskFor?.(4);
       player.executeSpineRip(victim.type || 'queen');
 
       // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Camera

@@ -12,7 +12,7 @@ test('the ship shows earned tools and prey, cycles open worlds and launches from
   const scene = new THREE.Scene(), lines = [], launched = [];
   const hub = new AscensionShipHub(scene, progress, { onLine: line => lines.push(line), onLaunch: id => launched.push(id) }).build();
   try {
-    assert.deepEqual(hub.places.map(place => place.id), ['bay', 'map', 'rack', 'skulls', 'bridge']);
+    assert.deepEqual(hub.places.map(place => place.id), ['bay', 'map', 'rack', 'skulls', 'masks', 'bridge']);
     assert.ok(hub.group.getObjectByName('rack-netgun')); assert.ok(hub.group.getObjectByName('skull-vara_kesh'));
     assert.ok(hub.group.getObjectByName('saar') && hub.group.getObjectByName('kaedh'));
     assert.equal(hub.targetWorldId, 'eshra', 'the next world is the default target');
@@ -46,4 +46,13 @@ test('the rite opens after the eight worlds, its triad is chosen on the bridge, 
   assert.throws(() => prepareBossEncounter({ level: pyramid, bossType: 'xenomorph_queen', mode: 'rite' }));
   assert.equal(progress.completeRite(), true); assert.equal(progress.completeRite(), false, 'once');
   assert.equal(progress.state.blooded, true);
+});
+
+test('the tribute display hangs a shared clone of each verified mask, and nothing when unavailable', async () => {
+  const { attachTributeMask } = await import('../js/engine/AscensionShipHub.js');
+  const parent = new THREE.Group(), template = new THREE.Group(); template.add(new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1)));
+  const mask = await attachTributeMask(parent, 'wolf_predator_biomask', new THREE.Vector3(1, .75, 0), { load: async () => ({ scene: template }), entry: { status: 'verified' } });
+  assert.equal(parent.children.length, 1); assert.equal(mask.userData.sharedGeneratedClone, true);
+  assert.ok(Math.abs(new THREE.Box3().setFromObject(mask).getSize(new THREE.Vector3()).y - .7) < 1e-6);
+  assert.equal(attachTributeMask(new THREE.Group(), 'missing', new THREE.Vector3(), { entry: null }), null);
 });
