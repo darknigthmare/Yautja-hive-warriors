@@ -519,7 +519,14 @@ export class UIManager {
 
     // Chantier 8: Render Multi-Faction Minimap
     this._minimapActors = { horde, bossManager, factions };
-    if (!this._battlefieldHUD) this.renderMinimap(player, horde, bossManager, factions);
+    if (!this._battlefieldHUD && this._minimapDue()) this.renderMinimap(player, horde, bossManager, factions);
+  }
+
+  /** Per-frame minimap redraws are capped at 10 per second (performance pass, 22 Nov 2026). */
+  _minimapDue(intervalMs = 100) {
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    if (this._minimapAt !== undefined && now - this._minimapAt < intervalMs && now >= this._minimapAt) return false;
+    this._minimapAt = now; return true;
   }
 
   updateOperationHUD(state, layout, players = [], objectives = null) {
@@ -541,7 +548,7 @@ export class UIManager {
     const weapon = this._minimapActors?.player?.getCombatState?.();
     if (weapon) this.hudPlasmaText.textContent += ` · ENDURANCE ${Math.ceil(weapon.stamina ?? 0)}`;
     this.minimapCanvas?.setAttribute('aria-label','Carte des fronts et rapports de positions connus');
-    this.renderOperationMap();
+    if (this._minimapDue()) this.renderOperationMap();
   }
 
   renderOperationMap() {

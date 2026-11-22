@@ -1,3 +1,4 @@
+import { ColliderBroadphase } from '../engine/ColliderBroadphase.js';
 import { moveMeasuredStairTraversal } from '../graphics/ValVerdeFieldStructures.js';
 import { WorldGeometryStreaming } from '../graphics/WorldGeometryStreaming.js';
 import { TacticalBridge } from './TacticalBridge.js';
@@ -96,6 +97,7 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
   cancelReferenceTimer(timer) { if (timer) timer.cancelled = true; }
 
   update(delta, horde, audioEngine, player) {
+    this._frameStamp = (this._frameStamp ?? 0) + 1; // collider broadphase is rebuilt once per frame
     if (!this.root || !Number.isFinite(delta) || delta <= 0 || this.game?.isPaused || this.game?.photoMode?.isActive) return;
     this.environmentCombatEffects.update(delta);
     this.referenceTime += delta;
@@ -992,7 +994,11 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     const attemptX = position.x, attemptZ = position.z;
     let blocker = null;
     let closest = Infinity;
-    for (const collider of this.colliders) {
+    // Same broadphase as resolveMovement: only colliders that may overlap the attempted position, in list order.
+    const broad = this._colliderBroadphase ??= new ColliderBroadphase();
+    if (broad.isStale(this.colliders, this._frameStamp ?? 0)) broad.rebuild(this.colliders, this._frameStamp ?? 0);
+    for (const index of broad.query(attemptX, attemptZ, radius + .01)) {
+      const collider = this.colliders[index];
       if (collider.enabled === false || collider.solid === false || (typeof collider.isCollisionActive === 'function' && !collider.isCollisionActive())) continue;
       if (position.y > (collider.baseY ?? 0) + collider.height + 0.2 || position.y + 1.4 < (collider.baseY ?? 0)) continue;
       const dx = attemptX - collider.x, dz = attemptZ - collider.z;
@@ -1108,8 +1114,17 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     finally { this.navigation.usingVerticalAccess = false; }
   }
 
-  traceSegment(from, to, options) { return traceCombatSegment(from, to, this.colliders, options); }
-  hasLineOfSight(from, to, options) { return hasCombatLineOfSight(from, to, this.colliders, options); }
+  traceSegment(from, to, options) { return traceCombatSegment(from, to, this._segmentColliders(from, to, options), options); }
+  hasLineOfSight(from, to, options) { return hasCombatLineOfSight(from, to, this._segmentColliders(from, to, options), options); }
+
+  /** Colliders whose outline may touch the segment, in list order (performance pass, 22 Nov 2026). */
+  _segmentColliders(from, to, options = {}) {
+    const broad = this._colliderBroadphase ??= new ColliderBroadphase();
+    if (broad.isStale(this.colliders, this._frameStamp ?? 0)) broad.rebuild(this.colliders, this._frameStamp ?? 0);
+    if (typeof broad.queryBox !== 'function' || ![from?.x, from?.z, to?.x, to?.z].every(Number.isFinite)) return this.colliders;
+    const pad = (Number.isFinite(options?.radius) ? options.radius : 0) + .01;
+    return broad.queryBox(Math.min(from.x, to.x) - pad, Math.max(from.x, to.x) + pad, Math.min(from.z, to.z) - pad, Math.max(from.z, to.z) + pad).map(index => this.colliders[index]);
+  }
 
   // A steep measured stair is traversed in small physical steps; other terrain
   // retains the ordinary player movement path. No hidden ramp is introduced.
@@ -1125,8 +1140,17 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
       position.x = THREE.MathUtils.clamp(position.x, -limit, limit);
       position.z = THREE.MathUtils.clamp(position.z, -limit, limit);
     }
+    // Broadphase (performance pass, 22 Nov 2026): only colliders whose outline may reach the body are
+    // tested, in the same ascending order as the full scan; a drift beyond half the slack re-queries.
+    const broad = this._colliderBroadphase ??= new ColliderBroadphase(), slack = 6;
+    if (broad.isStale(this.colliders, this._frameStamp ?? 0)) broad.rebuild(this.colliders, this._frameStamp ?? 0);
     for (let pass = 0; pass < 2; pass++) {
-      for (const collider of this.colliders) {
+      let candidates = broad.query(position.x, position.z, radius + slack), previous = -1, anchorX = position.x, anchorZ = position.z;
+      for (let k = 0; k < candidates.length; k++) {
+        if (Math.abs(position.x - anchorX) > slack / 2 || Math.abs(position.z - anchorZ) > slack / 2) {
+          anchorX = position.x; anchorZ = position.z; candidates = broad.query(anchorX, anchorZ, radius + slack, previous); k = -1; continue;
+        }
+        const collider = this.colliders[previous = candidates[k]];
         if (collider.enabled === false || collider.solid === false || (typeof collider.isCollisionActive === 'function' && !collider.isCollisionActive())) continue;
         // Moving mechanisms can supply their actual shape while retaining a
         // conservative outline for spawn clearance and local AI steering.
