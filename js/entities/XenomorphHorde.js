@@ -2499,7 +2499,11 @@ export class XenomorphHorde {
     const modelKind = sourceVisual === 'drone' ? 'drone' : type;
     // A source-role visual is not a new strategic caste. In particular, saved
     // GRP-58/59 Drone IDs still retain actorType "warrior" in BattleSimulation.
-    const model = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien','carrier','ravager'].includes(type)
+    // AUD-025/031: a warrior that leads its group reads as the hive officer (visual only:
+    // actorType, stats and behaviour stay those of its strategic profile).
+    const leaderVisual = unit.officer === true && type === 'warrior' && sourceVisual !== 'drone';
+    const model = leaderVisual ? createCreatureModel('officer', this.sharedResources)
+      : sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien','carrier','ravager'].includes(type)
       ? createCreatureModel(modelKind, this.sharedResources)
       : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
     // A separate visual pivot lets this one actor fall without rotating its
