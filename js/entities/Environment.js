@@ -1114,8 +1114,9 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     finally { this.navigation.usingVerticalAccess = false; }
   }
 
-  traceSegment(from, to, options) { return traceCombatSegment(from, to, this._segmentColliders(from, to, options), options); }
-  hasLineOfSight(from, to, options) { return hasCombatLineOfSight(from, to, this._segmentColliders(from, to, options), options); }
+  // Without the broadphase (methods extracted on their own), the full list keeps the same result.
+  traceSegment(from, to, options) { return traceCombatSegment(from, to, this._segmentColliders?.(from, to, options) ?? this.colliders, options); }
+  hasLineOfSight(from, to, options) { return hasCombatLineOfSight(from, to, this._segmentColliders?.(from, to, options) ?? this.colliders, options); }
 
   /** Colliders whose outline may touch the segment, in list order (performance pass, 22 Nov 2026). */
   _segmentColliders(from, to, options = {}) {
