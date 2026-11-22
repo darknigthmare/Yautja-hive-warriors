@@ -10,6 +10,14 @@ import { SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 import { humanSquadRole, humanFireTeamState, hasFriendlyFireLane, moveSquadActor } from '../engine/FactionSquadRoles.js';
+import { attachImportedCompanion, updateImportedCompanion } from '../graphics/ImportedCompanion.js';
+
+// AUD-031: a generic or USCM officer wears the Meshy officer model; named and corporate leaders
+// keep their own look (USCM, USM, corporate forces are not interchangeable).
+export const OFFICER_MODEL_PROFILES = Object.freeze(new Set(['original_human_officer', 'Section leader']));
+export function usesOfficerModel(unit, profile) {
+  return unit?.officer === true && (profile?.affiliation === 'uscm' || OFFICER_MODEL_PROFILES.has(profile?.id) || OFFICER_MODEL_PROFILES.has(profile?.name));
+}
 import { emitNPCShot, updateNPCShots, clearNPCShots } from '../graphics/NPCCombatFeedback.js';
 
 export class ColonialMarinesManager {
@@ -147,6 +155,7 @@ export class ColonialMarinesManager {
     if (this.distressBeacon) { this.distressBeacon.life -= delta; if (this.distressBeacon.life <= 0) { disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; } }
     if (this.airSupportPending) { this.airSupportTimer -= delta; if (this.airSupportTimer <= 0) { this.airSupportPending = false; if (horde) horde.checkMeleeHits({ origin: this.strafeCenter, radius: 7, damage: 180, type: 'gunship', killerFaction: this.factionId ?? 'uscm' }); } }
     for (const m of [...this.marines]) {
+      updateImportedCompanion(m.mesh, delta);
       if (m.hp <= 0) { this.defeatCombatant(m, { cause: 'combat', killerFaction: m.lastDamageFaction }); continue; }
       // A paralyzed host must never walk to formation or start an attack
       // while its Facehugger is attached, even if its battle slot moved.
@@ -403,6 +412,7 @@ export class ColonialMarinesManager {
       speed: heavyFrame ? 5.0 : 8, radius: heavyFrame ? 1.12 : .8,
       shootCooldown: 1.5, grenadeCooldown: 7 };
     if (unit.infection) attachHostParasiteVisual(actor.mesh);
+    if (usesOfficerModel(unit, this.battleSimulation?.profiles?.get(unit.profileId))) attachImportedCompanion(actor.mesh, 'uscm_officer', { height: 3.44 });
     this.marines.push(applyBattleUnit(this, actor, unit, group)); return actor;
   }
 

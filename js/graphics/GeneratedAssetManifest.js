@@ -7830,5 +7830,30 @@ export const GENERATED_ASSETS = Object.freeze({
       "fidelity_1_to_1_verified": false
     },
     "assembly_note": "Tov, camarade de cohorte (voie O6). Apparence créée : trapu, peau gris-vert, harnais de cordes, sangles, sacoches et petites mines, masque à capteurs. Image Meshy text-to-image (nano-banana), corps image-to-3d en pose A, rig meshyrig 2,2 m. Création originale ; aucune source officielle d'apparence."
+  },
+  "uscm_officer": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/uscm-officer-rigged.glb",
+    "sha256": "00a262a615b1b743b793846cc2835794b7c6588e8b13f97517c13b5cfea808e9",
+    "resource": "rigging",
+    "task_id": "01a2020b-5b85-70b6-9cb4-a7ff8fe2da59",
+    "source_task_id": "01a20209-7d18-70c5-aeec-44b79aa04a1e",
+    "image_task_id": "01a20205-ef7b-7636-83c2-fb44e44ba4ff",
+    "animationUrls": {
+      "walk": "/models/uscm-officer-walk.glb",
+      "run": "/models/uscm-officer-run.glb"
+    },
+    "animationSha256": {
+      "walk": "10f81b4fa5c8ac1daf12c4e479e5a39721ac2a0d0115f72c98345bf9d594fc6d",
+      "run": "1b3adb4d62c30c5e0385080ad439babc8766862f19bf481554a5e497d0255701"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Officier générique de marines coloniaux, créé pour Hive Warriors (image Meshy text-to-image, sans ressemblance avec un acteur ou un personnage de film). Corps image-to-3d en pose A, rig meshyrig 1,85 m, affiché à la hauteur du modèle de marine (3,44). Réservé aux officiers génériques et USCM (AUD-031)."
   }
 });
