@@ -3,6 +3,7 @@
 export const LEVELS_DATA = [
   {
     "id": "gunnison_forest",
+    "sectorScale": 1.0,
     "name": "FÔRET DE GUNNISON (AVP REQUIEM)",
     "desc": "Forêt sombre sous la pluie d'orage et torrents d'eau.",
     "description": "Forêt sombre sous la pluie d'orage et torrents d'eau. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -37,6 +38,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "xenomorph_prime",
+    "sectorScale": 1.0,
     "name": "MONDE-RUCHE XENOMORPH PRIME",
     "desc": "Corridors biomécaniques recouverts de résine vivante.",
     "description": "Corridors biomécaniques recouverts de résine vivante. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -71,6 +73,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "antarctic_pyramid",
+    "sectorScale": 0.9,
     "name": "PYRAMIDE ANTARCTIQUE MODULAIRE",
     "desc": "Structure rituelle millénaire aux murs coulissants.",
     "description": "Structure rituelle millénaire aux murs coulissants. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -105,6 +108,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "la_rooftops",
+    "sectorScale": 0.85,
     "name": "TOITS DE LOS ANGELES (1990)",
     "desc": "Gratte-ciels sous la tempête et panneaux néons.",
     "description": "Gratte-ciels sous la tempête et panneaux néons. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -139,6 +143,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "val_verde_jungle",
+    "sectorScale": 1.15,
     "name": "JUNGLE DE VAL VERDE (1987)",
     "desc": "Jungle tropicale dense du premier affrontement.",
     "description": "Jungle tropicale dense du premier affrontement. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -173,6 +178,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "romulus_station",
+    "sectorScale": 0.85,
     "name": "STATION RENAISSANCE (ALIEN: ROMULUS)",
     "desc": "Station spatiale en dérive orbitale, laboratoires Z-01 et baie cryogénique.",
     "description": "Station spatiale en dérive orbitale, laboratoires Z-01 et baie cryogénique. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -207,6 +213,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "charon_rogue_base",
+    "sectorScale": 0.9,
     "name": "BASE SCIENTIFIQUE CHARON (ALIENS: ROGUE 1993)",
     "desc": "Complexe fortifié du Dr Ernst Kleist où le titanesque Rogue King Xenomorph Prime a été génétiquement façonné.",
     "description": "Complexe fortifié du Dr Ernst Kleist où le titanesque Rogue King Xenomorph Prime a été génétiquement façonné. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -241,6 +248,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "game_preserve_planet",
+    "sectorScale": 1.15,
     "name": "RÉSERVE DE CHASSE DE MR. BLACK (PREDATORS 2010)",
     "desc": "Jungle extraterrestre sauvage contrôlée par le clan Super Predator Berserker, parsemée de totems d'écorcheurs et de pièges mortels.",
     "description": "Jungle extraterrestre sauvage contrôlée par le clan Super Predator Berserker, parsemée de totems d'écorcheurs et de pièges mortels. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -275,6 +283,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "stargazer_facility",
+    "sectorScale": 1.05,
     "name": "PROJET STARGAZER (THE PREDATOR 2018)",
     "desc": "Base souterraine secrète de recherche xénobiologique, forêt d'automne et carcasse du vaisseau Ark en flammes.",
     "description": "Base souterraine secrète de recherche xénobiologique, forêt d'automne et carcasse du vaisseau Ark en flammes. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -309,6 +318,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "prey_comanche_territory",
+    "sectorScale": 1.2,
     "name": "TERRITOIRE COMANCHE 1719 (PREY 2022)",
     "desc": "Grandes Plaines du Nord, forêt calcinée par les trappeurs français, tourbière de boue mouvante et traque du Feral Predator.",
     "description": "Grandes Plaines du Nord, forêt calcinée par les trappeurs français, tourbière de boue mouvante et traque du Feral Predator. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -343,6 +353,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "killer_of_killers_arena",
+    "sectorScale": 0.9,
     "name": "ARÈNE DES TUEURS DE TUEURS (KILLER OF KILLERS 2025)",
     "desc": "Colisée cosmique Yautja réunissant 3 époques : les captifs vikings d'Ursa, le Japon féodal de Kenji et l'aviation de Torres.",
     "description": "Colisée cosmique Yautja réunissant 3 époques : les captifs vikings d'Ursa, le Japon féodal de Kenji et l'aviation de Torres. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu.",
@@ -377,6 +388,7 @@ export const LEVELS_DATA = [
   },
   {
     "id": "lv223_engineer_structures",
+    "sectorScale": 0.9,
     "name": "LV-223 — STRUCTURES DES INGÉNIEURS (PROMETHEUS 2012)",
     "desc": "Lune balayée par les tempêtes de silice : galeries des Ingénieurs, urnes de mutagène noir et salle de pilotage.",
     "description": "Lune balayée par les tempêtes de silice : galeries des Ingénieurs, urnes de mutagène noir et salle de pilotage. Six secteurs reliés forment une adaptation jouable ; la topologie et les dimensions sont propres au jeu. La ruche qui peuple les secteurs est une adaptation : le film ne montre pas de Xénomorphes sur LV-223.",

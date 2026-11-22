@@ -9,7 +9,8 @@ for (const level of LEVELS_DATA) {
   test(`${level.id}: a large connected map has locked physical corridors, safe spawns and a complete route`, () => {
     const layout = createBattlefieldLayout(level);
     assert.equal(layout.sectors.length, 6); assert.equal(layout.corridors.length, 5); assert.equal(layout.gates.length, 5);
-    assert.ok(Math.max(layout.dimensions.width, layout.dimensions.depth) >= 4.8 * 132);
+    // AUD-057: each location has its own scale; the map stays large at that scale.
+    assert.ok(Math.max(layout.dimensions.width, layout.dimensions.depth) >= 4.8 * 132 * Math.min(1, layout.sectorScale));
     assert.deepEqual(layout.sectors.map(sector => sector.objective.type), ['kills', 'commander', 'interact', 'kills', 'commander', 'boss']);
     for (const sector of layout.sectors) {
       assert.ok(pointInBattlefieldRect({ x: sector.objective.position[0], z: sector.objective.position[1] }, sector.bounds, 8));
@@ -32,7 +33,8 @@ for (const level of LEVELS_DATA) {
         assert.equal(env.isGateOpen(gate.id), true); assert.equal(env.gateVisuals.get(gate.id).panel.visible, false);
         const actor = new THREE.Vector3(from.center[0], 0, from.center[1]);
         actor.y = env.getPlacementElevationAt(actor.x, actor.z);
-        for (let step = 0; step < 425; step++) { actor.addScaledVector(direction, 0.4); actor.y = env.getElevationAt(actor.x, actor.z, actor.y); env.resolveMovement(actor); }
+        const span = Math.hypot(to.center[0] - from.center[0], to.center[1] - from.center[1]);
+        for (let step = 0, steps = Math.round(span / 0.4); step < steps; step++) { actor.addScaledVector(direction, span / steps); actor.y = env.getElevationAt(actor.x, actor.z, actor.y); env.resolveMovement(actor); }
         assert.ok(actor.distanceTo(new THREE.Vector3(to.center[0], 0, to.center[1])) < 0.01, `the open corridor ${gate.id} must be continuously walkable`);
         env.setActiveSector(to.id);
         for (let index = 0; index < 16; index++) {

@@ -23,6 +23,13 @@ const RELAY_OPERATIONS = {
   station: { position: [20, -14], defenseTarget: 12, label: 'Rétablissez l’alimentation du sas', defenseLabel: 'Repoussez la contre-attaque du hangar' }
 };
 
+/* AUD-057: each hunt location has its own scale (sector size and spacing), the insertion sector
+ * keeping its detailed 66-unit size. Bounded so every corridor keeps a positive length. */
+export const SECTOR_SCALE_LIMITS = Object.freeze({ min: .85, max: 1.2 });
+export const sectorScaleOf = level => {
+  const value = Number(level?.sectorScale ?? 1);
+  return Number.isFinite(value) ? Math.min(SECTOR_SCALE_LIMITS.max, Math.max(SECTOR_SCALE_LIMITS.min, value)) : 1;
+};
 const rectangle = (x, z, halfWidth, halfDepth) => ({ minX: x - halfWidth, maxX: x + halfWidth, minZ: z - halfDepth, maxZ: z + halfDepth });
 export const pointInBattlefieldRect = (position, bounds, inset = 0) => position.x >= bounds.minX + inset && position.x <= bounds.maxX - inset && position.z >= bounds.minZ + inset && position.z <= bounds.maxZ - inset;
 
@@ -30,7 +37,8 @@ export function createBattlefieldLayout(level = {}) {
   const type = level.environmentType ?? 'forest';
   const variant = getBattlefieldMapVariant(level.mapId ?? level.auditMapId);
   const mapSeed = normalizeBattlefieldSeed(level.mapSeed ?? 0);
-  const sourceCenters = variant ? variantSectorCenters(variant, mapSeed) : CENTERS;
+  const scale = variant ? 1 : sectorScaleOf(level);
+  const sourceCenters = variant ? variantSectorCenters(variant, mapSeed) : CENTERS.map(([x, z]) => [x * scale, z * scale]);
   const ids = sourceCenters.map((_, index) => index === sourceCenters.length - 1 ? 'nest' : IDS[index] === 'nest' || index >= IDS.length ? `area-${index}` : IDS[index]);
   const corridorWidth = variant?.corridorWidth ?? 18;
   const orientation = { forest: 0, hive: 1, temple: 0, rooftop: 2, jungle: 3, station: 1 }[type] ?? 0;
@@ -50,8 +58,8 @@ export function createBattlefieldLayout(level = {}) {
     const final = index === ids.length - 1;
     const kind = final ? 'boss' : kinds[index] === 'boss' || index >= kinds.length ? (index % 4 === 0 ? 'commander' : 'kills') : kinds[index];
     const target = kind === 'kills' ? (index < 5 ? targets[index] : 30) : 1;
-    const halfWidth = index === 0 || !variant ? 66 : [62, 74, 82, 68][(index + Number(variant.id.slice(3))) % 4];
-    const halfDepth = index === 0 || !variant ? 66 : [72, 60, 80, 68][(index * 3 + Number(variant.id.slice(3))) % 4];
+    const halfWidth = index === 0 ? 66 : !variant ? Math.round(66 * scale) : [62, 74, 82, 68][(index + Number(variant.id.slice(3))) % 4];
+    const halfDepth = index === 0 ? 66 : !variant ? Math.round(66 * scale) : [72, 60, 80, 68][(index * 3 + Number(variant.id.slice(3))) % 4];
     const actionOffset = transform(index === 2 ? relay.position : [0, 0]);
     return { id, index, name: names[index] ?? `${variant?.name ?? level.name ?? type} · Zone ${index + 1}`, center, bounds: rectangle(...center, halfWidth, halfDepth),
       objective: { type: kind, target, label: index === 2 ? relay.label : final ? 'Vainquez le boss du secteur final' : (index < 5 ? labels[index] : null) ?? (kind === 'commander' ? 'Vainquez le commandant de la zone' : `Éliminez ${target} ennemis dans cette zone`), position: [center[0] + actionOffset[0], center[1] + actionOffset[1]], radius: index === 2 ? 4.5 : 8,
@@ -79,7 +87,7 @@ export function createBattlefieldLayout(level = {}) {
   }
   const bounds = { minX: Math.min(...sectors.map(sector => sector.bounds.minX)), maxX: Math.max(...sectors.map(sector => sector.bounds.maxX)), minZ: Math.min(...sectors.map(sector => sector.bounds.minZ)), maxZ: Math.max(...sectors.map(sector => sector.bounds.maxZ)) };
   const layout = { version: variant ? 2 : 1, id: `battlefield-${variant?.id ?? level.id ?? type}`, entrySectorId: ids[0], sectors, corridors, gates, bounds,
-    dimensions: { width: bounds.maxX - bounds.minX, depth: bounds.maxZ - bounds.minZ }, sectorHalfSize: 66, corridorWidth,
+    dimensions: { width: bounds.maxX - bounds.minX, depth: bounds.maxZ - bounds.minZ }, sectorHalfSize: 66, sectorScale: scale, corridorWidth,
     strategicMode: level.strategicMode === true, mapSeed,
     generation: { seed: mapSeed, algorithm: 'orthogonal-variable-spacing-v1', coordinates: 'original-game-units', insertionAnchorFixed: true },
     ...(variant ? { variant, mapId: variant.id } : {}) };
