@@ -230,7 +230,9 @@ const cases = [
 // Ascension great prey (HW-DEC-106): the same real selector, measured dodge for each warned attack.
 function chargeTrial(type, dodge) {
   return fixture(type, (manager, boss) => {
-    const target = player(0, 0, 10); prepare(manager, target, 'charge');
+    const target = player(0, 0, 10);
+    if (boss.pattern?.mechanic === 'steam-cycle-charge') boss.steamCycle = 7.9; // the Spur charges at the end of a steam cycle
+    prepare(manager, target, 'charge');
     if (dodge) target.position.x = 14;
     releasePrepared(manager, target); tick(manager, target, .75);
     return target.hits.reduce((sum, hit) => sum + hit.amount, 0);

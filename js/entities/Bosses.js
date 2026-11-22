@@ -13,6 +13,7 @@ import { getBossCombatPattern } from '../data/BossCombatPatterns.js';
 import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder, requestNPCStrike } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/HunterStealth.js';
+import { isGreatPrey, stepGreatPrey, greatPreyAllows, startGreatPreyCharge, endGreatPreyCharge, greatPreyMeleeFactor, dueHivePulse, greatPreyReadout } from '../battlefield/GreatPreyMechanics.js';
 
 /** AUD-066: the body footprint that collides with scenery, measured on the normalized
  * model. The 80th percentile of horizontal vertex distances ignores thin tails, crests
@@ -180,6 +181,8 @@ export class BossManager {
   takeDamage(amount, horde = null, details = {}) {
     const boss = this.activeBoss;
     if (!boss || boss.hp <= 0 || !Number.isFinite(amount) || amount <= 0) return null;
+    // Great prey signatures (GreatPreyMechanics.greatPreyDamageFactor), kept self-contained: tests run this method alone.
+    if (boss.definition?.ascension) { amount *= boss.burrowed || boss.diving ? 0 : boss.pattern?.mechanic === 'swarm-core' && boss.swarmContracting ? .25 : 1; if (amount <= 0) return null; }
     const heavy = ['heavy', 'charged', 'heavy-melee'].includes(details.attackKind ?? details.cause);
     const origin = details.origin ?? details.attacker?.position;
     if (boss.pattern?.frontalArmor && origin?.isVector3 && this.time >= boss.exposedUntil) {
@@ -335,7 +338,7 @@ export class BossManager {
       const charge = boss.charge; charge.life -= delta;
       const before = boss.mesh.position.clone();
       boss.mesh.position.addScaledVector(charge.direction, charge.speed * delta);
-      if (charge.kind === 'leap') boss.mesh.position.y = charge.startY + Math.sin(Math.PI * Math.min(1, 1 - charge.life / charge.duration)) * 2.4;
+      if (charge.kind === 'leap') { const t = Math.min(1, 1 - charge.life / charge.duration); boss.mesh.position.y = charge.startY + ((charge.landY ?? charge.startY) - charge.startY) * t + Math.sin(Math.PI * t) * 2.4; }
       this.environment?.resolveMovement?.(boss.mesh.position, boss.footprintRadius ?? 2.0, boss.definition.height);
       if (charge.kind === 'charge' && boss.pattern?.mechanic === 'wall-stagger' &&
           Math.hypot(boss.mesh.position.x - before.x, boss.mesh.position.z - before.z) < charge.speed * delta * .25) {
@@ -351,6 +354,10 @@ export class BossManager {
         if (charge.kind === 'leap') boss.mesh.position.y = charge.startY;
         boss.charge = null; boss.isLeaping = false; boss.exposedUntil = this.time + 1.4;
         if (charge.kind === 'leap' && boss.pattern?.mechanic === 'landing-aftershock') this.pendingActions.push({ kind: 'shockwave', owner: boss, life: .65, radius: 7, innerRadius: 0, damage: 55, color: 0xffb36b });
+        if (isGreatPrey(boss)) {
+          for (const extra of endGreatPreyCharge(boss, charge, player, point => this.findBossArenaPosition(point, boss.footprintRadius ?? 1.8, boss.definition.height))) this.pendingActions.push({ ...extra, owner: boss });
+          if (boss.signatureExposure) { boss.exposedUntil = Math.max(boss.exposedUntil, this.time + boss.signatureExposure); boss.signatureExposure = 0; }
+        }
       }
       this._updateAttackReadout(boss); return;
     }
@@ -371,7 +378,11 @@ export class BossManager {
     const dir = player.position.clone().sub(boss.mesh.position); dir.y = 0;
     boss.weaponRecovery = Math.max(0, (boss.weaponRecovery ?? 0) - delta);
     const distance = dir.length(), allowed = boss.definition.attacks;
-    const choose = action => allowed.includes(action);
+    if (isGreatPrey(boss)) {
+      stepGreatPrey(boss, player, distance, delta);
+      const pulse = dueHivePulse(boss, delta); if (pulse) this.pendingActions.push({ ...pulse, owner: boss });
+    }
+    const choose = action => allowed.includes(action) && (!isGreatPrey(boss) || greatPreyAllows(boss, action));
     if (!boss.pressureAction) {
       if (distance <= 8.5 && boss.tailWhipCooldown <= 0 && choose('tail')) boss.pressureAction = 'tail';
       else if (distance <= 11 && boss.specialCooldown <= 0 && choose('gale')) boss.pressureAction = 'gale';
@@ -402,9 +413,9 @@ export class BossManager {
       else if (action === 'slam') { boss.specialCooldown = 7; this.triggerMatriarchRoyalSlam(player, horde); }
       else if (action === 'vortex') { boss.specialCooldown = 8; this.triggerEngineerGravitationalVortex(player, horde); }
       else if (action === 'constrict') { boss.specialCooldown = 6; this.triggerTrilobiteConstrict(player); }
-      else if (action === 'charge' || action === 'leap') { const duration = action === 'leap' ? .85 : .7; boss.specialCooldown = 7; boss.isLeaping = action === 'leap'; boss.charge = { kind: action, direction: (boss.pressureAim ?? player.position).clone().sub(boss.mesh.position).setY(0).normalize(), life: duration, duration, startY: boss.mesh.position.y, speed: action === 'leap' ? Math.min(26, Math.max(12, distance / duration)) : 16, damage: 70, hit: new Set() }; }
+      else if (action === 'charge' || action === 'leap') { const duration = action === 'leap' ? .85 : .7; boss.specialCooldown = 7; boss.isLeaping = action === 'leap'; boss.charge = { kind: action, direction: (boss.pressureAim ?? player.position).clone().sub(boss.mesh.position).setY(0).normalize(), life: duration, duration, startY: boss.mesh.position.y, speed: action === 'leap' ? Math.min(26, Math.max(12, distance / duration)) : 16, damage: 70, hit: new Set() }; if (isGreatPrey(boss)) startGreatPreyCharge(boss, boss.charge); }
       else if (action === 'shriek') { boss.shriekCooldown = 6; this.audioEngine?.playOffspringShriek?.(); if (distance <= 10 && this._insideAttackCone(player, Math.PI * .7) && this.applyBossDamage(player, 60, 'shriek', boss) && Number.isFinite(player.plasmaEnergy)) player.plasmaEnergy = Math.max(0, player.plasmaEnergy - 25); }
-      else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35, 'melee', boss); }
+      else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, (boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35) * (isGreatPrey(boss) ? greatPreyMeleeFactor(boss) : 1), 'melee', boss); }
       boss.pressureAction = null; boss.pressureAim = null; boss.exposedUntil = Math.max(boss.exposedUntil, this.time + .6);
     }
     const warningRadius = ({ tail: 8.5, gale: 11, slam: boss.pattern.mechanic === 'three-seismic-pulses' ? 5 : 9,
@@ -1617,7 +1628,7 @@ export class BossManager {
     Object.assign(readout, { bossType: boss.type, label: boss.definition.label, phase: boss.phase, mechanic: boss.pattern.mechanic,
       preparing, action: boss.pressureAction ?? null, progress: preparing ? Math.max(0, Math.min(1, state.progress ?? 0)) : 0,
       read: boss.pattern.read, response: boss.pattern.response, exposedFor: Math.max(0, boss.exposedUntil - this.time), thermalAcquireRange: boss.thermalAcquireRange ?? null,
-      warningRadius: boss.warningRadius ?? null });
+      warningRadius: boss.warningRadius ?? null, signature: isGreatPrey(boss) ? greatPreyReadout(boss) : null });
     boss.mesh.userData.encounterReadout = readout;
     if (boss.attackWarning) boss.attackWarning.position.y = .035;
     const laser = preparing && boss.pattern.mechanic === 'laser-committed-plasma' && boss.pressureAction === 'plasma' && boss.pressureAim;

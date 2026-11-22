@@ -461,7 +461,10 @@ export class UIManager {
           }
         }
 
-        if (armorEl) {
+        if (armorEl && b.definition?.ascension) {
+          // Great prey have no chitin: the line shows the state of their signature mechanic instead.
+          armorEl.innerText = (b.encounterReadout?.signature ?? b.pattern?.read ?? '').toUpperCase();
+        } else if (armorEl) {
           armorEl.innerText = bPct > 50 ? 'BLINDAGE CHITINEUX : INTACT' : (bPct > 20 ? 'BLINDAGE CHITINEUX : FRACTURÉ (-30%)' : 'BLINDAGE : DÉTRUIT (VULNÉRABLE)');
         }
       } else {

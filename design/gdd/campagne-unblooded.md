@@ -247,6 +247,23 @@ Le rite se joue dans les six secteurs de la pyramide, contre des xénomorphes, a
 
 **Étapes suivantes** : les variantes de terrain et les comportements propres, la scène 3D de *La Lame Patiente*, le rite et le rang Blooded, puis l'envoi au compte Supabase.
 
+**Suite du 22 novembre : les signatures des grandes proies.** Jusqu'ici, chaque grande proie affichait sa lecture d'attaque (`BossCombatPatterns`) mais se battait comme un boss générique. Les huit signatures sont maintenant jouées (`js/battlefield/GreatPreyMechanics.js`). Elles gardent l'annonce et l'anneau d'alerte du `CombatDirector` ; seuls changent le lieu, le moment ou la manière de frapper, et la fenêtre d'exposition.
+
+| Monde | Signature | Ce qui change en jeu |
+|---|---|---|
+| Vara-Kesh | Bond depuis une branche | Le Faucheur bondit d'une hauteur de 4 et retombe au sol ; 2 s d'exposition à la réception. |
+| Eshra | Plusieurs têtes | Une tête tombe par tiers de PV perdu ; chaque coup vaut le nombre de têtes restantes sur trois. |
+| Kharuun | Charge sous le sable | Pendant la charge, la Gueule voyage sous le sable et ne peut pas être touchée ; elle surgit avec une onde de choc, puis reste exposée. |
+| Terek-Va | Noyau dans la nuée | Toutes les 6 s, la nuée se resserre 1,2 s, puis frappe à 7 de rayon ; pendant le resserrement, le centre ne prend qu'un quart des dégâts. |
+| Nereth | Charge depuis le couloir gelé | Pendant la préparation de sa charge, la Mâchoire n'est visible qu'en vision thermique ; l'anneau d'alerte reste affiché. |
+| Oshara | Changement de rive | Le Nageur est immergé pendant son bond, donc intouchable, et ressort du côté opposé à son plongeon, de 8 à 16 du chasseur. |
+| Rukh Tal | Charge en fin de cycle de vapeur | Cycle de 8 s ; la charge ne part que dans les 1,5 dernières secondes. Le HUD compte le cycle. |
+| Dharos | Descente depuis une fenêtre | Le Guetteur attend en hauteur, à 6, tant que le chasseur est à plus de 12 ; il descend en bond avec une onde de choc, puis reste au sol tant que le chasseur ne s'éloigne pas à plus de 24. |
+
+Pour les grandes proies, la ligne « blindage chitineux » du panneau de boss affiche l'état de la signature : têtes restantes, cycle de vapeur, nuée, immersion, écho thermique.
+
+**Vérifié** : un test par signature fait tourner la vraie boucle du boss (`tests/great-prey-mechanics.test.js`). La matrice des contre-mesures passe toujours pour les huit. Les chiffres sont des premiers réglages, à ajuster après des parties réelles ; aucune chasse complète n'a été jouée par un humain.
+
 ## 10. Ce qu'il faut créer
 
 Rien de cette campagne n'existe dans le code, sauf le brûleur, le combistick, les alliés Yautja, la pyramide et les outils gagnés. Il faut créer : huit mondes en cartes à zones, huit hardes, huit meneurs, huit grandes proies, Saar comme voix, Kaedh et *La Lame Patiente* comme base entre les chasses, le décompte face à Harek.
