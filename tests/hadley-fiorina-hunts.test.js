@@ -11,10 +11,10 @@ import { createBattlefieldLayout } from '../js/data/BattlefieldLayouts.js';
 const level = id => LEVELS_DATA.find(entry => entry.id === id);
 
 test('both hunts exist with their source, existing boss and an explicit adaptation note', () => {
-  for (const [id, boss, source] of [['hadleys_hope_colony', 'xenomorph_queen', 'Aliens (1986)'], ['fiorina_161_foundry', 'fiorina_runner', 'Alien 3 (1992)'], ['nostromo_refinery', 'nostromo_drone', 'Alien (1979)'], ['usm_auriga_labs', 'xenomorph_queen', 'Alien Resurrection (1997)'], ['sevastopol_station', 'nostromo_drone', 'Alien: Isolation (2014)'], ['gateway_station_labs', 'praetorian', 'Aliens (1986)'], ['paradise_covenant', 'paradise_neomorph', 'Alien: Covenant (2017)']]) {
+  for (const [id, boss, source] of [['hadleys_hope_colony', 'xenomorph_queen', 'Aliens (1986)'], ['fiorina_161_foundry', 'fiorina_runner', 'Alien 3 (1992)'], ['nostromo_refinery', 'nostromo_drone', 'Alien (1979)'], ['usm_auriga_labs', 'xenomorph_queen', 'Alien Resurrection (1997)'], ['sevastopol_station', 'nostromo_drone', 'Alien: Isolation (2014)'], ['gateway_station_labs', 'praetorian', 'Aliens (1986)'], ['paradise_covenant', 'paradise_neomorph', 'Alien: Covenant (2017)'], ['gunnison_town', 'predalien_queen', 'Aliens vs. Predator: Requiem (2007)'], ['prodigy_city_maginot', 'nostromo_drone', 'Alien: Earth (2025)'], ['yautja_clan_ship', 'hold_predalien', 'Hive Warriors (création)']]) {
     const entry = level(id);
     assert.equal(entry.bossType, boss); assert.equal(entry.sourceWork, source); 
-    assert.match(entry.description, /adaptation/); assert.match(entry.fidelity, /no measured 1:1/);
+    assert.match(entry.description, /adaptation|création/); assert.match(entry.fidelity, /no measured 1:1/);
     assert.equal(bossAllowedInLevel(boss, id), true, `${boss} in ${id}`);
     assert.ok(REFERENCE_LEVEL_MECHANISMS[id].builders.length >= 4);
     assert.ok(createBattlefieldLayout(entry).sectors.length >= 6);
@@ -55,4 +55,12 @@ test('Sevastopol fields Seegson Working Joes and Gateway Weyland-Yutani syntheti
     }
   }
   assert.equal(sectorSupportPlan('romulus_station', 2).syntheticProfile, null, 'existing sites keep their mixed squad');
+});
+
+test('Gunnison town fields the National Guard and a Black Hawk, never Colonial Marines; the clan ship and Prodigy City field no humans', () => {
+  for (let sector = 1; sector < 6; sector++) {
+    const town = sectorSupportPlan('gunnison_town', sector);
+    assert.ok(town.nationalGuard > 0); assert.equal(town.marines + town.synthetics, 0); assert.equal(town.apc, false);
+    for (const id of ['yautja_clan_ship', 'prodigy_city_maginot']) { const plan = sectorSupportPlan(id, sector); assert.equal(plan.marines + plan.synthetics + plan.nationalGuard, 0); assert.equal(humanWeaponCacheCount(id, sector), 0); }
+  }
 });

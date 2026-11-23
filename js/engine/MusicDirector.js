@@ -40,7 +40,8 @@ export const WORLD_VARIATIONS = Object.freeze({
   hadleys_hope_colony: { transpose: -2, accents: [0, 3, 7, 10, 13] }, fiorina_161_foundry: { transpose: -8, accents: [0, 4, 8, 11] },
   nostromo_refinery: { transpose: -9, accents: [0, 1, 6, 9] }, usm_auriga_labs: { transpose: 4, accents: [0, 3, 5, 10, 13] },
   sevastopol_station: { transpose: -10, accents: [0, 2, 7, 10, 14] }, gateway_station_labs: { transpose: 6, accents: [0, 4, 7, 11] },
-  paradise_covenant: { transpose: -11, accents: [0, 3, 8, 10, 15] }
+  paradise_covenant: { transpose: -11, accents: [0, 3, 8, 10, 15] },
+  gunnison_town: { transpose: -1, accents: [0, 4, 6, 9, 13] }, prodigy_city_maginot: { transpose: 7, accents: [0, 2, 5, 9, 14] }, yautja_clan_ship: { transpose: -12, accents: [0, 5, 6, 11] }
 });
 const DEFAULT_VARIATION = Object.freeze({ transpose: 0, accents: [0, 3, 6, 10, 12] });
 

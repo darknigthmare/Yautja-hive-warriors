@@ -40,7 +40,13 @@ const PALETTES = {
   // Gateway: bright clinical corporate white over Earth orbit (adaptation).
   gateway: { horizon: 0x3a4a5e, zenith: 0x03060c, key: 0xe6eef4, ground: 0x26292c, accent: 0xe8eef2, clouds: 0, stars: 1, exposure: 1.14 },
   // Paradise: ion-storm overcast, black wheat, pale spore haze (adaptation).
-  paradise: { horizon: 0x4d4f48, zenith: 0x15171b, key: 0xc8cdbe, ground: 0x2a2a20, accent: 0xc9d39a, clouds: .92, stars: 0, exposure: 1.05 }
+  paradise: { horizon: 0x4d4f48, zenith: 0x15171b, key: 0xc8cdbe, ground: 0x2a2a20, accent: 0xc9d39a, clouds: .92, stars: 0, exposure: 1.05 },
+  // Gunnison at night: wet streets, sodium lamps under rain clouds (adaptation).
+  gunnison_town: { horizon: 0x3b3a3c, zenith: 0x090b10, key: 0xc5ccd6, ground: 0x24272a, accent: 0xd9a44a, clouds: .85, stars: 0, exposure: 1.06 },
+  // Prodigy City: neon-blue skyline in rain (adaptation).
+  prodigy_city: { horizon: 0x283050, zenith: 0x06070d, key: 0xc9d6ff, ground: 0x1f2126, accent: 0x66d4ff, clouds: .8, stars: 0, exposure: 1.1 },
+  // Yautja clan ship: amber bone light, cyan plasma conduits (creation).
+  yautja_ship: { horizon: 0x2e2620, zenith: 0x020202, key: 0xd6b88a, ground: 0x1e1c1a, accent: 0x4fd1ff, clouds: 0, stars: .9, exposure: 1.04 }
 };
 
 export class EngineRenderer {

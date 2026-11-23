@@ -8052,5 +8052,55 @@ export const GENERATED_ASSETS = Object.freeze({
       "fidelity_1_to_1_verified": false
     },
     "assembly_note": "Runner de Fiorina (Alien 3). Image Meshy image-to-image (nano-banana) depuis la photo de profil de la figurine NECA Ultimate Dog Alien publiée par Toyark, corps image-to-3d, rig meshyrig bipède 2,2 m sur un quadrupède : les bras servent de pattes avant ; la marche bipède de Meshy donne une démarche de traque. Interprétation d'une figurine, pas un relevé du film."
+  },
+  "boss_paradise_neomorph": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/boss-neomorph-rigged.glb",
+    "sha256": "0fd42b88d5b7842a5ddf7e6e130765c6a7806ae9fcec49ffccf67a7dfcbee7f9",
+    "resource": "rigging",
+    "task_id": "01a208aa-5a4c-77f8-b619-29e4635dc8f6",
+    "source_task_id": "01a208a8-7f6f-7231-a2d6-b62edc598dc8",
+    "image_task_id": "01a208a8-1108-70e3-a7ef-069496106d24",
+    "animationUrls": {
+      "walk": "/models/boss-neomorph-walk.glb",
+      "run": "/models/boss-neomorph-run.glb"
+    },
+    "animationSha256": {
+      "walk": "4aabb6636338ce5c0f4c7cb343f1bdc7aefb7f573ef524078087b95384af7d33",
+      "run": "43ecb0c1b478faafbc1bfcf9cd38d7f0371115271967c6b573e75d67e674390a"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": false,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Néomorphe de Paradise (Alien: Covenant). Image Meshy image-to-image (nano-banana) depuis la photo de la figurine NECA Alien: Covenant Neomorph publiée par Toyark (galerie Alien Covenant, image 046), corps image-to-3d en pose A, rig meshyrig 2,5 m. Interprétation d'une figurine, pas un relevé du film."
+  },
+  "boss_xenomorph_queen": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/boss-queen-rigged.glb",
+    "sha256": "af9e30e1802feb485dafb920d646430a2f7fc336037f7f12c9238401a5f2c527",
+    "resource": "rigging",
+    "task_id": "01a208aa-c0e0-7137-bd71-3f477469588d",
+    "source_task_id": "01a208a8-875a-7012-8f5c-aac6abd5128f",
+    "image_task_id": "01a208a8-17ca-72bc-ba86-97dc82c3d27e",
+    "animationUrls": {
+      "walk": "/models/boss-queen-walk.glb",
+      "run": "/models/boss-queen-run.glb"
+    },
+    "animationSha256": {
+      "walk": "1f04bf76479d1bd6c340476efc12fd6eaa08e42cc5308cd755e70c5434ec5fd7",
+      "run": "0e587e796a35e195c9d01ca2a475fd7904826495facb753a541ff392aa7f282d"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": false,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Reine xénomorphe (Aliens). Image Meshy image-to-image (nano-banana) depuis deux photos de la figurine NECA Alien Queen publiées par Toyark (galerie de 2015, images 014 et 020), corps image-to-3d en pose A, rig meshyrig 4,6 m. Meshy a perdu les petits bras secondaires et réduit la crête ; sac ovigère volontairement absent. Interprétation d'une figurine, pas un relevé du film."
   }
 });

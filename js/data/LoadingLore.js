@@ -60,6 +60,15 @@ export const LOADING_LORE = Object.freeze({
   paradise_covenant: { tag: 'PARADISE · 2104 · ADAPTATION', lines: [
     'Le blé noir couvre la nécropole. Les spores dérivent dans l’orage ; ne les respirez pas.',
     'La ruche et le Néomorphe agrandi en boss sont des adaptations de jeu.'] },
+  gunnison_town: { tag: 'GUNNISON · 2007 · ADAPTATION', lines: [
+    'Le courant saute dans toute la ville. La Garde nationale tient l’hôpital ; la ruche tient les égouts.',
+    'La topologie de la ville est propre au jeu.'] },
+  prodigy_city_maginot: { tag: 'PRODIGY CITY · 2120 · ADAPTATION', lines: [
+    'L’épave du Maginot fume encore dans la tour. Ses spécimens n’attendaient que l’impact.',
+    'Source : une série. La ruche et le boss repris du Nostromo sont des adaptations.'] },
+  yautja_clan_ship: { tag: 'VAISSEAU DE CLAN · CRÉATION', lines: [
+    'La cale de trophées est devenue une ruche. Un hybride né d’un des vôtres règne sur le pont.',
+    'Ce vaisseau et son Predalien sont des créations de Hive Warriors.'] },
   ascension_ship: { tag: 'LA LAME PATIENTE · CRÉATION', lines: [
     'Le vaisseau de l’Elite Kaedh dérive entre deux mondes. Saar attend vos ordres en silence.',
     'Le pont est interdit aux Unblooded. Le rite, lui, vous attend au bout des huit chasses.'] }

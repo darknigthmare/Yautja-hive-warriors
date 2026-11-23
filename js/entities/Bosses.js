@@ -22,6 +22,9 @@ export const HIT_AND_RUN = Object.freeze({ retreat: 2.2, speed: 10.5, turnaround
 /* Paradise neomorph (Alien: Covenant adaptation): each leap landing releases a spore cloud, ringed
  * `arm` seconds before it harms; inside it, a hunter loses `damage` every `tick`. Leaving it is the answer. */
 export const SPORE_CLOUD = Object.freeze({ radius: 5, arm: .6, life: 4.6, tick: .5, damage: 12 });
+/* Hold predalien (Yautja clan ship, creation): after each melee it splits the deck ahead of it; the
+ * lane is shown `arm` seconds early and vents plasma for the rest of its life. Stepping aside is the answer. */
+export const DECK_LANE = Object.freeze({ length: 18, width: 3, arm: .7, life: 3.7, tick: .5, damage: 15 });
 export const VENT_AMBUSH = Object.freeze({ hidden: 2.4, warning: 1.1, distance: 2, reach: 4.5, damage: 55, exposed: 1.3 });
 import { isGreatPrey, stepGreatPrey, greatPreyAllows, startGreatPreyCharge, endGreatPreyCharge, greatPreyMeleeFactor, dueHivePulse, greatPreyReadout } from '../battlefield/GreatPreyMechanics.js';
 
@@ -143,6 +146,7 @@ export class BossManager {
     if (type === 'fiorina_runner') return createCreatureModel('runner', this.sharedResources);
     if (type === 'nostromo_drone') return createCreatureModel('warrior', this.sharedResources);
     if (type === 'paradise_neomorph') return createCreatureModel('neomorph', this.sharedResources);
+    if (type === 'hold_predalien') return createCreatureModel('predalien', this.sharedResources);
     if (!['the_offspring', 'empress_matriarch', 'predalien_queen', 'imperial_queen', 'praetorian', 'predalien', 'queen'].includes(type)) return this.createRecentBossMesh(type);
     const kind = type === 'the_offspring' ? 'offspring' : type === 'empress_matriarch' ? 'empress'
       : type === 'predalien_queen' ? 'predalien' : type === 'imperial_queen' ? 'imperial'
@@ -304,15 +308,32 @@ export class BossManager {
     (this.sporeClouds ??= []).push({ mesh, position, owner: boss, armAt: this.time + SPORE_CLOUD.arm, until: this.time + SPORE_CLOUD.life, nextTick: this.time + SPORE_CLOUD.arm });
   }
 
+  _releaseDeckLane(boss) {
+    const direction = new THREE.Vector3(Math.sin(boss.mesh.rotation.y), 0, Math.cos(boss.mesh.rotation.y));
+    const position = boss.mesh.position.clone().setY(0), center = position.clone().addScaledVector(direction, DECK_LANE.length / 2);
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(DECK_LANE.width, DECK_LANE.length), new THREE.MeshBasicMaterial({ color: 0xff7a3a, side: THREE.DoubleSide, transparent: true, opacity: .25, depthWrite: false }));
+    mesh.rotation.set(-Math.PI / 2, 0, -boss.mesh.rotation.y); mesh.position.copy(center); mesh.position.y += .07; mesh.name = 'deck-lane'; this.scene.add(mesh);
+    (this.sporeClouds ??= []).push({ kind: 'lane', mesh, position, direction, owner: boss, armAt: this.time + DECK_LANE.arm, until: this.time + DECK_LANE.life, nextTick: this.time + DECK_LANE.arm });
+  }
+
+  /** Ground hazards owned by the boss: spore clouds (circle) and deck lanes (rectangle ahead of the boss). */
+  _hazardContains(cloud, target) {
+    const dx = target.position.x - cloud.position.x, dz = target.position.z - cloud.position.z;
+    if (cloud.kind !== 'lane') return Math.hypot(dx, dz) <= SPORE_CLOUD.radius;
+    const along = dx * cloud.direction.x + dz * cloud.direction.z, across = Math.abs(dx * cloud.direction.z - dz * cloud.direction.x);
+    return along >= 0 && along <= DECK_LANE.length && across <= DECK_LANE.width / 2;
+  }
+
   _updateSporeClouds(players) {
     for (const cloud of [...(this.sporeClouds ?? [])]) {
       cloud.mesh.material.opacity = this.time < cloud.armAt ? .25 : .55;
       if (this.time >= cloud.until || this.activeBoss !== cloud.owner) { disposeObject(cloud.mesh); this.sporeClouds.splice(this.sporeClouds.indexOf(cloud), 1); continue; }
       if (this.time < cloud.nextTick) continue;
-      cloud.nextTick += SPORE_CLOUD.tick;
-      for (const target of players) if (target.hp > 0 && Math.hypot(target.position.x - cloud.position.x, target.position.z - cloud.position.z) <= SPORE_CLOUD.radius) {
-        if (this.combatDirector) this.combatDirector.applyHazardDamage(cloud, target, SPORE_CLOUD.damage);
-        else target.takeDamage(SPORE_CLOUD.damage, true, cloud.owner, { attackKind: 'spores' });
+      const lane = cloud.kind === 'lane', damage = lane ? DECK_LANE.damage : SPORE_CLOUD.damage;
+      cloud.nextTick += lane ? DECK_LANE.tick : SPORE_CLOUD.tick;
+      for (const target of players) if (target.hp > 0 && this._hazardContains(cloud, target)) {
+        if (this.combatDirector) this.combatDirector.applyHazardDamage(cloud, target, damage);
+        else target.takeDamage(damage, true, cloud.owner, { attackKind: lane ? 'plasma-vent' : 'spores' });
       }
     }
   }
@@ -483,6 +504,7 @@ export class BossManager {
       else if (action === 'shriek') { boss.shriekCooldown = 6; this.audioEngine?.playOffspringShriek?.(); if (distance <= 10 && this._insideAttackCone(player, Math.PI * .7) && this.applyBossDamage(player, 60, 'shriek', boss) && Number.isFinite(player.plasmaEnergy)) player.plasmaEnergy = Math.max(0, player.plasmaEnergy - 25); }
       else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, (boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35) * (isGreatPrey(boss) ? greatPreyMeleeFactor(boss) : 1), 'melee', boss);
         if (boss.pattern?.mechanic === 'hit-and-run') { boss.retreatUntil = this.time + HIT_AND_RUN.retreat; boss.turnaroundPending = true; }
+        if (boss.pattern?.mechanic === 'deck-lane') this._releaseDeckLane(boss);
         if (boss.pattern?.mechanic === 'vent-ambush') { boss.ventUntil = this.time + VENT_AMBUSH.hidden; boss.emergeAt = null; boss.mesh.visible = false; } }
       boss.pressureAction = null; boss.pressureAim = null; boss.exposedUntil = Math.max(boss.exposedUntil, this.time + .6);
     }

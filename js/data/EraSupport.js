@@ -35,7 +35,10 @@ const ERA_SUPPORT = Object.freeze({
   usm_auriga_labs: NONE('2381: United Systems Military, not USCM; no support vehicle'),
   sevastopol_station: NONE('2137: Seegson trading station, no military'),
   gateway_station_labs: NONE('2179: Weyland-Yutani station; company security, not USCM'),
-  paradise_covenant: NONE('2104: colony ship crew, no military command')
+  paradise_covenant: NONE('2104: colony ship crew, no military command'),
+  gunnison_town: Object.freeze({ ground: null, air: 'blackhawk', reason: '2007: Colorado National Guard and US Army' }),
+  prodigy_city_maginot: NONE('2120: Prodigy corporate city; no USCM'),
+  yautja_clan_ship: NONE('Yautja clan ship: no human command')
 });
 
 /** { ground, air } for a location: 'apc' or null, and an air profile or null. Unknown places get none. */

@@ -256,6 +256,22 @@ const chargePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.
 const meleePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.ok(meleeTrial(id, false) > 0); assert.equal(meleeTrial(id, true), 0); }];
 cases.push(leapPrey('vara_kesh_reaper'), meleePrey('eshra_hydra'), chargePrey('kharuun_sand_maw'), meleePrey('terek_va_hive_mind'),
   chargePrey('nereth_jaw'), leapPrey('oshara_swimmer'), chargePrey('rukh_tal_spur'), leapPrey('dharos_watcher'));
+// Hold predalien: each melee splits the deck ahead of it; standing in the lane after it arms costs HP, a side step does not.
+cases.push(['hold_predalien', 'deck-lane', () => {
+  for (const stay of [true, false]) fixture('hold_predalien', (manager, boss) => {
+    const target = player(0, 0, 3);
+    for (const key of ['tailWhipCooldown', 'specialCooldown', 'regurgitateCooldown', 'shriekCooldown', 'spitCooldown']) boss[key] = 999;
+    boss.contactCooldown = 0; manager.update(1 / 60, target);
+    assert.equal(boss.pressureAction, 'melee'); releasePrepared(manager, target);
+    const lane = manager.sporeClouds?.find(cloud => cloud.kind === 'lane'); assert.ok(lane, 'the strike opens a lane');
+    assert.ok(manager.scene.getObjectByName('deck-lane'), 'the lane is shown before it vents');
+    stopAI(boss); const before = target.hits.length;
+    const ahead = lane.position.clone().addScaledVector(lane.direction, 9);
+    if (stay) target.position.copy(ahead); else target.position.copy(ahead).add(new THREE.Vector3(lane.direction.z, 0, -lane.direction.x).multiplyScalar(4));
+    tick(manager, target, 2);
+    assert.equal(target.hits.length > before, stay, stay ? 'standing in the lane is burned' : 'a side step is safe');
+  });
+}]);
 // Paradise neomorph: each leap landing rings a spore cloud; staying inside after it arms costs HP.
 cases.push(['paradise_neomorph', 'spore-cloud', () => {
   for (const stay of [true, false]) fixture('paradise_neomorph', (manager, boss) => {

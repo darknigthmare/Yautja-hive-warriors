@@ -15,6 +15,7 @@ export const BOSS_COMBAT_PATTERNS = Object.freeze({
   fiorina_runner: pattern('hit-and-run', 'Après chaque morsure, le Runner rompt le contact puis se retourne.', 'Ne le poursuivez pas : préparez une attaque lourde pour le moment où il se retourne.'),
   nostromo_drone: pattern('vent-ambush', 'Après une morsure, il disparaît dans les conduits ; un cercle marque l’endroit où il va retomber.', 'Quittez le cercle avant sa chute, puis frappez pendant qu’il se redresse.'),
   paradise_neomorph: pattern('spore-cloud', 'À chaque réception de bond, un nuage de spores pâle se forme autour de lui.', 'Sortez du cercle avant qu’il ne devienne opaque, puis frappez de l’extérieur.'),
+  hold_predalien: pattern('deck-lane', 'Après chaque coup, il fend le pont devant lui : le couloir rougeoie avant de cracher du plasma.', 'Écartez-vous sur le côté du couloir, puis frappez-le de flanc.'),
   awakened_engineer: pattern('heavy-shield-overload', 'Le bouclier absorbe une partie des impacts.', 'Les attaques lourdes brisent plus vite le bouclier ; évitez ensuite le vortex.'),
   trilobite_prime: pattern('low-constriction', 'L’organisme prépare une saisie au ras du sol.', 'Sautez sa zone de saisie ou reculez avant sa fermeture.'),
   berserker_super_predator: pattern('shared-plasma-burst', 'Trois traits partagent un verrouillage visible.', 'Quittez cette ligne ou prenez un couvert ; la rafale ne cumule pas trois impacts sur vous.', { weapons: Object.freeze(['plasma']) }),

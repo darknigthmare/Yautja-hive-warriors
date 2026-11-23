@@ -1,0 +1,29 @@
+{
+ "neomorph": {
+  "img": "01a208a8-1108-70e3-a7ef-069496106d24",
+  "img_endpoint": "image-to-image",
+  "img_status": "SUCCEEDED",
+  "model": "01a208a8-7f6f-7231-a2d6-b62edc598dc8",
+  "model_status": "SUCCEEDED",
+  "rig": "01a208aa-5a4c-77f8-b619-29e4635dc8f6",
+  "rig_status": "SUCCEEDED"
+ },
+ "queen": {
+  "img": "01a208a8-17ca-72bc-ba86-97dc82c3d27e",
+  "img_endpoint": "image-to-image",
+  "img_status": "SUCCEEDED",
+  "model": "01a208a8-875a-7012-8f5c-aac6abd5128f",
+  "model_status": "SUCCEEDED",
+  "rig": "01a208aa-c0e0-7137-bd71-3f477469588d",
+  "rig_status": "SUCCEEDED"
+ },
+ "praetorian": {
+  "img": "01a208a8-21fc-704d-88d1-4071a84f1ea2",
+  "img_endpoint": "text-to-image",
+  "img_status": "SUCCEEDED",
+  "model": "01a208a8-8ba7-7216-87c1-aa4466023bed",
+  "model_status": "SUCCEEDED",
+  "rig": "01a208aa-d43a-7084-857b-7268c34d5c51",
+  "rig_status": "SUCCEEDED"
+ }
+}

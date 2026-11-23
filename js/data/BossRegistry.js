@@ -3,7 +3,7 @@
  * and phases below are gameplay choices in game units. */
 const LABELS = Object.freeze({ xenomorph_queen: 'Reine xénomorphe', praetorian: 'Prétorien', predalien: 'Predalien', predalien_queen: 'Predalien de Gunnison',
   imperial_queen: 'Reine impériale', empress_matriarch: 'Impératrice matriarche', the_offspring: 'Offspring', predalien_abomination: 'Abomination prédalienne',
-  predalien_matriarch_titan: 'Titan prédalien', rogue_king_prime: 'Roi de Charon', fiorina_runner: 'Runner de Fiorina', nostromo_drone: 'Xénomorphe du Nostromo', paradise_neomorph: 'Néomorphe de Paradise', awakened_engineer: 'Ingénieur éveillé', trilobite_prime: 'Trilobite',
+  predalien_matriarch_titan: 'Titan prédalien', rogue_king_prime: 'Roi de Charon', fiorina_runner: 'Runner de Fiorina', nostromo_drone: 'Xénomorphe du Nostromo', paradise_neomorph: 'Néomorphe de Paradise', hold_predalien: 'Predalien de la cale', awakened_engineer: 'Ingénieur éveillé', trilobite_prime: 'Trilobite',
   berserker_super_predator: 'Berserker', ultimate_upgrade_predator: 'Upgrade Predator', feral_predator_boss: 'Feral', apex_gladiator_predator: 'Gladiateur de l’arène',
   jungle_hunter_boss: 'Jungle Hunter', city_hunter_boss: 'City Hunter',
   vara_kesh_reaper: 'Faucheur de Vara-Kesh', eshra_hydra: 'Hydre d’Eshra', kharuun_sand_maw: 'Gueule des sables', terek_va_hive_mind: 'Esprit de ruche des profondeurs',
@@ -15,10 +15,10 @@ const define = (id, species, source, hp, height, attacks, levels = [], extra = {
 });
 export const BOSS_REGISTRY = Object.freeze({
   // 7 500 PV (author, 23 Nov 2026): at 3 000 the queen fell in 14.5 s, against 37-50 s for the other APEX finals.
-  xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 7500, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid', 'hadleys_hope_colony', 'usm_auriga_labs']),
+  xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 7500, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid', 'hadleys_hope_colony', 'usm_auriga_labs'], { importedModel: 'boss_xenomorph_queen' }),
   praetorian: define('praetorian', 'xenomorph', 'Praetorian game caste; encounter adaptation', 3000, 5.2, ['tail', 'spit', 'melee'], ['gateway_station_labs']),
   predalien: define('predalien', 'xenomorph', 'Alien vs. Predator game hybrid', 3000, 5.4, ['tail', 'spit', 'leap', 'melee']),
-  predalien_queen: define('predalien_queen', 'xenomorph', 'AVP: Requiem (2007), gameplay adaptation of the Predalien; queen title is not a film caste', 5000, 5.8, ['tail', 'embryos', 'melee'], ['gunnison_forest']),
+  predalien_queen: define('predalien_queen', 'xenomorph', 'AVP: Requiem (2007), gameplay adaptation of the Predalien; queen title is not a film caste', 5000, 5.8, ['tail', 'embryos', 'melee'], ['gunnison_forest', 'gunnison_town']),
   imperial_queen: define('imperial_queen', 'xenomorph', 'AVP: Extinction game encounter adaptation', 8000, 8.2, ['tail', 'spit', 'slam', 'melee']),
   empress_matriarch: define('empress_matriarch', 'xenomorph', 'AVP game/comic encounter adaptation; flight is a project mechanic', 6000, 7.5, ['tail', 'spit', 'gale', 'melee'], ['xenomorph_prime']),
   the_offspring: define('the_offspring', 'hybrid', 'Alien: Romulus (2024)', 4500, 6.0, ['shriek', 'melee'], ['romulus_station']),
@@ -26,8 +26,9 @@ export const BOSS_REGISTRY = Object.freeze({
   predalien_matriarch_titan: define('predalien_matriarch_titan', 'xenomorph', 'Original project titan inspired by AVP game roles', 10000, 8.0, ['tail', 'embryos', 'slam', 'melee'], [], { original: true }),
   rogue_king_prime: define('rogue_king_prime', 'xenomorph', 'Aliens: Rogue (1993), game adaptation of the King', 9500, 7.5, ['slam', 'charge', 'melee'], ['charon_rogue_base']),
   fiorina_runner: define('fiorina_runner', 'xenomorph', 'Alien 3 (1992), the Runner of Fiorina 161; boss scale and hit-and-run rhythm are gameplay adaptations', 7800, 4.4, ['leap', 'melee'], ['fiorina_161_foundry'], { adaptedFrom: 'runner creature model', importedModel: 'fiorina_runner' }),
-  nostromo_drone: define('nostromo_drone', 'xenomorph', 'Alien (1979), the creature aboard the Nostromo; boss scale and vent-ambush rhythm are gameplay adaptations', 6800, 4.8, ['melee'], ['nostromo_refinery', 'sevastopol_station'], { adaptedFrom: 'warrior creature model' }),
-  paradise_neomorph: define('paradise_neomorph', 'neomorph', 'Alien: Covenant (2017), a neomorph of Planet 4; enlarged boss scale and spore clouds are gameplay adaptations', 7200, 4.6, ['leap', 'melee'], ['paradise_covenant'], { adaptedFrom: 'neomorph creature model' }),
+  nostromo_drone: define('nostromo_drone', 'xenomorph', 'Alien (1979), the creature aboard the Nostromo; boss scale and vent-ambush rhythm are gameplay adaptations', 6800, 4.8, ['melee'], ['nostromo_refinery', 'sevastopol_station', 'prodigy_city_maginot'], { adaptedFrom: 'warrior creature model' }),
+  paradise_neomorph: define('paradise_neomorph', 'neomorph', 'Alien: Covenant (2017), a neomorph of Planet 4; enlarged boss scale and spore clouds are gameplay adaptations', 7200, 4.6, ['leap', 'melee'], ['paradise_covenant'], { adaptedFrom: 'neomorph creature model', importedModel: 'boss_paradise_neomorph' }),
+  hold_predalien: define('hold_predalien', 'xenomorph', 'Hive Warriors creation: a predalien born in an infested Yautja clan ship, after the AVP hybrid; its deck-splitting lanes are a gameplay creation', 8200, 5.3, ['leap', 'melee'], ['yautja_clan_ship'], { creation: true, adaptedFrom: 'predalien creature model' }),
   awakened_engineer: define('awakened_engineer', 'engineer', 'Prometheus (2012), original shield/vortex encounter mechanics', 8500, 5.8, ['vortex', 'slam', 'melee'], ['lv223_engineer_structures'], { adaptedArsenal: ['phase-shield', 'gravity-vortex'] }),
   trilobite_prime: define('trilobite_prime', 'organism', 'Prometheus (2012), enlarged project encounter', 7000, 4.7, ['constrict', 'leap', 'melee']),
   berserker_super_predator: define('berserker_super_predator', 'yautja', 'Predators (2010), Berserker / Mr. Black', 8800, 5.2, ['plasma', 'charge', 'melee'], ['game_preserve_planet']),

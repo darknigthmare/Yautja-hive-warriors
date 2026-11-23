@@ -33,7 +33,13 @@ const PROFILE_DEFINITIONS = {
   // Aliens (1986) location, created scenario: specimen tanks (finite facehuggers), lab tanks, airlocks and bulkheads.
   gateway_station_labs: ['buildSpecimenStasisTanks', 'buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks'],
   // Alien: Covenant (2017): the Engineer necropolis, David's pathogen urns, rain and the ion storm.
-  paradise_covenant: ['buildEngineerCityRuins', 'buildEngineerUrnClusters', 'buildFloodedPuddles', 'buildLightningRods']
+  paradise_covenant: ['buildEngineerCityRuins', 'buildEngineerUrnClusters', 'buildFloodedPuddles', 'buildLightningRods'],
+  // AVP: Requiem (2007): wet streets, power transformers, explosive barrels and the hive's resin in the sewers.
+  gunnison_town: ['buildFloodedPuddles', 'buildElectricalTransformers', 'buildExplosiveBarrels', 'buildBiomechanicalWallResin'],
+  // Alien: Earth (2025): crash debris floors, specimen containment (finite facehuggers), power and bulkheads.
+  prodigy_city_maginot: ['buildSpecimenStasisTanks', 'buildCollapsibleFloorGrates', 'buildElectricalTransformers', 'buildHydraulicBlastDoors', 'buildFloodedPuddles'],
+  // Creation: Yautja clan ship with its weapon shrine, plasma recharge terminals, energised deck grids, bulkheads, the hive's resin and eggs.
+  yautja_clan_ship: ['buildShrineOfTheAncients', 'buildPlasmaRechargeTerminals', 'buildElectricFloorGrids', 'buildHydraulicBlastDoors', 'buildBiomechanicalWallResin', 'buildEggNurseries']
 };
 
 export const REFERENCE_LEVEL_MECHANISMS = Object.freeze(Object.fromEntries(
