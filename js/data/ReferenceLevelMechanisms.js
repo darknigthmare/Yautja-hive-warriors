@@ -20,17 +20,19 @@ const PROFILE_DEFINITIONS = {
   // The stasis crypt is left out: its proximity trigger spawns a boss, which would replace the hunt's final boss.
   lv223_engineer_structures: ['buildEngineerCityRuins', 'buildEngineerUrnClusters'],
   // Aliens (1986): colony catwalks and blast doors, the processor's steam, USCM supply caches, the hive's resin and eggs.
-  hadleys_hope_colony: ['buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildElectricalTransformers', 'buildUSCMSupplyCaches', 'buildBiomechanicalWallResin', 'buildEggNurseries'],
+  hadleys_hope_colony: ['buildColonyProps', 'buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildElectricalTransformers', 'buildUSCMSupplyCaches', 'buildBiomechanicalWallResin', 'buildEggNurseries'],
   // Alien 3 (1992): foundry catwalks, lead-mould doors, furnace steam and the flammable fuel lines of the tunnels.
-  fiorina_161_foundry: ['buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildFuelLines'],
+  fiorina_161_foundry: ['buildFiorinaMoltenLeadFoundry', 'buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildFuelLines'],
   // Alien (1979): narrow catwalks, the engine room steam, bulkhead doors and the ship's power plant.
   nostromo_refinery: ['buildIndustrialCatwalks', 'buildSteamConduits', 'buildHydraulicBlastDoors', 'buildElectricalTransformers'],
   // Alien Resurrection (1997): laboratory tanks, decontamination airlocks, bulkheads and the hive's resin and eggs.
-  usm_auriga_labs: ['buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks', 'buildBiomechanicalWallResin', 'buildEggNurseries'],
+  usm_auriga_labs: ['buildAurigaFloodedBasin', 'buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks', 'buildBiomechanicalWallResin', 'buildEggNurseries'],
   // Alien: Isolation (2014): station catwalks, bulkheads, steam, power junctions and the hive's resin.
   sevastopol_station: ['buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildElectricalTransformers', 'buildBiomechanicalWallResin'],
-  // Aliens (1986) location, created scenario: laboratory tanks, decontamination airlocks and bulkheads.
-  gateway_station_labs: ['buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks']
+  // Aliens (1986) location, created scenario: specimen tanks (finite facehuggers), lab tanks, airlocks and bulkheads.
+  gateway_station_labs: ['buildSpecimenStasisTanks', 'buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks'],
+  // Alien: Covenant (2017): the Engineer necropolis, David's pathogen urns, rain and the ion storm.
+  paradise_covenant: ['buildEngineerCityRuins', 'buildEngineerUrnClusters', 'buildFloodedPuddles', 'buildLightningRods']
 };
 
 export const REFERENCE_LEVEL_MECHANISMS = Object.freeze(Object.fromEntries(

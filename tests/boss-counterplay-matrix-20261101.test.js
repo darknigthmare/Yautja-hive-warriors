@@ -256,6 +256,19 @@ const chargePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.
 const meleePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.ok(meleeTrial(id, false) > 0); assert.equal(meleeTrial(id, true), 0); }];
 cases.push(leapPrey('vara_kesh_reaper'), meleePrey('eshra_hydra'), chargePrey('kharuun_sand_maw'), meleePrey('terek_va_hive_mind'),
   chargePrey('nereth_jaw'), leapPrey('oshara_swimmer'), chargePrey('rukh_tal_spur'), leapPrey('dharos_watcher'));
+// Paradise neomorph: each leap landing rings a spore cloud; staying inside after it arms costs HP.
+cases.push(['paradise_neomorph', 'spore-cloud', () => {
+  for (const stay of [true, false]) fixture('paradise_neomorph', (manager, boss) => {
+    const target = player(0, 0, 12); prepare(manager, target, 'leap'); releasePrepared(manager, target);
+    for (let frame = 0; boss.charge && frame < 120; frame++) manager.update(1 / 60, target);
+    const cloud = manager.sporeClouds?.[0]; assert.ok(cloud, 'the landing releases a cloud');
+    assert.ok(manager.scene.getObjectByName('spore-cloud'), 'its ring is visible before it harms');
+    stopAI(boss); const before = target.hits.length;
+    target.position.set(cloud.position.x + (stay ? 1 : 12), 0, cloud.position.z);
+    tick(manager, target, 2);
+    assert.equal(target.hits.length > before, stay, stay ? 'staying inside is harmed' : 'leaving the ring is safe');
+  });
+}]);
 // Nostromo creature: after a bite it hides in the ducts (untouchable), then drops at an announced point.
 cases.push(['nostromo_drone', 'vent-ambush', () => {
   for (const stay of [true, false]) fixture('nostromo_drone', (manager, boss) => {

@@ -7,7 +7,7 @@
 export const BOSS_LABELS = Object.freeze({
   xenomorph_queen: 'la Reine xénomorphe', praetorian: 'un Prétorien', predalien: 'le Predalien', predalien_queen: 'le Predalien de la meute',
   imperial_queen: 'la Reine impériale', empress_matriarch: 'la Matriarche impératrice', the_offspring: 'le Rejeton', predalien_abomination: 'l’Abomination predalien',
-  predalien_matriarch_titan: 'la Matriarche titan', rogue_king_prime: 'le Rogue King', fiorina_runner: 'le Runner de Fiorina', nostromo_drone: 'le Xénomorphe du Nostromo', awakened_engineer: 'l’Ingénieur éveillé', trilobite_prime: 'le Trilobite primordial',
+  predalien_matriarch_titan: 'la Matriarche titan', rogue_king_prime: 'le Rogue King', fiorina_runner: 'le Runner de Fiorina', nostromo_drone: 'le Xénomorphe du Nostromo', paradise_neomorph: 'le Néomorphe de Paradise', awakened_engineer: 'l’Ingénieur éveillé', trilobite_prime: 'le Trilobite primordial',
   berserker_super_predator: 'le Berserker', ultimate_upgrade_predator: 'le Predator Ultime', feral_predator_boss: 'le Feral', apex_gladiator_predator: 'le gladiateur Apex',
   jungle_hunter_boss: 'le Chasseur de la jungle', city_hunter_boss: 'le Chasseur de la ville'
 });

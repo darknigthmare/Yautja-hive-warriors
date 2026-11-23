@@ -19,6 +19,9 @@ import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/Hunt
 export const HIT_AND_RUN = Object.freeze({ retreat: 2.2, speed: 10.5, turnaround: 1.4, stagger: 1.6 });
 /* Nostromo creature (Alien adaptation): after a bite it vanishes into the ducts and drops behind
  * the target (2 units behind it) at a point announced `warning` seconds early: standing still is bitten, leaving the ring is not. */
+/* Paradise neomorph (Alien: Covenant adaptation): each leap landing releases a spore cloud, ringed
+ * `arm` seconds before it harms; inside it, a hunter loses `damage` every `tick`. Leaving it is the answer. */
+export const SPORE_CLOUD = Object.freeze({ radius: 5, arm: .6, life: 4.6, tick: .5, damage: 12 });
 export const VENT_AMBUSH = Object.freeze({ hidden: 2.4, warning: 1.1, distance: 2, reach: 4.5, damage: 55, exposed: 1.3 });
 import { isGreatPrey, stepGreatPrey, greatPreyAllows, startGreatPreyCharge, endGreatPreyCharge, greatPreyMeleeFactor, dueHivePulse, greatPreyReadout } from '../battlefield/GreatPreyMechanics.js';
 
@@ -139,6 +142,7 @@ export class BossManager {
     // Fiorina runner and Nostromo creature: existing creature models, scaled to the boss height (no dedicated model).
     if (type === 'fiorina_runner') return createCreatureModel('runner', this.sharedResources);
     if (type === 'nostromo_drone') return createCreatureModel('warrior', this.sharedResources);
+    if (type === 'paradise_neomorph') return createCreatureModel('neomorph', this.sharedResources);
     if (!['the_offspring', 'empress_matriarch', 'predalien_queen', 'imperial_queen', 'praetorian', 'predalien', 'queen'].includes(type)) return this.createRecentBossMesh(type);
     const kind = type === 'the_offspring' ? 'offspring' : type === 'empress_matriarch' ? 'empress'
       : type === 'predalien_queen' ? 'predalien' : type === 'imperial_queen' ? 'imperial'
@@ -293,6 +297,26 @@ export class BossManager {
   }
 
 
+  _releaseSporeCloud(boss) {
+    const position = boss.mesh.position.clone().setY(0);
+    const mesh = new THREE.Mesh(new THREE.RingGeometry(SPORE_CLOUD.radius * .15, SPORE_CLOUD.radius, 40), new THREE.MeshBasicMaterial({ color: 0xc9d39a, side: THREE.DoubleSide, transparent: true, opacity: .45, depthWrite: false }));
+    mesh.rotation.x = -Math.PI / 2; mesh.position.copy(position); mesh.position.y += .07; mesh.name = 'spore-cloud'; this.scene.add(mesh);
+    (this.sporeClouds ??= []).push({ mesh, position, owner: boss, armAt: this.time + SPORE_CLOUD.arm, until: this.time + SPORE_CLOUD.life, nextTick: this.time + SPORE_CLOUD.arm });
+  }
+
+  _updateSporeClouds(players) {
+    for (const cloud of [...(this.sporeClouds ?? [])]) {
+      cloud.mesh.material.opacity = this.time < cloud.armAt ? .25 : .55;
+      if (this.time >= cloud.until || this.activeBoss !== cloud.owner) { disposeObject(cloud.mesh); this.sporeClouds.splice(this.sporeClouds.indexOf(cloud), 1); continue; }
+      if (this.time < cloud.nextTick) continue;
+      cloud.nextTick += SPORE_CLOUD.tick;
+      for (const target of players) if (target.hp > 0 && Math.hypot(target.position.x - cloud.position.x, target.position.z - cloud.position.z) <= SPORE_CLOUD.radius) {
+        if (this.combatDirector) this.combatDirector.applyHazardDamage(cloud, target, SPORE_CLOUD.damage);
+        else target.takeDamage(SPORE_CLOUD.damage, true, cloud.owner, { attackKind: 'spores' });
+      }
+    }
+  }
+
   /** Vent-ambush: hidden, then an announced drop point behind the target, then a bite there. */
   _updateVentAmbush(boss, player) {
     releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null;
@@ -314,6 +338,7 @@ export class BossManager {
   clear() {
     releaseHostileAttack(this, this.activeBoss);
     if (this.activeBoss?.mesh) disposeImportedCompanion(this.activeBoss.mesh);
+    for (const cloud of this.sporeClouds ?? []) disposeObject(cloud.mesh); this.sporeClouds = [];
     disposeObject(this.activeBoss?.mesh, this.sharedResources);
     this.activeBoss = null;
     for (const list of [this.acidSpitProjectiles, this.embryoProjectiles, this.weaponProjectiles, this.effects]) for (const item of list ?? []) disposeObject(item.mesh);
@@ -341,6 +366,7 @@ export class BossManager {
       else if (action.kind === 'shockwave') players.forEach((target, index) => this._shockwave(target, action.radius, action.damage, action.color, { innerRadius: action.innerRadius, visual: index === 0 }));
     }
     this._updateWeaponProjectiles(delta, players);
+    this._updateSporeClouds(players);
     if (this.activeBoss !== boss) return;
     for (let i = this.effects.length - 1; i >= 0; i--) {
       const fx = this.effects[i]; fx.life -= delta;
@@ -390,6 +416,7 @@ export class BossManager {
       if (charge.life <= 0) {
         if (charge.kind === 'leap') boss.mesh.position.y = charge.startY;
         boss.charge = null; boss.isLeaping = false; boss.exposedUntil = this.time + 1.4;
+        if (charge.kind === 'leap' && boss.pattern?.mechanic === 'spore-cloud') this._releaseSporeCloud(boss);
         if (charge.kind === 'leap' && boss.pattern?.mechanic === 'landing-aftershock') this.pendingActions.push({ kind: 'shockwave', owner: boss, life: .65, radius: 7, innerRadius: 0, damage: 55, color: 0xffb36b });
         if (isGreatPrey(boss)) {
           for (const extra of endGreatPreyCharge(boss, charge, player, point => this.findBossArenaPosition(point, boss.footprintRadius ?? 1.8, boss.definition.height))) this.pendingActions.push({ ...extra, owner: boss });

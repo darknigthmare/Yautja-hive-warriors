@@ -57,6 +57,9 @@ export const LOADING_LORE = Object.freeze({
   gateway_station_labs: { tag: 'GATEWAY · 2179 · CRÉATION', lines: [
     'Le laboratoire de la compagnie a cédé. La sécurité synthétique de Weyland-Yutani tire sur tout ce qui bouge.',
     'Le film ne montre aucun spécimen à bord de Gateway : ce scénario est une création du jeu.'] },
+  paradise_covenant: { tag: 'PARADISE · 2104 · ADAPTATION', lines: [
+    'Le blé noir couvre la nécropole. Les spores dérivent dans l’orage ; ne les respirez pas.',
+    'La ruche et le Néomorphe agrandi en boss sont des adaptations de jeu.'] },
   ascension_ship: { tag: 'LA LAME PATIENTE · CRÉATION', lines: [
     'Le vaisseau de l’Elite Kaedh dérive entre deux mondes. Saar attend vos ordres en silence.',
     'Le pont est interdit aux Unblooded. Le rite, lui, vous attend au bout des huit chasses.'] }

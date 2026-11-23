@@ -39,7 +39,8 @@ export const WORLD_VARIATIONS = Object.freeze({
   lv223_engineer_structures: { transpose: -7, accents: [0, 5, 7, 12] },
   hadleys_hope_colony: { transpose: -2, accents: [0, 3, 7, 10, 13] }, fiorina_161_foundry: { transpose: -8, accents: [0, 4, 8, 11] },
   nostromo_refinery: { transpose: -9, accents: [0, 1, 6, 9] }, usm_auriga_labs: { transpose: 4, accents: [0, 3, 5, 10, 13] },
-  sevastopol_station: { transpose: -10, accents: [0, 2, 7, 10, 14] }, gateway_station_labs: { transpose: 6, accents: [0, 4, 7, 11] }
+  sevastopol_station: { transpose: -10, accents: [0, 2, 7, 10, 14] }, gateway_station_labs: { transpose: 6, accents: [0, 4, 7, 11] },
+  paradise_covenant: { transpose: -11, accents: [0, 3, 8, 10, 15] }
 });
 const DEFAULT_VARIATION = Object.freeze({ transpose: 0, accents: [0, 3, 6, 10, 12] });
 

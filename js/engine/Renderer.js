@@ -38,7 +38,9 @@ const PALETTES = {
   // Sevastopol: retro-futurist green terminals, dim corridors, a gas giant glow (adaptation).
   sevastopol: { horizon: 0x2b3a33, zenith: 0x030506, key: 0xcfe0d2, ground: 0x22262a, accent: 0x7fd08a, clouds: 0, stars: .9, exposure: 1.03 },
   // Gateway: bright clinical corporate white over Earth orbit (adaptation).
-  gateway: { horizon: 0x3a4a5e, zenith: 0x03060c, key: 0xe6eef4, ground: 0x26292c, accent: 0xe8eef2, clouds: 0, stars: 1, exposure: 1.14 }
+  gateway: { horizon: 0x3a4a5e, zenith: 0x03060c, key: 0xe6eef4, ground: 0x26292c, accent: 0xe8eef2, clouds: 0, stars: 1, exposure: 1.14 },
+  // Paradise: ion-storm overcast, black wheat, pale spore haze (adaptation).
+  paradise: { horizon: 0x4d4f48, zenith: 0x15171b, key: 0xc8cdbe, ground: 0x2a2a20, accent: 0xc9d39a, clouds: .92, stars: 0, exposure: 1.05 }
 };
 
 export class EngineRenderer {
