@@ -16,7 +16,7 @@ const define = (id, species, source, hp, height, attacks, levels = [], extra = {
 export const BOSS_REGISTRY = Object.freeze({
   // 7 500 PV (author, 23 Nov 2026): at 3 000 the queen fell in 14.5 s, against 37-50 s for the other APEX finals.
   xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 7500, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid', 'hadleys_hope_colony', 'usm_auriga_labs']),
-  praetorian: define('praetorian', 'xenomorph', 'Praetorian game caste; encounter adaptation', 3000, 5.2, ['tail', 'spit', 'melee']),
+  praetorian: define('praetorian', 'xenomorph', 'Praetorian game caste; encounter adaptation', 3000, 5.2, ['tail', 'spit', 'melee'], ['gateway_station_labs']),
   predalien: define('predalien', 'xenomorph', 'Alien vs. Predator game hybrid', 3000, 5.4, ['tail', 'spit', 'leap', 'melee']),
   predalien_queen: define('predalien_queen', 'xenomorph', 'AVP: Requiem (2007), gameplay adaptation of the Predalien; queen title is not a film caste', 5000, 5.8, ['tail', 'embryos', 'melee'], ['gunnison_forest']),
   imperial_queen: define('imperial_queen', 'xenomorph', 'AVP: Extinction game encounter adaptation', 8000, 8.2, ['tail', 'spit', 'slam', 'melee']),
@@ -26,7 +26,7 @@ export const BOSS_REGISTRY = Object.freeze({
   predalien_matriarch_titan: define('predalien_matriarch_titan', 'xenomorph', 'Original project titan inspired by AVP game roles', 10000, 8.0, ['tail', 'embryos', 'slam', 'melee'], [], { original: true }),
   rogue_king_prime: define('rogue_king_prime', 'xenomorph', 'Aliens: Rogue (1993), game adaptation of the King', 9500, 7.5, ['slam', 'charge', 'melee'], ['charon_rogue_base']),
   fiorina_runner: define('fiorina_runner', 'xenomorph', 'Alien 3 (1992), the Runner of Fiorina 161; boss scale and hit-and-run rhythm are gameplay adaptations', 7800, 4.4, ['leap', 'melee'], ['fiorina_161_foundry'], { adaptedFrom: 'runner creature model' }),
-  nostromo_drone: define('nostromo_drone', 'xenomorph', 'Alien (1979), the creature aboard the Nostromo; boss scale and vent-ambush rhythm are gameplay adaptations', 6800, 4.8, ['melee'], ['nostromo_refinery'], { adaptedFrom: 'warrior creature model' }),
+  nostromo_drone: define('nostromo_drone', 'xenomorph', 'Alien (1979), the creature aboard the Nostromo; boss scale and vent-ambush rhythm are gameplay adaptations', 6800, 4.8, ['melee'], ['nostromo_refinery', 'sevastopol_station'], { adaptedFrom: 'warrior creature model' }),
   awakened_engineer: define('awakened_engineer', 'engineer', 'Prometheus (2012), original shield/vortex encounter mechanics', 8500, 5.8, ['vortex', 'slam', 'melee'], ['lv223_engineer_structures'], { adaptedArsenal: ['phase-shield', 'gravity-vortex'] }),
   trilobite_prime: define('trilobite_prime', 'organism', 'Prometheus (2012), enlarged project encounter', 7000, 4.7, ['constrict', 'leap', 'melee']),
   berserker_super_predator: define('berserker_super_predator', 'yautja', 'Predators (2010), Berserker / Mr. Black', 8800, 5.2, ['plasma', 'charge', 'melee'], ['game_preserve_planet']),

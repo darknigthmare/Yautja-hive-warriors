@@ -11,7 +11,7 @@ import { createBattlefieldLayout } from '../js/data/BattlefieldLayouts.js';
 const level = id => LEVELS_DATA.find(entry => entry.id === id);
 
 test('both hunts exist with their source, existing boss and an explicit adaptation note', () => {
-  for (const [id, boss, source] of [['hadleys_hope_colony', 'xenomorph_queen', 'Aliens (1986)'], ['fiorina_161_foundry', 'fiorina_runner', 'Alien 3 (1992)'], ['nostromo_refinery', 'nostromo_drone', 'Alien (1979)'], ['usm_auriga_labs', 'xenomorph_queen', 'Alien Resurrection (1997)']]) {
+  for (const [id, boss, source] of [['hadleys_hope_colony', 'xenomorph_queen', 'Aliens (1986)'], ['fiorina_161_foundry', 'fiorina_runner', 'Alien 3 (1992)'], ['nostromo_refinery', 'nostromo_drone', 'Alien (1979)'], ['usm_auriga_labs', 'xenomorph_queen', 'Alien Resurrection (1997)'], ['sevastopol_station', 'nostromo_drone', 'Alien: Isolation (2014)'], ['gateway_station_labs', 'praetorian', 'Aliens (1986)']]) {
     const entry = level(id);
     assert.equal(entry.bossType, boss); assert.equal(entry.sourceWork, source); 
     assert.match(entry.description, /adaptation/); assert.match(entry.fidelity, /no measured 1:1/);
@@ -43,4 +43,16 @@ test('Nostromo and the USM Auriga field no Colonial Marines (USM is not USCM)', 
     assert.equal(humanWeaponCacheCount(id, sector), 0);
   }
   assert.equal(level('nostromo_refinery').era, '2122'); assert.equal(level('usm_auriga_labs').era, '2381');
+});
+
+test('Sevastopol fields Seegson Working Joes and Gateway Weyland-Yutani synthetics, never USCM', () => {
+  for (const [id, profile] of [['sevastopol_station', 'working_joe'], ['gateway_station_labs', 'weyland_combat']]) {
+    assert.equal(sectorSupportPlan(id, 0).synthetics, 0, 'the insertion fight belongs to the hunter');
+    for (let sector = 1; sector < 6; sector++) {
+      const plan = sectorSupportPlan(id, sector);
+      assert.ok(plan.synthetics > 0); assert.equal(plan.syntheticProfile, profile);
+      assert.equal(plan.marines, 0); assert.equal(plan.apc, false); assert.equal(humanWeaponCacheCount(id, sector), 0);
+    }
+  }
+  assert.equal(sectorSupportPlan('romulus_station', 2).syntheticProfile, null, 'existing sites keep their mixed squad');
 });

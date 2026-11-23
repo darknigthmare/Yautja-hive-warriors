@@ -51,6 +51,12 @@ export const LOADING_LORE = Object.freeze({
   usm_auriga_labs: { tag: 'USM AURIGA · 2381 · ADAPTATION', lines: [
     'Les cuves des laboratoires sont ouvertes. La Reine clonée a déjà pondu.',
     'Le film ne montre aucun Yautja à bord ; le Nouveau-né n’est pas représenté dans cette chasse.'] },
+  sevastopol_station: { tag: 'SEVASTOPOL · 2137 · ADAPTATION', lines: [
+    'Les Working Joes de Seegson patrouillent encore. Ils ne distinguent plus un chasseur d’un intrus.',
+    'Source : un jeu vidéo. La ruche et le boss repris du Nostromo sont des adaptations.'] },
+  gateway_station_labs: { tag: 'GATEWAY · 2179 · CRÉATION', lines: [
+    'Le laboratoire de la compagnie a cédé. La sécurité synthétique de Weyland-Yutani tire sur tout ce qui bouge.',
+    'Le film ne montre aucun spécimen à bord de Gateway : ce scénario est une création du jeu.'] },
   ascension_ship: { tag: 'LA LAME PATIENTE · CRÉATION', lines: [
     'Le vaisseau de l’Elite Kaedh dérive entre deux mondes. Saar attend vos ordres en silence.',
     'Le pont est interdit aux Unblooded. Le rite, lui, vous attend au bout des huit chasses.'] }

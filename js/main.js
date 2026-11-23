@@ -2420,7 +2420,7 @@ class GameApp {
     if (supports.marines === 0) this.marines.clearSquad();
     else this.marines.spawnSquad(supportPosition, supports.marines);
     if (supports.nationalGuard) this.marines.spawnNationalGuard?.(supportPosition, supports.nationalGuard);
-    this.synthetics.spawnSquad(center, supports.synthetics);
+    this.synthetics.spawnSquad(center, supports.synthetics, supports.syntheticProfile ?? null);
     this.badBlood.clear();
     this.weather.spawnGasPipes(supports.gasPipes, center);
     this.clearAPCSupport();

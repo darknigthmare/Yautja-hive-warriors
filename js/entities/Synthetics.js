@@ -64,11 +64,13 @@ export class SyntheticsManager {
   }
 
 
-  spawnSquad(pos, count = 3) {
+  /** `profile` fixes one maker for the whole squad ('working_joe' = Seegson, 'weyland_combat' = Weyland-Yutani);
+   * without it the squad alternates, as before. */
+  spawnSquad(pos, count = 3, profile = null) {
     this.clearSquad();
 
     for (let i = 0; i < count; i++) {
-      const isWorkingJoe = i % 2 === 1;
+      const isWorkingJoe = profile ? profile === 'working_joe' : i % 2 === 1;
       const mesh = this.createSyntheticMesh(isWorkingJoe);
       const angle = (i / count) * Math.PI * 2;
       mesh.position.set(pos.x + Math.cos(angle) * 24, 0, pos.z + Math.sin(angle) * 24);

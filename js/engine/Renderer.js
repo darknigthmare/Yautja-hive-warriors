@@ -34,7 +34,11 @@ const PALETTES = {
   // Nostromo: dim sodium amber over grimy olive steel, deep space outside (adaptation).
   nostromo: { horizon: 0x2d2b20, zenith: 0x040507, key: 0xd8cfa4, ground: 0x24261f, accent: 0xc8b26a, clouds: 0, stars: 1, exposure: 1.02 },
   // USM Auriga: clinical teal laboratory light, black space (adaptation).
-  auriga_labs: { horizon: 0x1f3236, zenith: 0x020507, key: 0xb6dce0, ground: 0x1d2427, accent: 0x5fd0c8, clouds: 0, stars: 1, exposure: 1.1 }
+  auriga_labs: { horizon: 0x1f3236, zenith: 0x020507, key: 0xb6dce0, ground: 0x1d2427, accent: 0x5fd0c8, clouds: 0, stars: 1, exposure: 1.1 },
+  // Sevastopol: retro-futurist green terminals, dim corridors, a gas giant glow (adaptation).
+  sevastopol: { horizon: 0x2b3a33, zenith: 0x030506, key: 0xcfe0d2, ground: 0x22262a, accent: 0x7fd08a, clouds: 0, stars: .9, exposure: 1.03 },
+  // Gateway: bright clinical corporate white over Earth orbit (adaptation).
+  gateway: { horizon: 0x3a4a5e, zenith: 0x03060c, key: 0xe6eef4, ground: 0x26292c, accent: 0xe8eef2, clouds: 0, stars: 1, exposure: 1.14 }
 };
 
 export class EngineRenderer {

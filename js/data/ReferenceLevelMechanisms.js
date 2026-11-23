@@ -26,7 +26,11 @@ const PROFILE_DEFINITIONS = {
   // Alien (1979): narrow catwalks, the engine room steam, bulkhead doors and the ship's power plant.
   nostromo_refinery: ['buildIndustrialCatwalks', 'buildSteamConduits', 'buildHydraulicBlastDoors', 'buildElectricalTransformers'],
   // Alien Resurrection (1997): laboratory tanks, decontamination airlocks, bulkheads and the hive's resin and eggs.
-  usm_auriga_labs: ['buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks', 'buildBiomechanicalWallResin', 'buildEggNurseries']
+  usm_auriga_labs: ['buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks', 'buildBiomechanicalWallResin', 'buildEggNurseries'],
+  // Alien: Isolation (2014): station catwalks, bulkheads, steam, power junctions and the hive's resin.
+  sevastopol_station: ['buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildElectricalTransformers', 'buildBiomechanicalWallResin'],
+  // Aliens (1986) location, created scenario: laboratory tanks, decontamination airlocks and bulkheads.
+  gateway_station_labs: ['buildCryoMedBays', 'buildDecontaminationAirlock', 'buildHydraulicBlastDoors', 'buildIndustrialCatwalks']
 };
 
 export const REFERENCE_LEVEL_MECHANISMS = Object.freeze(Object.fromEntries(

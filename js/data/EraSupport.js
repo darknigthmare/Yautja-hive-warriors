@@ -32,7 +32,9 @@ const ERA_SUPPORT = Object.freeze({
   lv223_engineer_structures: NONE('2093: civilian Prometheus expedition'),
   fiorina_161_foundry: NONE('2179: prison colony, no Colonial Marines'),
   nostromo_refinery: NONE('2122: commercial towing crew of seven'),
-  usm_auriga_labs: NONE('2381: United Systems Military, not USCM; no support vehicle')
+  usm_auriga_labs: NONE('2381: United Systems Military, not USCM; no support vehicle'),
+  sevastopol_station: NONE('2137: Seegson trading station, no military'),
+  gateway_station_labs: NONE('2179: Weyland-Yutani station; company security, not USCM')
 });
 
 /** { ground, air } for a location: 'apc' or null, and an air profile or null. Unknown places get none. */

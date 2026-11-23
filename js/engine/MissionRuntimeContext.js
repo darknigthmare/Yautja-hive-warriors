@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { eraSupportFor } from '../data/EraSupport.js';
 
-const KNOWN_MAPS = new Set(['gunnison_forest','xenomorph_prime','antarctic_pyramid','la_rooftops','val_verde_jungle','romulus_station','charon_rogue_base','game_preserve_planet','stargazer_facility','prey_comanche_territory','killer_of_killers_arena','lv223_engineer_structures','hadleys_hope_colony','fiorina_161_foundry','nostromo_refinery','usm_auriga_labs']);
+const KNOWN_MAPS = new Set(['gunnison_forest','xenomorph_prime','antarctic_pyramid','la_rooftops','val_verde_jungle','romulus_station','charon_rogue_base','game_preserve_planet','stargazer_facility','prey_comanche_territory','killer_of_killers_arena','lv223_engineer_structures','hadleys_hope_colony','fiorina_161_foundry','nostromo_refinery','usm_auriga_labs','sevastopol_station','gateway_station_labs']);
 const FUTURE_MAPS = new Set(['xenomorph_prime','romulus_station','charon_rogue_base','hadleys_hope_colony']);
 const OUTDOOR_MAPS = new Set(['gunnison_forest','la_rooftops','val_verde_jungle','game_preserve_planet','stargazer_facility','prey_comanche_territory']);
 
