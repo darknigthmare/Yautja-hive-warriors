@@ -57,7 +57,36 @@ Le script de mesure est conservé hors dépôt : `perf.mjs`, dans le dossier de 
 
 La moyenne baisse de 59 %, la médiane de 69 %, le 95e centile de 67 %.
 
-Une mise à jour isolée d'environ 2 s apparaît dans toutes les mesures, avant comme après. Elle n'est pas traitée ici.
+Une mise à jour isolée d'environ 2 s apparaît dans toutes les mesures, avant comme après. Elle est traitée le 23 novembre (section suivante).
+
+## Pic de première matérialisation (23 novembre 2026)
+
+Même build, même conteneur, même opération AFF-08. Le script `spike.mjs` (hors dépôt) relève chaque mise à jour de plus de 200 ms et le temps passé dans chaque méthode des gestionnaires.
+
+**Constat.** La première escouade qui entre dans le détail bloquait une mise à jour pendant 1 703 ms :
+- construction des marines (`createMarineMesh`) : 1 381 ms, environ 70 ms par marine ;
+- construction des chasseurs de clan : 276 ms.
+
+**Changements.**
+1. Chaque rôle de marine est construit une seule fois. Chaque acteur reçoit une copie qui partage la géométrie du modèle et possède ses propres matériaux. Un flash d'impact ou un camouflage sur un marine ne touche donc jamais les autres. La géométrie partagée porte `userData.sharedTemplate` ; `disposeObject` ne la libère jamais.
+2. Les chasseurs de clan partagent aussi la géométrie de leur corps et de leurs dreadlocks. Les poids de morphing (démarche) et les matrices d'instance (balancement des dreadlocks) restent propres à chaque acteur. Le test `clan-hunter-visual` vérifie trois points :
+   - ces tampons ne sont jamais partagés ;
+   - toute géométrie partagée est marquée ;
+   - la destruction d'un acteur ne modifie pas les autres.
+3. Ces modèles sont construits pendant l'écran de chargement (`prewarmActorTemplates`). La première escouade ne coûte plus que des copies.
+
+**Résultats** (pire mise à jour sur 900, même scénario) :
+
+| Étape | Pire mise à jour |
+| --- | ---: |
+| Avant | 1 703 ms |
+| Modèles de marines partagés | 445 ms |
+| Géométrie des chasseurs partagée | 379 ms |
+| Préchauffage pendant le chargement | **93 ms** |
+
+Moyenne de `game.update` dans le scénario de la section précédente : 6,40 ms (95e centile : 10,9 ms).
+
+Le coût déplacé vers le chargement n'est pas mesuré dans le navigateur. Sous Node, il est d'environ 3,4 s pour le premier marine et 2,4 s pour le premier chasseur, génération des textures procédurales comprise.
 
 ## Preuve d'équivalence
 

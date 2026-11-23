@@ -7,6 +7,7 @@ import { createSurfaceMaterial } from './SurfaceLibrary.js';
 import { loftGeometry, sweptLimb, sculptedFaceGeometry, tireGeometry } from './SupportSculpt.js';
 import { buildInsertionPodModel } from './InsertionPodModel.js';
 import { buildAPCModel } from './APCModel.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 
 function surfaces(color = 0x52604b, { armorFinish = null, clothRepeat = [1, 1] } = {}) {
@@ -252,6 +253,32 @@ export function createMarineModel(smartgunner = true) {
   group.userData.behaviorFidelity1to1Verified = false;
   group.userData.visualFidelity1to1Verified = false;
   return group;
+}
+
+/* Performance pass (23 Nov 2026): building a marine took about 70 ms, so a squad entering detail
+ * froze the game for over a second. Each role is now built once; actors receive a clone that shares
+ * the template's geometry (flagged so disposal skips it) and owns its materials, so a hit flash or
+ * cloak on one marine never touches another. */
+const marineTemplates = new Map();
+export function createSharedMarineModel(kind = 'marine') {
+  const weaponKind = typeof kind === 'string' ? kind : kind ? 'smartgunner' : 'flametrooper';
+  let template = marineTemplates.get(weaponKind);
+  if (!template) {
+    template = createMarineModel(weaponKind);
+    template.traverse(node => { if (node.geometry) node.geometry.userData.sharedTemplate = true; });
+    marineTemplates.set(weaponKind, template);
+  }
+  const copy = template.clone(true), materials = new Map();
+  const own = material => { if (!materials.has(material)) materials.set(material, material.clone()); return materials.get(material); };
+  copy.traverse(node => { if (node.isMesh && node.material) node.material = Array.isArray(node.material) ? node.material.map(own) : own(node.material); });
+  return copy;
+}
+
+/** Builds the shared actor templates behind the loading screen, so the first squad entering
+ * detail during play costs clones only. Idempotent: templates are kept for the session. */
+export function prewarmActorTemplates() {
+  for (const kind of ['smartgunner', 'flametrooper']) createSharedMarineModel(kind);
+  disposeObject(buildClanHunterModel(0)); // keeps its CPU template; the actor copy is released
 }
 
 export function createSyntheticModel() {

@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation, applyBattleSplashDamage } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
-import { createMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
+import { createMarineModel, createSharedMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { attachHostParasiteVisual } from '../graphics/HostParasiteAttachment.js';
 import { SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
@@ -77,7 +77,7 @@ export class ColonialMarinesManager {
   }
 
   createMarineMesh(isSmartgunner) {
-    return createMarineModel(isSmartgunner);
+    return createSharedMarineModel(isSmartgunner);
   }
 
 

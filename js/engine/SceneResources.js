@@ -13,7 +13,8 @@ export function disposeObject(object, retained = new Set()) {
     // In r160 instanceMatrix and instanceColor are released by the renderer's
     // InstancedMesh dispose listener, independently of geometry/material.
     if (child.isInstancedMesh && typeof child.dispose === 'function') instances.add(child);
-    if (child.geometry && !retained.has(child.geometry)) geometries.add(child.geometry);
+    // A geometry flagged as a shared template (e.g. cached marine roles) outlives its clones.
+    if (child.geometry && !retained.has(child.geometry) && !child.geometry.userData?.sharedTemplate) geometries.add(child.geometry);
     const list = Array.isArray(child.material) ? child.material : [child.material];
     list.forEach(material => {
       if (material && !retained.has(material)) materials.add(material);

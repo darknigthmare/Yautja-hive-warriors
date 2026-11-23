@@ -90,6 +90,7 @@ import { MenuBackdrop } from './graphics/MenuBackdrop.js';
 import { AmbientLife } from './graphics/AmbientLife.js';
 import { BootSequence } from './ui/BootSequence.js';
 import { LoadingScreen } from './ui/LoadingScreen.js';
+import { prewarmActorTemplates } from './graphics/SupportModels.js';
 import { CinematicDirector, CameraPaths } from './engine/CinematicDirector.js';
 import { buildMissionIntel } from './data/MissionIntel.js';
 import { readCinematicsMode } from './ui/BootSequence.js';
@@ -284,6 +285,7 @@ class GameApp {
     this.loading?.begin({ levelId: level?.id, levelName: level?.name ?? '', shipHub: this.missionMode === 'ascension_hub' });
     this.music?.play('loading', { fade: .8 });
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    try { prewarmActorTemplates(); } catch (error) { console.warn('actor template prewarm skipped', error); }
     if (start() === false) this.loading?.end();
   }
 

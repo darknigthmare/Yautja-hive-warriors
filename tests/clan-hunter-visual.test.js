@@ -17,6 +17,24 @@ function buffers(root) {
   return result;
 }
 
+// Per-actor state that animation writes: instance matrices and morph weights. Vertex data is an
+// immutable template shared by every hunter (flagged so disposal never frees it).
+function mutableBuffers(root) {
+  const result = new Set();
+  root.traverse(mesh => {
+    if (!mesh.isMesh) return;
+    if (mesh.isInstancedMesh) result.add(mesh.instanceMatrix.array);
+    if (mesh.morphTargetInfluences) result.add(mesh.morphTargetInfluences);
+  });
+  return result;
+}
+
+function sharesOnlyFlaggedTemplates(a, b) {
+  const geometries = root => { const set = new Set(); root.traverse(mesh => { if (mesh.isMesh) set.add(mesh.geometry); }); return set; };
+  const other = geometries(b);
+  return [...geometries(a)].every(geometry => !other.has(geometry) || geometry.userData.sharedTemplate === true);
+}
+
 function poseSnapshot(root) {
   return root.children.map(mesh => mesh.isInstancedMesh
     ? [...mesh.instanceMatrix.array]
@@ -50,7 +68,7 @@ test('clan hunter preserves finite actor bounds with nine batched surfaces, incl
   disposeObject(root);
 });
 
-test('gait follows resolved displacement, leaves root physics unchanged and uses independently owned dread poses', () => {
+test('gait follows resolved displacement, leaves root physics unchanged and uses independently owned dread poses (shared vertex template)', () => {
   const a = { mesh: buildClanHunterModel(0), hp: 950, radius: 1.3 };
   const b = { mesh: buildClanHunterModel(1), hp: 950, radius: 1.3 };
   a.mesh.position.set(8, 0, -3); b.mesh.position.set(8, 0, -3);
@@ -72,8 +90,9 @@ test('gait follows resolved displacement, leaves root physics unchanged and uses
   assert.notDeepEqual([...locks.instanceMatrix.array], beforeLocks, 'strand orientations respond to movement');
   for (let i = 0; i < locks.count; i++) assert.deepEqual([...locks.instanceMatrix.array.slice(i * 16 + 12, i * 16 + 15)], beforeLocks.slice(i * 16 + 12, i * 16 + 15), 'each lock remains attached to its own skull root');
   assert.notDeepEqual([...locks.instanceMatrix.array.slice(0, 16)], [...locks.instanceMatrix.array.slice(16, 32)], 'strands have separate attachment matrices');
-  const aBuffers = buffers(a.mesh), bBuffers = buffers(b.mesh);
-  assert.ok([...aBuffers].every(array => !bBuffers.has(array)), 'no actor shares mutable geometry, morph or instance buffers');
+  const aBuffers = mutableBuffers(a.mesh), bBuffers = mutableBuffers(b.mesh);
+  assert.ok([...aBuffers].every(array => !bBuffers.has(array)), 'no actor shares morph weights or instance matrices');
+  assert.ok(sharesOnlyFlaggedTemplates(a.mesh, b.mesh), 'shared vertex data is always a flagged, immutable template');
   disposeObject(a.mesh); disposeObject(b.mesh);
 });
 
@@ -152,7 +171,7 @@ test('final collision correction cancels attempted walking before the visual fra
   manager.clearSquad();
 });
 
-test('bounded CPU template survives actor disposal and clones every rendered buffer and material privately', () => {
+test('bounded CPU template survives actor disposal; pose buffers and materials stay private, vertex data is a shared template', () => {
   const a = buildClanHunterModel(0), b = buildClanHunterModel(1);
   const cache = getClanHunterVisualCacheStats();
   assert.equal(cache.geometries, 9); assert.equal(cache.renderObjects, 0);
@@ -172,7 +191,8 @@ test('bounded CPU template survives actor disposal and clones every rendered buf
   assert.deepEqual(getClanHunterVisualCacheStats(), cache, 'one fixed CPU template, independent of respawns');
   for (const [array, snapshot] of bSnapshots) assert.deepEqual(array, snapshot, 'positions/normals/colors/morphs/instances survive another actor disposal and respawn');
   assert.deepEqual(poseSnapshot(b), pose);
-  const cBuffers = buffers(c); assert.ok(bSnapshots.every(([array]) => !cBuffers.has(array)));
+  const cBuffers = mutableBuffers(c); assert.ok([...mutableBuffers(b)].every(array => !cBuffers.has(array)));
+  assert.ok(sharesOnlyFlaggedTemplates(b, c));
   disposeObject(c); assert.equal(bDisposals, 0);
   disposeObject(b);
 });

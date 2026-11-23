@@ -235,7 +235,7 @@ function addHead(assembly, m) {
 }
 
 function createDreadGeometries() {
-  if (dreadTemplates) return dreadTemplates.map(geometry => geometry.clone());
+  if (dreadTemplates) return dreadTemplates; // shared by every hunter; SceneResources never disposes sharedTemplate geometry
   const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(0, -.23, -.04), new THREE.Vector3(.025, -.60, -.10), new THREE.Vector3(.055, -.94, -.045)]);
   const strandGeometry = new THREE.TubeGeometry(curve, 18, .038, 7, false);
   // Taper the last third of each lock while retaining the rounded cable body.
@@ -255,8 +255,9 @@ function createDreadGeometries() {
     ring.translate(point.x, point.y, point.z); ringParts.push(ring);
   }
   const ringGeometry = mergeGeometries(ringParts, false); ringParts.forEach(part => part.dispose());
-  dreadTemplates = [strandGeometry.clone(), ringGeometry.clone()];
-  return [strandGeometry, ringGeometry];
+  dreadTemplates = [strandGeometry, ringGeometry];
+  dreadTemplates.forEach(geometry => { geometry.userData.sharedTemplate = true; });
+  return dreadTemplates;
 }
 
 function addDreads(root, m, index) {
@@ -300,7 +301,7 @@ function createBody(m) {
   if (bodyTemplates) {
     const root = new THREE.Group();
     for (const template of bodyTemplates) {
-      const mesh = new THREE.Mesh(template.geometry.clone(), m[template.materialKey]);
+      const mesh = new THREE.Mesh(template.geometry, m[template.materialKey]);
       mesh.name = template.name; mesh.castShadow = true; mesh.receiveShadow = true;
       root.add(mesh);
     }
@@ -317,8 +318,9 @@ function createBody(m) {
   const root = assembly.finish();
   root.children.forEach(mesh => { markSkin(mesh); makeStrideTargets(mesh); });
   const keys = new Map(Object.entries(m).map(([key, material]) => [material, key]));
-  bodyTemplates = root.children.map(mesh => ({ geometry: mesh.geometry.clone(), name: mesh.name, materialKey: keys.get(mesh.material) }));
-  return root;
+  // Morph influences live on each mesh, so every hunter can share the template geometry.
+  bodyTemplates = root.children.map(mesh => { const geometry = mesh.geometry.clone(); geometry.userData.sharedTemplate = true; return { geometry, name: mesh.name, materialKey: keys.get(mesh.material) }; });
+  return createBody(m);
 }
 
 export function buildClanHunterModel(index = 0) {
