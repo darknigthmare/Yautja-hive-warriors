@@ -266,7 +266,7 @@ cases.push(['nostromo_drone', 'vent-ambush', () => {
     const bitten = target.hits.length; assert.ok(bitten >= 1);
     assert.ok(boss.ventUntil > manager.time); assert.equal(boss.mesh.visible, false);
     assert.equal(manager.takeDamage(500, null, { attackKind: 'heavy' }), null, 'nothing reaches it in the ducts');
-    tick(manager, target, 2.3);
+    tick(manager, target, 1.5);
     assert.ok(boss.emergeAt, 'the drop point is announced'); const drop = boss.emergeAt.clone();
     assert.ok(manager.scene.getObjectByName('vent-ambush-warning'), 'a visible ring marks it');
     if (!stay) target.position.set(drop.x + 12, 0, drop.z);

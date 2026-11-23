@@ -17,8 +17,8 @@ import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/Hunt
  * during the turn staggers it. Timings are gameplay choices, not film measurements. */
 export const HIT_AND_RUN = Object.freeze({ retreat: 2.2, speed: 10.5, turnaround: 1.4, stagger: 1.6 });
 /* Nostromo creature (Alien adaptation): after a bite it vanishes into the ducts and drops behind
- * the target at a point announced `warning` seconds early. Leaving that point avoids the drop bite. */
-export const VENT_AMBUSH = Object.freeze({ hidden: 3.2, warning: 1.1, distance: 7, reach: 4.5, damage: 45, exposed: 1.3 });
+ * the target (2 units behind it) at a point announced `warning` seconds early: standing still is bitten, leaving the ring is not. */
+export const VENT_AMBUSH = Object.freeze({ hidden: 2.4, warning: 1.1, distance: 2, reach: 4.5, damage: 55, exposed: 1.3 });
 import { isGreatPrey, stepGreatPrey, greatPreyAllows, startGreatPreyCharge, endGreatPreyCharge, greatPreyMeleeFactor, dueHivePulse, greatPreyReadout } from '../battlefield/GreatPreyMechanics.js';
 
 /** AUD-066: the body footprint that collides with scenery, measured on the normalized

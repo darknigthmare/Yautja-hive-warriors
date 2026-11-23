@@ -14,7 +14,8 @@ const define = (id, species, source, hp, height, attacks, levels = [], extra = {
   unique: true, ordinarySpawn: false, assetFidelity: 'interpreted-game-model', ...extra
 });
 export const BOSS_REGISTRY = Object.freeze({
-  xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 3000, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid', 'hadleys_hope_colony', 'usm_auriga_labs']),
+  // 7 500 PV (author, 23 Nov 2026): at 3 000 the queen fell in 14.5 s, against 37-50 s for the other APEX finals.
+  xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 7500, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid', 'hadleys_hope_colony', 'usm_auriga_labs']),
   praetorian: define('praetorian', 'xenomorph', 'Praetorian game caste; encounter adaptation', 3000, 5.2, ['tail', 'spit', 'melee']),
   predalien: define('predalien', 'xenomorph', 'Alien vs. Predator game hybrid', 3000, 5.4, ['tail', 'spit', 'leap', 'melee']),
   predalien_queen: define('predalien_queen', 'xenomorph', 'AVP: Requiem (2007), gameplay adaptation of the Predalien; queen title is not a film caste', 5000, 5.8, ['tail', 'embryos', 'melee'], ['gunnison_forest']),
