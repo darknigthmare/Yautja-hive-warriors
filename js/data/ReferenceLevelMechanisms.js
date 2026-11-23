@@ -2,7 +2,7 @@
  * Alien/USCM/Engineer interaction in every historical Predator location.
  * These sets preserve implementations, not a certificate of screen accuracy. */
 import { buildReferenceContacts, buildReferenceInterest } from '../graphics/ReferenceWorldContacts.js';
-import { batchReferenceLandmarks } from '../graphics/ReferenceLandmarkBatching.js';
+import { batchReferenceLandmarks, instanceIdenticalDetails } from '../graphics/ReferenceLandmarkBatching.js';
 import { ASCENSION_TERRAINS } from './AscensionWorlds.js';
 
 const PROFILE_DEFINITIONS = {
@@ -88,6 +88,7 @@ export function buildReferenceLevelMechanisms(environment, level) {
   const contactCount = buildReferenceContacts(environment);
   const interestCells = buildReferenceInterest(environment);
   const batching = batchReferenceLandmarks(environment);
+  batching.identicalDetails = instanceIdenticalDetails(environment);
   environment.referenceRoot.userData.referenceContent = { id: level.id,
     sourceCommit: '9c18c19', contactCount, interestCells, mode: level.operationMode ?? 'adaptation', built, ...batching };
   return environment.referenceRoot.userData.referenceContent;

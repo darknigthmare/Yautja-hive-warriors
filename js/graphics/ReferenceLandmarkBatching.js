@@ -43,6 +43,51 @@ function materialKey(material) {
     material.metalnessMap?.uuid, material.emissiveMap?.uuid, material.alphaMap?.uuid, material.aoMap?.uuid]);
 }
 
+/** Meshes any environment field still holds (mechanisms, colliders, salvage): they stay live nodes. */
+function heldMeshes(environment) {
+  const held = new Set(), seen = new Set();
+  const inspect = (value, depth = 0) => {
+    if (!value || typeof value !== 'object' || seen.has(value) || depth > 6) return;
+    seen.add(value);
+    if (value.isObject3D) { if (value.isMesh) held.add(value); return; }
+    if (value.isMaterial || value.isVector3 || value.isBufferGeometry || value instanceof Map || value instanceof Set) return;
+    for (const item of Object.values(value)) inspect(item, depth + 1);
+  };
+  for (const [key, value] of Object.entries(environment)) if (!IGNORED_FIELDS.has(key)) inspect(value);
+  for (const marine of environment.fallenMarines ?? []) marine.group?.traverse(node => { if (node.isMesh) held.add(node); });
+  return held;
+}
+
+/* Draw-call pass (23 Nov 2026): plain fixed children of a sector detail group that share the very
+ * same geometry and material become one InstancedMesh in that group. Nothing is normalised or
+ * recoloured, so the picture is unchanged; named, data-carrying, held, transparent or animated
+ * meshes stay as they are. The group's own visibility (sector streaming) still applies. */
+export function instanceIdenticalDetails(environment, groups = [...(environment.sectorVisuals?.values() ?? [])]) {
+  const held = heldMeshes(environment); let sourceMeshes = 0, instancedMeshes = 0;
+  for (const group of groups) {
+    if (!group?.isObject3D) continue;
+    const buckets = new Map();
+    for (const child of group.children) {
+      if (!child.isMesh || child.isInstancedMesh || child.isSkinnedMesh || held.has(child) || !child.visible || child.name ||
+          Object.keys(child.userData).length || child.children.length || Array.isArray(child.material) || child.material.transparent ||
+          Object.keys(child.geometry.morphAttributes).length || child.onBeforeRender !== THREE.Object3D.prototype.onBeforeRender) continue;
+      const key = `${child.geometry.uuid}/${child.material.uuid}/${child.castShadow}/${child.receiveShadow}/${child.renderOrder}`;
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(child);
+    }
+    for (const members of buckets.values()) {
+      if (members.length < 2) continue;
+      const first = members[0], mesh = new THREE.InstancedMesh(first.geometry, first.material, members.length);
+      members.forEach((member, index) => { member.updateMatrix(); mesh.setMatrixAt(index, member.matrix); member.removeFromParent(); });
+      mesh.name = `detail-identical-instances-${instancedMeshes}`; mesh.castShadow = first.castShadow; mesh.receiveShadow = first.receiveShadow;
+      mesh.renderOrder = first.renderOrder; mesh.userData.identicalDetailBatch = true; mesh.userData.sourceMeshes = members.length;
+      mesh.instanceMatrix.needsUpdate = true; mesh.computeBoundingSphere(); group.add(mesh);
+      sourceMeshes += members.length; instancedMeshes++;
+    }
+  }
+  return { sourceMeshes, instancedMeshes };
+}
+
 export function batchReferenceLandmarks(environment) {
   const protectedMeshes = new Set(), protectedMaterials = new Set(), seen = new Set(), templates = new Map();
   const inspect = (value, depth = 0) => {
