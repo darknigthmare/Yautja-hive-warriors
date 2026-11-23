@@ -1,4 +1,4 @@
-# Candidat de livraison du 23 novembre 2026
+# Candidat de livraison du 23 novembre 2026 (mis à jour en fin de journée)
 
 **L’auteur publie lui-même sur Vercel.** Ce document fige le candidat et ses preuves ; aucune action distante n’a été lancée depuis la session.
 
