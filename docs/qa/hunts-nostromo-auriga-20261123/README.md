@@ -38,4 +38,9 @@ Suite des chasses Alien choisie par l’auteur. Aucun crédit Meshy utilisé.
   Une première sonde semblait montrer des boss immobiles. C’étaient deux artefacts de la sonde : les portes fermées ramenaient le joueur et le boss dans le secteur d’insertion, et le joueur restait caché par l’ouverture furtive. Ce n’étaient pas des défauts du jeu.
 - **Captures** : vues fixes de l’insertion, sans erreur de page.
 
-**À valider en partie réelle** : la cadence du Xénomorphe du Nostromo. Dans la sonde, une seule morsure en 12 s, car les attaques attendent leur tour dans le budget du `CombatDirector`.
+**Cadence du Xénomorphe du Nostromo** (vérifiée le 23 novembre, après réglage de la chute). La sonde lit chaque demi-seconde le créneau d’attaque du `CombatDirector` :
+- pendant les 7 premières secondes, la grâce de début de combat du `CombatDirector` bloque toute attaque, comme pour tous les boss ;
+- vers 7 s : morsure (−35), puis enfouissement ;
+- vers 10,5 s : morsure de chute sur le chasseur resté immobile (−55).
+
+Aucun autre attaquant ne tenait le créneau. Ce n’est pas un défaut : la « morsure unique en 12 s » venait de cette grâce.
