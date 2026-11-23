@@ -256,6 +256,27 @@ const chargePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.
 const meleePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.ok(meleeTrial(id, false) > 0); assert.equal(meleeTrial(id, true), 0); }];
 cases.push(leapPrey('vara_kesh_reaper'), meleePrey('eshra_hydra'), chargePrey('kharuun_sand_maw'), meleePrey('terek_va_hive_mind'),
   chargePrey('nereth_jaw'), leapPrey('oshara_swimmer'), chargePrey('rukh_tal_spur'), leapPrey('dharos_watcher'));
+// Nostromo creature: after a bite it hides in the ducts (untouchable), then drops at an announced point.
+cases.push(['nostromo_drone', 'vent-ambush', () => {
+  for (const stay of [true, false]) fixture('nostromo_drone', (manager, boss) => {
+    const target = player(0, 0, 3);
+    for (const key of ['tailWhipCooldown', 'specialCooldown', 'regurgitateCooldown', 'shriekCooldown', 'spitCooldown']) boss[key] = 999;
+    boss.contactCooldown = 0; manager.update(1 / 60, target);
+    assert.equal(boss.pressureAction, 'melee'); releasePrepared(manager, target);
+    const bitten = target.hits.length; assert.ok(bitten >= 1);
+    assert.ok(boss.ventUntil > manager.time); assert.equal(boss.mesh.visible, false);
+    assert.equal(manager.takeDamage(500, null, { attackKind: 'heavy' }), null, 'nothing reaches it in the ducts');
+    tick(manager, target, 2.3);
+    assert.ok(boss.emergeAt, 'the drop point is announced'); const drop = boss.emergeAt.clone();
+    assert.ok(manager.scene.getObjectByName('vent-ambush-warning'), 'a visible ring marks it');
+    if (!stay) target.position.set(drop.x + 12, 0, drop.z);
+    else target.position.set(drop.x, 0, drop.z + 1);
+    for (let frame = 0; !boss.mesh.visible && frame < 120; frame++) manager.update(1 / 60, target);
+    assert.equal(boss.mesh.visible, true); assert.ok(boss.mesh.position.distanceTo(drop) < 1e-6, 'it drops exactly where announced');
+    assert.equal(target.hits.length - bitten, stay ? 1 : 0, stay ? 'staying in the ring is bitten' : 'leaving the ring avoids the drop');
+    assert.ok(boss.exposedUntil > manager.time);
+  });
+}]);
 // Fiorina runner: after a bite it breaks contact, then turns back; only a heavy hit in that turn staggers it.
 cases.push(['fiorina_runner', 'hit-and-run', () => {
   for (const heavy of [false, true]) fixture('fiorina_runner', (manager, boss) => {

@@ -30,7 +30,11 @@ const PALETTES = {
   // Hadley's Hope: storm-grey Acheron sky, wet steel, cold colony floodlights (adaptation).
   hadleys_hope: { horizon: 0x4a5359, zenith: 0x0b1014, key: 0xb7c9d4, ground: 0x23282b, accent: 0x8fb3c4, clouds: .9, stars: 0, exposure: 1.04 },
   // Fiorina 161: rust and soot, orange furnace glow under a starless sky (adaptation).
-  fiorina_foundry: { horizon: 0x4b3326, zenith: 0x0e0a08, key: 0xd9a66d, ground: 0x2a211b, accent: 0xe0782f, clouds: .2, stars: .05, exposure: 1.08 }
+  fiorina_foundry: { horizon: 0x4b3326, zenith: 0x0e0a08, key: 0xd9a66d, ground: 0x2a211b, accent: 0xe0782f, clouds: .2, stars: .05, exposure: 1.08 },
+  // Nostromo: dim sodium amber over grimy olive steel, deep space outside (adaptation).
+  nostromo: { horizon: 0x2d2b20, zenith: 0x040507, key: 0xd8cfa4, ground: 0x24261f, accent: 0xc8b26a, clouds: 0, stars: 1, exposure: 1.02 },
+  // USM Auriga: clinical teal laboratory light, black space (adaptation).
+  auriga_labs: { horizon: 0x1f3236, zenith: 0x020507, key: 0xb6dce0, ground: 0x1d2427, accent: 0x5fd0c8, clouds: 0, stars: 1, exposure: 1.1 }
 };
 
 export class EngineRenderer {

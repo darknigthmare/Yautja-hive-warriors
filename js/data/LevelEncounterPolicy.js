@@ -1,7 +1,7 @@
 // Campaign hunts use only support compatible with their location. Catalogue
 // operations own their explicit crossover rosters; this never rewrites them.
 const FUTURE_SUPPORT = new Set(['xenomorph_prime', 'romulus_station', 'charon_rogue_base', 'hadleys_hope_colony']);
-const INDUSTRIAL_SITES = new Set(['romulus_station', 'charon_rogue_base', 'stargazer_facility', 'hadleys_hope_colony', 'fiorina_161_foundry']);
+const INDUSTRIAL_SITES = new Set(['romulus_station', 'charon_rogue_base', 'stargazer_facility', 'hadleys_hope_colony', 'fiorina_161_foundry', 'nostromo_refinery']);
 const NAMED_HUNTERS = Object.freeze({
   jungle_hunter_boss: 'jungle_hunter', city_hunter_boss: 'city_hunter',
   feral_predator_boss: 'feral_predator'

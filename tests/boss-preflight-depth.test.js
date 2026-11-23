@@ -66,10 +66,13 @@ for (const level of LEVELS_DATA) test(`${level.id}: its announced actual boss co
   const descriptor = prepareBossEncounter({ level }); manager.spawnBoss(descriptor.bossType, new THREE.Vector3(center[0], 0, center[1]), descriptor);
   const boss = manager.activeBoss, target = player([center[0], 0, center[1] + 14]);
   const horde = { spawnChestburster() {} }; tick(manager, target, 3, horde);
+  // A boss hidden by its own mechanic (vent-ambush) is waited for, never hit through the ducts.
+  const surface = () => { for (let frame = 0; boss.ventUntil > 0 && frame < 600; frame++) manager.update(1 / 60, target, horde); };
+  surface();
   for (let hit = 0; boss.hp > boss.maxHp * .6 + 1e-6 && hit < 12; hit++) manager.takeDamage(boss.maxHp * .1, horde);
-  assert.equal(boss.phase, 2); tick(manager, target, 2, horde);
+  assert.equal(boss.phase, 2); tick(manager, target, 2, horde); surface();
   for (let hit = 0; boss.hp > boss.maxHp * .25 && hit < 24; hit++) manager.takeDamage(boss.maxHp * .05, horde);
-  assert.equal(boss.phase, 3); tick(manager, target, 4, horde);
+  assert.equal(boss.phase, 3); tick(manager, target, 4, horde); surface();
   assert.ok(target.hp > 0); assert.ok(boss.mesh.position.toArray().every(Number.isFinite)); assert.equal(manager.getEncounterReadout().bossType, descriptor.modelId);
   const death = manager.takeDamage(1e7, horde); assert.equal(death.kind, descriptor.combatId); assert.equal(manager.activeBoss, null);
   assert.equal(events.getSnapshot().deaths.length, 1); assert.equal(manager.takeDamage(1e7), null);

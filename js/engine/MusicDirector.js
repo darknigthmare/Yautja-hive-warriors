@@ -37,7 +37,8 @@ export const WORLD_VARIATIONS = Object.freeze({
   stargazer_facility: { transpose: -4, accents: [0, 4, 6, 10, 12] }, prey_comanche_territory: { transpose: 5, accents: [0, 6, 9, 12] },
   killer_of_killers_arena: { transpose: -6, accents: [0, 2, 5, 8, 11, 14] },
   lv223_engineer_structures: { transpose: -7, accents: [0, 5, 7, 12] },
-  hadleys_hope_colony: { transpose: -2, accents: [0, 3, 7, 10, 13] }, fiorina_161_foundry: { transpose: -8, accents: [0, 4, 8, 11] }
+  hadleys_hope_colony: { transpose: -2, accents: [0, 3, 7, 10, 13] }, fiorina_161_foundry: { transpose: -8, accents: [0, 4, 8, 11] },
+  nostromo_refinery: { transpose: -9, accents: [0, 1, 6, 9] }, usm_auriga_labs: { transpose: 4, accents: [0, 3, 5, 10, 13] }
 });
 const DEFAULT_VARIATION = Object.freeze({ transpose: 0, accents: [0, 3, 6, 10, 12] });
 

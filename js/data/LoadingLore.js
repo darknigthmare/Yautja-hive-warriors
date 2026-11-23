@@ -45,6 +45,12 @@ export const LOADING_LORE = Object.freeze({
   fiorina_161_foundry: { tag: 'FIORINA 161 · 2179 · ADAPTATION', lines: [
     'Plomb, rouille et suie : la fonderie du pénitencier ne s’éteint jamais tout à fait.',
     'Le film ne montre qu’un seul Xénomorphe : la ruche et le rythme du Runner sont des adaptations.'] },
+  nostromo_refinery: { tag: 'NOSTROMO · 2122 · ADAPTATION', lines: [
+    'Les coursives ruissellent de condensation. Quelque chose se déplace dans les conduits d’aération.',
+    'Le film ne montre qu’un seul Xénomorphe et aucun Yautja : la ruche et la chasse sont des adaptations.'] },
+  usm_auriga_labs: { tag: 'USM AURIGA · 2381 · ADAPTATION', lines: [
+    'Les cuves des laboratoires sont ouvertes. La Reine clonée a déjà pondu.',
+    'Le film ne montre aucun Yautja à bord ; le Nouveau-né n’est pas représenté dans cette chasse.'] },
   ascension_ship: { tag: 'LA LAME PATIENTE · CRÉATION', lines: [
     'Le vaisseau de l’Elite Kaedh dérive entre deux mondes. Saar attend vos ordres en silence.',
     'Le pont est interdit aux Unblooded. Le rite, lui, vous attend au bout des huit chasses.'] }

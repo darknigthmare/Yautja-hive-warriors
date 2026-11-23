@@ -16,6 +16,9 @@ import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/Hunt
 /* Fiorina runner (Alien 3 adaptation): it strikes, breaks contact, then turns back. A heavy hit
  * during the turn staggers it. Timings are gameplay choices, not film measurements. */
 export const HIT_AND_RUN = Object.freeze({ retreat: 2.2, speed: 10.5, turnaround: 1.4, stagger: 1.6 });
+/* Nostromo creature (Alien adaptation): after a bite it vanishes into the ducts and drops behind
+ * the target at a point announced `warning` seconds early. Leaving that point avoids the drop bite. */
+export const VENT_AMBUSH = Object.freeze({ hidden: 3.2, warning: 1.1, distance: 7, reach: 4.5, damage: 45, exposed: 1.3 });
 import { isGreatPrey, stepGreatPrey, greatPreyAllows, startGreatPreyCharge, endGreatPreyCharge, greatPreyMeleeFactor, dueHivePulse, greatPreyReadout } from '../battlefield/GreatPreyMechanics.js';
 
 /** AUD-066: the body footprint that collides with scenery, measured on the normalized
@@ -130,8 +133,9 @@ export class BossManager {
       const owner = { data }; const mesh = buildHunterModel(owner); mesh._bossHunterOwner = owner; return mesh;
     }
     if (type === 'xenomorph_queen') type = 'queen';
-    // Fiorina 161: the existing runner creature, scaled to the boss height (no dedicated model).
+    // Fiorina runner and Nostromo creature: existing creature models, scaled to the boss height (no dedicated model).
     if (type === 'fiorina_runner') return createCreatureModel('runner', this.sharedResources);
+    if (type === 'nostromo_drone') return createCreatureModel('warrior', this.sharedResources);
     if (!['the_offspring', 'empress_matriarch', 'predalien_queen', 'imperial_queen', 'praetorian', 'predalien', 'queen'].includes(type)) return this.createRecentBossMesh(type);
     const kind = type === 'the_offspring' ? 'offspring' : type === 'empress_matriarch' ? 'empress'
       : type === 'predalien_queen' ? 'predalien' : type === 'imperial_queen' ? 'imperial'
@@ -188,6 +192,7 @@ export class BossManager {
     if (!boss || boss.hp <= 0 || !Number.isFinite(amount) || amount <= 0) return null;
     // Great prey signatures (GreatPreyMechanics.greatPreyDamageFactor), kept self-contained: tests run this method alone.
     if (boss.definition?.ascension) { amount *= boss.burrowed || boss.diving ? 0 : boss.pattern?.mechanic === 'swarm-core' && boss.swarmContracting ? .25 : 1; if (amount <= 0) return null; }
+    if (boss.ventUntil > 0) return null; // vent-ambush: inside the ducts, nothing reaches it
     const heavy = ['heavy', 'charged', 'heavy-melee'].includes(details.attackKind ?? details.cause);
     const origin = details.origin ?? details.attacker?.position;
     if (boss.pattern?.frontalArmor && origin?.isVector3 && this.time >= boss.exposedUntil) {
@@ -284,6 +289,24 @@ export class BossManager {
     });
   }
 
+
+  /** Vent-ambush: hidden, then an announced drop point behind the target, then a bite there. */
+  _updateVentAmbush(boss, player) {
+    releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null;
+    if (!boss.emergeAt && this.time >= boss.ventUntil - VENT_AMBUSH.warning) {
+      const away = player.position.clone().sub(boss.mesh.position).setY(0);
+      if (away.lengthSq() < 1e-6) away.set(0, 0, 1);
+      const wanted = player.position.clone().addScaledVector(away.normalize(), VENT_AMBUSH.distance); wanted.y = 0;
+      boss.emergeAt = this.findBossArenaPosition(wanted, boss.footprintRadius ?? 1.8, boss.definition.height);
+      const mesh = new THREE.Mesh(new THREE.RingGeometry(VENT_AMBUSH.reach * .82, VENT_AMBUSH.reach, 32), new THREE.MeshBasicMaterial({ color: 0x9fe3b0, side: THREE.DoubleSide, transparent: true, opacity: .65, depthWrite: false }));
+      mesh.rotation.x = -Math.PI / 2; mesh.position.copy(boss.emergeAt); mesh.position.y += .06; mesh.name = 'vent-ambush-warning'; this.scene.add(mesh);
+      this.effects.push({ mesh, life: VENT_AMBUSH.warning, duration: VENT_AMBUSH.warning });
+    }
+    if (this.time < boss.ventUntil) return;
+    boss.ventUntil = 0; boss.mesh.position.copy(boss.emergeAt ?? boss.mesh.position); boss.mesh.visible = true; boss.emergeAt = null;
+    boss.exposedUntil = Math.max(boss.exposedUntil, this.time + VENT_AMBUSH.exposed); boss.contactCooldown = Math.max(boss.contactCooldown ?? 0, 1.6);
+    if (player.position.distanceTo(boss.mesh.position) <= VENT_AMBUSH.reach) this.applyBossDamage(player, VENT_AMBUSH.damage, 'melee', boss);
+  }
 
   clear() {
     releaseHostileAttack(this, this.activeBoss);
@@ -383,6 +406,7 @@ export class BossManager {
       }
       this._updateAttackReadout(boss); return;
     }
+    if (boss.ventUntil > 0) { this._updateVentAmbush(boss, player); this._updateAttackReadout(boss); return; }
     if (boss.isStunned) { releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null; boss.stunTimer -= delta; if (boss.stunTimer <= 0) boss.isStunned = false; this._updateAttackReadout(boss); return; }
     for (const [key, initial] of [['tailWhipCooldown', 3.5], ['spitCooldown', 4], ['regurgitateCooldown', 5], ['shriekCooldown', 4], ['contactCooldown', 1.4], ['specialCooldown', 5]]) boss[key] = Math.max(0, (boss[key] ?? initial) - delta);
     const dir = player.position.clone().sub(boss.mesh.position); dir.y = 0;
@@ -427,7 +451,8 @@ export class BossManager {
       else if (action === 'charge' || action === 'leap') { const duration = action === 'leap' ? .85 : .7; boss.specialCooldown = 7; boss.isLeaping = action === 'leap'; boss.charge = { kind: action, direction: (boss.pressureAim ?? player.position).clone().sub(boss.mesh.position).setY(0).normalize(), life: duration, duration, startY: boss.mesh.position.y, speed: action === 'leap' ? Math.min(26, Math.max(12, distance / duration)) : 16, damage: 70, hit: new Set() }; if (isGreatPrey(boss)) startGreatPreyCharge(boss, boss.charge); }
       else if (action === 'shriek') { boss.shriekCooldown = 6; this.audioEngine?.playOffspringShriek?.(); if (distance <= 10 && this._insideAttackCone(player, Math.PI * .7) && this.applyBossDamage(player, 60, 'shriek', boss) && Number.isFinite(player.plasmaEnergy)) player.plasmaEnergy = Math.max(0, player.plasmaEnergy - 25); }
       else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, (boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35) * (isGreatPrey(boss) ? greatPreyMeleeFactor(boss) : 1), 'melee', boss);
-        if (boss.pattern?.mechanic === 'hit-and-run') { boss.retreatUntil = this.time + HIT_AND_RUN.retreat; boss.turnaroundPending = true; } }
+        if (boss.pattern?.mechanic === 'hit-and-run') { boss.retreatUntil = this.time + HIT_AND_RUN.retreat; boss.turnaroundPending = true; }
+        if (boss.pattern?.mechanic === 'vent-ambush') { boss.ventUntil = this.time + VENT_AMBUSH.hidden; boss.emergeAt = null; boss.mesh.visible = false; } }
       boss.pressureAction = null; boss.pressureAim = null; boss.exposedUntil = Math.max(boss.exposedUntil, this.time + .6);
     }
     const warningRadius = ({ tail: 8.5, gale: 11, slam: boss.pattern.mechanic === 'three-seismic-pulses' ? 5 : 9,

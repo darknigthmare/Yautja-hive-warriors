@@ -30,7 +30,9 @@ const ERA_SUPPORT = Object.freeze({
   antarctic_pyramid: NONE('2004: civilian Weyland expedition'),
   killer_of_killers_arena: NONE('Yautja arena: no human command'),
   lv223_engineer_structures: NONE('2093: civilian Prometheus expedition'),
-  fiorina_161_foundry: NONE('2179: prison colony, no Colonial Marines')
+  fiorina_161_foundry: NONE('2179: prison colony, no Colonial Marines'),
+  nostromo_refinery: NONE('2122: commercial towing crew of seven'),
+  usm_auriga_labs: NONE('2381: United Systems Military, not USCM; no support vehicle')
 });
 
 /** { ground, air } for a location: 'apc' or null, and an air profile or null. Unknown places get none. */
