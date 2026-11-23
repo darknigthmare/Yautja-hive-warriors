@@ -5350,6 +5350,8 @@ class GameApp {
         else if (bType === 'empress_matriarch') bossTitle = 'IMPÉRATRICE VOLANTE DE LA RUCHE PRIMORDIALE (DARK HORSE)';
         else if (bType === 'rogue_king_prime') bossTitle = 'ROGUE KING XENOMORPH PRIME (ALIENS: ROGUE 1993)';
         else if (bType === 'awakened_engineer') bossTitle = 'INGÉNIEUR MALA\'KAK ÉVEILLÉ (PROMETHEUS 2012)';
+        else if (bType === 'xenomorph_queen') bossTitle = 'REINE XÉNOMORPHE (ALIENS 1986)';
+        else if (bType === 'fiorina_runner') bossTitle = 'RUNNER DE FIORINA 161 (ALIEN 3 1992)';
 
         this.ui.showAnnouncement(`👑 SURGISSEMENT DU BOSS APEX : ${bossTitle} !`);
         // Shift Morale towards Hive (-25%) upon Apex Boss appearance
@@ -5499,12 +5501,14 @@ class GameApp {
                      this.bosses.activeBoss.type === 'rogue_king_prime' ? 'ROGUE KING XENOMORPH PRIME' :
                      this.bosses.activeBoss.type === 'berserker_super_predator' ? 'SUPER PREDATOR BERSERKER (MR. BLACK)' :
                      this.bosses.activeBoss.type === 'ultimate_upgrade_predator' ? 'ULTIMATE UPGRADE PREDATOR 3.3M' :
-                     this.bosses.activeBoss.type === 'awakened_engineer' ? 'MALA\'KAK ENGINEER' : 'REINE XÉNOMORPHE';
+                     this.bosses.activeBoss.type === 'awakened_engineer' ? 'MALA\'KAK ENGINEER' :
+                     this.bosses.activeBoss.type === 'fiorina_runner' ? 'RUNNER DE FIORINA' : 'REINE XÉNOMORPHE';
         bestTarget = {
           pos: bossPos.clone().add(new THREE.Vector3(0, 3, 0)),
           dist: d,
           name,
           weakpoint: this.bosses.activeBoss.type === 'ultimate_upgrade_predator' ? "FAIBLESSE : ARTICULATIONS CERVICALES & CARAPACE VENTRALE (3.2X)" :
+                     this.bosses.activeBoss.type === 'fiorina_runner' ? "OUVERTURE : ATTAQUE LOURDE QUAND IL SE RETOURNE" :
                      this.bosses.activeBoss.type === 'rogue_king_prime' ? "FAIBLESSE : PLAQUES DORSALES & BASE DES CORNES CRÂNIENNES (3.0X)" : "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
         };
       }

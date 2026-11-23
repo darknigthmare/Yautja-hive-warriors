@@ -26,7 +26,11 @@ const PALETTES = {
   comanche_territory: { horizon: 0xa9af8b, zenith: 0x557b82, key: 0xffe5bc, ground: 0x42442a, accent: 0x9db6a7, clouds: .46, stars: 0, exposure: 1.10 },
   killer_of_killers: { horizon: 0x2f4c5c, zenith: 0x061329, key: 0xb4d5e6, ground: 0x25323b, accent: 0x7bbac1, clouds: .3, stars: .8, exposure: 1.15 },
   // LV-223: silica storm sky, dark basalt, cold blue of the Engineer holograms (adaptation).
-  engineer_structures: { horizon: 0x5a4f45, zenith: 0x0d0b13, key: 0xa7b4c2, ground: 0x2a2622, accent: 0x6fa3b8, clouds: .78, stars: .15, exposure: 1.06 }
+  engineer_structures: { horizon: 0x5a4f45, zenith: 0x0d0b13, key: 0xa7b4c2, ground: 0x2a2622, accent: 0x6fa3b8, clouds: .78, stars: .15, exposure: 1.06 },
+  // Hadley's Hope: storm-grey Acheron sky, wet steel, cold colony floodlights (adaptation).
+  hadleys_hope: { horizon: 0x4a5359, zenith: 0x0b1014, key: 0xb7c9d4, ground: 0x23282b, accent: 0x8fb3c4, clouds: .9, stars: 0, exposure: 1.04 },
+  // Fiorina 161: rust and soot, orange furnace glow under a starless sky (adaptation).
+  fiorina_foundry: { horizon: 0x4b3326, zenith: 0x0e0a08, key: 0xd9a66d, ground: 0x2a211b, accent: 0xe0782f, clouds: .2, stars: .05, exposure: 1.08 }
 };
 
 export class EngineRenderer {

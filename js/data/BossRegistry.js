@@ -3,7 +3,7 @@
  * and phases below are gameplay choices in game units. */
 const LABELS = Object.freeze({ xenomorph_queen: 'Reine xénomorphe', praetorian: 'Prétorien', predalien: 'Predalien', predalien_queen: 'Predalien de Gunnison',
   imperial_queen: 'Reine impériale', empress_matriarch: 'Impératrice matriarche', the_offspring: 'Offspring', predalien_abomination: 'Abomination prédalienne',
-  predalien_matriarch_titan: 'Titan prédalien', rogue_king_prime: 'Roi de Charon', awakened_engineer: 'Ingénieur éveillé', trilobite_prime: 'Trilobite',
+  predalien_matriarch_titan: 'Titan prédalien', rogue_king_prime: 'Roi de Charon', fiorina_runner: 'Runner de Fiorina', awakened_engineer: 'Ingénieur éveillé', trilobite_prime: 'Trilobite',
   berserker_super_predator: 'Berserker', ultimate_upgrade_predator: 'Upgrade Predator', feral_predator_boss: 'Feral', apex_gladiator_predator: 'Gladiateur de l’arène',
   jungle_hunter_boss: 'Jungle Hunter', city_hunter_boss: 'City Hunter',
   vara_kesh_reaper: 'Faucheur de Vara-Kesh', eshra_hydra: 'Hydre d’Eshra', kharuun_sand_maw: 'Gueule des sables', terek_va_hive_mind: 'Esprit de ruche des profondeurs',
@@ -14,7 +14,7 @@ const define = (id, species, source, hp, height, attacks, levels = [], extra = {
   unique: true, ordinarySpawn: false, assetFidelity: 'interpreted-game-model', ...extra
 });
 export const BOSS_REGISTRY = Object.freeze({
-  xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 3000, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid']),
+  xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 3000, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid', 'hadleys_hope_colony']),
   praetorian: define('praetorian', 'xenomorph', 'Praetorian game caste; encounter adaptation', 3000, 5.2, ['tail', 'spit', 'melee']),
   predalien: define('predalien', 'xenomorph', 'Alien vs. Predator game hybrid', 3000, 5.4, ['tail', 'spit', 'leap', 'melee']),
   predalien_queen: define('predalien_queen', 'xenomorph', 'AVP: Requiem (2007), gameplay adaptation of the Predalien; queen title is not a film caste', 5000, 5.8, ['tail', 'embryos', 'melee'], ['gunnison_forest']),
@@ -24,6 +24,7 @@ export const BOSS_REGISTRY = Object.freeze({
   predalien_abomination: define('predalien_abomination', 'xenomorph', 'AVP: Requiem-inspired project encounter', 6500, 6.2, ['tail', 'embryos', 'leap', 'melee']),
   predalien_matriarch_titan: define('predalien_matriarch_titan', 'xenomorph', 'Original project titan inspired by AVP game roles', 10000, 8.0, ['tail', 'embryos', 'slam', 'melee'], [], { original: true }),
   rogue_king_prime: define('rogue_king_prime', 'xenomorph', 'Aliens: Rogue (1993), game adaptation of the King', 9500, 7.5, ['slam', 'charge', 'melee'], ['charon_rogue_base']),
+  fiorina_runner: define('fiorina_runner', 'xenomorph', 'Alien 3 (1992), the Runner of Fiorina 161; boss scale and hit-and-run rhythm are gameplay adaptations', 7800, 4.4, ['leap', 'melee'], ['fiorina_161_foundry'], { adaptedFrom: 'runner creature model' }),
   awakened_engineer: define('awakened_engineer', 'engineer', 'Prometheus (2012), original shield/vortex encounter mechanics', 8500, 5.8, ['vortex', 'slam', 'melee'], ['lv223_engineer_structures'], { adaptedArsenal: ['phase-shield', 'gravity-vortex'] }),
   trilobite_prime: define('trilobite_prime', 'organism', 'Prometheus (2012), enlarged project encounter', 7000, 4.7, ['constrict', 'leap', 'melee']),
   berserker_super_predator: define('berserker_super_predator', 'yautja', 'Predators (2010), Berserker / Mr. Black', 8800, 5.2, ['plasma', 'charge', 'melee'], ['game_preserve_planet']),

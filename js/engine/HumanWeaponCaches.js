@@ -3,7 +3,7 @@
  * starts without it, and finite caches exist only on sites where that setting already
  * fields Colonial Marines (the same sites as LevelEncounterPolicy's marine support).
  * Catalogue operations keep their own loadout: no cache is ever created there. */
-export const HUMAN_WEAPON_CACHE_SITES = Object.freeze(['xenomorph_prime', 'romulus_station', 'charon_rogue_base']);
+export const HUMAN_WEAPON_CACHE_SITES = Object.freeze(['xenomorph_prime', 'romulus_station', 'charon_rogue_base', 'hadleys_hope_colony']);
 export const HUMAN_WEAPON_AMMO = Object.freeze({
   m41aGrenadeCharges: Object.freeze({ cache: 2, cap: 4 }),
   m77GaussAmmo: Object.freeze({ cache: 6, cap: 12 }),

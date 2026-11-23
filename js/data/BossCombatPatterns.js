@@ -12,6 +12,7 @@ export const BOSS_COMBAT_PATTERNS = Object.freeze({
   predalien_abomination: pattern('brood-pounce', 'Le bond verrouille sa trajectoire avant la couvée.', 'Esquivez la réception et utilisez la récupération pour vous replacer.'),
   predalien_matriarch_titan: pattern('three-seismic-pulses', 'Trois impacts concentriques sont espacés.', 'Anticipez le départ vers le bord : le saut ne remplace pas l’évacuation de la zone.'),
   rogue_king_prime: pattern('wall-stagger', 'La charge se fixe sur une trajectoire droite.', 'Attirez la charge vers un obstacle solide : le choc étourdit le roi.'),
+  fiorina_runner: pattern('hit-and-run', 'Après chaque morsure, le Runner rompt le contact puis se retourne.', 'Ne le poursuivez pas : préparez une attaque lourde pour le moment où il se retourne.'),
   awakened_engineer: pattern('heavy-shield-overload', 'Le bouclier absorbe une partie des impacts.', 'Les attaques lourdes brisent plus vite le bouclier ; évitez ensuite le vortex.'),
   trilobite_prime: pattern('low-constriction', 'L’organisme prépare une saisie au ras du sol.', 'Sautez sa zone de saisie ou reculez avant sa fermeture.'),
   berserker_super_predator: pattern('shared-plasma-burst', 'Trois traits partagent un verrouillage visible.', 'Quittez cette ligne ou prenez un couvert ; la rafale ne cumule pas trois impacts sur vous.', { weapons: Object.freeze(['plasma']) }),

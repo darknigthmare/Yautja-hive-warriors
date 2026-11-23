@@ -39,6 +39,12 @@ export const LOADING_LORE = Object.freeze({
   lv223_engineer_structures: { tag: 'LV-223 · 2093 · ADAPTATION', lines: [
     'Sous la tempête de silice, les galeries des Ingénieurs respirent encore. Ne touchez pas aux urnes.',
     'Le film ne montre aucune ruche sur LV-223 : celle-ci est une adaptation de jeu, comme le bouclier de l’Ingénieur.'] },
+  hadleys_hope_colony: { tag: 'LV-426 · 2179 · ADAPTATION', lines: [
+    'La tempête d’Acheron couvre les balises. Le processeur atmosphérique gronde au cœur de la ruche.',
+    'Le film ne montre aucun Yautja à Hadley’s Hope : cette chasse est une adaptation de jeu.'] },
+  fiorina_161_foundry: { tag: 'FIORINA 161 · 2179 · ADAPTATION', lines: [
+    'Plomb, rouille et suie : la fonderie du pénitencier ne s’éteint jamais tout à fait.',
+    'Le film ne montre qu’un seul Xénomorphe : la ruche et le rythme du Runner sont des adaptations.'] },
   ascension_ship: { tag: 'LA LAME PATIENTE · CRÉATION', lines: [
     'Le vaisseau de l’Elite Kaedh dérive entre deux mondes. Saar attend vos ordres en silence.',
     'Le pont est interdit aux Unblooded. Le rite, lui, vous attend au bout des huit chasses.'] }

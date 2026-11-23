@@ -18,7 +18,11 @@ const PROFILE_DEFINITIONS = {
   prey_comanche_territory: ['buildPreyComancheProps', 'buildPreyTerritoryExpansionProps'],
   killer_of_killers_arena: ['buildKillerOfKillersProps', 'buildKillerOfKillersExpansionProps'],
   // The stasis crypt is left out: its proximity trigger spawns a boss, which would replace the hunt's final boss.
-  lv223_engineer_structures: ['buildEngineerCityRuins', 'buildEngineerUrnClusters']
+  lv223_engineer_structures: ['buildEngineerCityRuins', 'buildEngineerUrnClusters'],
+  // Aliens (1986): colony catwalks and blast doors, the processor's steam, USCM supply caches, the hive's resin and eggs.
+  hadleys_hope_colony: ['buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildElectricalTransformers', 'buildUSCMSupplyCaches', 'buildBiomechanicalWallResin', 'buildEggNurseries'],
+  // Alien 3 (1992): foundry catwalks, lead-mould doors, furnace steam and the flammable fuel lines of the tunnels.
+  fiorina_161_foundry: ['buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSteamConduits', 'buildFuelLines']
 };
 
 export const REFERENCE_LEVEL_MECHANISMS = Object.freeze(Object.fromEntries(

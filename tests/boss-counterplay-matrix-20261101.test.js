@@ -256,6 +256,35 @@ const chargePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.
 const meleePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.ok(meleeTrial(id, false) > 0); assert.equal(meleeTrial(id, true), 0); }];
 cases.push(leapPrey('vara_kesh_reaper'), meleePrey('eshra_hydra'), chargePrey('kharuun_sand_maw'), meleePrey('terek_va_hive_mind'),
   chargePrey('nereth_jaw'), leapPrey('oshara_swimmer'), chargePrey('rukh_tal_spur'), leapPrey('dharos_watcher'));
+// Fiorina runner: after a bite it breaks contact, then turns back; only a heavy hit in that turn staggers it.
+cases.push(['fiorina_runner', 'hit-and-run', () => {
+  for (const heavy of [false, true]) fixture('fiorina_runner', (manager, boss) => {
+    const target = player(0, 0, 3);
+    for (const key of ['tailWhipCooldown', 'specialCooldown', 'regurgitateCooldown', 'shriekCooldown', 'spitCooldown']) boss[key] = 999;
+    boss.contactCooldown = 0; manager.update(1 / 60, target);
+    assert.equal(boss.pressureAction, 'melee'); releasePrepared(manager, target);
+    assert.ok(target.hits.length >= 1, 'the bite lands');
+    assert.ok(boss.retreatUntil > manager.time, 'it breaks contact after the bite');
+    const start = boss.mesh.position.distanceTo(target.position);
+    tick(manager, target, 1); assert.ok(boss.mesh.position.distanceTo(target.position) > start + 5, 'it moves away');
+    const hits = target.hits.length; tick(manager, target, 1.3);
+    assert.equal(target.hits.length, hits, 'no attack while it retreats');
+    assert.ok(boss.turnaroundUntil > manager.time, 'the turn is an announced opening');
+    manager.takeDamage(100, null, { attackKind: heavy ? 'heavy' : 'melee' });
+    assert.equal(boss.isStunned, heavy);
+  });
+  // Cornered (every escape blocked): it holds its ground and turns back at once.
+  fixture('fiorina_runner', (manager, boss) => {
+    const target = player(0, 0, 3), pinned = boss.mesh.position.clone();
+    manager.environment = { resolveAgentMovement(position) { position.copy(pinned); }, resolveMovement() {} };
+    for (const key of ['tailWhipCooldown', 'specialCooldown', 'regurgitateCooldown', 'shriekCooldown', 'spitCooldown']) boss[key] = 999;
+    boss.contactCooldown = 0; manager.update(1 / 60, target); releasePrepared(manager, target);
+    tick(manager, target, .1);
+    assert.ok(!(boss.retreatUntil > manager.time), 'a cornered runner does not keep retreating');
+    assert.ok(boss.turnaroundUntil > manager.time, 'its turn opens the window early');
+    assert.ok(boss.mesh.position.distanceTo(pinned) < 1e-6);
+  });
+}]);
 
 test('the counterplay matrix covers every registered encounter exactly once', () => {
   assert.deepEqual(cases.map(([id]) => id).sort(), Object.keys(BOSS_REGISTRY).sort());

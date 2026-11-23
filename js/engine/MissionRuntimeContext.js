@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-const KNOWN_MAPS = new Set(['gunnison_forest','xenomorph_prime','antarctic_pyramid','la_rooftops','val_verde_jungle','romulus_station','charon_rogue_base','game_preserve_planet','stargazer_facility','prey_comanche_territory','killer_of_killers_arena','lv223_engineer_structures']);
-const FUTURE_MAPS = new Set(['xenomorph_prime','romulus_station','charon_rogue_base']);
+const KNOWN_MAPS = new Set(['gunnison_forest','xenomorph_prime','antarctic_pyramid','la_rooftops','val_verde_jungle','romulus_station','charon_rogue_base','game_preserve_planet','stargazer_facility','prey_comanche_territory','killer_of_killers_arena','lv223_engineer_structures','hadleys_hope_colony','fiorina_161_foundry']);
+const FUTURE_MAPS = new Set(['xenomorph_prime','romulus_station','charon_rogue_base','hadleys_hope_colony']);
 const OUTDOOR_MAPS = new Set(['gunnison_forest','la_rooftops','val_verde_jungle','game_preserve_planet','stargazer_facility','prey_comanche_territory']);
 
 // Old saves predate selectable layouts/difficulty. Their world was seed zero

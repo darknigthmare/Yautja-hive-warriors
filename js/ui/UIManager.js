@@ -11,7 +11,7 @@ import { debriefConsequences, combatReadabilityState } from './TacticalPresentat
 import { operationMapFrontEntries, renderOperationFrontLegend, drawOperationFrontLabel } from './OperationMapLabels.js';
 
 const bossDisplayNames = {
-  xenomorph_queen:'REINE XÉNOMORPHE',queen:'REINE XÉNOMORPHE',praetorian:'PRÉTORIEN',predalien:'PRÉDALIEN',predalien_queen:'PRÉDALIEN — RENCONTRE ADAPTÉE',imperial_queen:'REINE IMPÉRIALE',empress_matriarch:'IMPÉRATRICE DE LA RUCHE',the_offspring:'THE OFFSPRING',predalien_abomination:'ABOMINATION PRÉDALIENNE',predalien_matriarch_titan:'MATRIARCHE TITAN — CRÉATION ORIGINALE',rogue_king_prime:'ROGUE KING',awakened_engineer:'INGÉNIEUR ÉVEILLÉ',trilobite_prime:'TRILOBITE PRIME',berserker_super_predator:'BERSERKER / MR. BLACK',ultimate_upgrade_predator:'UPGRADE PREDATOR',feral_predator_boss:'FERAL PREDATOR',jungle_hunter_boss:'JUNGLE HUNTER',city_hunter_boss:'CITY HUNTER'
+  xenomorph_queen:'REINE XÉNOMORPHE',fiorina_runner:'RUNNER DE FIORINA',queen:'REINE XÉNOMORPHE',praetorian:'PRÉTORIEN',predalien:'PRÉDALIEN',predalien_queen:'PRÉDALIEN — RENCONTRE ADAPTÉE',imperial_queen:'REINE IMPÉRIALE',empress_matriarch:'IMPÉRATRICE DE LA RUCHE',the_offspring:'THE OFFSPRING',predalien_abomination:'ABOMINATION PRÉDALIENNE',predalien_matriarch_titan:'MATRIARCHE TITAN — CRÉATION ORIGINALE',rogue_king_prime:'ROGUE KING',awakened_engineer:'INGÉNIEUR ÉVEILLÉ',trilobite_prime:'TRILOBITE PRIME',berserker_super_predator:'BERSERKER / MR. BLACK',ultimate_upgrade_predator:'UPGRADE PREDATOR',feral_predator_boss:'FERAL PREDATOR',jungle_hunter_boss:'JUNGLE HUNTER',city_hunter_boss:'CITY HUNTER'
 };
 export const bossHUDLabel = boss => boss?.profileName ?? bossDisplayNames[boss?.type] ?? 'ADVERSAIRE';
 

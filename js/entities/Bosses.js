@@ -13,6 +13,9 @@ import { getBossCombatPattern } from '../data/BossCombatPatterns.js';
 import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder, requestNPCStrike } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/HunterStealth.js';
+/* Fiorina runner (Alien 3 adaptation): it strikes, breaks contact, then turns back. A heavy hit
+ * during the turn staggers it. Timings are gameplay choices, not film measurements. */
+export const HIT_AND_RUN = Object.freeze({ retreat: 2.2, speed: 10.5, turnaround: 1.4, stagger: 1.6 });
 import { isGreatPrey, stepGreatPrey, greatPreyAllows, startGreatPreyCharge, endGreatPreyCharge, greatPreyMeleeFactor, dueHivePulse, greatPreyReadout } from '../battlefield/GreatPreyMechanics.js';
 
 /** AUD-066: the body footprint that collides with scenery, measured on the normalized
@@ -127,6 +130,8 @@ export class BossManager {
       const owner = { data }; const mesh = buildHunterModel(owner); mesh._bossHunterOwner = owner; return mesh;
     }
     if (type === 'xenomorph_queen') type = 'queen';
+    // Fiorina 161: the existing runner creature, scaled to the boss height (no dedicated model).
+    if (type === 'fiorina_runner') return createCreatureModel('runner', this.sharedResources);
     if (!['the_offspring', 'empress_matriarch', 'predalien_queen', 'imperial_queen', 'praetorian', 'predalien', 'queen'].includes(type)) return this.createRecentBossMesh(type);
     const kind = type === 'the_offspring' ? 'offspring' : type === 'empress_matriarch' ? 'empress'
       : type === 'predalien_queen' ? 'predalien' : type === 'imperial_queen' ? 'imperial'
@@ -195,6 +200,11 @@ export class BossManager {
       releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null;
       boss.isStunned = true; boss.stunTimer = 1.8; boss.specialCooldown = 5; boss.regurgitateCooldown = 5;
       boss.exposedUntil = this.time + 2.5; this.onCounterplay?.({ bossType: boss.type, reason: 'heavy_interrupt', duration: 1.8 });
+    }
+    if (heavy && boss.pattern?.mechanic === 'hit-and-run' && this.time < (boss.turnaroundUntil ?? 0)) {
+      // Literal 1.6 s = HIT_AND_RUN.stagger (tests run this method alone).
+      boss.turnaroundUntil = 0; boss.isStunned = true; boss.stunTimer = 1.6;
+      boss.exposedUntil = this.time + 2.2; this.onCounterplay?.({ bossType: boss.type, reason: 'turnaround_stagger', duration: 1.6 });
     }
     if (boss.hasPhaseShield) {
       const absorbed = Math.min(boss.phaseShieldHp, amount * .6);
@@ -383,7 +393,8 @@ export class BossManager {
       const pulse = dueHivePulse(boss, delta); if (pulse) this.pendingActions.push({ ...pulse, owner: boss });
     }
     const choose = action => allowed.includes(action) && (!isGreatPrey(boss) || greatPreyAllows(boss, action));
-    if (!boss.pressureAction) {
+    // Hit-and-run (Fiorina runner): no new attack is prepared while it breaks contact.
+    if (!boss.pressureAction && !(boss.retreatUntil > this.time)) {
       if (distance <= 8.5 && boss.tailWhipCooldown <= 0 && choose('tail')) boss.pressureAction = 'tail';
       else if (distance <= 11 && boss.specialCooldown <= 0 && choose('gale')) boss.pressureAction = 'gale';
       else if (distance <= 10 && boss.specialCooldown <= 0 && choose('slam')) boss.pressureAction = 'slam';
@@ -415,7 +426,8 @@ export class BossManager {
       else if (action === 'constrict') { boss.specialCooldown = 6; this.triggerTrilobiteConstrict(player); }
       else if (action === 'charge' || action === 'leap') { const duration = action === 'leap' ? .85 : .7; boss.specialCooldown = 7; boss.isLeaping = action === 'leap'; boss.charge = { kind: action, direction: (boss.pressureAim ?? player.position).clone().sub(boss.mesh.position).setY(0).normalize(), life: duration, duration, startY: boss.mesh.position.y, speed: action === 'leap' ? Math.min(26, Math.max(12, distance / duration)) : 16, damage: 70, hit: new Set() }; if (isGreatPrey(boss)) startGreatPreyCharge(boss, boss.charge); }
       else if (action === 'shriek') { boss.shriekCooldown = 6; this.audioEngine?.playOffspringShriek?.(); if (distance <= 10 && this._insideAttackCone(player, Math.PI * .7) && this.applyBossDamage(player, 60, 'shriek', boss) && Number.isFinite(player.plasmaEnergy)) player.plasmaEnergy = Math.max(0, player.plasmaEnergy - 25); }
-      else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, (boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35) * (isGreatPrey(boss) ? greatPreyMeleeFactor(boss) : 1), 'melee', boss); }
+      else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, (boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35) * (isGreatPrey(boss) ? greatPreyMeleeFactor(boss) : 1), 'melee', boss);
+        if (boss.pattern?.mechanic === 'hit-and-run') { boss.retreatUntil = this.time + HIT_AND_RUN.retreat; boss.turnaroundPending = true; } }
       boss.pressureAction = null; boss.pressureAim = null; boss.exposedUntil = Math.max(boss.exposedUntil, this.time + .6);
     }
     const warningRadius = ({ tail: 8.5, gale: 11, slam: boss.pattern.mechanic === 'three-seismic-pulses' ? 5 : 9,
@@ -432,7 +444,22 @@ export class BossManager {
     const owner = boss.mesh._bossHunterOwner;
     if (owner) for (const [role, sign] of [['leftArm',-1],['rightArm',1],['leftLeg',1],['rightLeg',-1]]) if (owner[role]) owner[role].rotation.x = moving ? Math.sin(boss.visualPhase) * sign * .22 : 0;
     if (boss.tailSpinLife > 0) { boss.tailSpinLife = Math.max(0, boss.tailSpinLife - delta); boss.mesh.rotation.y += Math.PI * 2 * delta / .32; }
-    if (moving) { const speed = (boss.definition.species === 'yautja' ? 8.5 : boss.type === 'the_offspring' ? 10.5 : 7.5) * (boss.phase === 3 ? 1.15 : 1); boss.mesh.position.addScaledVector(dir.normalize(), Math.min(speed * delta, distance - 3.1)); this.environment?.resolveAgentMovement?.(boss.mesh.position, player.position, speed * delta, boss.footprintRadius ?? 1.8); if (!(boss.tailSpinLife > 0)) boss.mesh.rotation.y = Math.atan2(dir.x, dir.z); }
+    if (boss.retreatUntil > this.time) {
+      // Breaks contact away from the target, then turns back: the turn is the opening.
+      // Straight away first; when a wall holds it, the first side escape that really gains distance.
+      const back = dir.lengthSq() > 1e-6 ? dir.clone().normalize().multiplyScalar(-1) : new THREE.Vector3(0, 0, -1), step = HIT_AND_RUN.speed * delta;
+      const start = boss.mesh.position.clone(), before = start.distanceTo(player.position); let away = back, escaped = false;
+      for (const turn of [0, boss.escapeTurn ?? .9, -(boss.escapeTurn ?? .9), 1.6, -1.6]) {
+        away = back.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), turn);
+        boss.mesh.position.copy(start).addScaledVector(away, step); this.environment?.resolveAgentMovement?.(boss.mesh.position, start.clone().addScaledVector(away, 20), step, boss.footprintRadius ?? 1.8); // steer toward the escape point, never the target
+        if (boss.mesh.position.distanceTo(player.position) - before > step * .35) { if (turn) boss.escapeTurn = turn; escaped = true; break; }
+      }
+      // Cornered: it stays put and turns back at once, which opens the window early.
+      if (!escaped) { boss.mesh.position.copy(start); boss.retreatUntil = this.time; away = back; }
+      boss.mesh.rotation.y = Math.atan2(away.x, away.z); this._updateAttackReadout(boss); return;
+    }
+    if (boss.turnaroundPending) { boss.turnaroundPending = false; boss.turnaroundUntil = this.time + HIT_AND_RUN.turnaround; boss.exposedUntil = Math.max(boss.exposedUntil, boss.turnaroundUntil); }
+    if (moving) { const speed = (boss.definition.species === 'yautja' ? 8.5 : boss.type === 'the_offspring' ? 10.5 : boss.pattern?.mechanic === 'hit-and-run' ? HIT_AND_RUN.speed : 7.5) * (boss.phase === 3 ? 1.15 : 1); boss.mesh.position.addScaledVector(dir.normalize(), Math.min(speed * delta, distance - 3.1)); this.environment?.resolveAgentMovement?.(boss.mesh.position, player.position, speed * delta, boss.footprintRadius ?? 1.8); if (!(boss.tailSpinLife > 0)) boss.mesh.rotation.y = Math.atan2(dir.x, dir.z); }
   }
 
   buildTrilobiteMesh(scale = 2.6) {
