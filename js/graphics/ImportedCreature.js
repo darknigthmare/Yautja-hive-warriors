@@ -257,7 +257,7 @@ export function createImportedCreature(actor, gltf, entry = {}, retained = new S
       if (disposed) return;
       root.visible = level === 0;
       ankleRig?.setDetailLevel(level);
-      for (const mesh of Object.values(actor._creatureRig ?? {})) mesh.visible = level !== 0;
+      for (const mesh of actor._creatureMeshes ?? Object.values(actor._creatureRig ?? {})) mesh.visible = level !== 0;
       actor.userData.visualSource = level === 0 ? 'generated-rigged' : 'procedural';
     };
     const update = (phase, moving = true) => {
@@ -314,7 +314,7 @@ export function requestImportedCreature(actor, { key, entry, loadTemplate, retai
     if (cancelled) return;
     cancelled = true; state.status = 'cancelled';
     adapter?.dispose();
-    for (const mesh of Object.values(actor._creatureRig ?? {})) mesh.visible = true;
+    for (const mesh of actor._creatureMeshes ?? Object.values(actor._creatureRig ?? {})) mesh.visible = true;
     actor.userData.visualSource = 'procedural';
     actor.removeEventListener('added', attach); actor.removeEventListener('removed', cancel);
     finish(null);

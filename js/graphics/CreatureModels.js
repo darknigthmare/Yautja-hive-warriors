@@ -4,6 +4,7 @@ import { createSurfaceMaterial } from './SurfaceLibrary.js';
 import { sculptCreature } from './CreatureSculpt.js';
 import { getGeneratedAssetEntry, loadGeneratedAsset } from './GeneratedAssetLibrary.js';
 import { requestImportedCreature } from './ImportedCreature.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const profiles = new Map();
 const PALE = new Set(['neomorph', 'offspring', 'facehugger', 'chestburster']);
@@ -51,7 +52,40 @@ function createProfile(kind) {
       standingMaxY = Math.max(standingMaxY, part.geometry.boundingBox.max.y + part.pivot[1]);
     }
   }
-  return { ...sculpt, resources, triangles, vertices, lodTriangles, standingHeight: standingMaxY - standingMinY };
+  const merged = mergeBodyParts(sculpt.parts, materials.body);
+  merged?.geometries.forEach(geometry => resources.add(geometry));
+  return { ...sculpt, resources, triangles, vertices, lodTriangles, standingHeight: standingMaxY - standingMinY, merged };
+}
+
+/* Draw-call pass (23 Nov 2026): a limbed creature's body-material parts (limbs, tail, carapace) are
+ * one SkinnedMesh per actor. Each part is rigidly bound to one bone at its own pivot, so rotating a
+ * bone moves exactly that part as rotating the old mesh did; three LOD geometries keep the swap. */
+function mergeBodyParts(parts, bodyMaterial) {
+  const body = parts.filter(part => part.material === bodyMaterial);
+  if (!parts.some(part => part.name === 'leg-left') || body.length < 3) return null;
+  const shared = Object.keys(body[0].geometry.attributes).filter(key => body.every(part => part.detailGeometries.every(geometry => geometry.attributes[key])));
+  const indexed = body.every(part => part.detailGeometries.every(geometry => geometry.index));
+  const geometries = [0, 1, 2].map(level => {
+    const pieces = body.map((part, index) => {
+      let geometry = part.detailGeometries[level].clone();
+      if (!indexed && geometry.index) geometry = geometry.toNonIndexed();
+      for (const key of Object.keys(geometry.attributes)) if (!shared.includes(key)) geometry.deleteAttribute(key);
+      geometry.morphAttributes = {};
+      geometry.translate(...part.pivot);
+      const count = geometry.attributes.position.count, skinIndex = new Uint16Array(count * 4), skinWeight = new Float32Array(count * 4);
+      for (let vertex = 0; vertex < count; vertex++) { skinIndex[vertex * 4] = index + 1; skinWeight[vertex * 4] = 1; }
+      geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndex, 4));
+      geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeight, 4));
+      return geometry;
+    });
+    const geometry = mergeGeometries(pieces, false); pieces.forEach(piece => piece.dispose());
+    if (!geometry) throw new Error('creature body merge failed');
+    geometry.computeBoundingBox(); geometry.computeBoundingSphere();
+    // Limbs swing a little around their pivots: keep culling conservative.
+    geometry.boundingSphere.radius *= 1.25; // the box stays exact for measurements (footprint, silhouettes)
+    return geometry;
+  });
+  return { names: body.map(part => part.name), pivots: body.map(part => [...part.pivot]), geometries, material: bodyMaterial };
 }
 
 export function createCreatureModel(kind = 'warrior', retained = null) {
@@ -64,13 +98,29 @@ export function createCreatureModel(kind = 'warrior', retained = null) {
     standingHeight: profile.standingHeight, ...profile.features };
   group.userData.detailLevel = 0;
   group.userData.visualSource = 'procedural';
-  group._creatureRig = {};
+  group._creatureRig = {}; group._creatureMeshes = [];
+  const merged = profile.merged;
   for (const part of profile.parts) {
+    if (merged?.names.includes(part.name)) continue;
     const mesh = new THREE.Mesh(part.geometry, part.material);
     mesh.userData.detailGeometries = part.detailGeometries;
     mesh.name = part.name; mesh.position.set(...part.pivot);
     mesh.castShadow = true; mesh.receiveShadow = true;
-    group.add(mesh); group._creatureRig[part.name] = mesh;
+    group.add(mesh); group._creatureRig[part.name] = mesh; group._creatureMeshes.push(mesh);
+  }
+  if (merged) {
+    const root = new THREE.Bone(); root.name = 'creature-root'; const bones = [root];
+    merged.names.forEach((name, index) => {
+      const bone = new THREE.Bone(); bone.name = name; bone.position.set(...merged.pivots[index]);
+      root.add(bone); bones.push(bone); group._creatureRig[name] = bone;
+    });
+    const mesh = new THREE.SkinnedMesh(merged.geometries[0], merged.material);
+    mesh.name = 'creature-body'; mesh.userData.detailGeometries = merged.geometries; mesh.userData.ownsSkeleton = true;
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    mesh.add(root); group.add(mesh); group.updateMatrixWorld(true);
+    mesh.bind(new THREE.Skeleton(bones));
+    mesh.boundingSphere = merged.geometries[0].boundingSphere.clone(); mesh.boundingBox = merged.geometries[0].boundingBox.clone();
+    group._creatureMeshes.push(mesh);
   }
   profile.resources.forEach(resource => retained?.add(resource));
   // Asset-free and server/test usage stay entirely procedural. A manager-owned
@@ -136,6 +186,14 @@ export function createEggModel(retained = null) {
     petal.rotation.z = -Math.cos(angle) * 0.14;
   });
   return group;
+}
+
+/** The cached full-detail geometry of one anatomical part, whether it is a mesh or a bone of the merged body. */
+export function creaturePartGeometry(object, name) {
+  const node = object?.getObjectByName?.(name);
+  if (node?.isMesh && !node.isSkinnedMesh) return node.geometry;
+  const kind = object?.userData?.visualProfile?.kind;
+  return profiles.get(kind)?.parts.find(part => part.name === name)?.geometry ?? null;
 }
 
 export function getCreatureProfileStats(kind) {

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import { createCreatureModel, createEggModel, animateCreatureModel, updateCreatureDetail } from '../js/graphics/CreatureModels.js';
+import { createCreatureModel, createEggModel, animateCreatureModel, updateCreatureDetail, creaturePartGeometry } from '../js/graphics/CreatureModels.js';
 import { sculptCreature } from '../js/graphics/CreatureSculpt.js';
 import { XenomorphHorde } from '../js/entities/XenomorphHorde.js';
 import { BossManager } from '../js/entities/Bosses.js';
@@ -43,13 +43,13 @@ test('creatures have meaningful anatomical silhouette and independent articulate
   const bounds = new THREE.Box3().setFromObject(warrior);
   assert.ok(bounds.max.y > 3.8 && bounds.max.y < 4.2, 'a standing alien has a credible stature beside the 4.36-unit hunter');
   assert.ok(bounds.min.z < -3, 'a curved stinger tail extends behind the body');
-  const headAndBody = warrior.getObjectByName('carapace');
-  const cranium = warrior.getObjectByName('cranium');
+  const headAndBody = { geometry: creaturePartGeometry(warrior, 'carapace') };
+  const cranium = { geometry: creaturePartGeometry(warrior, 'cranium') };
   assert.ok(cranium.geometry.boundingBox.max.z > 0.7, 'the smooth cranium and jaw face forward');
   const skullSize = cranium.geometry.boundingBox.getSize(new THREE.Vector3());
   assert.ok(skullSize.y < bounds.getSize(new THREE.Vector3()).y * 0.19, 'the head is a low-profile adult cranium, not an oversized oval');
   assert.ok(skullSize.z > skullSize.x * 2.6, 'the cranial roof is long and narrow in profile');
-  const legSize = warrior.getObjectByName('leg-left').geometry.boundingBox.getSize(new THREE.Vector3());
+  const legSize = creaturePartGeometry(warrior, 'leg-left').boundingBox.getSize(new THREE.Vector3());
   assert.ok(legSize.y > bounds.getSize(new THREE.Vector3()).y * 0.43, 'long digitigrade legs replace the short toy-like proportions');
   const coreSize = headAndBody.geometry.boundingBox.getSize(new THREE.Vector3());
   assert.ok(coreSize.y > coreSize.x * 2.2, 'thorax, long abdomen, pelvis and neck form an elongated continuous core');
@@ -67,7 +67,7 @@ test('creatures have meaningful anatomical silhouette and independent articulate
   assert.ok(warrior.getObjectByName('leg-left').rotation.x > 0);
   assert.ok(warrior.getObjectByName('leg-right').rotation.x < 0);
   assert.equal(other.getObjectByName('leg-left').rotation.x, 0, 'shared buffers do not couple actor transforms');
-  assert.equal(warrior.getObjectByName('carapace').geometry, other.getObjectByName('carapace').geometry);
+  assert.equal(warrior.getObjectByName('creature-body').geometry, other.getObjectByName('creature-body').geometry, 'actors share the cached merged body buffers');
   const queenBounds = new THREE.Box3().setFromObject(createCreatureModel('queen'));
   const offspringBounds = new THREE.Box3().setFromObject(createCreatureModel('offspring'));
   assert.ok(queenBounds.max.y > 8 && queenBounds.getSize(new THREE.Vector3()).x > 7, 'queen has an imposing flared crown');
@@ -88,7 +88,7 @@ test('wave cleanup retains cached creature geometry, while actors are removed', 
   assert.equal(scene.children.length, 0);
   assert.equal(disposed, 0, 'clearing one wave cannot invalidate geometry still used by another actor');
   const next = horde.createAlienMesh(false);
-  assert.equal(first.getObjectByName('carapace').geometry, next.getObjectByName('carapace').geometry);
+  assert.equal(first.getObjectByName('creature-body').geometry, next.getObjectByName('creature-body').geometry);
 });
 
 test('boss cleanup retains its sculpted geometry for a fresh encounter', () => {
@@ -105,7 +105,7 @@ test('boss cleanup retains its sculpted geometry for a fresh encounter', () => {
   assert.equal(scene.children.length, 0);
   assert.equal(disposed, 0);
   boss.spawnBoss('xenomorph_queen', new THREE.Vector3(8, 0, 8));
-  assert.equal(boss.activeBoss.mesh.getObjectByName('carapace').geometry, first.getObjectByName('carapace').geometry);
+  assert.equal(boss.activeBoss.mesh.getObjectByName('creature-body').geometry, first.getObjectByName('creature-body').geometry);
   assert.deepEqual(boss.activeBoss.mesh.position.toArray(), [8, 0, 8]);
 });
 

@@ -99,7 +99,7 @@ test('a Queen uses the actual boss model, keeps its allocated identity, and leav
   assert.equal(game.bosses.activeBoss.hp,1777);assert.equal(game.bosses.activeBoss.maxHp,3000);
   let renderedMeshes=0,triangles=0;
   game.bosses.activeBoss.mesh.traverse(node=>{if(node.isMesh){renderedMeshes++;triangles+=(node.geometry.index?.count??node.geometry.attributes.position.count)/3;}});
-  assert.ok(renderedMeshes>5&&triangles>1000,'The grounded boss root contains the actual rendered Queen model.');
+  assert.ok(renderedMeshes>=5&&triangles>1000,'The grounded boss root contains the actual rendered Queen model.');
   const snapshots=queenBridge.despawnGroup(group,[unit]);assert.equal(snapshots[0].hp,1777);assert.equal(game.bosses.activeBoss,null);
   assert.equal(simulation.deaths.size,0);queenBridge.dispose();simulation.dispose();
 });

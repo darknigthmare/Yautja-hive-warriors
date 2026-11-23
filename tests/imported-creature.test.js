@@ -44,7 +44,8 @@ function syntheticGLTF({ animations = true, armatureRoot = false } = {}) {
 }
 
 const mappedEntry = { creatureRig: { bones: Object.fromEntries(['hips', 'leftLeg', 'rightLeg', 'leftArm', 'rightArm'].map(name => [name, name])) } };
-const actorParts = actor => Object.values(actor._creatureRig);
+// Rendered procedural meshes (a merged skinned body plus the remaining parts); rig entries may be bones.
+const actorParts = actor => actor._creatureMeshes ?? Object.values(actor._creatureRig);
 const importedMesh = adapter => adapter.model.getObjectByName('synthetic-skinned-box');
 const request = (actor, template, retained = new Set(), entry = {}) => requestImportedCreature(actor, {
   key: 'SYNTHETIC_FIXTURE_ONLY', entry, retained, loadTemplate: () => template
