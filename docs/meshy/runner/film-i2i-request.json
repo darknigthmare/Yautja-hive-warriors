@@ -1,0 +1,8 @@
+{
+ "ai_model": "nano-banana",
+ "reference_image_urls": [
+  "https://www.toyark.com/wp-content/uploads/2019/07/NECA-Ultimate-Dog-Alien-012.jpg (sent inline as base64)"
+ ],
+ "aspect_ratio": "4:3",
+ "prompt": "Show exactly this same quadruped creature alone, keep its exact anatomy, head shape, ribbed body, legs, claws, segmented tail with blade tip, colours and surface details; full body side view (profile, head to the right), all four feet on the ground in a neutral walking stance, plain light grey background, no chains, no walls, no props, no text, no logo"
+}
