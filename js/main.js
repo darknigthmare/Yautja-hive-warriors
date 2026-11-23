@@ -2369,14 +2369,14 @@ class GameApp {
   }
 
   initializeMissionSupports(saved) {
-    const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.missionMode==='ascension'?'ascension':this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,
+    const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.missionMode==='ascension'?'ascension':this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,eraRules:!(this.missionMode==='fronts'&&this.operationId),
       onDestroyed:event=>{
         if(event.kind==='apc'){
           const killer=this.battleSimulation?.factions.has(event.killerFaction)?event.killerFaction:null;
           this.apcMarineService?.carrierDestroyed(killer);
           this.clearAPCSupport();
         }
-        this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');
+        this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':`${this.dropship.profile.label} DÉTRUIT — APPUI PERDU POUR CETTE MISSION.`);
       }});
     this.missionSupportContext=context;
     this.orbital.supportContext=context;
@@ -5309,7 +5309,7 @@ class GameApp {
         // Cheyenne Dropship Airstrike Support on Wave 2 & 4!
         if (this.waveIndex === 2 || this.waveIndex === 4) {
           const request=this.dropship.triggerAirstrike(this.player.position, this.horde);
-          this.ui.showAnnouncement(request.accepted?'CHEYENNE UD-4L EN APPROCHE — SIX ROQUETTES ENGAGÉES.':request.message);
+          this.ui.showAnnouncement(request.accepted?this.dropship.profile.announce:request.message);
           if (request.accepted && this.waveIndex === 2) {
             this.scheduleMissionTask(() => {
               this.sentryGun.deploySentry(this.player.position.clone().add(new THREE.Vector3(3.5, 0, 2)));

@@ -1,7 +1,8 @@
 /* UD-4L Cheyenne Dropship Air Support & Napalm Bombing Run (Aliens 1986 Lore) */
 
 import * as THREE from 'three';
-import { createDropshipModel } from '../graphics/SupportModels.js';
+import { createDropshipModel, createHelicopterModel } from '../graphics/SupportModels.js';
+import { AIR_SUPPORT_PROFILES } from '../data/EraSupport.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { FiniteSupportPolicy, createSupportCombatant, supportDestroyedEvent } from '../engine/FiniteSupportPolicy.js';
 
@@ -17,8 +18,10 @@ export class CheyenneDropship {
     this.pendingStrikes = [];
     this.microRockets = [];
     this.elapsed = 0;
-    this.maxHp = 1800;
-    this.policy = new FiniteSupportPolicy('cheyenne', { maxHp: this.maxHp, ammunition: { sorties: 2, rockets: 12, napalm: 6 } });
+    // The air slot keeps the 'cheyenne' policy key (saves, HUD); its aircraft follows the location's era.
+    this.profile = AIR_SUPPORT_PROFILES.cheyenne;
+    this.maxHp = this.profile.maxHp;
+    this.policy = new FiniteSupportPolicy('cheyenne', { maxHp: this.maxHp, ammunition: { ...this.profile.ammunition } });
     this.flightCooldown = 0;
     this.lastPosition = new THREE.Vector3();
     this.combatant = createSupportCombatant(this, { kind: 'cheyenne', radius: 4.5, airborne: true });
@@ -26,6 +29,11 @@ export class CheyenneDropship {
 
   get hp() { return this.policy.hp; }
   beginMission(context) {
+    const profile = context?.airProfile ?? AIR_SUPPORT_PROFILES.cheyenne;
+    if (profile.id !== this.profile.id) {
+      this.clear(); this.profile = profile; this.maxHp = profile.maxHp;
+      this.policy = new FiniteSupportPolicy('cheyenne', { maxHp: this.maxHp, ammunition: { ...profile.ammunition } });
+    }
     const answer = this.policy.beginMission(context);
     if (answer.newMission) { this.clear(); this.flightCooldown = 0; }
     else if (!answer.accepted) this.clear();
@@ -33,7 +41,10 @@ export class CheyenneDropship {
   }
   isSupportActive() { return this.isFlying && !!this.shipMesh && this.policy.available; }
   getCombatant() { return this.isSupportActive() ? this.combatant : null; }
-  getSupportState() { return { ...this.policy.getState(), flying: this.isFlying, cooldown: this.flightCooldown }; }
+  getSupportState() { return { ...this.policy.getState(), flying: this.isFlying, cooldown: this.flightCooldown,
+    // A location without human air support names the slot, not the USCM aircraft.
+    profile: this.profile.id, label: this.policy.context?.allowedKinds && !this.policy.context.airProfile ? 'APPUI AÉRIEN' : this.profile.label,
+    limits: { ...this.policy.limits } }; }
   takeDamage(amount, source) {
     if (!this.isSupportActive()) return 0;
     const dealt = this.policy.damage(amount);
@@ -54,25 +65,25 @@ export class CheyenneDropship {
   triggerAirstrike(playerPos, horde) {
     if (!playerPos?.isVector3 || ![playerPos.x, playerPos.y, playerPos.z].every(Number.isFinite)) return this.policy.refuse('invalid');
     if (this.isFlying || this.flightCooldown > 0) return this.policy.refuse('busy');
-    const napalmCount = Math.min(4, this.policy.remaining.napalm);
+    const napalmCount = Math.min(this.profile.perSortie.napalm, this.policy.remaining.napalm);
     const napalmTargets = Array.from({ length: napalmCount }, (_, b) => new THREE.Vector3(playerPos.x + (b - 1.5) * 8, .05, playerPos.z + (b - 1.5) * 10));
-    const rocketTargets = Array.from({ length: 6 }, (_, rocket) => playerPos.clone().add(new THREE.Vector3((rocket % 3 - 1) * 3, 0, (Math.floor(rocket / 3) - .5) * 4)));
+    const rocketTargets = Array.from({ length: this.profile.perSortie.rockets }, (_, rocket) => playerPos.clone().add(new THREE.Vector3((rocket % 3 - 1) * 3, 0, (Math.floor(rocket / 3) - .5) * 4)));
     // Every impact footprint needs an explicit open sky check. Missing/throwing
     // callbacks fail closed; a bare level name does not establish access.
     for (const target of [playerPos, ...napalmTargets, ...rocketTargets]) {
       const access = this.policy.airAccess(target); if (!access.accepted) return access;
     }
-    const accepted = this.policy.spend({ sorties: 1, rockets: 6, napalm: napalmCount });
+    const accepted = this.policy.spend({ sorties: 1, rockets: this.profile.perSortie.rockets, napalm: napalmCount });
     if (!accepted.accepted) return accepted;
 
     if (this.shipMesh) {
       disposeObject(this.shipMesh);
     }
 
-    const shipGroup = createDropshipModel();
+    const shipGroup = this.profile.model === 'dropship' ? createDropshipModel() : createHelicopterModel(this.profile.model);
 
     // Start 100m behind and 22m altitude
-    shipGroup.position.set(playerPos.x - 20, 22, playerPos.z - 90);
+    shipGroup.position.set(playerPos.x - 20, 22, playerPos.z - this.profile.speed * 1.4);
     this.scene.add(shipGroup);
     this.shipMesh = shipGroup;
     this.lastPosition.copy(shipGroup.position);
@@ -181,7 +192,8 @@ export class CheyenneDropship {
     }
     // 1. Dropship Flight Trajectory
     if (this.isFlying && this.shipMesh) {
-      this.shipMesh.position.z += 65 * delta;
+      this.shipMesh.position.z += this.profile.speed * delta;
+      this.shipMesh.userData.mainRotor?.rotateY(delta * 38); this.shipMesh.userData.tailRotor?.rotateX(delta * 60);
       this.lastPosition.copy(this.shipMesh.position);
       this.flightProgress += delta;
 

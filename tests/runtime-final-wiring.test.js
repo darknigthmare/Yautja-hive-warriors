@@ -62,7 +62,8 @@ test('actual support context denies unknown maps and historical faithful tech, a
 });
 
 test('router binds support checkpoints to the persistent campaign run, retains wounds/ammo and reattaches only a real collider',()=>{
-  const game=supportGame();game.initializeMissionSupports({campaignRunId:'persistent-campaign-run'});
+  const game=supportGame('xenomorph_prime');game.initializeMissionSupports({campaignRunId:'persistent-campaign-run'}); // a USCM location: the APC exists there (EraSupport)
+  
   assert.equal(game.spawnAPCSupport(new THREE.Vector3()),true);game.apc.policy.spend({rounds:13});game.apc.takeDamage(350);
   const saved={version:1,apc:game.apc.serialize(),cheyenne:game.dropship.serialize()};
   game.clearAPCSupport();game.missionRun='another-render-run';game.initializeMissionSupports({campaignRunId:'persistent-campaign-run'});game.restoreMissionSupports(saved);

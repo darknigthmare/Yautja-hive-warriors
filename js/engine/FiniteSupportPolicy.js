@@ -24,12 +24,14 @@ export class FiniteSupportPolicy {
     const newMission = context.missionId !== this.missionId;
     this.context = context;
     if (newMission) { this.missionId = context.missionId; this.hp = this.maxHp; this.remaining = { ...this.limits }; }
-    this.lastRefusal = context.allowed ? null : 'disallowed';
+    this.lastRefusal = this._allowedBy(context) ? null : 'disallowed';
     return { ...supportDecision(this.lastRefusal), newMission };
   }
-  get available() { return !!this.context && !!this.missionId && this.context.allowed === true && this.hp > 0; }
+  /** A per-kind permission (era support) overrides the mission-wide flag when the context gives one. */
+  _allowedBy(context) { return context?.allowedKinds && Object.hasOwn(context.allowedKinds, this.kind) ? context.allowedKinds[this.kind] === true : context?.allowed === true; }
+  get available() { return !!this.context && !!this.missionId && this._allowedBy(this.context) && this.hp > 0; }
   permission() {
-    const reason = !this.context || !this.missionId ? 'unconfigured' : this.context.allowed !== true ? 'disallowed' : this.hp <= 0 ? 'destroyed' : null;
+    const reason = !this.context || !this.missionId ? 'unconfigured' : !this._allowedBy(this.context) ? 'disallowed' : this.hp <= 0 ? 'destroyed' : null;
     return supportDecision(reason);
   }
   refuse(reason) { this.lastRefusal = reason; return supportDecision(reason); }

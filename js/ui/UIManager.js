@@ -357,7 +357,7 @@ export class UIManager {
     supportStatus?.classList.toggle('hidden',!factions.supports);
     if(supportStatus&&factions.supports){const {apc,cheyenne}=factions.supports;
       const label=(state,name,ammunition)=>state.hp<=0?`${name} DÉTRUIT`:!state.allowed?`${name} INDISPONIBLE`:`${name} ${Math.ceil(state.hp)} PV · ${ammunition}${state.lastRefusal?' · Dernier refus : '+state.refusalMessage:''}`;
-      supportStatus.textContent=`${label(apc,'APC',`${apc.remaining.rounds}/48 OBUS`)} | ${label(cheyenne,'CHEYENNE',`${cheyenne.remaining.sorties}/2 SORTIES · ${cheyenne.remaining.rockets}/12 ROQUETTES · ${cheyenne.remaining.napalm}/6 INCENDIAIRES`)}`;
+      supportStatus.textContent=`${label(apc,'APC',`${apc.remaining.rounds}/48 OBUS`)} | ${(()=>{const max=cheyenne.limits??{sorties:2,rockets:12,napalm:6};return label(cheyenne,cheyenne.label??'CHEYENNE',`${cheyenne.remaining.sorties}/${max.sorties} SORTIES · ${cheyenne.remaining.rockets}/${max.rockets} ROQUETTES${max.napalm?` · ${cheyenne.remaining.napalm}/${max.napalm} INCENDIAIRES`:''}`);})()}`;
     }
 
     // Musou Gauge

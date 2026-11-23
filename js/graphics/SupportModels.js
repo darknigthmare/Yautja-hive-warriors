@@ -362,6 +362,40 @@ export function createDropPodModel() {
   return buildInsertionPodModel(Assembly);
 }
 
+/* Era air support (EraSupport): a generic utility helicopter, not a measured replica.
+ * 'huey' = UH-1 shape (skids, single cabin, two-blade rotor); 'blackhawk' = UH-60 shape (wheels,
+ * longer cabin, four-blade rotor). Facing +Z like the dropship. userData exposes both rotors. */
+export function createHelicopterModel(kind = 'huey') {
+  const blackhawk = kind === 'blackhawk', group = new THREE.Group(); group.name = `support-helicopter-${kind}`;
+  const body = new THREE.MeshStandardMaterial({ color: blackhawk ? 0x2f3530 : 0x4a5236, roughness: .7, metalness: .25 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x1b1d1c, roughness: .6, metalness: .5 });
+  const glass = new THREE.MeshStandardMaterial({ color: 0x223038, roughness: .15, metalness: .6, transparent: true, opacity: .8 });
+  const add = (geometry, material, x, y, z, rx = 0, ry = 0, rz = 0) => { const mesh = new THREE.Mesh(geometry, material); mesh.position.set(x, y, z); mesh.rotation.set(rx, ry, rz); mesh.castShadow = true; group.add(mesh); return mesh; };
+  const cabin = blackhawk ? [2.3, 2.1, 6.2] : [2.1, 2.0, 4.6];
+  // Boxy utility cabin with a rounded nose and a framed windscreen.
+  add(new THREE.BoxGeometry(cabin[0], cabin[1], cabin[2] - 1.2), body, 0, 1.6, -.4);
+  add(new THREE.SphereGeometry(cabin[0] / 2, 16, 12), body, 0, 1.45, cabin[2] / 2 - 1.0).scale.set(1, cabin[1] / cabin[0] * .95, .75);
+  add(new THREE.BoxGeometry(cabin[0] * .9, cabin[1] * .42, .08), glass, 0, 2.05, cabin[2] / 2 - .75, -.55);
+  for (const side of [-1, 1]) add(new THREE.BoxGeometry(.06, cabin[1] * .5, 1.6), glass, side * (cabin[0] / 2 + .01), 1.9, cabin[2] / 2 - 1.6);
+  const boom = blackhawk ? 7.2 : 6.4;
+  add(new THREE.CylinderGeometry(.22, .45, boom, 12), body, 0, 2.05, -cabin[2] / 2 - boom / 2 + .5, Math.PI / 2);
+  add(new THREE.BoxGeometry(.12, 1.5, .9), body, 0, 2.6, -cabin[2] / 2 - boom + .7, -.25);
+  add(new THREE.BoxGeometry(blackhawk ? 2.2 : 1.6, .08, .5), body, 0, 2.0, -cabin[2] / 2 - boom + 1.6);
+  add(new THREE.CylinderGeometry(.35, .5, .6, 12), dark, 0, 2.85, 0);
+  if (blackhawk) { for (const side of [-1, 1]) add(new THREE.CylinderGeometry(.28, .28, .22, 12), dark, side * 1.0, .3, 1.8, 0, 0, Math.PI / 2); add(new THREE.CylinderGeometry(.18, .18, .16, 10), dark, 0, .55, -cabin[2] / 2 - boom + .9, 0, 0, Math.PI / 2); }
+  else for (const side of [-1, 1]) { add(new THREE.CylinderGeometry(.07, .07, 4.6, 8), dark, side * 1.05, .15, 0, Math.PI / 2); for (const z of [-1, 1]) add(new THREE.CylinderGeometry(.05, .05, 1.2, 6), dark, side * .95, .7, z * 1.1, 0, 0, side * .25); }
+  for (const side of [-1, 1]) add(new THREE.CylinderGeometry(.16, .16, 1.4, 10), dark, side * (cabin[0] / 2 + .35), 1.25, .3, Math.PI / 2); // rocket pods
+  const mainRotor = new THREE.Group(); mainRotor.position.set(0, 3.2, 0); group.add(mainRotor);
+  const blades = blackhawk ? 4 : 2, span = blackhawk ? 8.2 : 7.3;
+  for (let blade = 0; blade < blades; blade++) { const mesh = new THREE.Mesh(new THREE.BoxGeometry(span, .05, .38), dark); mesh.position.x = 0; mesh.rotation.y = blade * Math.PI / blades; mainRotor.add(mesh); }
+  const tailRotor = new THREE.Group(); tailRotor.position.set(.2, 2.6, -cabin[2] / 2 - boom + .7); group.add(tailRotor);
+  for (let blade = 0; blade < 2; blade++) { const mesh = new THREE.Mesh(new THREE.BoxGeometry(.05, 1.5, .16), dark); mesh.rotation.x = blade * Math.PI / 2; tailRotor.add(mesh); }
+  // Same game-unit scale as the actors (about 1.7 x real metres for a 4.3-unit hunter).
+  group.scale.setScalar(1.7);
+  group.userData.mainRotor = mainRotor; group.userData.tailRotor = tailRotor; group.userData.supportAircraft = kind;
+  return group;
+}
+
 export function createDropshipModel() {
   const mats = surfaces(0x4f5c50), parts = new Assembly('cheyenne-dropship'), glass = windowMaterial();
   parts.add(loftGeometry([[-6.2, 1.2, 0.7, 0, 1.2], [-5.7, 1.8, 1.05, 0, 1.2], [-2.8, 1.96, 1.2, 0, 1.2], [0.6, 1.95, 1.2, 0, 1.2], [3.2, 1.72, 1.1, 0, 1.2], [5.0, 1.48, 0.93, 0, 1.1], [6.8, 0.83, 0.56, 0, 0.96], [7.6, 0.14, 0.24, 0, 0.84]], { axis: 'z', radial: 64, rows: 76, superellipse: 2.8 }), mats.armor);
