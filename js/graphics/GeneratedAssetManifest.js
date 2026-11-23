@@ -8027,5 +8027,30 @@ export const GENERATED_ASSETS = Object.freeze({
       "fidelity_1_to_1_verified": false
     },
     "assembly_note": "Officier générique de marines coloniaux, créé pour Hive Warriors (image Meshy text-to-image, sans ressemblance avec un acteur ou un personnage de film). Corps image-to-3d en pose A, rig meshyrig 1,85 m, affiché à la hauteur du modèle de marine (3,44). Réservé aux officiers génériques et USCM (AUD-031)."
+  },
+  "fiorina_runner": {
+    "status": "verified",
+    "type": "companion",
+    "url": "/models/fiorina-runner-rigged.glb",
+    "sha256": "e54eae4266755c6b3344f277a2d77a1d7cf558e689e48f6da4278916aa9ece5a",
+    "resource": "rigging",
+    "task_id": "01a20844-7248-7664-8d15-11c8f684c0d1",
+    "source_task_id": "01a20842-c059-7472-8bd0-eb033dfee3bb",
+    "image_task_id": "01a20836-4d69-7032-bdbb-79f78e135564",
+    "animationUrls": {
+      "walk": "/models/fiorina-runner-walk.glb",
+      "run": "/models/fiorina-runner-run.glb"
+    },
+    "animationSha256": {
+      "walk": "95f62e5febef3361fcfd01c19c710839e2634141971871ce62e05831ba84bdf7",
+      "run": "585a01721c3ac3233d8aaec0ab0478f9ff297f1807b1811ab3c08e048e726d44"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": false,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Runner de Fiorina (Alien 3). Image Meshy image-to-image (nano-banana) depuis la photo de profil de la figurine NECA Ultimate Dog Alien publiée par Toyark, corps image-to-3d, rig meshyrig bipède 2,2 m sur un quadrupède : les bras servent de pattes avant ; la marche bipède de Meshy donne une démarche de traque. Interprétation d'une figurine, pas un relevé du film."
   }
 });

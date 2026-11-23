@@ -12,4 +12,11 @@ La consigne envoyée pour l’image fidèle est dans `film-i2i-request.json`. La
 ## Limites
 
 - **Une interprétation, pas un relevé.** La référence fidèle est l’interprétation d’une figurine commerciale par Meshy. Ce n’est ni un relevé de la créature du film, ni une fidélité 1:1.
-- **Rien n’est encore en jeu.** Le jeu utilise toujours le runner procédural. Aucun modèle 3D n’est généré. Il faudra un nouvel accord : modèle environ 30 crédits, essai de rig environ 5. Le rig automatique de Meshy vise les bipèdes, alors que le Runner est quadrupède.
+- **Modèle et rig.** Après accord de l’auteur :
+  - modèle 3D `image-to-3d` (tâche `01a20842-c059-7472-8bd0-eb033dfee3bb`) ;
+  - rig `meshyrig` (tâche `01a20844-7248-7664-8d15-11c8f684c0d1`).
+
+  Solde : 1 730 crédits avant, 1 695 après (35 dépensés).
+- **Le rig est bipède**, sur un quadrupède. Les « bras » servent de pattes avant. La marche bipède de Meshy donne une démarche de traque où les quatre pattes alternent (`runner-walk-cycle.jpg`) : c’est acceptable, mais pas un cycle de marche quadrupède mesuré.
+- **En jeu.** Le boss `fiorina_runner` charge `public/models/fiorina-runner-rigged.glb` avec la marche et la course (entrée `fiorina_runner` du manifeste). Le runner procédural reste dessous tant que le modèle n’est pas chargé, et en cas d’échec. Collisions et combat ne dépendent pas du modèle.
+- **Vérifié dans Chromium** (`runner-ingame-fiorina.jpg`) : modèle chargé, actions `walk` et `run`, aucune erreur de page. Vue fixe prise par script, pas une partie jouée.

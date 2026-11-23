@@ -12,6 +12,7 @@ import { validatePreparedBossEncounter, validateBossCombatState, BOSS_COOLDOWN_K
 import { getBossCombatPattern } from '../data/BossCombatPatterns.js';
 import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder, requestNPCStrike } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { attachImportedCompanion, updateImportedCompanion, disposeImportedCompanion } from '../graphics/ImportedCompanion.js';
 import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/HunterStealth.js';
 /* Fiorina runner (Alien 3 adaptation): it strikes, breaks contact, then turns back. A heavy hit
  * during the turn staggers it. Timings are gameplay choices, not film measurements. */
@@ -86,6 +87,8 @@ export class BossManager {
     Object.assign(mesh.userData, visualModel.userData); mesh._bossHunterOwner = visualModel._bossHunterOwner;
     mesh.userData.encounterProfile = definition.id; mesh.userData.assetFidelity = definition.assetFidelity;
     this.clear(); this.scene.add(mesh);
+    // A verified Meshy body replaces the procedural figure once loaded; collision and combat never depend on it.
+    if (definition.importedModel && typeof window !== 'undefined') attachImportedCompanion(mesh, definition.importedModel, { height: definition.height });
     this.activeBoss = { type, definition, mesh, visualModel, hp: definition.hp, maxHp: definition.hp,
       footprintRadius, arena: { requested: spawnPos.toArray(), placed: arenaPosition.toArray(), moved: arenaPosition.distanceTo(spawnPos) > .05 },
       phase: 1, isStunned: false, stunTimer: 0, hasEnteredStun: false,
@@ -310,6 +313,7 @@ export class BossManager {
 
   clear() {
     releaseHostileAttack(this, this.activeBoss);
+    if (this.activeBoss?.mesh) disposeImportedCompanion(this.activeBoss.mesh);
     disposeObject(this.activeBoss?.mesh, this.sharedResources);
     this.activeBoss = null;
     for (const list of [this.acidSpitProjectiles, this.embryoProjectiles, this.weaponProjectiles, this.effects]) for (const item of list ?? []) disposeObject(item.mesh);
@@ -465,6 +469,7 @@ export class BossManager {
     const preparing = this.combatDirector?.getAttackState(boss)?.phase === 'windup' || boss._localAttackPreparation;
     const moving = distance > 3.1 && !preparing && boss.weaponRecovery <= 0;
     boss.visualPhase = (boss.visualPhase || 0) + delta * 5;
+    updateImportedCompanion(boss.mesh, delta);
     animateCreatureModel(boss.visualModel ?? boss.mesh, boss.visualPhase, moving);
     const owner = boss.mesh._bossHunterOwner;
     if (owner) for (const [role, sign] of [['leftArm',-1],['rightArm',1],['leftLeg',1],['rightLeg',-1]]) if (owner[role]) owner[role].rotation.x = moving ? Math.sin(boss.visualPhase) * sign * .22 : 0;
