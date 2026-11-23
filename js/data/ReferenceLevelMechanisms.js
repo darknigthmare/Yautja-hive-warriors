@@ -8,7 +8,8 @@ import { ASCENSION_TERRAINS } from './AscensionWorlds.js';
 const PROFILE_DEFINITIONS = {
   gunnison_forest: ['buildCrashedScoutShipProps', 'buildGunnisonForestExpansionProps'],
   xenomorph_prime: ['buildHiveWorldExpansionProps', 'buildBiomechanicalWallResin', 'buildEggNurseries', 'buildChrysalisCocoons', 'buildQueenOvipositor', 'buildResinWebbings', 'buildAcidTrenches', 'buildPressurizedAcidGeysers'],
-  antarctic_pyramid: ['buildModularPyramidWalls', 'buildPyramidSacrificialProps', 'buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSubterraneanVents'],
+  // Bouvetøya update (23 Nov 2026, AVP 2004): Yautja weapon shrine, sacrificial chamber eggs, the chained queen's ovipositor and her cryo tanks.
+  antarctic_pyramid: ['buildModularPyramidWalls', 'buildPyramidSacrificialProps', 'buildIndustrialCatwalks', 'buildHydraulicBlastDoors', 'buildSubterraneanVents', 'buildShrineOfTheAncients', 'buildEggNurseries', 'buildQueenOvipositor', 'buildLiquidNitrogenTanks'],
   la_rooftops: ['buildLARooftopExpansionProps', 'buildIndustrialCatwalks', 'buildElectricalTransformers'],
   val_verde_jungle: ['buildValVerdeProps', 'buildValVerdeMasterExpansionProps'],
   romulus_station: ['buildRomulusCryoProps', 'buildRomulusStationExpansionProps', 'buildIndustrialCatwalks', 'buildElectricalTransformers', 'buildHydraulicBlastDoors', 'buildCryoMedBays', 'buildCargoCrane', 'buildDecompressionAirlock', 'buildSteamConduits', 'buildCryoSpecimenTubes', 'buildSpecimenStasisTanks', 'buildPlasmaRechargeTerminals', 'buildDecontaminationAirlock', 'buildSubterraneanVents'],
